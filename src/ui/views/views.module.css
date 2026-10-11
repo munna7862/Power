@@ -502,3 +502,177 @@
     flex-direction: column;
   }
 }
+
+/* Military (Phase 4) */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-4) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  min-height: 38px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--text);
+  border-bottom-color: var(--saffron);
+}
+
+.bar {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.barFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+.barFill[data-tone='warning'] {
+  background: var(--warning);
+}
+
+.barFill[data-tone='danger'] {
+  background: var(--danger);
+}
+
+.barFill[data-tone='accent'] {
+  background: var(--saffron);
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr minmax(60px, auto);
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.domainHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.domainHead:first-of-type {
+  margin-top: 0;
+}
+
+.orderBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.warCard {
+  padding: var(--space-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.warCard[data-status='terms'] {
+  border-color: var(--green);
+  background: var(--surface);
+}
+
+.warTitle {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.frontRow {
+  display: grid;
+  grid-template-columns: minmax(150px, 220px) 1fr minmax(120px, auto);
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.centreBar {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--border);
+}
+
+.centreBar::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--text-faint);
+}
+
+.centreFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+.centreFill[data-side='enemy'] {
+  background: var(--danger);
+}
+
+.dangerZone {
+  border: 1px dashed var(--danger);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dangerButton {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.reportCard {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 768px) {
+  .barRow,
+  .frontRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

@@ -3,7 +3,7 @@ import './ui/design/tokens.css';
 import './ui/design/global.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { raiseEvent, type RegionId } from './sim';
+import { raiseEvent, startWar, type RegionId, type RivalId } from './sim';
 import { gameStore } from './store';
 import { App } from './ui/App';
 
@@ -19,7 +19,19 @@ if (import.meta.env.DEV) {
         const { game } = gameStore.getState();
         if (game) gameStore.setState({ game: raiseEvent(game, eventId, region ?? null) });
       },
-      patchGame: (patch: { nation?: object; economy?: object; security?: object }) => {
+      /** A rival declares war on India right now. */
+      invade: (rival: RivalId) => {
+        const { game } = gameStore.getState();
+        if (game) gameStore.setState({ game: startWar(game, rival, 'rival') });
+      },
+      /** Every enemy at war with India offers a ceasefire. */
+      offerCeasefire: () => {
+        const { game } = gameStore.getState();
+        if (!game) return;
+        const wars = game.military.wars.map((w) => ({ ...w, ceasefireOffered: true }));
+        gameStore.setState({ game: { ...game, military: { ...game.military, wars } } });
+      },
+      patchGame: (patch: { nation?: object; economy?: object; security?: object; military?: object }) => {
         const { game } = gameStore.getState();
         if (!game) return;
         gameStore.setState({
@@ -28,6 +40,7 @@ if (import.meta.env.DEV) {
             nation: { ...game.nation, ...patch.nation },
             economy: { ...game.economy, ...patch.economy },
             security: { ...game.security, ...patch.security },
+            military: { ...game.military, ...patch.military },
           },
         });
       },
