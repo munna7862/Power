@@ -13,10 +13,18 @@ import {
   SECTORS,
   STRATEGIES,
   TAXES,
+  TREATY_TYPES,
   UNITS,
 } from '../content/ids';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
-import { DIFFICULTIES, GAME_OVER_CAUSES, NUCLEAR_DOCTRINES, REVENUE_LINES, SCHEMA_VERSION } from '../state/types';
+import {
+  AI_ACTIONS,
+  DIFFICULTIES,
+  GAME_OVER_CAUSES,
+  NUCLEAR_DOCTRINES,
+  REVENUE_LINES,
+  SCHEMA_VERSION,
+} from '../state/types';
 
 const date = z.object({
   year: z.number().int(),
@@ -50,6 +58,63 @@ const expenditureLines = z.object({
 const tick = z.number().int();
 const keyed = <K extends readonly [string, ...string[]], V extends z.ZodType>(keys: K, value: V) =>
   z.record(z.enum(keys), value);
+
+const countryId = z.string().regex(/^[A-Z]{3}$/);
+const relationScore = z.number().min(-100).max(100);
+
+const diplomacy = z.object({
+  countries: z.record(
+    countryId,
+    z.object({
+      relation: relationScore,
+      incidents: score,
+      embassy: z.boolean(),
+      sanctioned: z.boolean(),
+      proposalReadyTick: tick,
+      aidReadyTick: tick,
+    }),
+  ),
+  treaties: z.array(
+    z.object({
+      id: z.string(),
+      type: z.enum(TREATY_TYPES),
+      parties: z.tuple([z.string(), z.string()]),
+      startTick: tick,
+      endTick: tick.nullable(),
+      terms: z.object({ sector: z.enum(SECTORS).optional(), value: finite.optional() }),
+    }),
+  ),
+  offers: z.array(
+    z.object({
+      id: z.string(),
+      from: countryId,
+      type: z.enum(['trade', 'nonAggression']),
+      years: z.number().int().min(1),
+      terms: z.object({ sector: z.enum(SECTORS).optional(), value: finite.optional() }),
+      raisedTick: tick,
+      expiresTick: tick,
+    }),
+  ),
+  conflicts: z.array(z.object({ id: z.string(), countries: z.array(countryId), startTick: tick, endTick: tick })),
+  reputation: score,
+  worldTension: score,
+  ai: z.record(
+    countryId,
+    z.object({
+      tick,
+      action: z.enum(AI_ACTIONS),
+      acted: z.boolean(),
+      utilities: z.record(z.enum(AI_ACTIONS), finite),
+      inputs: z.object({
+        relation: finite,
+        powerRatio: finite,
+        ideology: finite,
+        deterrence: finite,
+        noise: finite,
+      }),
+    }),
+  ),
+});
 
 const front = z.object({ index: z.number().int().min(0), progress: z.number().min(-100).max(100) });
 
@@ -125,7 +190,6 @@ const military = z.object({
     z.object({
       strength: z.number().min(0),
       readiness: score,
-      relation: z.number().min(-100).max(100),
       recoverUntilTick: tick.nullable(),
       sighting: z.object({ tick, strength: z.number().min(0), readiness: score }).nullable(),
       annexed: z.boolean(),
@@ -264,6 +328,7 @@ export const gameStateSchema = z.object({
     attacksSuffered: z.number().int().min(0),
   }),
   military,
+  diplomacy,
   events: z.object({
     pending: z.array(
       z.object({

@@ -112,7 +112,7 @@
 
 ### Deviations from the plan
 
-- **Rivals are fictional states** (`content/rivals.json`: Zarnak, Tirhan, Oruvan, Velmora, Haldrin) rather than real countries. A war against a real nation needs the neutral-tone review and the Survey of India map, which arrive with Phase 5's world map. The five states are stand-ins (one peer, two mid-sized, two weak neighbours) that Phase 5's `countries.json` will replace.
+- **Rivals were fictional states in Phase 4** (replaced by real neighbours in [Phase 5](phase_5_diplomacy_world.md)): (`content/rivals.json`: Zarnak, Tirhan, Oruvan, Velmora, Haldrin) rather than real countries. A war against a real nation needs the neutral-tone review and the Survey of India map, which arrive with Phase 5's world map. The five states are stand-ins (one peer, two mid-sized, two weak neighbours) that Phase 5's `countries.json` will replace.
 - **Upkeep is not a separate expenditure line.** It is carved out of the existing Defence line, so the economy's `FiscalMonth` shape is unchanged. War costs are charged to the treasury each day and show up as borrowing at the next monthly settlement.
 - **Drill "animation"** is a progress bar and a result card, as the plan allows.
 - **Rivals never use nuclear weapons.** A nuclear-armed enemy that is losing hints at "extraordinary measures" and offers a ceasefire; that is the only escalation modelled.

@@ -50,17 +50,17 @@ test.describe('Commander-in-Chief (Phase 4, milestone M4)', () => {
 
   test('recon: enemy strength is a rough estimate until a sighting sharpens it', async ({ page }) => {
     await openTab(page, 'Drills');
-    const zarnak = page.getByTestId('strength-zarnak');
-    await expect(zarnak).toContainText('rough estimate');
+    const CHN = page.getByTestId('strength-CHN');
+    await expect(CHN).toContainText('rough estimate');
 
-    await page.getByRole('button', { name: 'Recon Zarnak Republic' }).click();
-    await expect(page.getByRole('list', { name: 'Intelligence operations' })).toContainText('Recon: Zarnak Republic');
+    await page.getByRole('button', { name: 'Recon China' }).click();
+    await expect(page.getByRole('list', { name: 'Intelligence operations' })).toContainText('Recon: China');
 
     // The operation can succeed, fail quietly or be exposed: the outcome always reaches the inbox.
     await steady(page);
     await advanceDays(page, 35);
     await openView(page, 'Inbox');
-    await expect(page.getByRole('list', { name: 'Inbox messages' })).toContainText(/Zarnak/);
+    await expect(page.getByRole('list', { name: 'Inbox messages' })).toContainText(/China/);
   });
 
   test('a recon sighting shows a narrow range that widens as it ages', async ({ page }) => {
@@ -71,27 +71,27 @@ test.describe('Commander-in-Chief (Phase 4, milestone M4)', () => {
         military: {
           rivals: {
             ...military.rivals,
-            velmora: { ...military.rivals.velmora, sighting: { tick: game.clock.tick, strength: 26, readiness: 70 } },
+            BGD: { ...military.rivals.BGD, sighting: { tick: game.clock.tick, strength: 26, readiness: 70 } },
           },
         },
       });
     });
     await openTab(page, 'Drills');
-    await expect(page.getByTestId('strength-velmora')).toContainText(/\d+–\d+ \(recon 0 days old\)/);
+    await expect(page.getByTestId('strength-BGD')).toContainText(/\d+–\d+ \(recon 0 days old\)/);
     await steady(page);
     await advanceDays(page, 200);
-    await expect(page.getByTestId('strength-velmora')).toContainText('recon 200 days old');
+    await expect(page.getByTestId('strength-BGD')).toContainText('recon 200 days old');
   });
 
   test('defends against an invasion and negotiates a ceasefire', async ({ page }) => {
     await openView(page, 'Dashboard');
-    await page.evaluate(() => window.__APEX__.invade('zarnak'));
+    await page.evaluate(() => window.__APEX__.invade('CHN'));
     const banner = page.getByRole('region', { name: 'War' });
-    await expect(banner).toContainText('At war with Zarnak Republic');
+    await expect(banner).toContainText('At war with China');
 
     await banner.getByRole('button', { name: 'War room' }).click();
     await openTab(page, 'War');
-    const war = page.getByRole('article', { name: 'War with Zarnak Republic' });
+    const war = page.getByRole('article', { name: 'War with China' });
     await expect(war).toBeVisible();
     await expect(war.getByRole('list', { name: 'Fronts' })).toContainText('Northern mountain front');
 
@@ -104,25 +104,25 @@ test.describe('Commander-in-Chief (Phase 4, milestone M4)', () => {
     await page.evaluate(() => window.__APEX__.offerCeasefire());
     await war.getByRole('button', { name: 'Accept ceasefire' }).click();
     await expect(war).toHaveCount(0);
-    await expect(page.getByRole('list', { name: 'Past wars' })).toContainText('Zarnak Republic: ceasefire');
+    await expect(page.getByRole('list', { name: 'Past wars' })).toContainText('China: ceasefire');
   });
 
   test('declares war on a small neighbour (with a confirmation), wins and annexes it', async ({ page }) => {
     await openTab(page, 'War');
-    await page.getByRole('button', { name: 'Declare war on Haldrin' }).click();
-    const dialog = page.getByRole('dialog', { name: 'Declare war on Haldrin?' });
+    await page.getByRole('button', { name: 'Declare war on Sri Lanka' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Declare war on Sri Lanka?' });
     await expect(dialog).toContainText('Mobilisation costs');
     await dialog.getByRole('button', { name: 'Declare war' }).click();
 
-    const war = page.getByRole('article', { name: 'War with Haldrin' });
+    const war = page.getByRole('article', { name: 'War with Sri Lanka' });
     await expect(war).toBeVisible();
     await steady(page);
     await advanceDays(page, 50);
-    await expect(war).toContainText('Haldrin has capitulated');
-    await war.getByRole('button', { name: 'Annex Haldrin' }).click();
+    await expect(war).toContainText('Sri Lanka has capitulated');
+    await war.getByRole('button', { name: 'Annex Sri Lanka' }).click();
     await expect(war).toHaveCount(0);
-    await expect(page.getByRole('list', { name: 'Past wars' })).toContainText('Haldrin: victory');
-    await expect(page.getByRole('button', { name: 'Declare war on Haldrin' })).toBeDisabled();
+    await expect(page.getByRole('list', { name: 'Past wars' })).toContainText('Sri Lanka: victory');
+    await expect(page.getByRole('button', { name: 'Declare war on Sri Lanka' })).toBeDisabled();
   });
 
   test('the nuclear program, doctrine and the consequences of use', async ({ page }) => {
@@ -146,11 +146,11 @@ test.describe('Commander-in-Chief (Phase 4, milestone M4)', () => {
     await expect(page.getByTestId('warheads')).toHaveText('2');
 
     await openTab(page, 'War');
-    await page.getByRole('button', { name: 'Declare war on Tirhan Federation' }).click();
+    await page.getByRole('button', { name: 'Declare war on Pakistan' }).click();
     await page.getByRole('dialog').getByRole('button', { name: 'Declare war' }).click();
 
     await openTab(page, 'Nuclear');
-    const strike = page.getByRole('button', { name: 'Use nuclear weapon against Tirhan Federation' });
+    const strike = page.getByRole('button', { name: 'Use nuclear weapon against Pakistan' });
     await expect(strike).toBeDisabled();
     await page.getByRole('radio', { name: /First use reserved/ }).check();
     await strike.click();

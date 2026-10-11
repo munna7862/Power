@@ -2,9 +2,9 @@
 
 A realistic political and national strategy simulation. You are the President of India.
 
-> Code name: **Power** · Status: Phase 4 (armed forces, espionage, war and the nuclear program) · Stack: TypeScript, React, Vite (Electron for PC, Capacitor for mobile)
+> Code name: **Power** · Status: Phase 5 (world map, relations, trade contracts, treaties and AI nations) · Stack: TypeScript, React, Vite (Electron for PC, Capacitor for mobile)
 
-![War room](docs/screenshots/phase-4/war.png)
+![World map](docs/screenshots/phase-5/world-relation.png)
 
 ## Run it
 
@@ -29,16 +29,17 @@ Then open http://localhost:5180.
 
 ## Project layout
 
-| Path            | Contents                                                                  |
-| --------------- | ------------------------------------------------------------------------- |
-| `src/sim/`      | Pure, deterministic simulation core (no UI, no clock, seeded randomness)  |
-| `content/`      | Game data as JSON (ministries, units, rivals, 110+ events), zod-validated |
-| `src/store/`    | Zustand bridge between the simulation and the UI                          |
-| `src/platform/` | Storage and shell adapters (browser now; Electron and Capacitor later)    |
-| `src/ui/`       | React screens, design tokens and primitives                               |
-| `tests/`        | Unit, architecture and save-compatibility tests                           |
-| `e2e/`          | Playwright end-to-end tests                                               |
-| `tools/balance` | Bots and the balance harness (`npm run balance`)                          |
-| `planning/`     | Master plan, phases and sprints                                           |
+| Path            | Contents                                                                         |
+| --------------- | -------------------------------------------------------------------------------- |
+| `src/sim/`      | Pure, deterministic simulation core (no UI, no clock, seeded randomness)         |
+| `content/`      | Game data as JSON (ministries, units, 205 countries, 130+ events), the world map |
+| `src/store/`    | Zustand bridge between the simulation and the UI                                 |
+| `src/platform/` | Storage and shell adapters (browser now; Electron and Capacitor later)           |
+| `src/ui/`       | React screens, design tokens and primitives                                      |
+| `tests/`        | Unit, architecture and save-compatibility tests                                  |
+| `e2e/`          | Playwright end-to-end tests                                                      |
+| `tools/balance` | Bots and the balance harness (`npm run balance`)                                 |
+| `tools/world`   | Builds the world map and `countries.json` from Natural Earth data                |
+| `planning/`     | Master plan, phases and sprints                                                  |
 
 Read [AGENTS.md](AGENTS.md) before contributing. Start with the [planning hub](planning/README.md) and the [master plan](planning/Master/master_plan.md).

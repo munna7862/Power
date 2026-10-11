@@ -11,12 +11,34 @@ import {
   type IntelKind,
   type MinistryId,
   type OperationKind,
+  type CountryId,
   type RivalId,
+  type SectorId,
   type StrategyId,
   type UnitId,
 } from '../content/ids';
 import { addDays, formatDate } from '../engine/calendar';
 import { Rng } from '../engine/rng';
+import type { AidSize, TradeSize } from '../diplomacy/constants';
+import {
+  acceptOffer,
+  breakTreaty,
+  declineOffer,
+  imposeSanctions,
+  liftSanctions,
+  openEmbassy,
+  proposePact,
+  proposeTrade,
+  sendAid,
+  validateAid,
+  validateBreak,
+  validateEmbassy,
+  validateLift,
+  validateOffer,
+  validatePact,
+  validateSanctions,
+  validateTrade,
+} from '../diplomacy/treaties';
 import { startDrill, validateDrill } from '../military/drills';
 import {
   cancelOrder,
@@ -82,7 +104,16 @@ export type Command =
   | { type: 'START_NUCLEAR_PROGRAM' }
   | { type: 'SET_NUCLEAR_PROGRAM'; active: boolean }
   | { type: 'SET_NUCLEAR_DOCTRINE'; doctrine: NuclearDoctrine }
-  | { type: 'USE_NUCLEAR_WEAPON'; warId: string };
+  | { type: 'USE_NUCLEAR_WEAPON'; warId: string }
+  | { type: 'PROPOSE_TRADE'; country: CountryId; sector: SectorId; size: TradeSize; years: number }
+  | { type: 'PROPOSE_PACT'; country: CountryId }
+  | { type: 'OPEN_EMBASSY'; country: CountryId }
+  | { type: 'SEND_AID'; country: CountryId; size: AidSize }
+  | { type: 'IMPOSE_SANCTIONS'; country: CountryId }
+  | { type: 'LIFT_SANCTIONS'; country: CountryId }
+  | { type: 'BREAK_TREATY'; treatyId: string }
+  | { type: 'ACCEPT_OFFER'; offerId: string }
+  | { type: 'DECLINE_OFFER'; offerId: string };
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; error: string; state: GameState };
 
@@ -272,6 +303,57 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateNuclearStrike(state, command.warId);
       return problem ? fail(state, problem) : ok(nuclearStrike(state, command.warId));
+    }
+    case 'PROPOSE_TRADE': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateTrade(state, command.country, command.sector, command.size, command.years);
+      return problem
+        ? fail(state, problem)
+        : ok(
+            withRng(state, (rng) =>
+              proposeTrade(state, rng, command.country, command.sector, command.size, command.years),
+            ),
+          );
+    }
+    case 'PROPOSE_PACT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validatePact(state, command.country);
+      return problem ? fail(state, problem) : ok(withRng(state, (rng) => proposePact(state, rng, command.country)));
+    }
+    case 'OPEN_EMBASSY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateEmbassy(state, command.country);
+      return problem ? fail(state, problem) : ok(openEmbassy(state, command.country));
+    }
+    case 'SEND_AID': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateAid(state, command.country, command.size);
+      return problem ? fail(state, problem) : ok(sendAid(state, command.country, command.size));
+    }
+    case 'IMPOSE_SANCTIONS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateSanctions(state, command.country);
+      return problem ? fail(state, problem) : ok(imposeSanctions(state, command.country));
+    }
+    case 'LIFT_SANCTIONS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateLift(state, command.country);
+      return problem ? fail(state, problem) : ok(liftSanctions(state, command.country));
+    }
+    case 'BREAK_TREATY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateBreak(state, command.treatyId);
+      return problem ? fail(state, problem) : ok(breakTreaty(state, command.treatyId));
+    }
+    case 'ACCEPT_OFFER': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateOffer(state, command.offerId);
+      return problem ? fail(state, problem) : ok(acceptOffer(state, command.offerId));
+    }
+    case 'DECLINE_OFFER': {
+      if (gameOver) return fail(state, 'The game is over.');
+      if (!state.diplomacy.offers.some((o) => o.id === command.offerId)) return fail(state, 'That offer has lapsed.');
+      return ok(declineOffer(state, command.offerId));
     }
     case 'SET_IDEOLOGY':
       return gameOver ? fail(state, 'The game is over.') : changePolicy(state, 'ideology', command.ideology);

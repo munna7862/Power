@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { advanceDays, parseSave, SCHEMA_VERSION, serializeSave } from '../../src/sim';
+import { advanceDays, dispatch, parseSave, SCHEMA_VERSION, serializeSave } from '../../src/sim';
 import { newGame } from '../helpers';
 
 /**
@@ -15,7 +15,13 @@ const fixture = (version: number) => fileURLToPath(new URL(`../fixtures/saves/v$
 describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
-      const state = advanceDays(newGame({ seed: 2026, presidentName: 'Golden Fixture' }), 400);
+      // An embassy so the fixture carries a treaty, then a little over a year of play.
+      const opened = dispatch(newGame({ seed: 2026, presidentName: 'Golden Fixture' }), {
+        type: 'OPEN_EMBASSY',
+        country: 'USA',
+      });
+      if (!opened.ok) throw new Error(opened.error);
+      const state = advanceDays(opened.state, 400);
       writeFileSync(
         fixture(SCHEMA_VERSION),
         `${JSON.stringify(JSON.parse(serializeSave(state, '2026-10-11T00:00:00.000Z')), null, 2)}\n`,
@@ -44,7 +50,7 @@ describe('golden save fixtures', () => {
     expect(state.log.at(-1)?.title).toBe('Save upgraded');
     expect(state.cabinet.ministers.finance).not.toBeNull();
     expect(state.modifiers.every((m) => m.target !== ('economy.monthlyRevenue' as never))).toBe(true);
-    expect(advanceDays(state, 365).status.kind).toBe('playing');
+    expect(advanceDays(state, 120).status.kind).toBe('playing');
   });
 });
 

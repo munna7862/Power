@@ -1,12 +1,11 @@
-import { RIVALS } from '../content/ids';
 import type { System } from '../engine/system';
 import { deterrenceTarget } from '../military/deterrence';
 import { completeDrills } from '../military/drills';
 import { completeProduction, patchMilitary, settleForces } from '../military/forces';
 import { resolveIntelOps } from '../military/intel';
 import { advanceProgram } from '../military/nuclear';
-import { atWarWith, declarationChance, tensionTarget, updateRivals } from '../military/rivals';
-import { MAX_WARS, settleWars, startWar, stepWars } from '../military/war';
+import { tensionTarget, updateRivals } from '../military/rivals';
+import { settleWars, stepWars } from '../military/war';
 import { clamp } from '../security/unrest';
 
 /**
@@ -27,7 +26,8 @@ export const militaryDailySystem: System = {
 
 /**
  * Monthly military business: upkeep and the procurement fund, readiness and morale, deterrence and border
- * tension, rivals’ growth and spying, the nuclear program, the cost of war and rivals’ declarations of war.
+ * tension, rivals’ growth and spying, the nuclear program and the cost of war. Rivals’ declarations of war
+ * are made by the AI in the diplomacy system.
  */
 export const militaryMonthlySystem: System = {
   id: 'military-monthly',
@@ -58,11 +58,6 @@ export const militaryMonthlySystem: System = {
       },
     };
 
-    // A rival may attack.
-    for (const id of RIVALS) {
-      if (next.military.wars.length >= MAX_WARS || atWarWith(next, id)) continue;
-      if (rng.chance(declarationChance(next, id))) next = startWar(next, id, 'rival');
-    }
     return next;
   },
 };

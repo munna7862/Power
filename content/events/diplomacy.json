@@ -1,0 +1,1426 @@
+[
+  {
+    "id": "global-oil-shock",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Global oil price shock",
+    "body": "Supply cuts and a regional crisis have sent crude prices sharply higher. Every importing economy is feeling it, and fuel prices at home are climbing.",
+    "weight": 0.22,
+    "cooldownDays": 900,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "reserves",
+        "label": "Release strategic reserves",
+        "description": "Costs ₹2,500 crore; softens the price rise for a few months.",
+        "outcome": "Reserves are released to the market. Pump prices rise more slowly than elsewhere.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 5
+          },
+          {
+            "type": "worldRelation",
+            "delta": -1,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.006,
+            "days": 180
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 270
+          }
+        ]
+      },
+      {
+        "id": "subsidise",
+        "label": "Subsidise fuel prices",
+        "description": "Costs ₹4,000 crore; keeps pump prices steady and voters content.",
+        "outcome": "The treasury absorbs the shock. Households barely notice, though the bill is large.",
+        "cost": 4000,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 5
+          },
+          {
+            "type": "worldRelation",
+            "delta": -1,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.003,
+            "days": 150
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 90
+          }
+        ]
+      },
+      {
+        "id": "absorb",
+        "label": "Let the market adjust",
+        "description": "No cost, but inflation and growth take the full hit.",
+        "outcome": "Prices climb and household budgets are squeezed for most of a year.",
+        "default": true,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 5
+          },
+          {
+            "type": "worldRelation",
+            "delta": -1,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.015,
+            "days": 270
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.006,
+            "days": 270
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global-recession",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Global recession",
+    "body": "Major economies are contracting together. Export orders are drying up and capital is leaving emerging markets.",
+    "weight": 0.15,
+    "cooldownDays": 1200,
+    "deadlineDays": 25,
+    "choices": [
+      {
+        "id": "stimulus",
+        "label": "Launch a stimulus package",
+        "description": "Costs ₹6,000 crore; cushions jobs and growth.",
+        "outcome": "Public works and credit support soften the blow. Growth dips, but less than elsewhere.",
+        "cost": 6000,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 4
+          },
+          {
+            "type": "worldRelation",
+            "delta": -1,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.005,
+            "days": 365
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.004,
+            "days": 365
+          }
+        ]
+      },
+      {
+        "id": "hold",
+        "label": "Hold the line on spending",
+        "description": "No cost, but jobs and growth suffer.",
+        "outcome": "The budget stays disciplined while exports fall. Unemployment drifts up.",
+        "default": true,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 4
+          },
+          {
+            "type": "worldRelation",
+            "delta": -1,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.011,
+            "days": 365
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.01,
+            "days": 365
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global-pandemic",
+    "category": "diplomacy",
+    "severity": "critical",
+    "title": "New disease spreads across borders",
+    "body": "A fast-moving respiratory illness has reached several continents. Airlines are cancelling routes and the first cases have been reported in India.",
+    "weight": 0.07,
+    "cooldownDays": 1800,
+    "deadlineDays": 14,
+    "choices": [
+      {
+        "id": "strict",
+        "label": "Nationwide restrictions",
+        "description": "Costs ₹3,000 crore; strong containment, heavy on the economy.",
+        "outcome": "Movement is restricted for weeks. The disease is contained early, at a cost to jobs and output.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 6
+          },
+          {
+            "type": "worldRelation",
+            "delta": -2,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.01,
+            "days": 120
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.008,
+            "days": 150
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 240,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      },
+      {
+        "id": "targeted",
+        "label": "Targeted measures and testing",
+        "description": "Costs ₹1,500 crore; relies on a well-run health ministry.",
+        "outcome": "Testing, tracing and local restrictions slow the spread without closing the economy.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 6
+          },
+          {
+            "type": "worldRelation",
+            "delta": -2,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.008,
+            "days": 180,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.004,
+            "days": 180,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 90,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      },
+      {
+        "id": "minimal",
+        "label": "Advisories only",
+        "description": "No cost, but the outbreak spreads and public confidence falls.",
+        "outcome": "The government urges caution and little else. Hospitals fill up and voters notice.",
+        "default": true,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 6
+          },
+          {
+            "type": "worldRelation",
+            "delta": -2,
+            "scope": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.012,
+            "days": 240
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 180
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "regional-conflict",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "Fighting breaks out near {country}",
+    "body": "A dispute between neighbouring states in the region of {country} has turned violent. Shipping insurers are raising premiums and capitals are calling for restraint.",
+    "countryPick": "any",
+    "weight": 0.25,
+    "cooldownDays": 270,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "mediate",
+        "label": "Offer to mediate",
+        "description": "Costs ₹300 crore; raises India’s standing as an honest broker.",
+        "outcome": "Envoys shuttle between the capitals. Talks do not end the fighting, but India’s offer is noticed.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "conflict",
+            "days": 150
+          },
+          {
+            "type": "relation",
+            "delta": 5
+          },
+          {
+            "type": "reputation",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "neutral",
+        "label": "Stay neutral",
+        "description": "No cost; India stays out of it.",
+        "outcome": "India calls for restraint and keeps its distance.",
+        "default": true,
+        "effects": [
+          {
+            "type": "conflict",
+            "days": 150
+          }
+        ]
+      },
+      {
+        "id": "supply",
+        "label": "Sell equipment to both sides",
+        "description": "Brings in ₹1,500 crore, but costs India some standing.",
+        "outcome": "Defence exporters fill orders. Critics say India is profiting from the conflict.",
+        "effects": [
+          {
+            "type": "conflict",
+            "days": 150
+          },
+          {
+            "type": "treasury",
+            "amount": 1500
+          },
+          {
+            "type": "reputation",
+            "delta": -3
+          },
+          {
+            "type": "worldTension",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global-commodity-boom",
+    "category": "diplomacy",
+    "severity": "good",
+    "title": "Commodity prices surge",
+    "body": "Strong demand abroad has lifted prices for farm produce and energy. Exporters across the world are enjoying a windfall, India’s farmers among them.",
+    "weight": 0.16,
+    "cooldownDays": 900,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.agriculture",
+        "kind": "add",
+        "value": 0.006,
+        "days": 365
+      },
+      {
+        "type": "modifier",
+        "target": "economy.growth.energy",
+        "kind": "add",
+        "value": 0.004,
+        "days": 365
+      },
+      {
+        "type": "worldRelation",
+        "delta": 1,
+        "scope": "all"
+      },
+      {
+        "type": "worldTension",
+        "delta": -2
+      }
+    ]
+  },
+  {
+    "id": "global-tech-boom",
+    "category": "diplomacy",
+    "severity": "good",
+    "title": "Global technology investment boom",
+    "body": "Investors are pouring money into software, chips and clean energy. Indian technology firms are winning contracts and attracting capital.",
+    "weight": 0.14,
+    "cooldownDays": 900,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.008,
+        "days": 365
+      },
+      {
+        "type": "modifier",
+        "target": "economy.growth.services",
+        "kind": "add",
+        "value": 0.002,
+        "days": 365
+      },
+      {
+        "type": "worldRelation",
+        "delta": 1,
+        "scope": "all"
+      }
+    ]
+  },
+  {
+    "id": "global-food-prices",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "World food prices spike",
+    "body": "Poor harvests in several exporting countries have pushed grain and edible oil prices up worldwide. Households at home are paying more at the market.",
+    "weight": 0.14,
+    "cooldownDays": 700,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "curb",
+        "label": "Restrict food exports",
+        "description": "Protects prices at home but upsets trading partners.",
+        "outcome": "Export curbs keep grain at home. Importing countries protest.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.004,
+            "days": 180
+          },
+          {
+            "type": "worldRelation",
+            "delta": -3,
+            "scope": "all"
+          },
+          {
+            "type": "reputation",
+            "delta": -2
+          },
+          {
+            "type": "worldTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "import",
+        "label": "Open imports and release stocks",
+        "description": "Costs ₹1,500 crore; eases prices without hurting partners.",
+        "outcome": "Stocks are released and duties on imports are cut. Prices ease slowly.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.006,
+            "days": 150
+          },
+          {
+            "type": "worldTension",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Do nothing",
+        "description": "No cost, but inflation rises.",
+        "outcome": "Food prices rise through the season.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.012,
+            "days": 240
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global-financial-turmoil",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Turmoil in global financial markets",
+    "body": "A banking scare abroad has sent investors fleeing to safety. The rupee is under pressure and foreign money is leaving Indian markets.",
+    "weight": 0.1,
+    "cooldownDays": 1100,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "swap",
+        "label": "Arrange swap lines with friendly central banks",
+        "description": "Costs ₹2,000 crore; calms markets quickly.",
+        "outcome": "Partner central banks stand behind the rupee. The panic passes.",
+        "cost": 2000,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 3
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 180
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "ride",
+        "label": "Ride it out",
+        "description": "No cost, but growth and inflation take a hit.",
+        "outcome": "The rupee slides and imports get dearer before markets settle.",
+        "default": true,
+        "effects": [
+          {
+            "type": "worldTension",
+            "delta": 3
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.008,
+            "days": 270
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.006,
+            "days": 180
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "global-shipping-disruption",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Shipping lanes disrupted",
+    "body": "Blocked straits and rerouted vessels are lengthening delivery times and raising freight costs. Ports report fewer arrivals and customs receipts are falling.",
+    "weight": 0.14,
+    "cooldownDays": 600,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.inflation",
+        "kind": "add",
+        "value": 0.004,
+        "days": 180
+      },
+      {
+        "type": "modifier",
+        "target": "economy.customs",
+        "kind": "mult",
+        "value": -0.06,
+        "days": 180
+      },
+      {
+        "type": "worldTension",
+        "delta": 3
+      }
+    ]
+  },
+  {
+    "id": "climate-summit",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "Climate summit: {country} presses for commitments",
+    "body": "Leaders are gathering to agree new targets for cutting emissions. {country} is lobbying hard for developing economies to take on binding goals.",
+    "countryPick": "focus",
+    "weight": 0.2,
+    "cooldownDays": 900,
+    "deadlineDays": 25,
+    "choices": [
+      {
+        "id": "ambitious",
+        "label": "Commit to ambitious targets",
+        "description": "Costs some growth, wins goodwill abroad.",
+        "outcome": "India signs up to demanding targets. Partners applaud; industry grumbles about costs.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.industry",
+            "kind": "add",
+            "value": -0.003,
+            "days": 730
+          },
+          {
+            "type": "reputation",
+            "delta": 4
+          },
+          {
+            "type": "worldRelation",
+            "delta": 2,
+            "scope": "all"
+          },
+          {
+            "type": "relation",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "modest",
+        "label": "Offer modest, conditional targets",
+        "description": "A balanced position.",
+        "outcome": "India agrees to targets tied to finance and technology from richer countries.",
+        "default": true,
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": 1
+          },
+          {
+            "type": "relation",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline new commitments",
+        "description": "Protects industry; costs India some standing.",
+        "outcome": "India says development comes first. Several capitals are disappointed.",
+        "effects": [
+          {
+            "type": "reputation",
+            "delta": -3
+          },
+          {
+            "type": "relation",
+            "delta": -4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "summit-invitation",
+    "category": "diplomacy",
+    "severity": "good",
+    "title": "{country} invites the President to a summit",
+    "body": "{country} has invited the President to a bilateral summit on trade and security. A visit would be a chance to deepen the relationship.",
+    "countryPick": "friend",
+    "weight": 0.5,
+    "cooldownDays": 240,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "attend",
+        "label": "Attend and open an embassy",
+        "description": "Costs ₹400 crore; a lasting presence in the capital.",
+        "outcome": "The summit goes well. An embassy opens soon after, and the two governments agree to meet regularly.",
+        "cost": 400,
+        "effects": [
+          {
+            "type": "treaty",
+            "kind": "embassy",
+            "years": 1
+          },
+          {
+            "type": "relation",
+            "delta": 6
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "envoy",
+        "label": "Send the foreign minister",
+        "description": "A polite compromise.",
+        "outcome": "The foreign minister attends in the President’s place. The host is satisfied.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline the invitation",
+        "description": "Saves time and money; the host is disappointed.",
+        "outcome": "The invitation is politely declined. The host notes it.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "trade-dispute",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Trade dispute with {country}",
+    "body": "{country} has raised duties on Indian goods, saying India’s own tariffs are unfair. Exporters want the government to act.",
+    "countryPick": "focus",
+    "weight": 0.45,
+    "cooldownDays": 300,
+    "deadlineDays": 25,
+    "choices": [
+      {
+        "id": "negotiate",
+        "label": "Open talks",
+        "description": "Costs ₹300 crore in negotiating effort; a deal is likely.",
+        "outcome": "Negotiators agree a package. Duties come down and relations improve.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 4
+          },
+          {
+            "type": "modifier",
+            "target": "economy.customs",
+            "kind": "mult",
+            "value": 0.01,
+            "days": 180
+          }
+        ]
+      },
+      {
+        "id": "retaliate",
+        "label": "Retaliate with tariffs",
+        "description": "Tougher on the surface, but relations suffer.",
+        "outcome": "India matches the duties. Both sides lose trade; domestic producers are pleased.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -8
+          },
+          {
+            "type": "reputation",
+            "delta": -2
+          },
+          {
+            "type": "modifier",
+            "target": "economy.customs",
+            "kind": "mult",
+            "value": 0.02,
+            "days": 120
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 150
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Wait and see",
+        "description": "No cost, but exporters lose business.",
+        "outcome": "Exporters absorb the higher duties for months.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.customs",
+            "kind": "mult",
+            "value": -0.03,
+            "days": 150
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 90
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "border-talks-offer",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "{country} proposes border talks",
+    "body": "With tension along the frontier, {country} has proposed a round of talks between officials to reduce incidents and agree patrol rules.",
+    "countryPick": "neighbour",
+    "conditions": [
+      {
+        "stat": "borderTension",
+        "op": ">=",
+        "value": 25
+      }
+    ],
+    "weight": 0.6,
+    "cooldownDays": 240,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "accept",
+        "label": "Accept the talks",
+        "description": "Costs ₹200 crore; lowers tension.",
+        "outcome": "Officials meet and agree practical measures. Tension eases.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": -8
+          },
+          {
+            "type": "relation",
+            "delta": 6
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline for now",
+        "description": "No cost; tension stays.",
+        "outcome": "India says conditions are not right for talks. The frontier stays tense.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ambassador-expelled",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "{country} expels an Indian diplomat",
+    "body": "{country} has declared an Indian diplomat unwelcome and given them 48 hours to leave, citing activities incompatible with their status. India denies the charge.",
+    "countryPick": "hostile",
+    "weight": 0.35,
+    "cooldownDays": 365,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "protest",
+        "label": "Protest quietly",
+        "description": "Keeps the channel open.",
+        "outcome": "India lodges a formal protest through diplomatic channels and leaves it there.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "retaliate",
+        "label": "Expel one of theirs",
+        "description": "Plays well at home; relations sour further.",
+        "outcome": "India expels a diplomat in return. Both capitals harden their positions.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -8
+          },
+          {
+            "type": "borderTension",
+            "delta": 2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "mediate",
+        "label": "Ask a friendly capital to mediate",
+        "description": "Costs ₹200 crore; calms things down.",
+        "outcome": "A third country brings both sides together. The expulsions are quietly dropped.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 3
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sanctions-pressure",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "{country} asks India to join sanctions",
+    "body": "{country} is building a coalition to sanction a third state and wants India to join. Doing so would please {country} but cost India trade.",
+    "countryPick": "focus",
+    "weight": 0.3,
+    "cooldownDays": 400,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "join",
+        "label": "Join the sanctions",
+        "description": "Wins favour with {country}; costs some customs revenue.",
+        "outcome": "India joins the measures. {country} is grateful; trade with the target state falls.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 8
+          },
+          {
+            "type": "reputation",
+            "delta": -1
+          },
+          {
+            "type": "modifier",
+            "target": "economy.customs",
+            "kind": "mult",
+            "value": -0.02,
+            "days": 300
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline to take sides",
+        "description": "Keeps trade flowing.",
+        "outcome": "India says it does not recognise measures outside the UN. {country} is unhappy.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "mediate",
+        "label": "Offer to mediate instead",
+        "description": "Costs ₹250 crore.",
+        "outcome": "India offers its good offices. Neither side takes it up, but the offer is noted.",
+        "cost": 250,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 2
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arms-deal-offer",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "{country} wants to buy Indian defence equipment",
+    "body": "{country} is interested in an order for India’s defence industry, including training and spares. It would bring revenue and deepen ties.",
+    "countryPick": "friend",
+    "weight": 0.3,
+    "cooldownDays": 365,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "sell",
+        "label": "Accept the order",
+        "description": "Brings in ₹3,000 crore.",
+        "outcome": "The contract is signed. Industry is pleased and the partnership grows.",
+        "effects": [
+          {
+            "type": "treasury",
+            "amount": 3000
+          },
+          {
+            "type": "relation",
+            "delta": 5
+          },
+          {
+            "type": "reputation",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline politely",
+        "description": "No effect on the budget.",
+        "outcome": "India declines. The offer lapses without ill feeling.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "displaced-arrivals",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "Displaced people arrive from {country}",
+    "body": "Fighting and hardship in {country} are pushing thousands across the border. Local officials say shelters are filling and ask for guidance.",
+    "countryPick": "neighbour",
+    "weight": 0.3,
+    "cooldownDays": 400,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "relief",
+        "label": "Open relief camps",
+        "description": "Costs ₹1,500 crore; wins respect abroad.",
+        "outcome": "Camps open with help from aid agencies. The response is widely praised.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 5
+          },
+          {
+            "type": "reputation",
+            "delta": 3
+          },
+          {
+            "type": "unrest",
+            "delta": 1,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "tighten",
+        "label": "Tighten the border",
+        "description": "Cheaper, but relations and reputation suffer.",
+        "outcome": "Border posts are reinforced. Neighbours criticise the decision.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -5
+          },
+          {
+            "type": "reputation",
+            "delta": -1
+          },
+          {
+            "type": "borderTension",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "aid-request",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "{country} asks India for development aid",
+    "body": "{country} has asked India for help with a food shortage and failing infrastructure. A package would be a visible act of friendship.",
+    "countryPick": "poor",
+    "weight": 0.4,
+    "cooldownDays": 300,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "send",
+        "label": "Send a package",
+        "description": "Costs ₹800 crore; relations and reputation improve.",
+        "outcome": "Supplies and engineers are on their way. {country} is deeply grateful.",
+        "cost": 800,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 12
+          },
+          {
+            "type": "reputation",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline for now",
+        "description": "No cost; the request is noted.",
+        "outcome": "India explains that resources are stretched. The request lapses.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "defence-cooperation-offer",
+    "category": "diplomacy",
+    "severity": "good",
+    "title": "{country} proposes joint military exercises",
+    "body": "Defence officials in {country} have proposed a joint exercise to improve interoperability and signal partnership.",
+    "countryPick": "friend",
+    "weight": 0.3,
+    "cooldownDays": 365,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "join",
+        "label": "Join the exercise",
+        "description": "Costs ₹600 crore; raises readiness and morale.",
+        "outcome": "Troops train alongside their counterparts. Both sides learn, and the partnership grows.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 6
+          },
+          {
+            "type": "readiness",
+            "delta": 5
+          },
+          {
+            "type": "morale",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline",
+        "description": "No cost.",
+        "outcome": "India declines. The host is mildly disappointed.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "naval-standoff",
+    "category": "diplomacy",
+    "severity": "warning",
+    "title": "Naval vessels shadow each other near {country}",
+    "body": "Patrol vessels of India and {country} have come dangerously close in disputed waters. Each side accuses the other of provocation.",
+    "countryPick": "rival",
+    "weight": 0.35,
+    "cooldownDays": 300,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "protest",
+        "label": "Lodge a firm protest",
+        "description": "No cost; tension rises a little.",
+        "outcome": "India protests and keeps patrolling. The incident passes.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -4
+          },
+          {
+            "type": "borderTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "patrol",
+        "label": "Propose joint patrols",
+        "description": "Costs ₹150 crore; lowers tension.",
+        "outcome": "A hotline and joint patrol rules are agreed. Tension falls.",
+        "cost": 150,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 4
+          },
+          {
+            "type": "borderTension",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "show",
+        "label": "Show of force",
+        "description": "Costs ₹500 crore; the fleet sails in strength.",
+        "outcome": "The navy deploys in force. The message is clear, and so is the risk.",
+        "cost": 500,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -8
+          },
+          {
+            "type": "borderTension",
+            "delta": 5
+          },
+          {
+            "type": "morale",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "world-expo",
+    "category": "diplomacy",
+    "severity": "good",
+    "title": "India is asked to host a world trade expo",
+    "body": "The organisers of a major trade expo want India as host. Delegations from dozens of countries would visit, with the contracts and publicity that follow.",
+    "countryPick": "friend",
+    "weight": 0.2,
+    "cooldownDays": 1000,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "host",
+        "label": "Host the expo",
+        "description": "Costs ₹2,500 crore; boosts services, trade and standing.",
+        "outcome": "The expo draws large crowds and fat order books. India’s reputation as a host grows.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.services",
+            "kind": "add",
+            "value": 0.004,
+            "days": 365
+          },
+          {
+            "type": "modifier",
+            "target": "economy.customs",
+            "kind": "mult",
+            "value": 0.03,
+            "days": 365
+          },
+          {
+            "type": "reputation",
+            "delta": 3
+          },
+          {
+            "type": "worldRelation",
+            "delta": 1,
+            "scope": "all"
+          }
+        ]
+      },
+      {
+        "id": "pass",
+        "label": "Decline the offer",
+        "description": "No cost.",
+        "outcome": "Another country takes the expo.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "un-vote",
+    "category": "diplomacy",
+    "severity": "info",
+    "title": "Vote at the UN: {country} seeks India’s support",
+    "body": "{country} has asked India to back its draft resolution at the General Assembly. Other delegations are lobbying the other way.",
+    "countryPick": "focus",
+    "weight": 0.35,
+    "cooldownDays": 300,
+    "deadlineDays": 25,
+    "choices": [
+      {
+        "id": "support",
+        "label": "Vote in favour",
+        "description": "Pleases {country}, may cool others.",
+        "outcome": "India votes for the resolution. {country} is pleased.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 6
+          },
+          {
+            "type": "worldRelation",
+            "delta": -0.5,
+            "scope": "all"
+          }
+        ]
+      },
+      {
+        "id": "abstain",
+        "label": "Abstain",
+        "description": "Safe, but wins no friends.",
+        "outcome": "India abstains. No one is offended and no one is grateful.",
+        "default": true,
+        "effects": []
+      },
+      {
+        "id": "oppose",
+        "label": "Vote against",
+        "description": "Annoys {country}; pleases its critics.",
+        "outcome": "India votes against. {country} notes it.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -5
+          },
+          {
+            "type": "reputation",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  }
+]

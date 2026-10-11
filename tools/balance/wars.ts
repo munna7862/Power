@@ -63,14 +63,14 @@ export function evaluateWars(probes: WarProbe[]): Kpi[] {
   const by = (rival: RivalId) => probes.find((p) => p.rival === rival) as WarProbe;
   const share = (n: number, p: WarProbe) => n / p.seeds;
   const percent = (v: number) => `${(v * 100).toFixed(0)}%`;
-  const weak = ['haldrin', 'velmora'].map((r) => by(r as RivalId));
-  const middle = ['tirhan', 'oruvan'].map((r) => by(r as RivalId));
-  const peer = by('zarnak');
+  const weak = ['LKA', 'BGD'].map((r) => by(r as RivalId));
+  const middle = ['PAK', 'MMR'].map((r) => by(r as RivalId));
+  const peer = by('CHN');
   const costly = [...weak, ...middle].every((p) => p.meanCasualties > 5_000);
   return [
     {
       id: 'weak-neighbour-winnable',
-      description: 'A war on a much weaker neighbour (Haldrin, Velmora) is won within 240 days in ≥ 90% of seeds',
+      description: 'A war on a much weaker neighbour (Sri Lanka, Bangladesh) is won within 240 days in ≥ 90% of seeds',
       pass: weak.every((p) => share(p.won, p) >= 0.9),
       detail: weak.map((p) => `${p.rival} ${percent(share(p.won, p))}`).join(', '),
     },
@@ -82,13 +82,13 @@ export function evaluateWars(probes: WarProbe[]): Kpi[] {
     },
     {
       id: 'mid-neighbour-takes-time',
-      description: 'A war on a mid-sized neighbour (Tirhan, Oruvan) takes ≥ 60 days on average',
+      description: 'A war on a mid-sized neighbour (Pakistan, Myanmar) takes ≥ 60 days on average',
       pass: middle.every((p) => p.meanDays >= 60),
       detail: middle.map((p) => `${p.rival} ${Math.round(p.meanDays)} days`).join(', '),
     },
     {
       id: 'peer-war-stalemate',
-      description: 'A war on the peer (Zarnak) is still undecided after 240 days in ≥ 60% of seeds',
+      description: 'A war on the peer (China) is still undecided after 240 days in ≥ 60% of seeds',
       pass: share(peer.undecided, peer) >= 0.6,
       detail: `${percent(share(peer.undecided, peer))} undecided, ${percent(share(peer.won, peer))} won, ${percent(share(peer.lost, peer))} lost`,
     },

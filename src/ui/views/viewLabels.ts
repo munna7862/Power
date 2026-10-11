@@ -9,6 +9,7 @@ export const VIEW_LABELS: Record<ViewId, string> = {
   security: 'Security',
   military: 'Military',
   world: 'World',
+  diplomacy: 'Diplomacy',
   reports: 'Reports',
 };
 

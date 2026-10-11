@@ -16,6 +16,7 @@ import {
   MAX_INTEL_OPS,
 } from './constants';
 import { patchMilitary } from './forces';
+import { addIncident } from '../diplomacy/relations';
 import { adjustRelation, patchRival } from './rivals';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
@@ -88,6 +89,7 @@ export function launchIntelOp(state: GameState, kind: IntelKind, target: RivalId
 /** An operation is exposed: relations sour, voters frown and a diplomatic incident lands on the President’s desk. */
 function expose(state: GameState, kind: 'recon' | 'sabotage', target: RivalId, rng: Rng): GameState {
   let next = adjustRelation(state, target, -EXPOSURE_RELATION_HIT[kind]);
+  next = addIncident(next, target, EXPOSURE_RELATION_HIT[kind] / 2);
   next = addTimedModifier(
     next,
     {

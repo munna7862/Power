@@ -1,6 +1,7 @@
 import { EVENT_CONTENT, EVENT_LIST, type Condition, type EventChoice, type EventContent } from '../content/events';
-import { REGION_LABELS, REGIONS, type RegionId, type RivalId } from '../content/ids';
-import { RIVAL_CONTENT } from '../content/military';
+import { REGION_LABELS, REGIONS, type RegionId } from '../content/ids';
+import { COUNTRY_CONTENT } from '../content/world';
+import { pickCountry } from '../diplomacy/world';
 import { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
@@ -48,22 +49,25 @@ export interface EventText {
   body: string;
 }
 
-/** Fills {region}, {president} and {group} into an event's text. */
+/** Fills {region}, {president}, {group}, {rival} and {country} into a piece of event text. */
+export function fillText(state: GameState, text: string, region: RegionId | null, ref: string | null): string {
+  const group = state.security.plots.find((p) => p.id === ref)?.group ?? 'a militant group';
+  const country = (ref ? COUNTRY_CONTENT[ref]?.name : undefined) ?? 'a neighbouring state';
+  return text
+    .replaceAll('{region}', region ? REGION_LABELS[region] : 'the country')
+    .replaceAll('{president}', state.meta.presidentName)
+    .replaceAll('{group}', group)
+    .replaceAll('{rival}', country)
+    .replaceAll('{country}', country);
+}
+
 export function renderEventText(
   state: GameState,
   def: Pick<EventContent, 'title' | 'body'>,
   region: RegionId | null,
   ref: string | null,
 ): EventText {
-  const group = state.security.plots.find((p) => p.id === ref)?.group ?? 'a militant group';
-  const rival = ref && ref in RIVAL_CONTENT ? RIVAL_CONTENT[ref as RivalId].name : 'a neighbouring state';
-  const fill = (text: string) =>
-    text
-      .replaceAll('{region}', region ? REGION_LABELS[region] : 'the country')
-      .replaceAll('{president}', state.meta.presidentName)
-      .replaceAll('{group}', group)
-      .replaceAll('{rival}', rival);
-  return { title: fill(def.title), body: fill(def.body) };
+  return { title: fillText(state, def.title, region, ref), body: fillText(state, def.body, region, ref) };
 }
 
 /** Raises an event: informational events apply their effects at once; decisions wait in the inbox. */
@@ -157,7 +161,9 @@ export function resolvePending(
     severity: 'info',
     category: def.category,
     title: automatic ? `${title}: no decision` : title,
-    body: automatic ? `No decision was made in time. ${choice.outcome}` : choice.outcome,
+    body: automatic
+      ? `No decision was made in time. ${fillText(state, choice.outcome, pending.region, pending.ref)}`
+      : fillText(state, choice.outcome, pending.region, pending.ref),
   });
 }
 
@@ -193,7 +199,9 @@ export function rollDailyEvent(state: GameState, rng: Rng): GameState {
       next = fireEvent(next, def, chosen.region, null, rng);
     } else {
       if (next.events.pending.some((p) => p.eventId === def.id) || !conditionsHold(next, def, null)) continue;
-      next = fireEvent(next, def, null, null, rng);
+      const ref = def.countryPick ? pickCountry(next, def.countryPick, rng) : null;
+      if (def.countryPick && ref === null) continue;
+      next = fireEvent(next, def, null, ref, rng);
     }
     fired = true;
   }
@@ -201,10 +209,16 @@ export function rollDailyEvent(state: GameState, rng: Rng): GameState {
 }
 
 /** Raises a specific event now, bypassing conditions and cooldowns. For tests, tools and debug hooks. */
-export function raiseEvent(state: GameState, eventId: string, region: RegionId | null = null): GameState {
+export function raiseEvent(
+  state: GameState,
+  eventId: string,
+  region: RegionId | null = null,
+  ref: string | null = null,
+): GameState {
   const def = EVENT_CONTENT[eventId];
   if (!def) throw new Error(`Unknown event ${eventId}`);
   const rng = new Rng(state.rng);
-  const next = fireEvent(state, def, region, null, rng);
+  const picked = ref ?? (def.countryPick ? pickCountry(state, def.countryPick, rng) : null);
+  const next = fireEvent(state, def, region, picked, rng);
   return { ...next, rng: rng.state };
 }

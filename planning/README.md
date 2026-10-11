@@ -27,4 +27,5 @@ Planning hub for the `Power` project.
 - [x] Phase 2: Economy & Governance (Sprints 2.1–2.4), **M2: Nation Builder** reached (2026-10-11)
 - [x] Phase 3: Domestic Affairs & Security (Sprints 3.1–3.3), **M3: Crisis Manager** reached (2026-10-11)
 - [x] Phase 4: Military & Defence (Sprints 4.1–4.3), **M4: Commander-in-Chief** reached (2026-10-11)
-- [ ] Sprint 5.1: World Map & Countries (next)
+- [x] Phase 5: Diplomacy & World (Sprints 5.1–5.3), **M5: World Stage** reached (2026-10-11); parity features F1–F19 done, F20 completes in Phase 6
+- [ ] Sprint 6.1: Game Over, Difficulty & Polish (next)

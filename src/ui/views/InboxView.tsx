@@ -17,6 +17,7 @@ const CATEGORY_LABELS: Record<LogCategory, string> = {
   security: 'Security',
   terror: 'Terror',
   military: 'Military',
+  diplomacy: 'Diplomacy',
 };
 
 export function InboxView() {

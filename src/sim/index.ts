@@ -166,3 +166,55 @@ export { nuclearDeterrence, nuclearStage, programStarted, type NuclearStage } fr
 export { openingMilitary } from './military/opening';
 /** For debug hooks and tests: a rival declares war on India. */
 export { startWar } from './military/war';
+export { COUNTRY_CONTENT, COUNTRY_LIST, COUNTRY_IDS, FOCUS_IDS, type CountryContent } from './content/world';
+export {
+  AID,
+  AID_COOLDOWN,
+  EMBASSY,
+  MAX_OFFERS,
+  MAX_TRADE_TREATIES,
+  OFFER_DAYS,
+  PACT_YEARS,
+  SANCTIONS,
+  SECTOR_LABELS,
+  TRADE_SIZES,
+  TRADE_YEARS,
+  ideologyMatch,
+  type AidSize,
+  type TradeSize,
+} from './diplomacy/constants';
+export {
+  countryState,
+  hasTreaty,
+  indiaPower,
+  relationDrivers,
+  relationOf,
+  relationTarget,
+  relationWord,
+  sanctionsIndia,
+  treatiesWith,
+  type RelationLine,
+} from './diplomacy/relations';
+export {
+  activeTrade,
+  describeOffer,
+  pactAcceptance,
+  partnerOf,
+  tradeAcceptance,
+  tradeCap,
+  tradeEffect,
+  tradeSizesFor,
+  tradeValue,
+  validateAid,
+  validateBreak,
+  validateEmbassy,
+  validateLift,
+  validateOffer,
+  validatePact,
+  validateSanctions,
+  validateTrade,
+  type AcceptanceLine,
+} from './diplomacy/treaties';
+export { UNAVAILABLE, bestAction, scoreActions, type AiScoring } from './diplomacy/ai';
+export { reputationTarget } from './diplomacy/monthly';
+export { countriesInConflict, hasPact, pickCountry } from './diplomacy/world';

@@ -17,6 +17,7 @@ import {
   type Command,
   type GameState,
   type MilitaryState,
+  relationOf,
 } from '../../src/sim';
 import { EVENT_CONTENT } from '../../src/sim/content/events';
 import { Rng, seedRng } from '../../src/sim/engine/rng';
@@ -212,8 +213,8 @@ describe('drills', () => {
 describe('intelligence and the fog of war', () => {
   it('shows enemy strength as unknown, then as an estimated range, then sharply after recon', () => {
     let state = newGame();
-    expect(strengthView(state, 'zarnak', 0.5)).toEqual({ kind: 'unknown' });
-    const estimate = strengthView(state, 'zarnak', 1);
+    expect(strengthView(state, 'CHN', 0.5)).toEqual({ kind: 'unknown' });
+    const estimate = strengthView(state, 'CHN', 1);
     expect(estimate.kind).toBe('estimate');
 
     state = {
@@ -222,19 +223,19 @@ describe('intelligence and the fog of war', () => {
         ...state.military,
         rivals: {
           ...state.military.rivals,
-          zarnak: {
-            ...state.military.rivals.zarnak,
+          CHN: {
+            ...state.military.rivals.CHN,
             sighting: { tick: 0, strength: 100, readiness: 70 },
           },
         },
       },
     };
-    const fresh = strengthView(state, 'zarnak', 0.5);
+    const fresh = strengthView(state, 'CHN', 0.5);
     expect(fresh.kind).toBe('sighted');
     if (fresh.kind !== 'sighted' || estimate.kind !== 'estimate') throw new Error('unexpected views');
     expect(fresh.high - fresh.low).toBeLessThan(estimate.high - estimate.low);
 
-    const old = strengthView({ ...state, clock: { ...state.clock, tick: 400 } }, 'zarnak', 0.5);
+    const old = strengthView({ ...state, clock: { ...state.clock, tick: 400 } }, 'CHN', 0.5);
     if (old.kind !== 'sighted') throw new Error('expected a sighting');
     expect(old.high - old.low).toBeGreaterThan(fresh.high - fresh.low);
   });
@@ -242,9 +243,9 @@ describe('intelligence and the fog of war', () => {
   it('recon reveals the rival, and charges the treasury', () => {
     let state = newGame();
     const treasury = state.nation.treasury;
-    state = run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'zarnak' });
+    state = run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'CHN' });
     expect(state.nation.treasury).toBeLessThan(treasury);
-    expect(dispatch(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'zarnak' }).ok).toBe(false);
+    expect(dispatch(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'CHN' }).ok).toBe(false);
 
     let revealed = 0;
     for (let seed = 1; seed <= 60; seed++) {
@@ -252,14 +253,14 @@ describe('intelligence and the fog of war', () => {
         { ...state, clock: { ...state.clock, tick: state.clock.tick + 31 } },
         new Rng(seedRng(seed * 7919 + 4)),
       );
-      if (ended.military.rivals.zarnak.sighting) revealed++;
+      if (ended.military.rivals.CHN.sighting) revealed++;
     }
     expect(revealed).toBeGreaterThan(5);
     expect(revealed).toBeLessThan(60);
   });
 
   it('exposed operations hurt relations, cost approval and raise a diplomatic incident', () => {
-    const state = run(newGame(), { type: 'LAUNCH_INTEL_OP', kind: 'sabotage', target: 'zarnak' });
+    const state = run(newGame(), { type: 'LAUNCH_INTEL_OP', kind: 'sabotage', target: 'CHN' });
     let exposed: GameState | null = null;
     for (let seed = 1; seed <= 200 && !exposed; seed++) {
       const ended = resolveIntelOps(
@@ -269,17 +270,17 @@ describe('intelligence and the fog of war', () => {
       if (ended.events.pending.some((p) => p.eventId === 'diplomatic-incident')) exposed = ended;
     }
     expect(exposed).not.toBeNull();
-    expect(exposed!.military.rivals.zarnak.relation).toBeLessThan(state.military.rivals.zarnak.relation);
+    expect(relationOf(exposed!, 'CHN')).toBeLessThan(relationOf(state, 'CHN'));
     expect(exposed!.modifiers.some((m) => m.source === 'intel-exposed')).toBe(true);
     const pending = exposed!.events.pending.find((p) => p.eventId === 'diplomatic-incident')!;
-    expect(pending.ref).toBe('zarnak');
+    expect(pending.ref).toBe('CHN');
   });
 
   it('a harder target and a weaker Director make operations less likely to work', async () => {
     const { opSuccessChance } = await import('../../src/sim/military/intel');
     const state = newGame();
-    expect(opSuccessChance(state, 'recon', 'haldrin')).toBeGreaterThan(opSuccessChance(state, 'recon', 'zarnak'));
-    expect(opSuccessChance(state, 'recon', 'zarnak')).toBeGreaterThan(opSuccessChance(state, 'sabotage', 'zarnak'));
+    expect(opSuccessChance(state, 'recon', 'LKA')).toBeGreaterThan(opSuccessChance(state, 'recon', 'CHN'));
+    expect(opSuccessChance(state, 'recon', 'CHN')).toBeGreaterThan(opSuccessChance(state, 'sabotage', 'CHN'));
     const dud = {
       ...state,
       cabinet: {
@@ -290,7 +291,7 @@ describe('intelligence and the fog of war', () => {
         },
       },
     };
-    expect(opSuccessChance(dud, 'recon', 'tirhan')).toBeLessThan(opSuccessChance(state, 'recon', 'tirhan'));
+    expect(opSuccessChance(dud, 'recon', 'PAK')).toBeLessThan(opSuccessChance(state, 'recon', 'PAK'));
   });
 
   it('counter-intelligence is limited to one sweep and protects against enemy spies', () => {
@@ -337,26 +338,26 @@ describe('war', () => {
 
   it('declaring war costs money, approval and goodwill with the other countries', () => {
     const before = newGame();
-    const state = declare('velmora');
+    const state = declare('BGD');
     expect(state.nation.treasury).toBeLessThan(before.nation.treasury);
     expect(state.military.wars).toHaveLength(1);
     expect(state.military.wars[0]!.declaredBy).toBe('india');
-    expect(state.military.rivals.velmora.relation).toBeLessThan(before.military.rivals.velmora.relation);
-    expect(state.military.rivals.tirhan.relation).toBeLessThan(before.military.rivals.tirhan.relation);
+    expect(relationOf(state, 'BGD')).toBeLessThan(relationOf(before, 'BGD'));
+    expect(relationOf(state, 'PAK')).toBeLessThan(relationOf(before, 'PAK'));
     expect(state.modifiers.some((m) => m.source === 'war' && m.value < 0)).toBe(true);
     expect(state.log.at(-1)?.severity).toBe('critical');
-    expect(dispatch(state, { type: 'DECLARE_WAR', rival: 'velmora' }).ok).toBe(false);
+    expect(dispatch(state, { type: 'DECLARE_WAR', rival: 'BGD' }).ok).toBe(false);
   });
 
   it('allows at most two wars at once and needs the money to mobilise', () => {
-    let state = declare('velmora');
-    state = run(state, { type: 'DECLARE_WAR', rival: 'haldrin' });
-    expect(dispatch(state, { type: 'DECLARE_WAR', rival: 'tirhan' }).ok).toBe(false);
-    expect(dispatch(withTreasury(newGame(), 100), { type: 'DECLARE_WAR', rival: 'haldrin' }).ok).toBe(false);
+    let state = declare('BGD');
+    state = run(state, { type: 'DECLARE_WAR', rival: 'LKA' });
+    expect(dispatch(state, { type: 'DECLARE_WAR', rival: 'PAK' }).ok).toBe(false);
+    expect(dispatch(withTreasury(newGame(), 100), { type: 'DECLARE_WAR', rival: 'LKA' }).ok).toBe(false);
   });
 
   it('a war against a much weaker neighbour is won, but costs lives, money and readiness', () => {
-    const start = declare('velmora');
+    const start = declare('BGD');
     let state = start;
     for (let d = 0; d < 400 && state.military.wars[0]?.status === 'active'; d++) state = advanceDays(state, 1);
     const war = state.military.wars[0]!;
@@ -371,7 +372,7 @@ describe('war', () => {
     let stalemate = 0;
     const seeds = 12;
     for (let seed = 1; seed <= seeds; seed++) {
-      let state = declare('zarnak', seed);
+      let state = declare('CHN', seed);
       state = advanceDays(state, 150);
       if (state.status.kind === 'playing' && state.military.wars[0]?.status === 'active') stalemate++;
     }
@@ -384,36 +385,36 @@ describe('war', () => {
       for (let d = 0; d < 400 && state.military.wars[0]?.status === 'active'; d++) state = advanceDays(state, 1);
       return state;
     };
-    expect(dispatch(declare('velmora'), { type: 'SETTLE_WAR', warId: 'war-x', terms: 'annex' }).ok).toBe(false);
+    expect(dispatch(declare('BGD'), { type: 'SETTLE_WAR', warId: 'war-x', terms: 'annex' }).ok).toBe(false);
 
-    const annexed = won('haldrin');
+    const annexed = won('LKA');
     const warId = annexed.military.wars[0]!.id;
     const gdp = (s: GameState) => Object.values(s.economy.sectors).reduce((a, b) => a + b.output, 0);
     const after = run(annexed, { type: 'SETTLE_WAR', warId, terms: 'annex' });
     expect(gdp(after)).toBeGreaterThan(gdp(annexed));
     expect(after.nation.population).toBeGreaterThan(annexed.nation.population);
-    expect(after.security.unrest.northEast).toBeGreaterThan(annexed.security.unrest.northEast);
-    expect(after.military.rivals.haldrin.annexed).toBe(true);
+    expect(after.security.unrest.south).toBeGreaterThan(annexed.security.unrest.south);
+    expect(after.military.rivals.LKA.annexed).toBe(true);
     expect(after.military.wars).toHaveLength(0);
     expect(after.military.warHistory[0]?.outcome).toBe('victory');
     expect(after.modifiers.some((m) => m.label.startsWith('Sanctions after annexing'))).toBe(true);
-    expect(dispatch(after, { type: 'DECLARE_WAR', rival: 'haldrin' }).ok).toBe(false);
+    expect(dispatch(after, { type: 'DECLARE_WAR', rival: 'LKA' }).ok).toBe(false);
 
-    const reparations = run(won('velmora'), {
+    const reparations = run(won('BGD'), {
       type: 'SETTLE_WAR',
-      warId: won('velmora').military.wars[0]!.id,
+      warId: won('BGD').military.wars[0]!.id,
       terms: 'reparations',
     });
-    expect(reparations.nation.treasury).toBeGreaterThan(won('velmora').nation.treasury);
+    expect(reparations.nation.treasury).toBeGreaterThan(won('BGD').nation.treasury);
 
-    const white = won('haldrin');
+    const white = won('LKA');
     const peaceful = run(white, { type: 'SETTLE_WAR', warId: white.military.wars[0]!.id, terms: 'whitePeace' });
-    expect(peaceful.military.rivals.haldrin.relation).toBeGreaterThan(white.military.rivals.haldrin.relation);
+    expect(relationOf(peaceful, 'LKA')).toBeGreaterThan(relationOf(white, 'LKA'));
     expect(peaceful.modifiers.some((m) => m.label.startsWith('Victory over'))).toBe(true);
   });
 
   it('applies reparations by default if the terms are not chosen in time', () => {
-    let state = declare('haldrin');
+    let state = declare('LKA');
     for (let d = 0; d < 400 && state.military.wars[0]?.status === 'active'; d++) state = advanceDays(state, 1);
     expect(state.military.wars[0]?.status).toBe('terms');
     const after = advanceDays(state, 31);
@@ -422,23 +423,23 @@ describe('war', () => {
   });
 
   it('accepts a ceasefire only when one is offered, and ends the war', () => {
-    let state = declare('zarnak');
+    let state = declare('CHN');
     expect(dispatch(state, { type: 'ACCEPT_CEASEFIRE', warId: state.military.wars[0]!.id }).ok).toBe(false);
     const war = state.military.wars[0]!;
     state = { ...state, military: { ...state.military, wars: [{ ...war, ceasefireOffered: true }] } };
     state = run(state, { type: 'ACCEPT_CEASEFIRE', warId: war.id });
     expect(state.military.wars).toHaveLength(0);
     expect(state.military.warHistory[0]?.outcome).toBe('ceasefire');
-    expect(state.military.rivals.zarnak.recoverUntilTick).not.toBeNull();
+    expect(state.military.rivals.CHN.recoverUntilTick).not.toBeNull();
     // Nothing is left to fight: the next round changes nothing.
     expect(stepWars(state, new Rng(seedRng(1))).military.forces).toEqual(state.military.forces);
   });
 
   it('a ceasefire ordered mid-war leaves the rival’s strength where the fighting left it', () => {
-    let state = declare('zarnak');
+    let state = declare('CHN');
     state = advanceDays(state, 20);
     const war = state.military.wars[0]!;
-    const strength = state.military.rivals.zarnak.strength;
+    const strength = state.military.rivals.CHN.strength;
     state = run(
       { ...state, military: { ...state.military, wars: [{ ...war, ceasefireOffered: true }] } },
       {
@@ -447,12 +448,12 @@ describe('war', () => {
       },
     );
     const later = advanceDays(state, 30);
-    expect(later.military.rivals.zarnak.strength).toBeLessThanOrEqual(strength * 1.01);
-    expect(later.military.rivals.zarnak.strength).toBeGreaterThan(strength * 0.99);
+    expect(later.military.rivals.CHN.strength).toBeLessThanOrEqual(strength * 1.01);
+    expect(later.military.rivals.CHN.strength).toBeGreaterThan(strength * 0.99);
   });
 
   it('sues for peace: a white peace if the war is not lost, hard terms if it is', () => {
-    const even = declare('zarnak');
+    const even = declare('CHN');
     const peace = run(even, { type: 'SUE_FOR_PEACE', warId: even.military.wars[0]!.id });
     expect(peace.military.wars).toHaveLength(0);
     expect(peace.nation.treasury).toBeGreaterThanOrEqual(even.nation.treasury - 1);
@@ -468,7 +469,7 @@ describe('war', () => {
   });
 
   it('total defeat ends the presidency', () => {
-    const state = declare('zarnak');
+    const state = declare('CHN');
     const war = state.military.wars[0]!;
     const routed = {
       ...state,
@@ -484,7 +485,7 @@ describe('war', () => {
   });
 
   it('an army reduced to nothing is routed quickly', () => {
-    const state = declare('tirhan');
+    const state = declare('PAK');
     const none = Object.fromEntries(UNITS.map((u) => [u, 0])) as MilitaryState['forces'];
     let end = withMilitary(state, { forces: none });
     end = advanceDays(end, 120);
@@ -492,7 +493,7 @@ describe('war', () => {
   });
 
   it('war weariness grows and weighs on approval and growth', () => {
-    let state = declare('zarnak');
+    let state = declare('CHN');
     state = advanceDays(state, 95);
     expect(state.military.wars[0]!.weariness).toBeGreaterThan(10);
     expect(state.modifiers.some((m) => m.source === 'war-weariness' && m.target === 'politics.approvalTarget')).toBe(
@@ -505,7 +506,7 @@ describe('war', () => {
 
   it('a rival can declare war, and an unprepared army starts on the back foot', () => {
     const state = newGame();
-    const attacked = startWar(withMilitary(state, { readiness: 30 }), 'zarnak', 'rival');
+    const attacked = startWar(withMilitary(state, { readiness: 30 }), 'CHN', 'rival');
     const war = attacked.military.wars[0]!;
     expect(war.declaredBy).toBe('rival');
     expect(war.fronts.every((f) => f.progress < 0)).toBe(true);
@@ -516,11 +517,11 @@ describe('war', () => {
   it('rivals attack less when India is stronger and more deterring', async () => {
     const { declarationChance } = await import('../../src/sim');
     const late = { ...newGame(), clock: { ...newGame().clock, tick: 800 } };
-    const base = declarationChance(late, 'zarnak');
+    const base = declarationChance(late, 'CHN');
     expect(base).toBeGreaterThan(0);
-    expect(declarationChance(withMilitary(late, { deterrence: 90 }), 'zarnak')).toBeLessThan(base);
-    expect(declarationChance(newGame(), 'zarnak')).toBe(0);
-    expect(declarationChance(late, 'haldrin')).toBeLessThan(base);
+    expect(declarationChance(withMilitary(late, { deterrence: 90 }), 'CHN')).toBeLessThan(base);
+    expect(declarationChance(newGame(), 'CHN')).toBe(0);
+    expect(declarationChance(late, 'LKA')).toBeLessThan(base);
   });
 });
 
@@ -554,7 +555,7 @@ describe('the nuclear program', () => {
   });
 
   it('forbids a first strike under No First Use and punishes abandoning the doctrine', () => {
-    let state = declareAndArm('tirhan');
+    let state = declareAndArm('PAK');
     const warId = state.military.wars[0]!.id;
     const refused = dispatch(state, { type: 'USE_NUCLEAR_WEAPON', warId });
     expect(refused.ok).toBe(false);
@@ -563,12 +564,12 @@ describe('the nuclear program', () => {
     const before = state;
     state = run(state, { type: 'SET_NUCLEAR_DOCTRINE', doctrine: 'firstUse' });
     expect(state.modifiers.some((m) => m.label === 'Abandoned No First Use')).toBe(true);
-    expect(state.military.rivals.oruvan.relation).toBeLessThan(before.military.rivals.oruvan.relation);
+    expect(relationOf(state, 'MMR')).toBeLessThan(relationOf(before, 'MMR'));
     expect(dispatch(state, { type: 'SET_NUCLEAR_DOCTRINE', doctrine: 'firstUse' }).ok).toBe(false);
   });
 
   it('using a nuclear weapon brings sanctions, horror and hostility; on Hard it ends the presidency', () => {
-    let state = declareAndArm('tirhan');
+    let state = declareAndArm('PAK');
     state = run(state, { type: 'SET_NUCLEAR_DOCTRINE', doctrine: 'firstUse' });
     const warId = state.military.wars[0]!.id;
     const used = run(state, { type: 'USE_NUCLEAR_WEAPON', warId });
@@ -581,9 +582,9 @@ describe('the nuclear program', () => {
     );
     expect(growth[0]!.value).toBeLessThanOrEqual(-0.04);
     expect(used.modifiers.some((m) => m.label.startsWith('Horror') && m.value <= -20)).toBe(true);
-    expect(used.military.rivals.velmora.relation).toBeLessThan(state.military.rivals.velmora.relation - 50);
+    expect(relationOf(used, 'BGD')).toBeLessThan(relationOf(state, 'BGD') - 50);
 
-    const hard = declareAndArm('tirhan', 'hard');
+    const hard = declareAndArm('PAK', 'hard');
     const armedHard = run(hard, { type: 'SET_NUCLEAR_DOCTRINE', doctrine: 'firstUse' });
     const over = run(armedHard, { type: 'USE_NUCLEAR_WEAPON', warId: armedHard.military.wars[0]!.id });
     expect(over.status.kind).toBe('over');
@@ -591,7 +592,7 @@ describe('the nuclear program', () => {
   });
 
   it('needs a warhead and a war', () => {
-    const unarmed = run(newGame(), { type: 'DECLARE_WAR', rival: 'haldrin' });
+    const unarmed = run(newGame(), { type: 'DECLARE_WAR', rival: 'LKA' });
     expect(dispatch(unarmed, { type: 'USE_NUCLEAR_WEAPON', warId: unarmed.military.wars[0]!.id }).ok).toBe(false);
     expect(dispatch(newGame(), { type: 'USE_NUCLEAR_WEAPON', warId: 'war-1' }).ok).toBe(false);
   });
@@ -607,21 +608,21 @@ describe('integration', () => {
     let state = deepFreeze(newGame());
     state = deepFreeze(run(state, { type: 'ORDER_UNITS', unit: 'cyber', quantity: 1 }));
     state = deepFreeze(run(state, { type: 'START_DRILL', kind: 'air' }));
-    state = deepFreeze(run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'haldrin' }));
-    state = deepFreeze(run(state, { type: 'DECLARE_WAR', rival: 'haldrin' }));
+    state = deepFreeze(run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'LKA' }));
+    state = deepFreeze(run(state, { type: 'DECLARE_WAR', rival: 'LKA' }));
     const end = advanceDays(state, 90);
     expect(end.clock.tick).toBeGreaterThan(state.clock.tick);
   });
 
   it('is deterministic with a war running', () => {
-    const start = run(newGame({ seed: 5 }), { type: 'DECLARE_WAR', rival: 'zarnak' });
+    const start = run(newGame({ seed: 5 }), { type: 'DECLARE_WAR', rival: 'CHN' });
     const a = advanceDays(start, 400);
     const b = advanceDays(structuredClone(advanceDays(start, 150)), 250);
     expect(JSON.stringify(a)).toBe(JSON.stringify(b));
   });
 
   it('exposes military stats for event conditions, all finite', () => {
-    const state = run(newGame(), { type: 'DECLARE_WAR', rival: 'velmora' });
+    const state = run(newGame(), { type: 'DECLARE_WAR', rival: 'BGD' });
     for (const stat of STAT_IDS) expect(Number.isFinite(statValue(state, stat, 'east')), stat).toBe(true);
     expect(statValue(state, 'wars', null)).toBe(1);
     expect(statValue(state, 'militaryStrength', null)).toBeGreaterThan(50);
@@ -641,9 +642,9 @@ describe('saving a game with the military in motion', () => {
     let state = withTreasury(newGame(), 5_000_000);
     state = run(state, { type: 'ORDER_UNITS', unit: 'fighter', quantity: 2 });
     state = run(state, { type: 'START_DRILL', kind: 'air' });
-    state = run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'tirhan' });
+    state = run(state, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target: 'PAK' });
     state = run(state, { type: 'START_NUCLEAR_PROGRAM' });
-    state = run(state, { type: 'DECLARE_WAR', rival: 'tirhan' });
+    state = run(state, { type: 'DECLARE_WAR', rival: 'PAK' });
     state = advanceDays(state, 10);
     const parsed = parseSave(serializeSave(state, '2026-10-11T00:00:00.000Z'));
     if (!parsed.ok) throw new Error(parsed.error);

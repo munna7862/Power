@@ -3,7 +3,9 @@ import type {
   DomainId,
   DrillKind,
   IntelKind,
+  CountryId,
   RivalId,
+  TreatyType,
   UnitId,
   IdeologyId,
   LogCategory,
@@ -19,7 +21,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 4;
+export const SCHEMA_VERSION = 5;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -240,7 +242,7 @@ export interface SecurityState {
   unrest: Record<RegionId, number>;
   /** National terror threat, 0–100. */
   terrorThreat: number;
-  /** Tension with neighbours, 0–100. Phase 5 diplomacy takes this over. */
+  /** Tension with neighbours, 0–100. Follows the most hostile rival (see military/rivals.ts). */
   borderTension: number;
   /** Loyalty of the armed forces to the President, 0–100. Phase 4 takes this over. */
   militaryLoyalty: number;
@@ -310,8 +312,6 @@ export interface RivalState {
   strength: number;
   /** 0–100; low readiness cuts effective strength. */
   readiness: number;
-  /** Relation with India, −100…+100. */
-  relation: number;
   /** Ticks until which the state is quietly rebuilding after a war. */
   recoverUntilTick: number | null;
   sighting: Sighting | null;
@@ -396,7 +396,7 @@ export interface MilitaryState {
   queue: ProductionOrder[];
   drills: Drill[];
   drillReports: DrillReport[];
-  /** 0–100: how strongly rivals are put off attacking. Phase 5 diplomacy builds on it. */
+  /** 0–100: how strongly rivals are put off attacking. Feeds the AI nations’ utility in diplomacy/ai.ts. */
   deterrence: number;
   /** Counter-intelligence cover for India, 0–100. Rises while a counter-intelligence operation runs. */
   counterIntel: number;
@@ -407,6 +407,87 @@ export interface MilitaryState {
   wars: War[];
   warHistory: WarRecord[];
   nuclear: NuclearProgram;
+}
+
+/** The party code of India in a treaty. */
+export const INDIA = 'IND';
+
+/** How one country stands with India. The relation is the single source of truth, rivals included. */
+export interface CountryState {
+  /** −100 (hostile) … +100 (close friend). */
+  relation: number;
+  /** 0–100: lingering friction from incidents, threats, broken deals and exposed spies. Decays monthly. */
+  incidents: number;
+  embassy: boolean;
+  /** India has imposed sanctions on this country. */
+  sanctioned: boolean;
+  /** Earliest tick a trade or pact proposal may be made again (after a refusal). */
+  proposalReadyTick: number;
+  /** Earliest tick more aid is welcome. */
+  aidReadyTick: number;
+}
+
+export interface TradeTerms {
+  /** The sector of India’s economy the contract boosts. */
+  sector: SectorId;
+  /** Annual value in ₹ crore. */
+  value: number;
+}
+
+/** A treaty or measure between two parties: [imposer or first party, other]; India is "IND". */
+export interface Treaty {
+  id: string;
+  type: TreatyType;
+  parties: [CountryId, CountryId];
+  startTick: number;
+  /** Null for open-ended measures (embassies, sanctions). */
+  endTick: number | null;
+  terms: Partial<TradeTerms>;
+}
+
+/** A proposal from another country that waits for the President’s answer. */
+export interface Offer {
+  id: string;
+  from: CountryId;
+  type: 'trade' | 'nonAggression';
+  years: number;
+  terms: Partial<TradeTerms>;
+  raisedTick: number;
+  expiresTick: number;
+}
+
+/** A war or crisis between other countries, shown on the map. */
+export interface Conflict {
+  id: string;
+  countries: CountryId[];
+  startTick: number;
+  endTick: number;
+}
+
+export const AI_ACTIONS = ['offerDeal', 'seekPact', 'threaten', 'sanction', 'declareWar', 'idle'] as const;
+export type AiAction = (typeof AI_ACTIONS)[number];
+
+/** Why a focus nation did what it did last month, for the debug overlay. */
+export interface AiDecision {
+  tick: number;
+  action: AiAction;
+  /** True if the nation went through with the action (it only acts some months). */
+  acted: boolean;
+  utilities: Record<AiAction, number>;
+  inputs: { relation: number; powerRatio: number; ideology: number; deterrence: number; noise: number };
+}
+
+export interface DiplomacyState {
+  countries: Record<CountryId, CountryState>;
+  treaties: Treaty[];
+  offers: Offer[];
+  conflicts: Conflict[];
+  /** India’s standing in the world, 0–100. Broken treaties cost it; honoured deals and aid rebuild it. */
+  reputation: number;
+  /** 0–100: how tense the world is. Conflicts and shocks raise it; it decays. */
+  worldTension: number;
+  /** Last decision of each focus nation. */
+  ai: Record<CountryId, AiDecision>;
 }
 
 export interface GameState {
@@ -423,6 +504,7 @@ export interface GameState {
   modifiers: Modifier[];
   security: SecurityState;
   military: MilitaryState;
+  diplomacy: DiplomacyState;
   events: EventsState;
   history: MonthlySnapshot[];
   log: LogEntry[];
