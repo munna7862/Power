@@ -35,6 +35,16 @@ describe('determinism', () => {
       treasury: state.nation.treasury,
       approval: state.nation.approval,
       events: state.log.length,
+      // One hash per top-level section, so a mismatch (on another machine, say) names what differs.
+      parts: Object.fromEntries(
+        Object.keys(state)
+          .sort()
+          .map((key) => [key, hashState(state[key as keyof typeof state])]),
+      ),
+      // The inbox is the largest text section; hash it in quarters to narrow a text difference down.
+      logQuarters: [0, 1, 2, 3].map((q) =>
+        hashState(state.log.slice((q * state.log.length) / 4, ((q + 1) * state.log.length) / 4)),
+      ),
     }).toMatchSnapshot();
   });
 

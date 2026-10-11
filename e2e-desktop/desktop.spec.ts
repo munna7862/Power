@@ -22,11 +22,15 @@ async function launch(): Promise<{ app: ElectronApplication; page: Page }> {
   return { app, page };
 }
 
-/** Closes the app, and kills it if it has not exited within 15 s, so a stuck quit cannot hang the run. */
+/**
+ * Quits the app the way the game's own Quit button does (the main process exits). Playwright's app.close()
+ * never returns on Linux CI, which leaves the worker hanging; app.exit() does not. A kill is the last resort.
+ */
 async function close(app: ElectronApplication): Promise<void> {
+  const exited = app.waitForEvent('close').then(() => 'closed' as const);
   const timeout = new Promise<'timeout'>((resolve) => setTimeout(() => resolve('timeout'), 15_000));
-  if ((await Promise.race([app.close().then(() => 'closed' as const), timeout])) === 'timeout')
-    app.process().kill('SIGKILL');
+  await app.evaluate(({ app: electronApp }) => electronApp.exit(0)).catch(() => undefined);
+  if ((await Promise.race([exited, timeout])) === 'timeout') app.process().kill('SIGKILL');
 }
 
 // Best-effort: Electron can hold the profile open for a moment after closing on Windows.
