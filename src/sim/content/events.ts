@@ -147,6 +147,28 @@ const eventSchema = z.strictObject({
 
 export type EventContent = z.infer<typeof eventSchema>;
 
+/** Unrest stats that measure how close a region is to rioting. */
+const UNREST_STATS: readonly StatId[] = ['regionUnrest', 'maxUnrest'];
+
+/** The lowest unrest level an event requires (via "unrest above N" conditions), or null if it needs none. */
+export function unrestTrigger(condition: Condition): number | null {
+  if ('stat' in condition) {
+    return UNREST_STATS.includes(condition.stat) && (condition.op === '>' || condition.op === '>=')
+      ? condition.value
+      : null;
+  }
+  const triggers = ('all' in condition ? condition.all : condition.any).map(unrestTrigger);
+  // An "any" group is satisfied by its weakest branch, so it only demands unrest if every branch does.
+  if ('any' in condition) return triggers.every((t) => t !== null) ? Math.min(...(triggers as number[])) : null;
+  const set = triggers.filter((t): t is number => t !== null);
+  return set.length > 0 ? Math.max(...set) : null;
+}
+
+/** A riot: an event that needs unrest of at least 60 somewhere. The "no riots" option keeps unrest below that. */
+export const RIOT_TRIGGER = 60;
+export const isRiotEvent = (event: Pick<EventContent, 'conditions'>): boolean =>
+  event.conditions.some((c) => (unrestTrigger(c) ?? 0) >= RIOT_TRIGGER);
+
 function usesRegionStat(condition: Condition): boolean {
   if ('stat' in condition) return condition.stat === 'regionUnrest';
   return ('all' in condition ? condition.all : condition.any).some(usesRegionStat);

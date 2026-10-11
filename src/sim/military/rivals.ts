@@ -3,6 +3,7 @@ import { RIVALS, type CountryId, type RivalId } from '../content/ids';
 import { COUNTRY_CONTENT } from '../content/world';
 import { adjustRelation, hasTreaty, relationOf } from '../diplomacy/relations';
 import type { Rng } from '../engine/rng';
+import { rulesFor } from '../state/difficulty';
 import { appendLog } from '../state/log';
 import type { GameState, RivalState } from '../state/types';
 import { WAR } from './constants';
@@ -46,10 +47,11 @@ export function tensionTarget(state: Pick<GameState, 'military' | 'diplomacy'>):
 /**
  * Monthly chance a rival declares war on India. Zero before the grace period, while at war with it already
  * or for peaceful or tiny states; otherwise driven by temperament, bad relations, India’s deterrence and
- * how the two armies compare.
+ * how the two armies compare, then scaled by the difficulty. Always zero with the "no wars" option.
  */
 export function declarationChance(state: GameState, id: CountryId): number {
   const rival = (state.military.rivals as Record<string, RivalState | undefined>)[id];
+  if (state.meta.options.noWars) return 0;
   if (!rival || rival.annexed || state.clock.tick < WAR.grace || atWarWith(state, id as RivalId)) return 0;
   if (hasTreaty(state, id, 'nonAggression')) return 0;
   const aggression = COUNTRY_CONTENT[id]?.aggression ?? 0;
@@ -58,7 +60,15 @@ export function declarationChance(state: GameState, id: CountryId): number {
   const mine = Math.max(militaryStrength(state.military), 1);
   const powerFactor = clamp(rivalEffective(rival) / mine, 0.12, 1.5);
   const recovering = rival.recoverUntilTick !== null && rival.recoverUntilTick > state.clock.tick ? 0 : 1;
-  return 0.006 * (aggression / 50) ** 2 * relationFactor * deterrenceFactor * powerFactor * recovering;
+  return (
+    0.006 *
+    (aggression / 50) ** 2 *
+    relationFactor *
+    deterrenceFactor *
+    powerFactor *
+    recovering *
+    rulesFor(state).warChance
+  );
 }
 
 /** Monthly: rivals grow, recover and drift in their attitude; spies probe India’s defences. */

@@ -308,7 +308,8 @@ describe('AI nations', () => {
       s = { ...s, military: { ...s.military, deterrence: 0 } };
       for (let m = 0; m < 24 && s.status.kind === 'playing'; m++) {
         s = advanceDays(s, 30);
-        s = { ...s, military: { ...s.military, deterrence: 0 } };
+        // Keep the hands-off President in office, so the test is about the AI and not about impeachment.
+        s = { ...s, military: { ...s.military, deterrence: 0 }, nation: { ...s.nation, approval: 60 } };
       }
       if (s.military.wars.length > 0 || s.military.warHistory.length > 0) wars++;
     }

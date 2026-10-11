@@ -31,6 +31,7 @@ describe('determinism', () => {
       hash: hashState(state),
       date: state.clock.date,
       status: state.status.kind,
+      cause: state.status.kind === 'over' ? state.status.cause : null,
       treasury: state.nation.treasury,
       approval: state.nation.approval,
       events: state.log.length,

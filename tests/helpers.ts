@@ -12,6 +12,9 @@ export function newGame(overrides: Partial<NewGameOptions> = {}): GameState {
   return createInitialState({ ...DEFAULT_OPTIONS, ...overrides });
 }
 
+/** The same game in endless mode: no election ends it after five years. For tests that run longer than a term. */
+export const endless = (state: GameState): GameState => ({ ...state, meta: { ...state.meta, endless: true } });
+
 /** Recursively freezes an object so any accidental mutation throws in strict mode. */
 export function deepFreeze<T>(value: T): T {
   if (value && typeof value === 'object' && !Object.isFrozen(value)) {

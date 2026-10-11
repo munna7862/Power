@@ -221,8 +221,10 @@ export const gameStateSchema = z.object({
   meta: z.object({
     seed: uint32,
     difficulty: z.enum(DIFFICULTIES),
+    options: z.object({ noWars: z.boolean(), noRiots: z.boolean(), tutorial: z.boolean() }),
     presidentName: z.string().min(1),
     startDate: date,
+    endless: z.boolean(),
   }),
   clock: z.object({ tick: z.number().int().min(0), date }),
   rng: z.tuple([uint32, uint32, uint32, uint32]),
@@ -344,6 +346,7 @@ export const gameStateSchema = z.object({
       z.object({ eventId: z.string(), dueTick: z.number().int(), region: z.enum(REGIONS).nullable() }),
     ),
     cooldowns: z.record(z.string(), z.number().int()),
+    fired: z.record(z.string(), z.array(z.number().int())),
   }),
   history: z.array(
     z.object({

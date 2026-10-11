@@ -13,15 +13,14 @@ import { exposeMinister, pickCorruptMinister } from '../cabinet/scandal';
 import { addModifier } from '../politics/policy';
 import { patchMilitary } from '../military/forces';
 import { launchOperation } from '../security/operations';
-import { clamp } from '../security/unrest';
-import { INDIA, type Difficulty, type GameState } from '../state/types';
+import { clamp, unrestCeiling } from '../security/unrest';
+import { DIFFICULTY_RULES } from '../state/difficulty';
+import { DIFFICULTIES, INDIA, type Difficulty, type GameState } from '../state/types';
 
-/** How often events happen and how hard their harm lands, by difficulty. */
-export const EVENT_DIFFICULTY: Record<Difficulty, { frequency: number; severity: number }> = {
-  easy: { frequency: 0.8, severity: 0.85 },
-  normal: { frequency: 1, severity: 1 },
-  hard: { frequency: 1.25, severity: 1.2 },
-};
+/** How often events happen and how hard their harm lands, by difficulty (see state/difficulty.ts). */
+export const EVENT_DIFFICULTY: Record<Difficulty, { frequency: number; severity: number }> = Object.fromEntries(
+  DIFFICULTIES.map((d) => [d, { frequency: DIFFICULTY_RULES[d].eventFrequency, severity: DIFFICULTY_RULES[d].eventSeverity }]),
+) as Record<Difficulty, { frequency: number; severity: number }>;
 
 /** +1 when a larger value is good for the President, −1 when it is bad, 0 when it can go either way. */
 const GOOD_DIRECTION: Record<ModifierTarget, 1 | -1 | 0> = {
@@ -125,7 +124,7 @@ export function applyEffect(state: GameState, effect: EventEffect, ctx: EffectCo
       const delta = effect.delta * severity * scaleFactor(state, effect.scale);
       const regions: readonly RegionId[] = effect.where === 'all' ? REGIONS : ctx.region ? [ctx.region] : [];
       const unrest = { ...state.security.unrest };
-      for (const r of regions) unrest[r] = clamp(unrest[r] + delta, 0, 100);
+      for (const r of regions) unrest[r] = clamp(unrest[r] + delta, 0, unrestCeiling(state));
       return { ...state, security: { ...state.security, unrest } };
     }
     case 'terror':

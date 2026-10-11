@@ -113,7 +113,9 @@ export type Command =
   | { type: 'LIFT_SANCTIONS'; country: CountryId }
   | { type: 'BREAK_TREATY'; treatyId: string }
   | { type: 'ACCEPT_OFFER'; offerId: string }
-  | { type: 'DECLINE_OFFER'; offerId: string };
+  | { type: 'DECLINE_OFFER'; offerId: string }
+  /** After winning re-election: stay in office with no further elections (endless mode). */
+  | { type: 'CONTINUE_IN_OFFICE' };
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; error: string; state: GameState };
 
@@ -198,6 +200,21 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'MARK_ALL_LOG_READ':
       return ok({ ...state, log: state.log.map((e) => (e.read ? e : { ...e, read: true })) });
+    case 'CONTINUE_IN_OFFICE': {
+      if (state.status.kind !== 'over' || state.status.cause !== 'reelected') {
+        return fail(state, 'Only a re-elected President can stay on in office.');
+      }
+      return ok(
+        appendLog(
+          { ...state, status: { kind: 'playing' }, meta: { ...state.meta, endless: true } },
+          {
+            severity: 'good',
+            title: 'A second term begins',
+            body: 'You stay on in endless mode: there are no more elections, but impeachment, coups and the other dangers remain.',
+          },
+        ),
+      );
+    }
     case 'ENACT_BUDGET': {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateBudget(state, command.proposal);

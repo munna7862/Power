@@ -83,6 +83,7 @@ export function frontOdds(state: GameState, war: War): FrontOdds[] {
 
 export function validateDeclareWar(state: GameState, rival: RivalId): string | null {
   if (!RIVALS.includes(rival)) return `Unknown country ${rival}.`;
+  if (state.meta.options.noWars) return 'Wars are switched off for this game (New Game options).';
   if (state.military.rivals[rival].annexed) return 'That country no longer exists as a separate state.';
   if (atWarWith(state, rival)) return 'You are already at war with that country.';
   if (state.military.wars.length >= MAX_WARS) return `India cannot fight more than ${MAX_WARS} wars at once.`;

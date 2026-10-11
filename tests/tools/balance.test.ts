@@ -35,3 +35,17 @@ describe('war balance', () => {
     expect(failing).toEqual([]);
   });
 });
+
+describe('release balance (Phase 6)', () => {
+  it('never lets a random event repeat more than the rule allows, and the options hold', async () => {
+    const { probeOptions, worstRepeat } = await import('../../tools/balance/release');
+    const { MAX_REPEATS, NO_RIOTS_UNREST_CAP } = await import('../../src/sim');
+    const runs = [1, 2, 3].map((seed) => simulate(balancedBot, seed, 5));
+    expect(worstRepeat(runs).fires).toBeLessThanOrEqual(MAX_REPEATS);
+    expect(runs.every((r) => r.endedInYear !== null || r.cause === 'reelected' || r.cause === 'votedOut')).toBe(true);
+    const options = probeOptions(2, 2);
+    expect(options.warsWithNoWars).toBe(0);
+    expect(options.peakUnrestWithNoRiots).toBeLessThanOrEqual(NO_RIOTS_UNREST_CAP);
+    expect(options.riotEventsWithNoRiots).toBe(0);
+  });
+});

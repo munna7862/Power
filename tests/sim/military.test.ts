@@ -25,7 +25,7 @@ import { completeDrills } from '../../src/sim/military/drills';
 import { militaryLoyaltyTarget } from '../../src/sim/security/leadership';
 import { resolveIntelOps } from '../../src/sim/military/intel';
 import { frontRound, startWar, stepWars } from '../../src/sim/military/war';
-import { calm, deepFreeze, newGame } from '../helpers';
+import { calm, deepFreeze, endless, newGame } from '../helpers';
 
 const run = (state: GameState, command: Command): GameState => {
   const result = dispatch(state, command);
@@ -529,7 +529,7 @@ describe('the nuclear program', () => {
   const funded = (): GameState => withTreasury(newGame(), 5_000_000);
 
   it('runs from research to enrichment to warheads while it is funded', () => {
-    let state = run(funded(), { type: 'START_NUCLEAR_PROGRAM' });
+    let state = run(endless(funded()), { type: 'START_NUCLEAR_PROGRAM' });
     expect(dispatch(state, { type: 'START_NUCLEAR_PROGRAM' }).ok).toBe(false);
     state = withTreasury(calm(state, 365 * 3), 5_000_000);
     expect(state.military.nuclear.research).toBeGreaterThan(50);

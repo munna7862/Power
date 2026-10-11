@@ -957,5 +957,75 @@
         "effects": []
       }
     ]
+  },
+  {
+    "id": "tutorial-briefing",
+    "category": "economy",
+    "severity": "info",
+    "title": "First briefing: monsoon preparedness",
+    "body": "The weather office expects an uneven monsoon. Your Agriculture Secretary asks how the government should prepare. Every decision has a cost and a consequence, and the \"Why?\" tooltips will show where its effects land.",
+    "weight": 0,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "storage",
+        "label": "Fund grain storage and seed banks",
+        "description": "Costs ₹1,500 cr; farm output holds up and voters notice.",
+        "outcome": "Storage depots and seed banks are stocked ahead of the rains. Farmers welcome the early move.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.agriculture",
+            "kind": "add",
+            "value": 0.003,
+            "days": 180,
+            "label": "Monsoon preparedness"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 90,
+            "label": "Monsoon preparedness"
+          }
+        ]
+      },
+      {
+        "id": "advisory",
+        "label": "Issue a crop advisory",
+        "description": "Costs ₹200 cr; a small, cheap cushion for farmers.",
+        "outcome": "Agricultural offices publish sowing advice for each region. It helps a little.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.agriculture",
+            "kind": "add",
+            "value": 0.001,
+            "days": 120,
+            "label": "Crop advisory"
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Leave it to the season",
+        "description": "No cost; farm output takes its chances.",
+        "outcome": "The government waits for the rains. Some districts are caught unprepared.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.agriculture",
+            "kind": "add",
+            "value": -0.001,
+            "days": 120,
+            "label": "Unprepared for the monsoon"
+          }
+        ]
+      }
+    ]
   }
 ]

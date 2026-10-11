@@ -21,8 +21,12 @@ export {
   DEFAULT_IDEOLOGY,
   DEFAULT_STRATEGY,
   PRESIDENT_NAME_MAX,
+  TUTORIAL_EVENT,
+  TUTORIAL_EVENT_DAY,
   type NewGameOptions,
 } from './state/initialState';
+export { DIFFICULTY_RULES, rulesFor, type DifficultyRules } from './state/difficulty';
+export { electionYear, reelectionApproval } from './systems/term';
 export {
   dispatch,
   policyCooldownDays,
@@ -57,6 +61,7 @@ export {
   APPROVAL_WEIGHTS,
   IMPEACHMENT_MONTHS,
   IMPEACHMENT_THRESHOLD,
+  impeachmentThreshold,
   approvalTarget,
   computeSatisfaction,
   topIssues,
@@ -75,13 +80,16 @@ export {
   EVENT_CONTENT,
   EVENT_LIST,
   THREAT_GROUPS,
+  isRiotEvent,
+  RIOT_TRIGGER,
+  unrestTrigger,
   type EventContent,
   type EventChoice,
   type EventEffect,
 } from './content/events';
 export { describeEffect, choiceUtility, pendingView, type EffectLine, type PendingView } from './events/describe';
 export { statValue, STAT_IDS, type StatId } from './events/stats';
-export { MAX_PENDING, raiseEvent } from './events/engine';
+export { MAX_PENDING, MAX_REPEATS, raiseEvent, recentFires, REPEAT_WINDOW_DAYS } from './events/engine';
 export {
   BANKRUPTCY_DEBT_RATIO,
   BANKRUPTCY_MONTHS,
@@ -89,6 +97,7 @@ export {
   INVESTIGATION_COST,
   INVESTIGATION_DAYS,
   MAX_INVESTIGATIONS,
+  NO_RIOTS_UNREST_CAP,
   OPERATIONS,
   RIOT_UNREST,
   TENSE_UNREST,

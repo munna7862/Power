@@ -2,15 +2,16 @@
 
 exports[`determinism > matches the golden hash of a full balanced-bot term (review deliberately if a sim change moves it) 1`] = `
 {
-  "approval": 77,
+  "approval": 59.4,
+  "cause": "reelected",
   "date": {
     "day": 1,
     "month": 1,
     "year": 2031,
   },
   "events": 400,
-  "hash": "2977d4f5",
-  "status": "playing",
-  "treasury": 377267,
+  "hash": "bcef6f9c",
+  "status": "over",
+  "treasury": 350052,
 }
 `;

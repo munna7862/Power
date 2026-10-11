@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_IDEOLOGY,
+  DIFFICULTY_RULES,
   DEFAULT_PRESIDENT_NAME,
   DEFAULT_STRATEGY,
   MINISTRIES,
@@ -38,7 +39,8 @@ describe('createInitialState', () => {
     expect(revenue(easy)).toBeGreaterThan(revenue(normal));
     expect(revenue(hard)).toBeLessThan(revenue(normal));
     const approval = (s: GameState) => resolve(s.modifiers, 'politics.approvalTarget', 55).total;
-    expect(approval(hard) - approval(normal)).toBe(-5);
+    expect(approval(hard) - approval(normal)).toBe(DIFFICULTY_RULES.hard.modifiers[1]?.value);
+    expect(approval(hard)).toBeLessThan(approval(normal));
     expect(debtToGdp(hard.economy)).toBeGreaterThan(debtToGdp(easy.economy));
   });
 
