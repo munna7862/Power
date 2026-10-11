@@ -1,0 +1,185 @@
+{
+  "common": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "dismiss": "Dismiss",
+    "why": "Why?",
+    "and": " and ",
+    "none": "None",
+    "unknownTime": "Unknown time",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "years_one": "{{count}} year",
+    "years_other": "{{count}} years"
+  },
+  "units": {
+    "lakhCrore": "{{sign}}₹{{value}} lakh cr",
+    "crore": "{{sign}}₹{{value}} cr",
+    "points": "{{sign}}{{value}} pts"
+  },
+  "menu": {
+    "eyebrow": "India",
+    "title": "Apex Sovereign",
+    "tagline": "You are the President. Every rupee, minister and crisis is your call.",
+    "label": "Main menu",
+    "newGame": "New Game",
+    "continue": "Continue",
+    "loadGame": "Load Game",
+    "handbook": "Handbook",
+    "settings": "Settings",
+    "quit": "Quit",
+    "footer": "v{{version}} · No ads, no paid shortcuts"
+  },
+  "difficulty": {
+    "easy": { "title": "Easy", "text": "Healthy treasury, patient public, calmer neighbours." },
+    "normal": { "title": "Normal", "text": "A tense but winnable term. Recommended." },
+    "hard": { "title": "Hard", "text": "Thin reserves, frequent crises, restless neighbours." }
+  },
+  "newGame": {
+    "eyebrow": "New term",
+    "title": "Take the oath",
+    "name": "President's name",
+    "namePlaceholder": "The President",
+    "nameHint": "A fictional leader. Leave blank to be addressed as “The President”.",
+    "difficulty": "Difficulty",
+    "difficultyRules": "Treasury {{treasury}} · approval {{approval}}% · voter fatigue −{{fatigue}} a year · re-election needs {{reelection}}%",
+    "ideology": "Ideology",
+    "strategy": "Development strategy",
+    "options": "Options",
+    "option": {
+      "tutorial": {
+        "title": "Guided tutorial",
+        "text": "A short tour of your first month: the budget, the cabinet, a practice decision and the map."
+      },
+      "noWars": {
+        "title": "No wars",
+        "text": "No country goes to war with India, and India cannot declare war."
+      },
+      "noRiots": {
+        "title": "No riots",
+        "text": "Unrest can still rise, but it never boils over into riots."
+      }
+    },
+    "begin": "Begin term"
+  },
+  "settings": {
+    "title": "Settings",
+    "display": "Display",
+    "theme": "Theme",
+    "themes": { "dark": "Dark", "light": "Light" },
+    "uiScale": "Interface size",
+    "accessibility": "Accessibility",
+    "palette": "Colours",
+    "palettes": { "standard": "Standard", "colourBlind": "Colour-blind safe" },
+    "motion": "Motion",
+    "motions": { "system": "Follow system", "reduced": "Reduced", "full": "Full" },
+    "audio": "Audio",
+    "music": "Music",
+    "effects": "Sound effects",
+    "sound": "Sound",
+    "soundStates": { "on": "On", "off": "Muted" },
+    "keyboard": "Keyboard",
+    "saves": "Saves",
+    "savesFolder": "Your saves are kept in {{folder}}"
+  },
+  "shortcuts": {
+    "pause": "Pause or resume the clock",
+    "speed": "Play at 1×, 2× or 4× speed",
+    "screens": "Open a screen (in the order of the side menu)",
+    "handbook": "Open the handbook",
+    "menu": "Close a dialog, or open the game menu",
+    "fullscreen": "Toggle full screen"
+  },
+  "saves": {
+    "saveTitle": "Save game",
+    "loadTitle": "Load game",
+    "autosave": "Autosave",
+    "slot": "Slot {{n}}",
+    "meta": "{{president}} · {{date}} · {{difficulty}} · saved {{saved}}",
+    "empty": "Empty",
+    "saveTo": "Save to {{slot}}",
+    "loadFrom": "Load {{slot}}",
+    "overwrite": "Overwrite",
+    "save": "Save",
+    "load": "Load"
+  },
+  "gameMenu": {
+    "title": "Game menu",
+    "save": "Save game",
+    "load": "Load game",
+    "handbook": "Handbook",
+    "settings": "Settings",
+    "quit": "Quit to main menu"
+  },
+  "decision": {
+    "deadline_one": "Decide within {{count}} day, or the default choice is applied and voters see you as indecisive.",
+    "deadline_other": "Decide within {{count}} days, or the default choice is applied and voters see you as indecisive.",
+    "expiresToday": "This decision expires today.",
+    "default": "default",
+    "effectsOf": "Effects of {{choice}}",
+    "costs": "Costs {{cost}}",
+    "chooseLabel": "Choose: {{choice}}",
+    "choose": "Choose"
+  },
+  "gameOver": {
+    "victory": "Victory",
+    "defeat": "Presidency over",
+    "term": "President {{name}} · {{from}} – {{to}}",
+    "yearsValue": "{{years}} years",
+    "stats": {
+      "years": "Time in office",
+      "approval": "Final approval",
+      "growth": "Real growth",
+      "inflation": "Inflation",
+      "unemployment": "Unemployment",
+      "debt": "Debt (% of GDP)"
+    },
+    "endlessNote": "You can stay on in endless mode: no more elections, but impeachment, coups and the other dangers remain.",
+    "load": "Load a save",
+    "endless": "Stay in office (endless)",
+    "menu": "Main menu"
+  },
+  "topbar": {
+    "speed": "Game speed",
+    "pause": "Pause",
+    "speedN": "Speed {{speed}}×",
+    "treasury": "Treasury",
+    "approval": "Approval",
+    "handbook": "Handbook",
+    "handbookHint": "Handbook (H)",
+    "menu": "Game menu",
+    "menuButton": "Menu"
+  },
+  "nav": {
+    "label": "Sections",
+    "shortcut": "Shortcut: {{key}}",
+    "views": {
+      "dashboard": "Dashboard",
+      "inbox": "Inbox",
+      "economy": "Economy",
+      "budget": "Budget",
+      "cabinet": "Cabinet",
+      "security": "Security",
+      "military": "Military",
+      "world": "World",
+      "diplomacy": "Diplomacy",
+      "reports": "Reports"
+    }
+  },
+  "alerts": {
+    "decisionsLabel": "Pending decisions",
+    "decisions_one": "{{count}} decision awaiting the President",
+    "decisions_other": "{{count}} decisions awaiting the President",
+    "review": "Review",
+    "offersLabel": "Diplomatic offers",
+    "offers_one": "{{count}} diplomatic offer awaiting an answer",
+    "offers_other": "{{count}} diplomatic offers awaiting an answer",
+    "warLabel": "War",
+    "war": "At war with {{countries}}",
+    "warRoom": "War room"
+  }
+}

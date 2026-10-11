@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react';
-import { browserShell } from '../../platform/shell';
+import { useTranslation } from 'react-i18next';
+import { appShell } from '../../platform/shell';
 import { gameStore, useGame } from '../../store';
 import { Button } from '../design/primitives';
+import { HandbookModal } from '../handbook/HandbookModal';
 import { SaveLoadModal } from '../modals/SaveLoadModal';
 import { SettingsModal } from '../modals/SettingsModal';
 import styles from './screens.module.css';
 
 export function MainMenu() {
+  const { t } = useTranslation();
   const hasSaves = useGame((s) => s.slots.length > 0);
-  const [modal, setModal] = useState<'load' | 'settings' | null>(null);
+  const [modal, setModal] = useState<'load' | 'settings' | 'handbook' | null>(null);
 
   useEffect(() => {
     void gameStore.getState().refreshSlots();
@@ -18,36 +21,40 @@ export function MainMenu() {
     <main className={styles.menuScreen}>
       <div className={styles.menuCard}>
         <div className={styles.brand}>
-          <span className={styles.eyebrow}>India</span>
-          <h1 className={styles.title}>Apex Sovereign</h1>
-          <p className={styles.tagline}>You are the President. Every rupee, minister and crisis is your call.</p>
+          <span className={styles.eyebrow}>{t('menu.eyebrow')}</span>
+          <h1 className={styles.title}>{t('menu.title')}</h1>
+          <p className={styles.tagline}>{t('menu.tagline')}</p>
         </div>
 
-        <nav className={styles.menuButtons} aria-label="Main menu">
+        <nav className={styles.menuButtons} aria-label={t('menu.label')}>
           <Button variant="primary" size="large" block onClick={() => gameStore.getState().goTo('new-game')}>
-            New Game
+            {t('menu.newGame')}
           </Button>
           <Button size="large" block disabled={!hasSaves} onClick={() => void gameStore.getState().continueLatest()}>
-            Continue
+            {t('menu.continue')}
           </Button>
           <Button size="large" block disabled={!hasSaves} onClick={() => setModal('load')}>
-            Load Game
+            {t('menu.loadGame')}
+          </Button>
+          <Button size="large" block onClick={() => setModal('handbook')}>
+            {t('menu.handbook')}
           </Button>
           <Button size="large" block onClick={() => setModal('settings')}>
-            Settings
+            {t('menu.settings')}
           </Button>
-          {browserShell.canQuit && (
-            <Button size="large" block onClick={browserShell.quit}>
-              Quit
+          {appShell.canQuit && (
+            <Button size="large" block onClick={appShell.quit}>
+              {t('menu.quit')}
             </Button>
           )}
         </nav>
 
-        <p className={styles.footer}>v0.1.0 · Phase 1 preview</p>
+        <p className={styles.footer}>{t('menu.footer', { version: __APP_VERSION__ })}</p>
       </div>
 
       {modal === 'load' && <SaveLoadModal mode="load" onClose={() => setModal(null)} />}
       {modal === 'settings' && <SettingsModal onClose={() => setModal(null)} />}
+      {modal === 'handbook' && <HandbookModal onClose={() => setModal(null)} />}
     </main>
   );
 }

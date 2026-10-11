@@ -24,20 +24,22 @@ import {
   START_UNEMPLOYMENT,
 } from '../economy/constants';
 import { allEfficiencies, interestRateFor } from '../economy/model';
-import type { Modifier } from '../engine/modifiers';
 import { Rng, seedRng } from '../engine/rng';
 import { openingDiplomacy } from '../diplomacy/opening';
 import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
 import { applyPolicy } from '../politics/policy';
 import { START_BORDER_TENSION, START_MILITARY_LOYALTY, START_TERROR_THREAT, START_UNREST } from '../security/constants';
+import { DIFFICULTY_RULES } from './difficulty';
 import { appendLog } from './log';
 import {
+  DEFAULT_OPTIONS,
   SCHEMA_VERSION,
   type CabinetState,
   type Difficulty,
   type EconomyState,
   type EventsState,
+  type GameOptions,
   type GameState,
   type Minister,
   type PoliticsState,
@@ -53,58 +55,18 @@ export interface NewGameOptions {
   startYear: number;
   ideology?: IdeologyId;
   strategy?: StrategyId;
+  /** Optional rules (no wars, no riots, tutorial). Missing ones are off. */
+  options?: Partial<GameOptions>;
 }
+
+/** The practice decision the tutorial teaches with, and the day it arrives. */
+export const TUTORIAL_EVENT = 'tutorial-briefing';
+export const TUTORIAL_EVENT_DAY = 4;
 
 export const DEFAULT_PRESIDENT_NAME = 'The President';
 export const PRESIDENT_NAME_MAX = 40;
 export const DEFAULT_IDEOLOGY: IdeologyId = 'liberalism';
 export const DEFAULT_STRATEGY: StrategyId = 'balanced';
-
-interface DifficultyProfile {
-  treasury: number;
-  approval: number;
-  modifiers: Omit<Modifier, 'id'>[];
-}
-
-const DIFFICULTY_PROFILES: Record<Difficulty, DifficultyProfile> = {
-  easy: {
-    treasury: 300_000,
-    approval: 62,
-    modifiers: [
-      {
-        source: 'difficulty',
-        label: 'Difficulty: Easy',
-        target: 'economy.revenue',
-        kind: 'mult',
-        value: 0.04,
-        expiresAtTick: null,
-      },
-    ],
-  },
-  normal: { treasury: 200_000, approval: 55, modifiers: [] },
-  hard: {
-    treasury: 120_000,
-    approval: 48,
-    modifiers: [
-      {
-        source: 'difficulty',
-        label: 'Difficulty: Hard',
-        target: 'economy.revenue',
-        kind: 'mult',
-        value: -0.03,
-        expiresAtTick: null,
-      },
-      {
-        source: 'difficulty',
-        label: 'Difficulty: Hard',
-        target: 'politics.approvalTarget',
-        kind: 'add',
-        value: -5,
-        expiresAtTick: null,
-      },
-    ],
-  },
-};
 
 export function normalisePresidentName(name: string): string {
   const trimmed = name.trim().replace(/\s+/g, ' ').slice(0, PRESIDENT_NAME_MAX);
@@ -182,14 +144,15 @@ export function openingSecurity(): SecurityState {
 }
 
 export function emptyEvents(): EventsState {
-  return { pending: [], scheduled: [], cooldowns: {} };
+  return { pending: [], scheduled: [], cooldowns: {}, fired: {} };
 }
 
 export function createInitialState(options: NewGameOptions): GameState {
   if (!Number.isInteger(options.seed)) throw new Error(`Seed must be an integer, got ${options.seed}`);
   if (!Number.isInteger(options.startYear)) throw new Error(`Start year must be an integer, got ${options.startYear}`);
 
-  const profile = DIFFICULTY_PROFILES[options.difficulty];
+  const profile = DIFFICULTY_RULES[options.difficulty];
+  const gameOptions: GameOptions = { ...DEFAULT_OPTIONS, ...options.options };
   const startDate = { year: options.startYear, month: 1, day: 1 };
   const presidentName = normalisePresidentName(options.presidentName);
   const ideology = options.ideology ?? DEFAULT_IDEOLOGY;
@@ -198,7 +161,14 @@ export function createInitialState(options: NewGameOptions): GameState {
 
   let state: GameState = {
     schemaVersion: SCHEMA_VERSION,
-    meta: { seed: options.seed >>> 0, difficulty: options.difficulty, presidentName, startDate },
+    meta: {
+      seed: options.seed >>> 0,
+      difficulty: options.difficulty,
+      options: gameOptions,
+      presidentName,
+      startDate,
+      endless: false,
+    },
     clock: { tick: 0, date: startDate },
     rng: rng.state,
     status: { kind: 'playing' },
@@ -211,7 +181,9 @@ export function createInitialState(options: NewGameOptions): GameState {
     security: openingSecurity(),
     military: openingMilitary(),
     diplomacy: openingDiplomacy(),
-    events: emptyEvents(),
+    events: gameOptions.tutorial
+      ? { ...emptyEvents(), scheduled: [{ eventId: TUTORIAL_EVENT, dueTick: TUTORIAL_EVENT_DAY, region: null }] }
+      : emptyEvents(),
     history: [],
     log: [],
     nextId: profile.modifiers.length,

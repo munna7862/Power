@@ -1,6 +1,8 @@
+import { desktopBridge, DesktopSaveStorage } from './desktop';
+
 /**
- * Save-slot persistence. The game only talks to the SaveStorage interface;
- * Phase 6 adds a filesystem adapter for Electron and Phase 7 one for Capacitor.
+ * Save-slot persistence. The game only talks to the SaveStorage interface: localStorage in the browser,
+ * files in the OS user-data folder on the desktop (platform/desktop.ts), Capacitor in Phase 7.
  */
 export const MANUAL_SLOTS = ['slot-1', 'slot-2', 'slot-3', 'slot-4', 'slot-5'] as const;
 export const AUTOSAVE_SLOT = 'autosave';
@@ -46,8 +48,10 @@ export class MemorySaveStorage implements SaveStorage {
   }
 }
 
-/** Uses localStorage when it works (it can throw in private windows), otherwise memory. */
+/** Files on the desktop; otherwise localStorage when it works (it can throw in private windows), else memory. */
 export function createDefaultStorage(): SaveStorage {
+  const bridge = desktopBridge();
+  if (bridge) return new DesktopSaveStorage(bridge);
   try {
     const probe = `${KEY_PREFIX}probe`;
     localStorage.setItem(probe, '1');

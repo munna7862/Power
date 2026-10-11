@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   allEfficiencies,
   IDEOLOGIES,
@@ -13,7 +14,6 @@ import {
   type IdeologyId,
   type Minister,
   type MinistryId,
-  type RegionId,
   type StrategyId,
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
@@ -22,33 +22,27 @@ import { Button, Modal, Panel } from '../design/primitives';
 import gameStyles from '../screens/game.module.css';
 import styles from './views.module.css';
 
-const REGION_LABELS: Record<RegionId, string> = {
-  north: 'North',
-  south: 'South',
-  east: 'East',
-  west: 'West',
-  central: 'Central',
-  northEast: 'North-East',
-};
+const TRAITS = [
+  { id: 'competence', good: true },
+  { id: 'loyalty', good: true },
+  { id: 'corruption', good: false },
+] as const;
 
 function Traits({ minister }: { minister: Minister }) {
-  const rows: { label: string; value: number; good: boolean }[] = [
-    { label: 'Competence', value: minister.competence, good: true },
-    { label: 'Loyalty', value: minister.loyalty, good: true },
-    { label: 'Corruption', value: minister.corruption, good: false },
-  ];
+  const { t } = useTranslation();
   return (
     <div className={styles.traits}>
-      {rows.map((r) => {
-        const quality = r.good ? r.value : 100 - r.value;
+      {TRAITS.map((r) => {
+        const value = minister[r.id];
+        const quality = r.good ? value : 100 - value;
         const colour = quality >= 60 ? 'var(--green)' : quality >= 40 ? 'var(--warning)' : 'var(--danger)';
         return (
-          <span key={r.label} style={{ display: 'contents' }}>
-            <span>{r.label}</span>
+          <span key={r.id} style={{ display: 'contents' }}>
+            <span>{t(`cabinet.traits.${r.id}`)}</span>
             <span className={styles.trait} aria-hidden="true">
-              <span className={styles.traitFill} style={{ width: `${r.value}%`, background: colour }} />
+              <span className={styles.traitFill} style={{ width: `${value}%`, background: colour }} />
             </span>
-            <span>{Math.round(r.value)}</span>
+            <span>{Math.round(value)}</span>
           </span>
         );
       })}
@@ -57,13 +51,18 @@ function Traits({ minister }: { minister: Minister }) {
 }
 
 function Person({ minister }: { minister: Minister }) {
+  const { t } = useTranslation();
   return (
     <>
-      <Avatar seed={minister.avatarSeed} gender={minister.gender} label={`Portrait of ${minister.name}`} />
+      <Avatar
+        seed={minister.avatarSeed}
+        gender={minister.gender}
+        label={t('cabinet.portrait', { name: minister.name })}
+      />
       <div>
         <div className={styles.personName}>{minister.name}</div>
         <div className={styles.muted}>
-          {REGION_LABELS[minister.region]} ·{' '}
+          {t(`regions.${minister.region}`)} ·{' '}
           <span className={styles.tag}>{IDEOLOGY_CONTENT[minister.ideology].name}</span>
         </div>
       </div>
@@ -72,21 +71,17 @@ function Person({ minister }: { minister: Minister }) {
 }
 
 function CandidateModal({ ministry, onClose }: { ministry: MinistryId; onClose: () => void }) {
+  const { t } = useTranslation();
   const candidates = useGame((s) => s.game?.cabinet.candidates[ministry] ?? []);
   const occupied = useGame((s) => s.game?.cabinet.ministers[ministry] !== null);
   const appoint = (id: string) => {
     if (gameStore.getState().dispatch({ type: 'APPOINT_MINISTER', ministry, candidateId: id })) onClose();
   };
   return (
-    <Modal title={`Appoint: ${MINISTRY_CONTENT[ministry].name}`} onClose={onClose}>
-      {occupied && (
-        <p className={styles.note}>
-          Replacing the serving minister costs {RESHUFFLE_APPROVAL} approval for three months and dents the loyalty of
-          the rest of the cabinet.
-        </p>
-      )}
+    <Modal title={t('cabinet.appointTitle', { ministry: MINISTRY_CONTENT[ministry].name })} onClose={onClose}>
+      {occupied && <p className={styles.note}>{t('cabinet.reshuffle', { cost: RESHUFFLE_APPROVAL })}</p>}
       {candidates.length === 0 ? (
-        <p className={styles.muted}>No candidates left this year. A new pool arrives on 1 January.</p>
+        <p className={styles.muted}>{t('cabinet.noCandidates')}</p>
       ) : (
         <div className={styles.candidates}>
           {candidates.map((c) => (
@@ -95,8 +90,12 @@ function CandidateModal({ ministry, onClose }: { ministry: MinistryId; onClose: 
               <div style={{ minWidth: 180 }}>
                 <Traits minister={c} />
                 <div className={styles.cardActions} style={{ marginTop: 8 }}>
-                  <Button variant="primary" aria-label={`Appoint ${c.name}`} onClick={() => appoint(c.id)}>
-                    Appoint
+                  <Button
+                    variant="primary"
+                    aria-label={t('cabinet.appointName', { name: c.name })}
+                    onClick={() => appoint(c.id)}
+                  >
+                    {t('cabinet.appoint')}
                   </Button>
                 </div>
               </div>
@@ -119,6 +118,7 @@ function PolicyPicker<Id extends IdeologyId | StrategyId>({
   current: Id;
   content: Record<Id, { name: string; summary: string }>;
 }) {
+  const { t } = useTranslation();
   const game = useGame((s) => s.game);
   const [choice, setChoice] = useState<Id>(current);
   if (!game) return null;
@@ -132,19 +132,18 @@ function PolicyPicker<Id extends IdeologyId | StrategyId>({
           ? { type: 'SET_IDEOLOGY', ideology: choice as IdeologyId }
           : { type: 'SET_STRATEGY', strategy: choice as StrategyId },
       );
-  const title = kind === 'ideology' ? 'Ideology' : 'Development strategy';
+  const heading = kind === 'ideology' ? t('newGame.ideology') : t('newGame.strategy');
   return (
-    <Panel title={title}>
+    <Panel title={heading}>
       <select
         className={styles.select}
         value={choice}
-        aria-label={title}
+        aria-label={heading}
         onChange={(e) => setChoice(e.target.value as Id)}
       >
         {ids.map((id) => (
           <option key={id} value={id}>
-            {content[id].name}
-            {id === current ? ' (current)' : ''}
+            {id === current ? t('cabinet.current', { name: content[id].name }) : content[id].name}
           </option>
         ))}
       </select>
@@ -152,11 +151,11 @@ function PolicyPicker<Id extends IdeologyId | StrategyId>({
       <div className={styles.actions}>
         <span className={styles.note}>
           {wait > 0
-            ? `Can change again in ${wait} days`
-            : `Changing costs ${cost.value} approval for ${Math.round(cost.days / 30)} months`}
+            ? t('cabinet.policyWait', { count: wait })
+            : t('cabinet.policyCost', { cost: cost.value, months: Math.round(cost.days / 30) })}
         </span>
         <Button variant="primary" disabled={choice === current || wait > 0} onClick={apply}>
-          Adopt {content[choice].name}
+          {t('cabinet.adopt', { name: content[choice].name })}
         </Button>
       </div>
     </Panel>
@@ -164,6 +163,7 @@ function PolicyPicker<Id extends IdeologyId | StrategyId>({
 }
 
 export function CabinetView() {
+  const { t } = useTranslation();
   const game = useGame((s) => s.game);
   const [appointing, setAppointing] = useState<MinistryId | null>(null);
   if (!game) return null;
@@ -173,8 +173,8 @@ export function CabinetView() {
     <>
       <div className={gameStyles.viewHeader}>
         <div>
-          <h1 className={gameStyles.viewTitle}>Cabinet</h1>
-          <p className={gameStyles.viewSubtitle}>Competent, honest ministers make every rupee go further</p>
+          <h1 className={gameStyles.viewTitle}>{t('nav.views.cabinet')}</h1>
+          <p className={gameStyles.viewSubtitle}>{t('cabinet.subtitle')}</p>
         </div>
       </div>
 
@@ -206,31 +206,31 @@ export function CabinetView() {
                   <Person minister={minister} />
                 ) : (
                   <div>
-                    <div className={styles.personName}>Vacant</div>
-                    <div className={styles.muted}>Run by a senior civil servant</div>
+                    <div className={styles.personName}>{t('cabinet.vacant')}</div>
+                    <div className={styles.muted}>{t('cabinet.civilServant')}</div>
                   </div>
                 )}
               </div>
               {minister && <Traits minister={minister} />}
               <div className={styles.actions} style={{ justifyContent: 'space-between' }}>
                 <span className={styles.note}>
-                  Efficiency <strong>{Math.round(efficiency[m] * 100)}%</strong>
+                  {t('cabinet.efficiency')} <strong>{Math.round(efficiency[m] * 100)}%</strong>
                 </span>
                 <span className={styles.cardActions}>
                   {minister && (
                     <Button
                       variant="ghost"
-                      aria-label={`Dismiss ${minister.name}`}
+                      aria-label={t('cabinet.dismissName', { name: minister.name })}
                       onClick={() => gameStore.getState().dispatch({ type: 'DISMISS_MINISTER', ministry: m })}
                     >
-                      Dismiss
+                      {t('cabinet.dismiss')}
                     </Button>
                   )}
                   <Button
-                    aria-label={`Choose minister for ${MINISTRY_CONTENT[m].shortName}`}
+                    aria-label={t('cabinet.chooseFor', { ministry: MINISTRY_CONTENT[m].shortName })}
                     onClick={() => setAppointing(m)}
                   >
-                    {minister ? 'Replace' : 'Appoint'}
+                    {minister ? t('cabinet.replace') : t('cabinet.appoint')}
                   </Button>
                 </span>
               </div>

@@ -42,28 +42,28 @@ _India: Apex Sovereign_ starts as a **feature-complete re-imagining of the mobil
 
 Derived from the reference game's public store listing. We design all internals ourselves.
 
-| #   | Reference feature                            | Our system                                               | Phase |
-| --- | -------------------------------------------- | -------------------------------------------------------- | ----- |
-| F1  | Rule as President, with daily tasks          | Game clock, turn engine, inbox and decisions             | 1 ✅  |
-| F2  | Control government institutions              | Ministries and budget allocation                         | 2 ✅  |
-| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits                     | 2 ✅  |
-| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                         | 2 ✅  |
-| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)          | 2 ✅  |
-| F6  | Rating / approval                            | Approval model with drift and shocks                     | 2 ✅  |
-| F7  | Handle emergencies                           | Disaster events (flood, cyclone, quake, epidemic)        | 3 ✅  |
-| F8  | Fight corruption                             | Corruption index, anti-corruption agency, investigations | 3 ✅  |
-| F9  | Riots / unrest                               | Unrest per region, police response                       | 3 ✅  |
-| F10 | Fight terror groups                          | Terror threat, intelligence, counter-terror operations   | 3 ✅  |
-| F11 | Ensure your own safety                       | Presidential security, assassination and coup risk       | 3 ✅  |
-| F12 | Army with 10+ weapon types                   | Armed forces, procurement, upkeep                        | 4 ✅  |
-| F13 | Army drills                                  | Drills raise readiness and morale and deter rivals       | 4 ✅  |
-| F14 | Espionage against enemy armies               | Intelligence ops: recon, sabotage, counter-intelligence  | 4 ✅  |
-| F15 | Wars & expansion                             | War resolution, fronts, annexation                       | 4 ✅  |
-| F16 | Nuclear program                              | Research, warheads, deterrence, doctrine                 | 4 ✅  |
-| F17 | World map                                    | Interactive world map with an India detail view          | 5 ✅  |
-| F18 | Trade contracts                              | Bilateral trade deals                                    | 5 ✅  |
-| F19 | Non-aggression pacts                         | Treaties and relations                                   | 5 ✅  |
-| F20 | Game over / end states                       | Impeachment, coup, assassination, term victory           | 3 / 6 |
+| #   | Reference feature                            | Our system                                               | Phase    |
+| --- | -------------------------------------------- | -------------------------------------------------------- | -------- |
+| F1  | Rule as President, with daily tasks          | Game clock, turn engine, inbox and decisions             | 1 ✅     |
+| F2  | Control government institutions              | Ministries and budget allocation                         | 2 ✅     |
+| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits                     | 2 ✅     |
+| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                         | 2 ✅     |
+| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)          | 2 ✅     |
+| F6  | Rating / approval                            | Approval model with drift and shocks                     | 2 ✅     |
+| F7  | Handle emergencies                           | Disaster events (flood, cyclone, quake, epidemic)        | 3 ✅     |
+| F8  | Fight corruption                             | Corruption index, anti-corruption agency, investigations | 3 ✅     |
+| F9  | Riots / unrest                               | Unrest per region, police response                       | 3 ✅     |
+| F10 | Fight terror groups                          | Terror threat, intelligence, counter-terror operations   | 3 ✅     |
+| F11 | Ensure your own safety                       | Presidential security, assassination and coup risk       | 3 ✅     |
+| F12 | Army with 10+ weapon types                   | Armed forces, procurement, upkeep                        | 4 ✅     |
+| F13 | Army drills                                  | Drills raise readiness and morale and deter rivals       | 4 ✅     |
+| F14 | Espionage against enemy armies               | Intelligence ops: recon, sabotage, counter-intelligence  | 4 ✅     |
+| F15 | Wars & expansion                             | War resolution, fronts, annexation                       | 4 ✅     |
+| F16 | Nuclear program                              | Research, warheads, deterrence, doctrine                 | 4 ✅     |
+| F17 | World map                                    | Interactive world map with an India detail view          | 5 ✅     |
+| F18 | Trade contracts                              | Bilateral trade deals                                    | 5 ✅     |
+| F19 | Non-aggression pacts                         | Treaties and relations                                   | 5 ✅     |
+| F20 | Game over / end states                       | Impeachment, coup, assassination, term victory           | 3 / 6 ✅ |
 
 ### 2.2 Explicit improvements already in Stage A (cheap wins)
 
@@ -154,7 +154,7 @@ All values are normalised and tuned in Phase 6. Formulas live in `src/sim/system
 ### 5.1 Time
 
 - 1 tick = 1 in-game day. Speeds are paused, 1× (1 day/s), 2× and 4×.
-- The game starts on **1 Jan of the current year**, and a term lasts 5 years. A win means completing the term with approval ≥ 50% (difficulty-scaled), with optional endless mode.
+- The game starts on **1 Jan of the current year**, and a term lasts 5 years. On election day (1 January after five years) approval plus a small campaign swing must reach 55% to win a second term; voter fatigue lowers approval each year, faster on harder difficulties. A re-elected President may stay on in endless mode (Phase 6).
 
 ### 5.2 Economy
 

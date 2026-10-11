@@ -1,0 +1,55 @@
+# Desktop packaging (Sprint 6.3). `npm run dist` builds for the current OS; the release workflow
+# (.github/workflows/release.yml) builds Windows, macOS and Linux on a `v*` tag.
+appId: org.apexsovereign.game
+productName: India Apex Sovereign
+copyright: Copyright © 2026 India Apex Sovereign contributors
+artifactName: India-Apex-Sovereign-${version}-${os}-${arch}.${ext}
+
+directories:
+  output: release
+  buildResources: build
+
+# The game is the Vite build plus the compiled main/preload scripts. Runtime libraries are bundled by
+# Vite, so no node_modules ship with the app.
+files:
+  - dist/**
+  - dist-electron/**
+  - package.json
+asar: true
+compression: maximum
+
+win:
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: zip
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: India Apex Sovereign
+  artifactName: India-Apex-Sovereign-Setup-${version}.${ext}
+  # Saves live in the user's AppData folder and survive an uninstall unless the player removes them.
+  deleteAppDataOnUninstall: false
+
+mac:
+  icon: build/icon.png
+  category: public.app-category.strategy-games
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+    - target: zip
+      arch: [x64, arm64]
+
+linux:
+  icon: build/icon.png
+  category: Game
+  synopsis: Rule India as President in a realistic political strategy game
+  target: [AppImage, tar.gz]
+
+publish: null

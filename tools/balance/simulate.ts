@@ -2,7 +2,9 @@ import {
   advanceDays,
   createInitialState,
   debtToGdp,
+  TERM_COMPLETE_CAUSES,
   type Difficulty,
+  type GameOptions,
   type GameOverCause,
   type GameState,
 } from '../../src/sim';
@@ -25,20 +27,46 @@ export interface RunResult {
   seed: number;
   bot: string;
   years: YearRecord[];
-  /** Year (1-based) the game ended in, or null if the term was completed. */
+  difficulty: Difficulty;
+  /** Year (1-based) the presidency ended early in, or null if the President served the whole term. */
   endedInYear: number | null;
-  /** What ended the game, or null if the term was completed. */
+  /** What ended the game (election day included), or null if it is still running. */
   cause: GameOverCause | null;
+  /** The President won the election at the end of the term. */
+  reelected: boolean;
+  /**
+   * How many times each event fired, counted from outside the simulation (a fire stamps the event's
+   * cooldown), so the repeat rule is checked independently of the sim's own bookkeeping.
+   */
+  fires: Record<string, number>;
+  /** Highest regional unrest seen on any day. */
+  peakUnrest: number;
   final: GameState;
 }
+
+/** Every fire stamps the event's cooldown with a later tick, so a changed stamp is one fire. */
+const countFires = (before: GameState, after: GameState, fires: Record<string, number>) => {
+  const prev = before.events.cooldowns;
+  for (const [id, until] of Object.entries(after.events.cooldowns)) {
+    if (prev[id] !== until) fires[id] = (fires[id] ?? 0) + 1;
+  }
+};
 
 const finite = (v: unknown): boolean =>
   typeof v === 'number' ? Number.isFinite(v) : v && typeof v === 'object' ? Object.values(v).every(finite) : true;
 
 /** Plays one game: the bot acts at the start of every month, then a month of days elapses. */
-export function simulate(bot: Bot, seed: number, years: number, difficulty: Difficulty = 'normal'): RunResult {
-  let state = createInitialState({ seed, difficulty, presidentName: `Bot ${bot.id}`, startYear: 2026 });
+export function simulate(
+  bot: Bot,
+  seed: number,
+  years: number,
+  difficulty: Difficulty = 'normal',
+  options: Partial<GameOptions> = {},
+): RunResult {
+  let state = createInitialState({ seed, difficulty, presidentName: `Bot ${bot.id}`, startYear: 2026, options });
   const records: YearRecord[] = [];
+  const fires: Record<string, number> = {};
+  let peakUnrest = 0;
   let endedInYear: number | null = null;
 
   for (let year = 1; year <= years; year++) {
@@ -47,7 +75,10 @@ export function simulate(bot: Bot, seed: number, years: number, difficulty: Diff
       const target = { ...state.clock.date };
       // Advance to the first day of the next month, letting the bot react to anything that needs a decision.
       do {
+        const before = state;
         state = advanceDays(state, 1);
+        countFires(before, state, fires);
+        peakUnrest = Math.max(peakUnrest, ...Object.values(state.security.unrest));
         if (bot.react && state.status.kind === 'playing') state = bot.react(state);
       } while (state.status.kind === 'playing' && state.clock.date.month === target.month);
     }
@@ -66,12 +97,23 @@ export function simulate(bot: Bot, seed: number, years: number, difficulty: Diff
       corruption: economy.corruption,
     });
     if (state.status.kind === 'over') {
-      endedInYear = year;
+      if (!TERM_COMPLETE_CAUSES.includes(state.status.cause)) endedInYear = year;
       break;
     }
   }
   const cause = state.status.kind === 'over' ? state.status.cause : null;
-  return { seed, bot: bot.id, years: records, endedInYear, cause, final: state };
+  return {
+    seed,
+    bot: bot.id,
+    difficulty,
+    years: records,
+    endedInYear,
+    cause,
+    reelected: cause === 'reelected',
+    fires,
+    peakUnrest,
+    final: state,
+  };
 }
 
 export interface Kpi {

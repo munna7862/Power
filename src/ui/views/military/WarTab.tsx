@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   atWarWith,
   frontOdds,
@@ -14,128 +15,139 @@ import {
   strengthView,
   type GameState,
   type RivalId,
+  type StrengthView,
   type War,
 } from '../../../sim';
 import { gameStore } from '../../../store';
 import { Button, Modal, Panel } from '../../design/primitives';
 import { formatCrore } from '../../format';
+import { t as translate } from '../../i18n';
 import gameStyles from '../../screens/game.module.css';
 import styles from '../views.module.css';
 import { Bar, BarRow, CentreBar } from './parts';
 import { daysLeft } from './progress';
 
-const TERRAIN_LABELS = { plains: 'Plains', desert: 'Desert', jungle: 'Jungle', mountains: 'Mountains', coast: 'Coast' };
-
 function odds(mine: number, enemy: number): string {
-  if (enemy <= 0) return 'Undefended';
+  if (enemy <= 0) return translate('war.odds.undefended');
   const ratio = mine / enemy;
-  return ratio >= 1.5 ? 'Odds favour India' : ratio >= 0.85 ? 'Evenly matched' : 'Odds against India';
+  return translate(ratio >= 1.5 ? 'war.odds.favour' : ratio >= 0.85 ? 'war.odds.even' : 'war.odds.against');
+}
+
+function armyText(view: StrengthView): string {
+  return view.kind === 'unknown'
+    ? translate('war.army.unknown')
+    : view.kind === 'estimate'
+      ? translate('war.army.rough', { low: view.low, high: view.high })
+      : translate('war.army.range', { low: view.low, high: view.high });
 }
 
 function WarCard({ game, war }: { game: GameState; war: War }) {
+  const { t } = useTranslation();
   const { dispatch } = gameStore.getState();
   const content = RIVAL_CONTENT[war.rival];
   const score = warScore(war);
   const fronts = frontOdds(game, war);
   const rival = game.military.rivals[war.rival];
   const left = rival.strength / war.enemyStartStrength;
+  const trend =
+    war.status === 'terms' ? 'capitulated' : score > 15 ? 'advancing' : score < -15 ? 'fallingBack' : 'stalemate';
 
   return (
-    <article className={styles.warCard} data-status={war.status} aria-label={`War with ${content.name}`}>
+    <article className={styles.warCard} data-status={war.status} aria-label={t('war.with', { country: content.name })}>
       <div className={styles.warTitle}>
         <span>
-          War with {content.name}{' '}
+          {t('war.with', { country: content.name })}{' '}
           <span className={styles.muted}>
-            ({war.declaredBy === 'india' ? 'declared by India' : 'they attacked'} · day{' '}
-            {game.clock.tick - war.startedTick})
+            {t('war.started', {
+              by: t(war.declaredBy === 'india' ? 'war.byIndia' : 'war.byThem'),
+              day: game.clock.tick - war.startedTick,
+            })}
           </span>
         </span>
-        <span className={styles.tag}>
-          {war.status === 'terms'
-            ? 'Enemy capitulated'
-            : score > 15
-              ? 'India advancing'
-              : score < -15
-                ? 'India falling back'
-                : 'Stalemate'}
-        </span>
+        <span className={styles.tag}>{t(`war.trend.${trend}`)}</span>
       </div>
 
-      <BarRow label="War score" value={`${score > 0 ? '+' : ''}${score.toFixed(0)}`}>
-        <CentreBar value={score} label={`War score against ${content.name}`} />
+      <BarRow label={t('war.score')} value={`${score > 0 ? '+' : ''}${score.toFixed(0)}`}>
+        <CentreBar value={score} label={t('war.scoreAgainst', { country: content.name })} />
       </BarRow>
 
-      <div className={styles.stack} role="list" aria-label="Fronts">
+      <div className={styles.stack} role="list" aria-label={t('war.fronts')}>
         {fronts.map((f) => (
           <div key={f.name} className={styles.frontRow} role="listitem">
             <span>
               <div className={styles.personName}>{f.name}</div>
-              <div className={styles.muted}>{TERRAIN_LABELS[f.terrain]}</div>
+              <div className={styles.muted}>{t(`war.terrain.${f.terrain}`)}</div>
             </span>
-            <CentreBar value={f.progress} label={`${f.name} progress`} />
+            <CentreBar value={f.progress} label={t('war.frontProgress', { front: f.name })} />
             <span className={styles.muted}>{odds(f.mine, f.enemy)}</span>
           </div>
         ))}
       </div>
 
-      <BarRow label="War weariness" value={`${Math.round(war.weariness)}%`}>
+      <BarRow label={t('war.weariness')} value={`${Math.round(war.weariness)}%`}>
         <Bar
           value={war.weariness}
           tone={war.weariness > 60 ? 'danger' : war.weariness > 30 ? 'warning' : 'good'}
-          label="War weariness"
+          label={t('war.weariness')}
         />
       </BarRow>
-      <BarRow label="Enemy army left" value={`${Math.round(left * 100)}%`}>
-        <Bar value={left * 100} tone="danger" label="Share of the enemy army left" />
+      <BarRow label={t('war.enemyLeft')} value={`${Math.round(left * 100)}%`}>
+        <Bar value={left * 100} tone="danger" label={t('war.enemyLeftLabel')} />
       </BarRow>
 
       <p className={styles.note}>
-        Casualties so far: India {groupIndian(war.casualties.india)}, enemy {groupIndian(war.casualties.enemy)}.
-        Equipment lost: {groupIndian(war.equipmentLost)} units. War costs about{' '}
-        {formatCrore(Math.round(WAR.costPerStrength * militaryStrength(game.military)))} a day and weighs on approval
-        and growth.
+        {t('war.losses', {
+          india: groupIndian(war.casualties.india),
+          enemy: groupIndian(war.casualties.enemy),
+          equipment: groupIndian(war.equipmentLost),
+          cost: formatCrore(Math.round(WAR.costPerStrength * militaryStrength(game.military))),
+        })}
       </p>
       {war.report && (
-        <p className={styles.reportCard} aria-label="Daily report">
-          <strong>Daily report:</strong> {war.report.text}
+        <p className={styles.reportCard} aria-label={t('war.dailyReport')}>
+          <strong>{t('war.dailyReportHeading')}</strong> {war.report.text}
         </p>
       )}
 
       {war.status === 'terms' ? (
         <div className={styles.stack}>
           <strong>
-            {content.name} has capitulated. Choose the terms of peace (
-            {daysLeft(war.termsDeadlineTick ?? 0, game.clock.tick)} days left; reparations apply by default).
+            {t('war.capitulated', {
+              country: content.name,
+              count: daysLeft(war.termsDeadlineTick ?? 0, game.clock.tick),
+            })}
           </strong>
           <div className={styles.cardActions}>
             <Button
               variant="primary"
               onClick={() => dispatch({ type: 'SETTLE_WAR', warId: war.id, terms: 'reparations' })}
             >
-              Reparations · {formatCrore(reparationsFor(game, war.rival))}
+              {t('war.reparations', { value: formatCrore(reparationsFor(game, war.rival)) })}
             </Button>
             <Button onClick={() => dispatch({ type: 'SETTLE_WAR', warId: war.id, terms: 'annex' })}>
-              Annex {content.name}
+              {t('war.annex', { country: content.name })}
             </Button>
             <Button onClick={() => dispatch({ type: 'SETTLE_WAR', warId: war.id, terms: 'whitePeace' })}>
-              Magnanimous peace
+              {t('war.whitePeace')}
             </Button>
           </div>
           <p className={styles.note}>
-            Annexation adds {(content.gdpShare * 100).toFixed(1)}% to GDP and{' '}
-            {(content.populationShare * 100).toFixed(1)}% to the population, but raises unrest in the {content.region}{' '}
-            and brings three years of sanctions.
+            {t('war.annexNote', {
+              gdp: (content.gdpShare * 100).toFixed(1),
+              population: (content.populationShare * 100).toFixed(1),
+              region: t(`regions.${content.region}`),
+            })}
           </p>
         </div>
       ) : (
         <div className={styles.cardActions}>
           {war.ceasefireOffered && (
             <Button variant="primary" onClick={() => dispatch({ type: 'ACCEPT_CEASEFIRE', warId: war.id })}>
-              Accept ceasefire
+              {t('war.ceasefire')}
             </Button>
           )}
           <Button onClick={() => dispatch({ type: 'SUE_FOR_PEACE', warId: war.id })}>
-            Sue for peace with {content.name}
+            {t('war.suePeace', { country: content.name })}
           </Button>
         </div>
       )}
@@ -144,17 +156,20 @@ function WarCard({ game, war }: { game: GameState; war: War }) {
 }
 
 export function WarTab({ game }: { game: GameState }) {
+  const { t } = useTranslation();
   const { military } = game;
   const { dispatch } = gameStore.getState();
   const [confirm, setConfirm] = useState<RivalId | null>(null);
   const eff = allEfficiencies(game);
   const mine = militaryStrength(military);
+  const noWars = game.meta.options.noWars;
 
   const cannotDeclare = (id: RivalId): string | null => {
-    if (military.rivals[id].annexed) return 'Annexed';
-    if (atWarWith(game, id)) return 'Already at war';
-    if (military.wars.length >= MAX_WARS) return `At most ${MAX_WARS} wars`;
-    if (game.nation.treasury < WAR.mobilisation) return 'Cannot afford mobilisation';
+    if (noWars) return t('war.block.noWars');
+    if (military.rivals[id].annexed) return t('war.block.annexed');
+    if (atWarWith(game, id)) return t('war.block.atWar');
+    if (military.wars.length >= MAX_WARS) return t('war.block.maxWars', { max: MAX_WARS });
+    if (game.nation.treasury < WAR.mobilisation) return t('war.block.mobilisation');
     return null;
   };
 
@@ -162,29 +177,23 @@ export function WarTab({ game }: { game: GameState }) {
     <div className={gameStyles.grid}>
       <div className={`${gameStyles.span12} ${styles.stack}`}>
         {military.wars.length === 0 ? (
-          <Panel title="At peace">
-            <p className={styles.note}>
-              India is not at war. A rival may attack if your deterrence is weak; you can also declare war yourself, but
-              voters dislike wars of choice.
-            </p>
+          <Panel title={t('war.peace')}>
+            <p className={styles.note}>{noWars ? t('war.peaceNoWars') : t('war.peaceNote')}</p>
           </Panel>
         ) : (
           military.wars.map((war) => <WarCard key={war.id} game={game} war={war} />)
         )}
       </div>
 
-      <Panel title="Declare war" className={gameStyles.span8}>
-        <p className={styles.note}>
-          Declaring war costs {formatCrore(WAR.mobilisation)} to mobilise, hurts approval for four months and sours
-          relations with every other country. Fighting costs money and lives every day.
-        </p>
+      <Panel title={t('war.declare')} className={gameStyles.span8}>
+        <p className={styles.note}>{t('war.declareNote', { cost: formatCrore(WAR.mobilisation) })}</p>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Country</th>
-                <th>Their army</th>
-                <th className={styles.num}>Fronts</th>
+                <th>{t('diplomacy.columns.country')}</th>
+                <th>{t('war.theirArmy')}</th>
+                <th className={styles.num}>{t('war.fronts')}</th>
                 <th />
               </tr>
             </thead>
@@ -192,27 +201,24 @@ export function WarTab({ game }: { game: GameState }) {
               {RIVALS.map((id) => {
                 const content = RIVAL_CONTENT[id];
                 const block = cannotDeclare(id);
-                const view = strengthView(game, id, eff.intelligence);
                 return (
                   <tr key={id}>
                     <td>{content.name}</td>
                     <td className={styles.muted}>
-                      {view.kind === 'unknown'
-                        ? 'Unknown: run recon'
-                        : view.kind === 'estimate'
-                          ? `~${view.low}–${view.high} (rough)`
-                          : `${view.low}–${view.high}`}{' '}
-                      vs India {Math.round(mine)}
+                      {t('war.versus', {
+                        army: armyText(strengthView(game, id, eff.intelligence)),
+                        india: Math.round(mine),
+                      })}
                     </td>
                     <td className={styles.num}>{content.fronts.length}</td>
                     <td>
                       <Button
                         disabled={block !== null}
                         title={block ?? undefined}
-                        aria-label={`Declare war on ${content.name}`}
+                        aria-label={t('war.declareOn', { country: content.name })}
                         onClick={() => setConfirm(id)}
                       >
-                        Declare war
+                        {t('war.declare')}
                       </Button>
                     </td>
                   </tr>
@@ -223,15 +229,15 @@ export function WarTab({ game }: { game: GameState }) {
         </div>
       </Panel>
 
-      <Panel title="Past wars" className={gameStyles.span4}>
+      <Panel title={t('war.past')} className={gameStyles.span4}>
         {military.warHistory.length === 0 ? (
-          <p className={styles.note}>No wars fought yet.</p>
+          <p className={styles.note}>{t('war.noPast')}</p>
         ) : (
-          <ul className={styles.riskList} aria-label="Past wars">
+          <ul className={styles.riskList} aria-label={t('war.past')}>
             {military.warHistory.map((w, i) => (
               <li key={`${w.rival}-${w.startedTick}-${i}`} className={styles.reportCard}>
                 <div className={styles.personName}>
-                  {RIVAL_CONTENT[w.rival].name}: {w.outcome}
+                  {t('war.pastRow', { country: RIVAL_CONTENT[w.rival].name, outcome: t(`war.outcomes.${w.outcome}`) })}
                 </div>
                 <div className={styles.muted}>{w.settlement}</div>
               </li>
@@ -241,22 +247,23 @@ export function WarTab({ game }: { game: GameState }) {
       </Panel>
 
       {confirm && (
-        <Modal title={`Declare war on ${RIVAL_CONTENT[confirm].name}?`} onClose={() => setConfirm(null)}>
+        <Modal title={t('war.confirmTitle', { country: RIVAL_CONTENT[confirm].name })} onClose={() => setConfirm(null)}>
           <p>{RIVAL_CONTENT[confirm].summary}</p>
           <ul className={styles.effects}>
-            <li data-tone="bad">Mobilisation costs {formatCrore(WAR.mobilisation)}</li>
-            <li data-tone="bad">Approval −5 for four months, plus war weariness as the fighting drags on</li>
-            <li data-tone="bad">Relations with every other country fall</li>
+            <li data-tone="bad">{t('war.confirm.mobilisation', { cost: formatCrore(WAR.mobilisation) })}</li>
+            <li data-tone="bad">{t('war.confirm.approval')}</li>
+            <li data-tone="bad">{t('war.confirm.relations')}</li>
             <li data-tone="neutral">
-              India’s strength {Math.round(mine)} against their{' '}
               {(() => {
                 const v = strengthView(game, confirm, eff.intelligence);
-                return v.kind === 'unknown' ? 'unknown army (run recon first)' : `${v.low}–${v.high}`;
+                return v.kind === 'unknown'
+                  ? t('war.confirm.strengthUnknown', { india: Math.round(mine) })
+                  : t('war.confirm.strength', { india: Math.round(mine), low: v.low, high: v.high });
               })()}
             </li>
           </ul>
           <div className={styles.actions}>
-            <Button onClick={() => setConfirm(null)}>Not now</Button>
+            <Button onClick={() => setConfirm(null)}>{t('war.notNow')}</Button>
             <Button
               variant="primary"
               onClick={() => {
@@ -264,7 +271,7 @@ export function WarTab({ game }: { game: GameState }) {
                 setConfirm(null);
               }}
             >
-              Declare war
+              {t('war.declare')}
             </Button>
           </div>
         </Modal>

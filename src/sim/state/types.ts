@@ -21,7 +21,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 5;
+export const SCHEMA_VERSION = 6;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -33,11 +33,26 @@ export const HISTORY_LIMIT = 120;
 /** Inbox entries kept before the oldest are dropped. */
 export const LOG_LIMIT = 400;
 
+/** Optional rules picked on the New Game screen, next to the difficulty. */
+export interface GameOptions {
+  /** No country ever goes to war with India, and India cannot declare war. */
+  noWars: boolean;
+  /** Unrest never boils over into riots. */
+  noRiots: boolean;
+  /** The guided tutorial runs: a practice decision arrives in the first week. */
+  tutorial: boolean;
+}
+
+export const DEFAULT_OPTIONS: GameOptions = { noWars: false, noRiots: false, tutorial: false };
+
 export interface GameMeta {
   seed: number;
   difficulty: Difficulty;
+  options: GameOptions;
   presidentName: string;
   startDate: GameDate;
+  /** True once a re-elected President chose to stay on with no further elections (endless mode). */
+  endless: boolean;
 }
 
 export interface ClockState {
@@ -46,8 +61,22 @@ export interface ClockState {
   date: GameDate;
 }
 
-export const GAME_OVER_CAUSES = ['impeachment', 'coup', 'assassination', 'bankruptcy', 'defeat', 'nuclear'] as const;
+export const GAME_OVER_CAUSES = [
+  'impeachment',
+  'coup',
+  'assassination',
+  'bankruptcy',
+  'defeat',
+  'nuclear',
+  'votedOut',
+  'reelected',
+] as const;
 export type GameOverCause = (typeof GAME_OVER_CAUSES)[number];
+
+/** Ways a game can end that count as a win. */
+export const VICTORY_CAUSES: readonly GameOverCause[] = ['reelected'];
+/** Ways a game can end that mean the President served the full term. */
+export const TERM_COMPLETE_CAUSES: readonly GameOverCause[] = ['reelected', 'votedOut'];
 
 export type GameStatus =
   { kind: 'playing' } | { kind: 'over'; cause: GameOverCause; date: GameDate; title: string; summary: string };
@@ -210,6 +239,8 @@ export interface EventsState {
   scheduled: ScheduledEvent[];
   /** Event id → first tick it may fire again. */
   cooldowns: Record<string, number>;
+  /** Event id → ticks it fired on by random roll in the last five years, to keep repeats rare. */
+  fired: Record<string, number[]>;
 }
 
 export interface Investigation {

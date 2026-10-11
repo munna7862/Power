@@ -1,0 +1,76 @@
+{
+  "economy": {
+    "subtitle": "Settles on the 1st of every month",
+    "whyGrowth": "Why this growth?",
+    "expectedGrowth": "Expected real growth",
+    "expected": "Expected",
+    "drivers": {
+      "trend": "Trend growth",
+      "policy": "Ideology & strategy",
+      "ministries": "Ministry performance",
+      "taxes": "Tax burden",
+      "debt": "Debt overhang",
+      "corruption": "Corruption",
+      "inflation": "High inflation",
+      "stimulus": "Fiscal stimulus",
+      "crowdingOut": "Crowding out by deficits",
+      "disorder": "Unrest and terror"
+    },
+    "tiles": {
+      "gdp": "GDP (annual)",
+      "gdpNote": "₹{{value}} per person",
+      "growth": "Real growth",
+      "growthNote": "Trend {{trend}}",
+      "inflation": "Inflation",
+      "inflationNote": "Target band 2–6%",
+      "unemployment": "Unemployment",
+      "unemploymentNote": "Share of workforce",
+      "debt": "Public debt",
+      "debtNote": "{{debt}} at {{rate}}",
+      "treasury": "Treasury cash",
+      "treasuryNote": "Reserve of half a month",
+      "hdi": "HDI",
+      "hdiNote": "Human Development Index",
+      "corruption": "Corruption",
+      "corruptionNote": "0 clean – 100 rotten"
+    },
+    "indicators": "Indicators",
+    "range": "Time range",
+    "ranges": { "1Y": "1Y", "5Y": "5Y", "all": "All" },
+    "charts": {
+      "growth": "Real GDP growth",
+      "inflation": "Inflation",
+      "unemployment": "Unemployment",
+      "debt": "Public debt (% of GDP)",
+      "corruption": "Corruption index",
+      "hdi": "Human Development Index"
+    },
+    "sectors": "Sectors",
+    "sector": "Sector",
+    "share": "Share",
+    "growth": "Growth",
+    "sectorNames": {
+      "agriculture": "Agriculture",
+      "industry": "Industry",
+      "services": "Services",
+      "energy": "Energy",
+      "tech": "Technology"
+    },
+    "lastAccounts": "Last month's accounts",
+    "accounts": "Accounts",
+    "revenue": "Revenue",
+    "spending": "Spending",
+    "crore": "₹ crore",
+    "revenueLines": {
+      "income": "Income tax",
+      "corporate": "Corporate tax",
+      "gst": "GST",
+      "customs": "Customs",
+      "nonTax": "Non-tax revenue"
+    },
+    "establishment": "Pensions & salaries",
+    "interest": "Interest on debt",
+    "total": "Total",
+    "balance": "Balance"
+  }
+}

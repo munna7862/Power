@@ -13,7 +13,8 @@ import { militaryDailySystem, militaryMonthlySystem } from './military';
 import { modifierExpirySystem } from './modifierExpiry';
 import { societySystem } from './society';
 import { plotSystem, terrorSystem } from './terror';
-import { unrestSystem } from './unrest';
+import { termSystem } from './term';
+import { riotCapSystem, unrestSystem } from './unrest';
 
 /**
  * Fixed execution order. Changing it changes outcomes for a given seed,
@@ -34,9 +35,11 @@ export const SYSTEMS: readonly System[] = [
   militaryMonthlySystem,
   militaryDailySystem,
   diplomacyMonthlySystem,
+  riotCapSystem,
   eventsSystem,
   approvalSystem,
   historySystem,
   annualReportSystem,
+  termSystem,
   candidateRefreshSystem,
 ];

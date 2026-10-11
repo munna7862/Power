@@ -96,15 +96,30 @@ export function relationTarget(state: GameState, id: CountryId): number {
   );
 }
 
-export const relationWord = (relation: number): string =>
+export const RELATION_LEVELS = ['closeFriend', 'friendly', 'neutral', 'cool', 'hostile', 'adversary'] as const;
+export type RelationLevel = (typeof RELATION_LEVELS)[number];
+
+/** The band a relation falls in; the UI translates it, the simulation's own text uses relationWord(). */
+export const relationLevel = (relation: number): RelationLevel =>
   relation >= 60
-    ? 'Close friend'
+    ? 'closeFriend'
     : relation >= 25
-      ? 'Friendly'
+      ? 'friendly'
       : relation > -15
-        ? 'Neutral'
+        ? 'neutral'
         : relation > -45
-          ? 'Cool'
+          ? 'cool'
           : relation > -75
-            ? 'Hostile'
-            : 'Adversary';
+            ? 'hostile'
+            : 'adversary';
+
+const RELATION_WORDS: Record<RelationLevel, string> = {
+  closeFriend: 'Close friend',
+  friendly: 'Friendly',
+  neutral: 'Neutral',
+  cool: 'Cool',
+  hostile: 'Hostile',
+  adversary: 'Adversary',
+};
+
+export const relationWord = (relation: number): string => RELATION_WORDS[relationLevel(relation)];

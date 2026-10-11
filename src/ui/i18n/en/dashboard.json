@@ -1,0 +1,43 @@
+{
+  "dashboard": {
+    "subtitle": "President {{name}}",
+    "approval": "Public approval",
+    "votersScore": "Voters score (weight)",
+    "factorWeight": "{{factor}} ({{weight}}%)",
+    "factors": {
+      "jobs": "Jobs",
+      "prices": "Prices",
+      "growth": "Growth",
+      "corruption": "Corruption",
+      "livingStandards": "Living standards",
+      "taxes": "Taxes",
+      "services": "Public services",
+      "safety": "Safety"
+    },
+    "adjustments": "Adjustments",
+    "heading": "Approval is heading to",
+    "approvalGauge": "Approval of the President",
+    "topIssues": "Top issues",
+    "topIssuesNote": "The three things voters are least happy with.",
+    "term": "Term",
+    "year": "Year {{year}} of {{total}}",
+    "termProgress": "Term progress",
+    "election": "Election on 1 January {{year}}: you need {{approval}}% approval to win a second term.",
+    "fatigue": "Voter fatigue is costing you {{points}} points of approval.",
+    "endless": "Endless mode",
+    "secondTerm": "Second term",
+    "endlessNote": "No more elections. Impeachment, coups and the other dangers remain.",
+    "tookOffice": "Took office {{date}}",
+    "cash": "Cash balance",
+    "monthDelta": "{{delta}} in {{month}}",
+    "firstSettlement": "The first monthly settlement arrives on the 1st of next month.",
+    "deficit": "Deficits are covered by borrowing.",
+    "surplus": "Surplus cash above the reserve repays debt.",
+    "trends": "Trends (last 2 years)",
+    "growthChart": "Real GDP growth",
+    "balanceChart": "Monthly budget balance",
+    "inbox": "Presidential inbox",
+    "unread_one": "{{count}} unread",
+    "unread_other": "{{count}} unread"
+  }
+}

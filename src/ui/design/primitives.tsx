@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, type ButtonHTMLAttributes, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './primitives.module.css';
 
 const cx = (...names: (string | false | undefined)[]) => names.filter(Boolean).join(' ');
@@ -128,6 +129,7 @@ export function Tooltip({ label, children }: { label: string; children: ReactNod
 }
 
 export function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  const { t } = useTranslation();
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   // Kept in a ref so re-renders (the game ticks while menus are open) don't re-run the focus effect.
@@ -156,7 +158,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
           <h2 id={id} className={styles.modalTitle}>
             {title}
           </h2>
-          <Button variant="ghost" aria-label="Close" onClick={onClose}>
+          <Button variant="ghost" aria-label={t('common.close')} onClick={onClose}>
             ✕
           </Button>
         </header>

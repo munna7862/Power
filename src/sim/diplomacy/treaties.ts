@@ -1,6 +1,7 @@
 import { SECTORS, type CountryId, type SectorId, type TreatyType } from '../content/ids';
 import { COUNTRY_CONTENT } from '../content/world';
 import { nominalGdp } from '../economy/model';
+import { groupIndian } from '../engine/numberFormat';
 import type { Rng } from '../engine/rng';
 import { addModifier } from '../politics/policy';
 import { clamp } from '../security/unrest';
@@ -40,7 +41,7 @@ import {
 
 const DAYS_PER_YEAR = 365;
 const name = (id: CountryId) => COUNTRY_CONTENT[id]?.name ?? id;
-const crore = (value: number) => `₹${Math.round(value).toLocaleString('en-IN')} crore`;
+const crore = (value: number) => `₹${groupIndian(value)} crore`;
 
 export const adjustReputation = (state: GameState, delta: number): GameState => ({
   ...state,

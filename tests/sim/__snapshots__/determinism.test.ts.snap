@@ -2,15 +2,42 @@
 
 exports[`determinism > matches the golden hash of a full balanced-bot term (review deliberately if a sim change moves it) 1`] = `
 {
-  "approval": 77,
+  "approval": 59.4,
+  "cause": "reelected",
   "date": {
     "day": 1,
     "month": 1,
     "year": 2031,
   },
   "events": 400,
-  "hash": "2977d4f5",
-  "status": "playing",
-  "treasury": 377267,
+  "hash": "bcef6f9c",
+  "logQuarters": [
+    "413c00c9",
+    "bddad95f",
+    "2c6d9202",
+    "9e755350",
+  ],
+  "parts": {
+    "budget": "2363c0e4",
+    "cabinet": "fe96a72f",
+    "clock": "5737f056",
+    "diplomacy": "9a2cf2df",
+    "economy": "2bcaa8bb",
+    "events": "0c70a689",
+    "history": "546d771e",
+    "log": "b053b365",
+    "meta": "cc109b8f",
+    "military": "5e3c3118",
+    "modifiers": "30a2bace",
+    "nation": "ff28743f",
+    "nextId": "8d9cf063",
+    "politics": "35a05754",
+    "rng": "5143e0a9",
+    "schemaVersion": "330ca589",
+    "security": "8260bc1f",
+    "status": "f3d1df7c",
+  },
+  "status": "over",
+  "treasury": 350052,
 }
 `;

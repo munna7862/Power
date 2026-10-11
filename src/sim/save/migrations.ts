@@ -27,6 +27,7 @@ import {
 } from '../state/initialState';
 import { appendLog } from '../state/log';
 import {
+  DEFAULT_OPTIONS,
   SCHEMA_VERSION,
   type Difficulty,
   type GameState,
@@ -68,7 +69,8 @@ function migrateV1toV2(raw: unknown): unknown {
   const economy = createStartingEconomy(v1.meta.difficulty);
   let state: GameState = {
     schemaVersion: SCHEMA_VERSION,
-    meta: v1.meta,
+    // Typed against today's GameState for the helpers' sake; fields added after v2 are filled in by later steps.
+    meta: v1.meta as GameState['meta'],
     clock: v1.clock,
     rng: v1.rng,
     status: { kind: 'playing' },
@@ -209,6 +211,23 @@ function migrateV4toV5(raw: unknown): unknown {
 }
 
 /**
+ * v5 → v6 (Phase 6): adds the New Game options (all off for an old game), endless mode (off) and the record
+ * of recent random events that keeps repeats rare (empty, so the repeat rule starts afresh).
+ */
+function migrateV5toV6(raw: unknown): unknown {
+  const v5 = raw as Omit<GameState, 'meta' | 'events'> & {
+    meta: Omit<GameState['meta'], 'options' | 'endless'>;
+    events: Omit<GameState['events'], 'fired'>;
+  };
+  return {
+    ...v5,
+    schemaVersion: 6,
+    meta: { ...v5.meta, options: { ...DEFAULT_OPTIONS }, endless: false },
+    events: { ...v5.events, fired: {} },
+  };
+}
+
+/**
  * Registry keyed by the version being migrated FROM.
  * When SCHEMA_VERSION goes up, add a step here and a golden fixture for the old version.
  */
@@ -217,6 +236,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   2: migrateV2toV3,
   3: migrateV3toV4,
   4: migrateV4toV5,
+  5: migrateV5toV6,
 };
 
 export function migrate(

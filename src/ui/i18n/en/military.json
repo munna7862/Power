@@ -1,0 +1,268 @@
+{
+  "military": {
+    "subtitle": "Armed forces, drills, espionage, war and the nuclear program",
+    "atWar": " · At war with {{countries}}",
+    "strength": "Strength index",
+    "domainTier": "{{domain}} (tier {{tier}}, ×{{power}})",
+    "domains": { "land": "Land", "air": "Air", "sea": "Sea", "strategic": "Strategic" },
+    "readinessFactor": "Readiness factor",
+    "moraleFactor": "Morale factor",
+    "tiles": {
+      "readiness": "Readiness",
+      "readinessNote": "Drills raise it; underfunding lowers it",
+      "morale": "Morale",
+      "moraleNote": "Feeds army loyalty and coup risk",
+      "deterrence": "Deterrence",
+      "deterrenceNote": "Puts rivals off attacking"
+    },
+    "sections": "Military sections",
+    "tabs": { "forces": "Forces", "ops": "Drills & Intelligence", "war": "War", "nuclear": "Nuclear" }
+  },
+  "forces": {
+    "byDomain": "Forces by domain",
+    "orderSize": "Order size",
+    "units_one": "{{count}} unit",
+    "units_other": "{{count}} units",
+    "fundNote": "Paid from the procurement fund ({{fund}}). Queue {{queued}}/{{max}}.",
+    "domainForces": "{{domain}} forces",
+    "domainTier": "{{domain}} · tier {{tier}}",
+    "tierPower": "(strength ×{{power}})",
+    "researching_one": "Researching tier {{tier}}: {{count}} day left",
+    "researching_other": "Researching tier {{tier}}: {{count}} days left",
+    "researchBusy": "Another research project is under way.",
+    "cannotAfford": "The procurement fund cannot cover this.",
+    "researchLabel": "Research {{domain}} tier {{tier}}",
+    "research": "Research tier {{tier}} · {{cost}} · {{days}} days",
+    "highestTier": "Highest tier",
+    "columns": {
+      "unit": "Unit",
+      "inService": "In service",
+      "attackDefence": "Atk / Def",
+      "upkeep": "Upkeep / mo",
+      "price": "Price"
+    },
+    "cannotOrder": "Not enough in the procurement fund, or the queue is full.",
+    "orderLabel": "Order {{size}} {{unit}}",
+    "order": "Order {{size}}",
+    "funding": "Defence funding",
+    "budgetThisMonth": "Defence budget this month",
+    "upkeep": "Upkeep of the forces",
+    "covered": "Covered",
+    "coveredLabel": "Share of upkeep covered by the Defence budget",
+    "coveredShare": "{{value}}% of upkeep.",
+    "underfunded": "Underfunded: readiness and morale will decay.",
+    "surplus": "The surplus goes into the procurement fund.",
+    "fund": "Procurement fund",
+    "adjust": "Adjust Defence in Budget",
+    "queue": "Production queue",
+    "nothingOnOrder": "Nothing on order.",
+    "orderProgress": "{{unit}} order progress",
+    "cancelLabel": "Cancel order of {{quantity}} {{unit}}"
+  },
+  "ops": {
+    "drills": "Drills",
+    "drillsNote": "Exercises cost money from the procurement fund and take time, then raise readiness, morale and deterrence. At most {{max}} at once; training accidents happen.",
+    "drillKinds": {
+      "land": {
+        "label": "Land exercise",
+        "summary": "Divisions, armour and artillery train together on the northern plains.",
+        "start": "Start land exercise"
+      },
+      "air": {
+        "label": "Air exercise",
+        "summary": "Fighter and strike squadrons practise air combat and deep strikes.",
+        "start": "Start air exercise"
+      },
+      "naval": {
+        "label": "Naval exercise",
+        "summary": "Fleets and submarines drill sea control and convoy defence.",
+        "start": "Start naval exercise"
+      },
+      "joint": {
+        "label": "Joint exercise",
+        "summary": "All three services and the strategic forces rehearse a single campaign.",
+        "start": "Start joint exercise"
+      }
+    },
+    "drillTerms": "{{cost}} · {{days}} days · readiness +{{readiness}}, morale +{{morale}}, deterrence +{{deterrence}}",
+    "progress": "{{name}} progress",
+    "drillBlocked": "Not available: an exercise is running, two are under way, or funds are short.",
+    "reports": "Drill reports",
+    "noReports": "No exercise has finished yet.",
+    "accident": "(accident)",
+    "reportLine": "Readiness {{readiness}} · morale {{morale}} · deterrence {{deterrence}}",
+    "rivals": "Rivals and intelligence",
+    "rivalsNote": "Rival armies are hidden until a recon operation reveals them; the picture then blurs as it ages. Success depends on intelligence funding ({{efficiency}}% efficiency), your Intelligence Director {{director}} and the target’s counter-intelligence. A blown operation sours relations and causes a diplomatic incident. At most {{max}} operations at once.",
+    "director": "({{name}}, competence {{competence}})",
+    "directorVacant": "(post vacant)",
+    "armyStrength": "Army strength",
+    "hostility": "Hostility",
+    "operations": "Operations",
+    "strength": {
+      "unknown": "Unknown",
+      "annexed": "Annexed",
+      "estimate": "~{{low}}–{{high}} (rough estimate)"
+    },
+    "intel": {
+      "recon": {
+        "label": "Recon",
+        "summary": "Reveals the target army and its readiness. The picture goes stale as time passes."
+      },
+      "sabotage": {
+        "label": "Sabotage",
+        "summary": "Cripples the target’s readiness for months. Riskier: if it fails or leaves traces, there is a diplomatic incident."
+      },
+      "counterIntel": {
+        "label": "Counter-intelligence",
+        "summary": "Hunts foreign spies for four months: rival operations against India are far more likely to be caught."
+      }
+    },
+    "running_one": "{{name}}: {{count}} day",
+    "running_other": "{{name}}: {{count}} days",
+    "opLabel": "{{op}} {{country}}",
+    "busy": "All intelligence teams are busy.",
+    "oddsFor": "Odds for {{country}}",
+    "opCost": "{{op}} ({{cost}})",
+    "theirCounter": "Their counter-intelligence",
+    "yourDirector": "Your Director",
+    "cover": "Current cover: {{value}}/100.",
+    "sweepRunning_one": "Sweep running: {{count}} day",
+    "sweepRunning_other": "Sweep running: {{count}} days",
+    "startSweep": "Start counter-intelligence sweep · {{cost}}",
+    "inProgress": "Operations in progress",
+    "noOps": "No operations under way.",
+    "intelLabel": "Intelligence operations",
+    "opTarget": "{{op}}: {{country}}"
+  },
+  "war": {
+    "odds": {
+      "undefended": "Undefended",
+      "favour": "Odds favour India",
+      "even": "Evenly matched",
+      "against": "Odds against India"
+    },
+    "army": {
+      "unknown": "Unknown: run recon",
+      "rough": "~{{low}}–{{high}} (rough)",
+      "range": "{{low}}–{{high}}"
+    },
+    "with": "War with {{country}}",
+    "started": "({{by}} · day {{day}})",
+    "byIndia": "declared by India",
+    "byThem": "they attacked",
+    "trend": {
+      "capitulated": "Enemy capitulated",
+      "advancing": "India advancing",
+      "fallingBack": "India falling back",
+      "stalemate": "Stalemate"
+    },
+    "score": "War score",
+    "scoreAgainst": "War score against {{country}}",
+    "fronts": "Fronts",
+    "terrain": {
+      "plains": "Plains",
+      "desert": "Desert",
+      "jungle": "Jungle",
+      "mountains": "Mountains",
+      "coast": "Coast"
+    },
+    "frontProgress": "{{front}} progress",
+    "weariness": "War weariness",
+    "enemyLeft": "Enemy army left",
+    "enemyLeftLabel": "Share of the enemy army left",
+    "losses": "Casualties so far: India {{india}}, enemy {{enemy}}. Equipment lost: {{equipment}} units. War costs about {{cost}} a day and weighs on approval and growth.",
+    "dailyReport": "Daily report",
+    "dailyReportHeading": "Daily report:",
+    "capitulated_one": "{{country}} has capitulated. Choose the terms of peace ({{count}} day left; reparations apply by default).",
+    "capitulated_other": "{{country}} has capitulated. Choose the terms of peace ({{count}} days left; reparations apply by default).",
+    "reparations": "Reparations · {{value}}",
+    "annex": "Annex {{country}}",
+    "whitePeace": "Magnanimous peace",
+    "annexNote": "Annexation adds {{gdp}}% to GDP and {{population}}% to the population, but raises unrest in the {{region}} and brings three years of sanctions.",
+    "ceasefire": "Accept ceasefire",
+    "suePeace": "Sue for peace with {{country}}",
+    "block": {
+      "noWars": "Wars are switched off for this game",
+      "annexed": "Annexed",
+      "atWar": "Already at war",
+      "maxWars": "At most {{max}} wars",
+      "mobilisation": "Cannot afford mobilisation"
+    },
+    "peace": "At peace",
+    "peaceNote": "India is not at war. A rival may attack if your deterrence is weak; you can also declare war yourself, but voters dislike wars of choice.",
+    "peaceNoWars": "Wars are switched off for this game (New Game options): no country will attack India, and India cannot declare war.",
+    "declare": "Declare war",
+    "declareNote": "Declaring war costs {{cost}} to mobilise, hurts approval for four months and sours relations with every other country. Fighting costs money and lives every day.",
+    "theirArmy": "Their army",
+    "versus": "{{army}} vs India {{india}}",
+    "declareOn": "Declare war on {{country}}",
+    "past": "Past wars",
+    "noPast": "No wars fought yet.",
+    "pastRow": "{{country}}: {{outcome}}",
+    "outcomes": {
+      "victory": "victory",
+      "ceasefire": "ceasefire",
+      "peace": "peace",
+      "defeat": "defeat",
+      "nuclear": "nuclear strike"
+    },
+    "confirmTitle": "Declare war on {{country}}?",
+    "confirm": {
+      "mobilisation": "Mobilisation costs {{cost}}",
+      "approval": "Approval −5 for four months, plus war weariness as the fighting drags on",
+      "relations": "Relations with every other country fall",
+      "strength": "India’s strength {{india}} against their {{low}}–{{high}}",
+      "strengthUnknown": "India’s strength {{india}} against their unknown army (run recon first)"
+    },
+    "notNow": "Not now"
+  },
+  "nuclear": {
+    "program": "Nuclear program",
+    "programNote": "A secret program takes about {{research}} years of research, then {{enrichment}} years of enrichment, then builds a warhead every {{months}} months ({{warhead}} each). It costs {{monthly}} a month. Once it is visible to foreign services, sanctions pressure builds; the first warhead brings three years of sanctions, national pride and deterrence.",
+    "research": "Research",
+    "researchProgress": "Nuclear research progress",
+    "enrichment": "Enrichment",
+    "enrichmentProgress": "Enrichment progress",
+    "stage": "Stage:",
+    "stages": {
+      "none": "Not started",
+      "research": "Research",
+      "enrichment": "Enrichment",
+      "warheads": "Warhead production"
+    },
+    "warheads": "Warheads:",
+    "bonus": "Deterrence bonus +{{value}}",
+    "launch": "Launch the program · {{cost}}",
+    "pause": "Pause the program",
+    "resume": "Resume the program",
+    "doctrine": "Doctrine",
+    "doctrineLabel": "Nuclear doctrine",
+    "doctrines": {
+      "noFirstUse": {
+        "label": "No First Use",
+        "text": "India will never use nuclear weapons first. Keeps the world and voters calm; a first strike is not possible."
+      },
+      "firstUse": {
+        "label": "First use reserved",
+        "text": "India reserves the right to strike first. Deterrence rises about 15%, but approval and relations with every neighbour fall."
+      }
+    },
+    "use": "Use of nuclear weapons",
+    "useNote": "A nuclear strike destroys most of an enemy army and wins the war, and it also brings near-certain global sanctions for five years, a collapse in approval, unrest at home and hostile neighbours. On Hard difficulty it ends your presidency.",
+    "onlyInWar": "Only available during a war.",
+    "noWarheads": "India has no warheads.",
+    "changeDoctrine": "Doctrine is No First Use: change it above before a first strike can be ordered.",
+    "strikeAgainst": "Use nuclear weapon against {{country}}",
+    "confirmTitle": "Order a nuclear strike?",
+    "confirmText": "You are about to use a nuclear weapon against {{country}}. This cannot be undone.",
+    "effects": {
+      "sanctions": "Global sanctions for five years: growth −5 pts, revenue −12%",
+      "approval": "Approval −25 for 18 months; unrest and terror rise nationwide",
+      "relations": "Relations with every country −60",
+      "hard": "On Hard difficulty your presidency ends",
+      "war": "The enemy army is destroyed and the war ends"
+    },
+    "standDown": "Stand down",
+    "confirmStrike": "Confirm the strike"
+  }
+}

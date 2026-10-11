@@ -15,8 +15,8 @@ const fixture = (version: number) => fileURLToPath(new URL(`../fixtures/saves/v$
 describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
-      // An embassy so the fixture carries a treaty, then a little over a year of play.
-      const opened = dispatch(newGame({ seed: 2026, presidentName: 'Golden Fixture' }), {
+      // An embassy so the fixture carries a treaty, an option switched on, then a little over a year of play.
+      const opened = dispatch(newGame({ seed: 2026, presidentName: 'Golden Fixture', options: { noRiots: true } }), {
         type: 'OPEN_EMBASSY',
         country: 'USA',
       });
@@ -67,6 +67,23 @@ describe('v3 → v4 migration (Phase 4)', () => {
     expect(state.military.wars).toEqual([]);
     expect(state.military.forces.fighter).toBeGreaterThan(0);
     expect(state.military.nuclear.warheads).toBe(0);
+    expect(advanceDays(state, 30).status.kind).toBe('playing');
+  });
+});
+
+describe('v5 → v6 migration (Phase 6)', () => {
+  it('keeps the v5 game, switches every option off, starts outside endless mode and with no repeat record', () => {
+    const raw = JSON.parse(readFileSync(fixture(5), 'utf8'));
+    const result = parseSave(JSON.stringify(raw));
+    if (!result.ok) throw new Error(result.error);
+    const { state } = result.save;
+    expect(state.schemaVersion).toBe(SCHEMA_VERSION);
+    expect(state.clock).toEqual(raw.state.clock);
+    expect(state.diplomacy.treaties).toEqual(raw.state.diplomacy.treaties);
+    expect(state.meta.options).toEqual({ noWars: false, noRiots: false, tutorial: false });
+    expect(state.meta.endless).toBe(false);
+    expect(state.events.fired).toEqual({});
+    expect(state.events.cooldowns).toEqual(raw.state.events.cooldowns);
     expect(advanceDays(state, 30).status.kind).toBe('playing');
   });
 });

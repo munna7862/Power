@@ -58,11 +58,10 @@ jobs:
           retention-days: 7
 
   balance:
-    name: Balance KPIs (non-blocking)
+    # A merge gate since Sprint 6.1: every KPI band in planning/Phases/phase_6_polish_release.md must hold.
+    name: Balance KPIs
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # Reported on every PR but not yet a merge gate (Phase 2 plan); becomes blocking in Sprint 6.1.
-    continue-on-error: true
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -74,7 +73,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run balance harness (50 seeds x 5 years x 3 bots)
+      - name: Run balance harness (50 seeds x 5 years x 3 bots x 3 difficulties)
         run: npm run balance
 
       - name: Publish balance summary
@@ -88,3 +87,38 @@ jobs:
           name: balance-report
           path: reports/balance
           retention-days: 14
+
+  desktop:
+    # The Electron build: compiles the main and preload scripts and runs the desktop smoke tests (the M6 demo).
+    name: Desktop smoke test (Electron)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the game and the desktop shell
+        run: npm run build && npm run build:electron
+
+      # Ubuntu 24.04 runners restrict the user namespaces Chromium's sandbox needs; allow them on the runner
+      # rather than switching the sandbox off, so the test runs the configuration players get.
+      - name: Allow Chromium's sandbox on the runner
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Desktop smoke tests (virtual display)
+        run: xvfb-run --auto-servernum npx playwright test -c playwright.electron.config.ts
+
+      - name: Upload desktop test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-test-results
+          path: reports/test-results-desktop
+          retention-days: 7

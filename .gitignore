@@ -6,3 +6,5 @@ coverage/
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
+/dist-electron/
+/release/

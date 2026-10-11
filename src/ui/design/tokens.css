@@ -82,3 +82,29 @@
   --series-2: #eb6834;
   --chart-grid: rgba(17, 26, 46, 0.08);
 }
+
+/*
+ * Colour-blind palette (Settings → Accessibility). Good and bad signals use blue and orange (Okabe–Ito),
+ * which stay distinct with protanopia, deuteranopia and tritanopia; warnings move to yellow.
+ */
+:root[data-palette='colourBlind'] {
+  --green: #56b4e9;
+  --green-soft: rgba(86, 180, 233, 0.16);
+  --danger: #e69f00;
+  --danger-soft: rgba(230, 159, 0, 0.16);
+  --warning: #f0e442;
+  --warning-soft: rgba(240, 228, 66, 0.14);
+  --series-1: #56b4e9;
+  --series-2: #e69f00;
+}
+
+:root[data-theme='light'][data-palette='colourBlind'] {
+  --green: #0072b2;
+  --green-soft: rgba(0, 114, 178, 0.1);
+  --danger: #d55e00;
+  --danger-soft: rgba(213, 94, 0, 0.1);
+  --warning: #8a6d00;
+  --warning-soft: rgba(138, 109, 0, 0.1);
+  --series-1: #0072b2;
+  --series-2: #d55e00;
+}

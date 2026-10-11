@@ -1,14 +1,16 @@
 /**
  * Headless balance harness.
- *   npm run balance                       # 50 seeds × 5 years × 3 bots, Normal
+ *   npm run balance                       # 50 seeds × 5 years × 3 bots on every difficulty, bands on Normal
  *   npm run balance -- --seeds 10 --years 3 --difficulty hard
- * Writes reports/balance/balance.csv and summary.md; exits 1 if a KPI band fails.
+ * Writes reports/balance/balance.csv and summary.md; exits 1 if a KPI band fails (a blocking CI check).
+ * The KPI bands are documented in planning/Phases/phase_6_polish_release.md.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { DIFFICULTIES, type Difficulty } from '../../src/sim';
 import { BOTS } from './bots';
 import { evaluateDiplomacy } from './diplomacy';
+import { difficultyRows, evaluateRelease, probeOptions, worstRepeat } from './release';
 import { evaluate, simulate, type RunResult } from './simulate';
 import { evaluateWars, probeWars } from './wars';
 
@@ -27,11 +29,17 @@ const difficulty = values.difficulty as Difficulty;
 if (!DIFFICULTIES.includes(difficulty)) throw new Error(`Unknown difficulty ${difficulty}`);
 
 const started = performance.now();
-const results: RunResult[] = [];
-for (const bot of BOTS) {
-  for (let seed = 1; seed <= seeds; seed++) results.push(simulate(bot, seed, years, difficulty));
-}
+const play = (d: Difficulty) =>
+  BOTS.flatMap((bot) => Array.from({ length: seeds }, (_, i) => simulate(bot, i + 1, years, d)));
+const results: RunResult[] = play(difficulty);
+// The full band check (difficulty === 'normal') also plays the other difficulties, to compare them.
+const full = difficulty === 'normal';
+const byDifficulty = Object.fromEntries(
+  DIFFICULTIES.map((d) => [d, d === difficulty ? results : full ? play(d) : []]),
+) as Record<Difficulty, RunResult[]>;
+const optionProbe = full ? probeOptions(Math.min(seeds, 20), years) : null;
 const seconds = ((performance.now() - started) / 1000).toFixed(1);
+const games = Object.values(byDifficulty).flat().length + (optionProbe?.runs ?? 0);
 
 const pct = (v: number) => (v * 100).toFixed(2);
 const csv = [
@@ -55,12 +63,19 @@ const csv = [
 ].join('\n');
 
 const warProbes = probeWars(Math.min(seeds, 30), 240, difficulty);
-const kpis = [...evaluate(results, years), ...evaluateWars(warProbes), ...evaluateDiplomacy(results)];
+const kpis = [
+  ...evaluate(results, years),
+  ...evaluateWars(warProbes),
+  ...evaluateDiplomacy(results),
+  ...(optionProbe ? evaluateRelease(byDifficulty, optionProbe) : []),
+];
+const worst = worstRepeat(results);
 const finalRows = BOTS.map((bot) => {
   const runs = results.filter((r) => r.bot === bot.id);
   const finals = runs.map((r) => r.years.at(-1)!);
   const avg = (f: (y: (typeof finals)[number]) => number) => finals.reduce((s, y) => s + f(y), 0) / finals.length;
   const ended = runs.filter((r) => r.endedInYear !== null).length;
+  const won = runs.filter((r) => r.reelected).length;
   const causes = Object.entries(
     runs.reduce<Record<string, number>>(
       (acc, r) => (r.cause ? { ...acc, [r.cause]: (acc[r.cause] ?? 0) + 1 } : acc),
@@ -69,13 +84,13 @@ const finalRows = BOTS.map((bot) => {
   )
     .map(([cause, n]) => `${cause} ${n}`)
     .join(', ');
-  return `| ${bot.id} | ${bot.description} | ${ended}/${runs.length}${causes ? ` (${causes})` : ''} | ${avg((y) => y.approval).toFixed(1)}% | ${pct(avg((y) => y.realGrowth))}% | ${pct(avg((y) => y.inflation))}% | ${pct(avg((y) => y.unemployment))}% | ${pct(avg((y) => y.debtToGdp))}% |`;
+  return `| ${bot.id} | ${bot.description} | ${ended}/${runs.length} | ${won}/${runs.length} | ${causes || '-'} | ${avg((y) => y.approval).toFixed(1)}% | ${pct(avg((y) => y.realGrowth))}% | ${pct(avg((y) => y.inflation))}% | ${pct(avg((y) => y.unemployment))}% | ${pct(avg((y) => y.debtToGdp))}% |`;
 });
 
 const summary = [
   `# Balance report`,
   '',
-  `${seeds} seeds × ${years} years × ${BOTS.length} bots on **${difficulty}** · ${results.length} games in ${seconds}s`,
+  `${seeds} seeds × ${years} years × ${BOTS.length} bots on **${difficulty}**${full ? ' (plus Easy, Hard and the option probes)' : ''} · ${games} games in ${seconds}s`,
   '',
   '## KPI bands',
   '',
@@ -94,10 +109,31 @@ const summary = [
       `| ${p.rival} | ${p.won}/${p.seeds} | ${p.lost}/${p.seeds} | ${p.undecided}/${p.seeds} | ${p.meanScore.toFixed(0)} | ${p.meanDays.toFixed(0)} | ${Math.round(p.meanCasualties)} |`,
   ),
   '',
+  ...(full
+    ? [
+        '## Difficulty comparison',
+        '',
+        'Share of runs that served the whole term and that won re-election, and the mean approval at the end.',
+        '',
+        '| Difficulty | Bot | Served the term | Re-elected | Final approval |',
+        '|---|---|---|---|---|',
+        ...difficultyRows(byDifficulty).map(
+          (r) =>
+            `| ${r.difficulty} | ${r.bot} | ${(r.served * 100).toFixed(0)}% | ${(r.reelected * 100).toFixed(0)}% | ${r.meanApproval.toFixed(1)}% |`,
+        ),
+        '',
+      ]
+    : []),
+  `## Events`,
+  '',
+  `Most repeated random event on ${difficulty}: ${worst.event} (${worst.fires} times in one run). Mean distinct events per run: ${(
+    results.reduce((s, r) => s + Object.keys(r.fires).length, 0) / Math.max(1, results.length)
+  ).toFixed(1)}.`,
+  '',
   `## Final year averages`,
   '',
-  '| Bot | Behaviour | Game over | Approval | Growth | Inflation | Unemployment | Debt/GDP |',
-  '|---|---|---|---|---|---|---|---|',
+  '| Bot | Behaviour | Out early | Re-elected | How games ended | Approval | Growth | Inflation | Unemployment | Debt/GDP |',
+  '|---|---|---|---|---|---|---|---|---|---|',
   ...finalRows,
   '',
 ].join('\n');

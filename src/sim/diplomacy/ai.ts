@@ -1,6 +1,7 @@
 import type { CountryId, SectorId } from '../content/ids';
 import { RIVALS } from '../content/ids';
 import { COUNTRY_CONTENT, FOCUS_IDS, type CountryContent } from '../content/world';
+import { groupIndian } from '../engine/numberFormat';
 import type { Rng } from '../engine/rng';
 import { declarationChance } from '../military/rivals';
 import { MAX_WARS, startWar } from '../military/war';
@@ -203,7 +204,7 @@ function raiseOffer(
     title: type === 'trade' ? `${name(id)} proposes a trade contract` : `${name(id)} proposes a non-aggression pact`,
     body:
       type === 'trade'
-        ? `${name(id)} offers a ${years}-year ${terms.sector} contract worth ₹${(terms.value ?? 0).toLocaleString('en-IN')} crore a year. Answer on the Diplomacy screen within ${OFFER_DAYS} days.`
+        ? `${name(id)} offers a ${years}-year ${terms.sector} contract worth ₹${groupIndian(terms.value ?? 0)} crore a year. Answer on the Diplomacy screen within ${OFFER_DAYS} days.`
         : `${name(id)} proposes that neither country attacks the other for ${years} years. Answer on the Diplomacy screen within ${OFFER_DAYS} days.`,
   });
 }

@@ -1,16 +1,15 @@
 import type { ViewId } from '../../store';
 
-export const VIEW_LABELS: Record<ViewId, string> = {
-  dashboard: 'Dashboard',
-  inbox: 'Inbox',
-  economy: 'Economy',
-  budget: 'Budget',
-  cabinet: 'Cabinet',
-  security: 'Security',
-  military: 'Military',
-  world: 'World',
-  diplomacy: 'Diplomacy',
-  reports: 'Reports',
-};
-
-export const VIEWS = Object.keys(VIEW_LABELS) as ViewId[];
+/** The screens in navigation order (labels live in i18n under nav.views; F1–F10 follow this order). */
+export const VIEWS: readonly ViewId[] = [
+  'dashboard',
+  'inbox',
+  'economy',
+  'budget',
+  'cabinet',
+  'security',
+  'military',
+  'world',
+  'diplomacy',
+  'reports',
+];

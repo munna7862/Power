@@ -61,7 +61,7 @@ test.describe('playing the game', () => {
     await expect(tooltip).toBeVisible();
     await expect(tooltip).toContainText('Jobs (20%)');
     await expect(tooltip).toContainText('Difficulty: Hard');
-    await expect(tooltip).toContainText('−5');
+    await expect(tooltip).toContainText('−3');
     await expect(tooltip).toContainText('Ideology: Liberalism');
   });
 

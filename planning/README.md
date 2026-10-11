@@ -28,4 +28,5 @@ Planning hub for the `Power` project.
 - [x] Phase 3: Domestic Affairs & Security (Sprints 3.1–3.3), **M3: Crisis Manager** reached (2026-10-11)
 - [x] Phase 4: Military & Defence (Sprints 4.1–4.3), **M4: Commander-in-Chief** reached (2026-10-11)
 - [x] Phase 5: Diplomacy & World (Sprints 5.1–5.3), **M5: World Stage** reached (2026-10-11); parity features F1–F19 done, F20 completes in Phase 6
-- [ ] Sprint 6.1: Game Over, Difficulty & Polish (next)
+- [x] Phase 6: Polish & PC Release (Sprints 6.1–6.3), **M6: v1.0 PC Release** built (2026-10-11): all parity features F1–F20 done, Windows installer smoke-tested; tagging v1.0.0 and the itch.io page are the remaining launch steps
+- [ ] Phase 7: re-rank the backlog with player feedback after launch (next)

@@ -1,0 +1,212 @@
+{
+  "handbook": {
+    "title": "The Constitution",
+    "intro": "A handbook to every number in the game. Values shown are for your current difficulty ({{difficulty}}).",
+    "search": "Search the handbook",
+    "noMatch": "Nothing in the handbook matches that search.",
+    "sections": {
+      "basics": "Winning and losing",
+      "nation": "The nation",
+      "society": "Society",
+      "government": "Government",
+      "security": "Domestic security",
+      "military": "The armed forces",
+      "world": "The world",
+      "interface": "Using the game"
+    },
+    "entries": {
+      "winning": {
+        "title": "Winning: re-election",
+        "body": "A term lasts {{termYears}} years. On 1 January after the fifth year the voters decide: your approval, moved up to {{swing}} points either way by the campaign, must reach {{reelection}}%. Voter fatigue makes it harder each year: it costs {{fatigue}} points of approval for every year in office after the first, up to {{fatigueMax}}. Win and you may stay on in endless mode, with no further elections."
+      },
+      "losing": {
+        "title": "Losing the presidency",
+        "body": "Parliament impeaches you after {{impeachmentMonths}} months below {{impeachment}}% approval. Generals may stage a coup when coup risk passes {{coup}}. An assassination can succeed if presidential safety is low. Debt above {{bankruptcy}}% of GDP for {{bankruptcyMonths}} months is bankruptcy. A lost war or a nuclear exchange also ends the game, and so does losing the election."
+      },
+      "time": {
+        "title": "Time",
+        "body": "One tick is one day. At 1× a day passes every second; 2× and 4× go faster. The clock pauses by itself when a decision or a critical report arrives. Months close on the 1st (the economy and approval settle then) and years on 1 January."
+      },
+      "difficulty": {
+        "title": "Difficulty",
+        "body": "Easy, Normal and Hard change the opening treasury and approval, how often crises strike and how hard they land, how warlike the neighbours are, how fast voter fatigue builds and the impeachment threshold. On {{difficulty}}: voter fatigue −{{fatigue}} a year and impeachment below {{impeachment}}%."
+      },
+      "options": {
+        "title": "Game options",
+        "body": "Chosen on the New Game screen. No wars: no country can attack India and India cannot declare war. No riots: unrest is held at {{riotCap}}, below every riot. Guided tutorial: a tour of the first month with a practice decision."
+      },
+      "approval": {
+        "title": "Approval",
+        "body": "How the public rates the President, 0–100%. Each month it moves 15% of the way toward a target: the weighted voter satisfaction plus modifiers (ideology, events, scandals, wars, voter fatigue). The “Why?” tooltip on the Dashboard lists every part."
+      },
+      "satisfaction": {
+        "title": "Voter satisfaction",
+        "body": "Voters score eight things from 0 to 100: jobs, prices, growth, corruption, living standards, taxes, public services and safety. Jobs and prices weigh most. The Dashboard's top issues are the three they like least."
+      },
+      "treasury": {
+        "title": "Treasury",
+        "body": "Cash in ₹ crore. Each month revenue comes in and spending goes out. Deficits are borrowed and add to the debt; surplus cash above a reserve repays it."
+      },
+      "budget": {
+        "title": "Budget",
+        "body": "Ministry allocations are a share of GDP. Underfunded ministries are less efficient, which weakens everything they do. A new budget can be enacted at most once every 30 days; announcing large tax rises costs approval at once."
+      },
+      "taxes": {
+        "title": "Taxes",
+        "body": "Income tax, corporate tax, GST and customs. Higher rates raise revenue but slow growth and annoy voters. Each budget can move a rate by at most 5 points. Trade contracts add to customs revenue."
+      },
+      "gdp": {
+        "title": "GDP and growth",
+        "body": "The economy is the sum of five sectors: agriculture, industry, services, energy and technology. Real growth comes from investment, ministry efficiency, stability, corruption drag, the tax burden, your strategy and events. The Economy screen's “Why?” shows each driver."
+      },
+      "inflation": {
+        "title": "Inflation",
+        "body": "How fast prices rise. Deficit spending, fast growth and shocks push it up. Voters hate rising prices more than almost anything else."
+      },
+      "unemployment": {
+        "title": "Unemployment",
+        "body": "The share of people without work. Growth brings it down, recessions push it up. It is the heaviest factor in approval and a cause of unrest."
+      },
+      "debt": {
+        "title": "Debt",
+        "body": "Public debt as a share of GDP. Interest rises as debt grows. Above {{bankruptcy}}% for {{bankruptcyMonths}} months, the country defaults and the presidency ends."
+      },
+      "corruption": {
+        "title": "Corruption",
+        "body": "A national index from 0 (clean) to 100. It leaks budget money, drags on growth and angers voters. Corrupt ministers raise it; the Anti-Corruption ministry and investigations bring it down."
+      },
+      "hdi": {
+        "title": "Human Development Index",
+        "body": "Living standards from 0 to 1, built from health, education and income. Health and education spending raise it slowly; voters notice."
+      },
+      "sectors": {
+        "title": "Sectors",
+        "body": "Each sector grows at its own rate. Your development strategy favours some sectors, and trade contracts boost the sector they cover for their term."
+      },
+      "ministries": {
+        "title": "Ministries",
+        "body": "Eleven ministries do the work: Finance, Home Affairs, Defence, External Affairs, Health, Education, Agriculture, Industry, Disaster Management, Intelligence and Anti-Corruption. Each one's efficiency comes from its funding and its minister."
+      },
+      "ministers": {
+        "title": "Ministers",
+        "body": "Competence makes a ministry efficient. Loyalty matters most in Home Affairs, Defence and Intelligence, where disloyal ministers raise coup risk. Corruption leaks money and causes scandals. Reshuffles cost a little approval; new candidates arrive every January."
+      },
+      "ideology": {
+        "title": "Ideology",
+        "body": "Your government's outlook gives lasting modifiers to the economy, approval and diplomacy, and colours how other countries see India. Changing it costs approval and is possible once a year."
+      },
+      "strategy": {
+        "title": "Development strategy",
+        "body": "Agrarian, industrial, services and technology, defence-first or balanced. It shifts growth between sectors. Changing it costs a little approval and is possible once a year."
+      },
+      "events": {
+        "title": "Events and decisions",
+        "body": "Disasters, scandals, protests, threats and diplomatic moments arrive at random. Decisions wait in the inbox with a deadline; each choice lists its exact effects. Letting a crisis lapse applies the default choice and costs approval. A random event happens at most {{repeats}} times in five years."
+      },
+      "unrest": {
+        "title": "Unrest",
+        "body": "Each of six regions has unrest from 0 to 100, driven by jobs, prices, corruption, approval and policing. From {{tense}} a region is tense; from {{riot}} it riots, which costs growth and approval. Unrest is about regions and causes, never communities."
+      },
+      "terror": {
+        "title": "Terror threat",
+        "body": "A national threat from 0 to 100. Intelligence funding keeps it down. Plots that slip through are announced as warnings and strike unless you act."
+      },
+      "operations": {
+        "title": "Counter-terror operations",
+        "body": "Raids hit cells at once but can go wrong. Surveillance works slowly and quietly. Sealing the border cuts the threat sharply but hurts trade. Each costs money and needs a pause before it can be repeated."
+      },
+      "investigations": {
+        "title": "Investigations",
+        "body": "The Anti-Corruption agency can investigate a ministry. If its minister is corrupt they are exposed and resign; the scandal costs approval, but corruption falls."
+      },
+      "borderTension": {
+        "title": "Border tension",
+        "body": "How tense India's borders are, set by the most hostile neighbour. Good relations and strong deterrence keep it low; war drives it to the top."
+      },
+      "coup": {
+        "title": "Army loyalty and coup risk",
+        "body": "The armed forces' loyalty follows their funding, the Defence minister's loyalty and your approval. Low loyalty raises coup risk; above {{coup}}, a coup can happen in any month."
+      },
+      "safety": {
+        "title": "Presidential safety",
+        "body": "How well you are protected, from Home Affairs and Intelligence funding and the loyalty of their ministers. A high terror threat brings attempts; low safety lets them succeed."
+      },
+      "forces": {
+        "title": "Armed forces",
+        "body": "Twelve unit types across land, air and sea, each with a cost, monthly upkeep and combat power. Upkeep comes out of the Defence budget; what is left funds new orders, research and drills."
+      },
+      "readiness": {
+        "title": "Readiness and morale",
+        "body": "Readiness is how quickly the forces could fight today; morale is their will to fight. Both multiply military strength. Drills raise them; underfunding and spy probes lower them."
+      },
+      "deterrence": {
+        "title": "Deterrence",
+        "body": "How strongly neighbours are put off attacking. Strength, readiness, drills and nuclear weapons build it. Rival nations weigh it before they threaten or invade."
+      },
+      "research": {
+        "title": "Research",
+        "body": "Each domain (land, air, sea, strategic) has three technology tiers. Higher tiers make units stronger but costlier to buy and keep."
+      },
+      "drills": {
+        "title": "Drills",
+        "body": "Land, air, naval and joint exercises cost money and time, and raise readiness, morale and deterrence. Accidents can happen."
+      },
+      "intelligence": {
+        "title": "Intelligence and fog of war",
+        "body": "You never see a rival's true strength. Recon gives a snapshot that ages; sabotage weakens a rival but angers it if exposed; counter-intelligence protects India from their spies."
+      },
+      "war": {
+        "title": "War",
+        "body": "Wars are fought on fronts named for their terrain, a little every day. Victory can bring annexation or reparations; a stalemate can end in a ceasefire. Wars cost lives, money and approval as weariness grows. India can fight at most two wars at once."
+      },
+      "nuclear": {
+        "title": "Nuclear programme",
+        "body": "Research, then enrichment, then warheads. Warheads add a great deal of deterrence. Using one is a catastrophe: the world turns on India, and on Hard it ends the presidency."
+      },
+      "relations": {
+        "title": "Relations",
+        "body": "Every country's attitude to India, from −100 to +100. Each month it drifts toward a target built from its starting attitude, ideology match, treaties, your reputation, recent incidents and world tension. The Country panel's “Why?” shows each part."
+      },
+      "reputation": {
+        "title": "Reputation",
+        "body": "India's standing in the world, 0–100. Breaking a pact or contract costs it dearly; honoured treaties, embassies and aid rebuild it slowly. It shifts every relation and the odds of every deal."
+      },
+      "tension": {
+        "title": "World tension",
+        "body": "How tense the world is, 0–100. Crises between other countries and global shocks raise it; it cools over time. High tension sours every relation."
+      },
+      "trade": {
+        "title": "Trade contracts",
+        "body": "A contract boosts one sector of India's economy and customs revenue for one, three or five years. Acceptance is a roll with odds shown in advance. You can hold up to {{maxTrade}} contracts at once."
+      },
+      "pacts": {
+        "title": "Non-aggression pacts",
+        "body": "A pact lasts {{pactYears}} years. While it holds, that country cannot declare war on India. Breaking it costs heavy reputation."
+      },
+      "measures": {
+        "title": "Embassies, aid and sanctions",
+        "body": "Embassies cost ₹400 crore and ₹15 crore a month, and improve relations and deal odds. Aid trades money for goodwill and reputation. Sanctions end trade with a country and hurt both sides."
+      },
+      "aiNations": {
+        "title": "Other nations",
+        "body": "Twenty major nations decide each month whether to offer a deal, seek a pact, threaten, sanction or (for rivals) go to war, weighing their relation, relative power, ideology and your deterrence. Offers wait {{offerDays}} days for your answer."
+      },
+      "why": {
+        "title": "“Why?” tooltips",
+        "body": "Every key number has a “Why?” that lists exactly what moves it. They use the same formulas as the simulation, so they never disagree with the game."
+      },
+      "inbox": {
+        "title": "Inbox",
+        "body": "Reports, crises and decisions arrive in the inbox, filtered by category. Unread items are marked; decisions show how many days are left."
+      },
+      "saves": {
+        "title": "Saving",
+        "body": "Five save slots plus an autosave at the end of every month. On the desktop, saves are written safely to your user folder and the last three autosaves are kept."
+      },
+      "shortcuts": {
+        "title": "Keyboard shortcuts",
+        "body": "Everything can be played from the keyboard:"
+      }
+    }
+  }
+}

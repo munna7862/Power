@@ -8,6 +8,7 @@ import {
   serializeSave,
   type Command,
   type Difficulty,
+  type GameOptions,
   type GameState,
   type IdeologyId,
   type SaveSummary,
@@ -44,6 +45,7 @@ export interface NewGameInput {
   seed?: number;
   ideology?: IdeologyId;
   strategy?: StrategyId;
+  options?: Partial<GameOptions>;
 }
 
 export interface Notice {
@@ -109,7 +111,7 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       openCountry: (country) => set(country ? { country, view: 'world' } : { country }),
       openDecision: (decisionId) => set({ decisionId }),
 
-      startNewGame: ({ presidentName, difficulty, seed, ideology, strategy }) => {
+      startNewGame: ({ presidentName, difficulty, seed, ideology, strategy, options }) => {
         const game = createInitialState({
           presidentName,
           difficulty,
@@ -117,6 +119,7 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
           startYear: shell.currentYear(),
           ...(ideology && { ideology }),
           ...(strategy && { strategy }),
+          ...(options && { options }),
         });
         set({
           game,

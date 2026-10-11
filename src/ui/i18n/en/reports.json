@@ -1,0 +1,27 @@
+{
+  "charts": {
+    "current": "Current",
+    "proposed": "Proposed",
+    "compareLabel": "Spending by ministry, current and proposed",
+    "currentValue": "Current {{value}}",
+    "empty": "Charts fill in as months pass",
+    "latest": "{{title}}, latest {{value}}"
+  },
+  "reports": {
+    "subtitle": "Your record in office, year by year",
+    "annual": "Annual record",
+    "empty": "The first figures arrive on the 1st of next month.",
+    "columns": {
+      "year": "Year",
+      "growth": "Real growth",
+      "inflation": "Inflation",
+      "unemployment": "Unemployment",
+      "balance": "Budget balance",
+      "balanceToGdp": "Balance % GDP",
+      "debtToGdp": "Debt % GDP",
+      "approval": "Approval"
+    },
+    "partial": "({{months}} mo)",
+    "approvalHistory": "Approval history"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "inbox": {
+    "subtitle": "Briefings, crises and decisions for the President",
+    "markAll": "Mark all read",
+    "waitingTitle": "Decisions waiting ({{count}})",
+    "waitingLabel": "Decisions waiting",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "decideLabel": "Decide: {{title}}",
+    "decide": "Decide",
+    "filtersLabel": "Inbox filters",
+    "messagesLabel": "Inbox messages",
+    "empty": "Nothing here.",
+    "decisionTag": "decision",
+    "filters": {
+      "all": "All",
+      "unread": "Unread ({{count}})",
+      "decisions": "Decisions ({{count}})"
+    },
+    "categories": {
+      "general": "General",
+      "economy": "Economy",
+      "personal": "Personal",
+      "disaster": "Disasters",
+      "corruption": "Corruption",
+      "unrest": "Unrest",
+      "security": "Security",
+      "terror": "Terror",
+      "military": "Military",
+      "diplomacy": "Diplomacy"
+    }
+  }
+}

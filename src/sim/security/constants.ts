@@ -17,6 +17,11 @@ export const START_MILITARY_LOYALTY = 67;
 
 /** Unrest at or above this is a riot: regional riot events become eligible. */
 export const RIOT_UNREST = 65;
+/**
+ * With the "no riots" option, unrest is held at this level: below the riot level and below RIOT_TRIGGER (60),
+ * the unrest every riot event needs (content tests check that no riot event can fire beneath it).
+ */
+export const NO_RIOTS_UNREST_CAP = 58;
 /** Unrest at or above this counts as "tense" in the UI. */
 export const TENSE_UNREST = 45;
 

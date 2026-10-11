@@ -12,7 +12,7 @@ test.describe('economy and governance (Phase 2)', () => {
   test('the Economy screen shows indicators, charts and the monthly accounts', async ({ page }) => {
     await advanceDays(page, 120);
     await openView(page, 'Economy');
-    await expect(page.getByTestId('tile-Inflation')).toHaveText(/^\d+\.\d%$/);
+    await expect(page.getByTestId('tile-inflation')).toHaveText(/^\d+\.\d%$/);
     await expect(page.getByRole('figure')).toHaveCount(6);
     await expect(page.getByRole('cell', { name: 'Interest on debt' })).toBeVisible();
 

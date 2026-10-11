@@ -1,0 +1,51 @@
+.coach {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: 40;
+  width: min(380px, calc(100vw - 2 * var(--space-4)));
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-raised);
+  border: 1px solid var(--saffron);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.progress {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--saffron);
+}
+
+.title {
+  font-size: 16px;
+}
+
+.body {
+  color: var(--text-muted);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--text);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--saffron-soft);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 768px) {
+  .coach {
+    right: var(--space-4);
+    bottom: calc(64px + var(--space-3));
+  }
+}

@@ -1,6 +1,6 @@
 import type { MinistryId, RegionId } from '../content/ids';
 import type { GameState } from '../state/types';
-import { REGION_UNREST_BIAS } from './constants';
+import { NO_RIOTS_UNREST_CAP, REGION_UNREST_BIAS } from './constants';
 
 export interface Driver {
   label: string;
@@ -13,6 +13,19 @@ export interface Explained {
 }
 
 export const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+
+/** The highest unrest can go: with the "no riots" option it stays below every riot trigger. */
+export const unrestCeiling = (state: Pick<GameState, 'meta'>): number =>
+  state.meta.options.noRiots ? NO_RIOTS_UNREST_CAP : 100;
+
+/** Holds every region at or below the ceiling. Returns the same state when nothing needs capping. */
+export function capUnrest(state: GameState): GameState {
+  const ceiling = unrestCeiling(state);
+  const unrest = state.security.unrest;
+  if (Object.values(unrest).every((v) => v <= ceiling)) return state;
+  const capped = Object.fromEntries(Object.entries(unrest).map(([r, v]) => [r, Math.min(v, ceiling)])) as typeof unrest;
+  return { ...state, security: { ...state.security, unrest: capped } };
+}
 
 /**
  * The level of unrest a region is heading toward. Shared by the monthly system and the

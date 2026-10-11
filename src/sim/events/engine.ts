@@ -5,7 +5,7 @@ import { pickCountry } from '../diplomacy/world';
 import { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
-import type { GameState, PendingEvent } from '../state/types';
+import { TERM_YEARS, type GameState, type PendingEvent } from '../state/types';
 import { applyEffects, EVENT_DIFFICULTY } from './effects';
 import { statValue } from './stats';
 
@@ -17,6 +17,32 @@ export const INDECISION_PENALTY: Record<string, { value: number; days: number } 
 
 /** Most decisions that can wait at once. Further random events are held back until some are settled. */
 export const MAX_PENDING = 6;
+
+/**
+ * A random event fires at most this many times in any five-year window, so a term never feels like a rerun.
+ * Events with weight 0 (follow-ups, terror warnings, aftermaths) are briefings raised by the simulation
+ * itself and are exempt.
+ */
+export const MAX_REPEATS = 2;
+export const REPEAT_WINDOW_DAYS = Math.round(TERM_YEARS * 365.25);
+
+/** In a tutorial game no random event fires in the first week, so the practice decision arrives undisturbed. */
+export const TUTORIAL_QUIET_DAYS = 7;
+
+/** Random fires of an event within the repeat window ending today. */
+export function recentFires(state: Pick<GameState, 'events' | 'clock'>, eventId: string): number[] {
+  const since = state.clock.tick - REPEAT_WINDOW_DAYS;
+  return (state.events.fired[eventId] ?? []).filter((t) => t > since);
+}
+
+/** True when an event has fired as often as the repeat rule allows. */
+export const repeatsExhausted = (state: Pick<GameState, 'events' | 'clock'>, eventId: string): boolean =>
+  recentFires(state, eventId).length >= MAX_REPEATS;
+
+function recordFire(state: GameState, eventId: string): GameState {
+  const fired = { ...state.events.fired, [eventId]: [...recentFires(state, eventId), state.clock.tick] };
+  return { ...state, events: { ...state.events, fired } };
+}
 
 function compare(op: string, a: number, b: number): boolean {
   switch (op) {
@@ -182,13 +208,15 @@ function regionCandidates(state: GameState, def: EventContent): { region: Region
  */
 export function rollDailyEvent(state: GameState, rng: Rng): GameState {
   const frequency = EVENT_DIFFICULTY[state.meta.difficulty].frequency;
-  const open = state.events.pending.length < MAX_PENDING;
+  const quiet = state.meta.options.tutorial && state.clock.tick < TUTORIAL_QUIET_DAYS;
+  const open = state.events.pending.length < MAX_PENDING && !quiet;
   let fired = false;
   let next = state;
   for (const def of EVENT_LIST) {
     const roll = rng.next();
     if (fired || !open || roll >= (def.weight / 365) * frequency) continue;
     if ((next.events.cooldowns[def.id] ?? 0) > next.clock.tick) continue;
+    if (repeatsExhausted(next, def.id)) continue;
 
     if (def.scope === 'region') {
       const candidates = regionCandidates(next, def);
@@ -203,6 +231,7 @@ export function rollDailyEvent(state: GameState, rng: Rng): GameState {
       if (def.countryPick && ref === null) continue;
       next = fireEvent(next, def, null, ref, rng);
     }
+    next = recordFire(next, def.id);
     fired = true;
   }
   return next;

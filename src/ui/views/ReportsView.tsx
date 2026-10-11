@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { formatMonth, type MonthlySnapshot } from '../../sim';
 import { useGame } from '../../store';
 import { LineChart } from '../charts/LineChart';
@@ -17,6 +18,17 @@ interface YearRow {
   debtToGdp: number;
   approval: number;
 }
+
+const COLUMNS = [
+  'year',
+  'growth',
+  'inflation',
+  'unemployment',
+  'balance',
+  'balanceToGdp',
+  'debtToGdp',
+  'approval',
+] as const;
 
 function byYear(history: readonly MonthlySnapshot[]): YearRow[] {
   const groups = new Map<number, MonthlySnapshot[]>();
@@ -40,6 +52,7 @@ function byYear(history: readonly MonthlySnapshot[]): YearRow[] {
 }
 
 export function ReportsView() {
+  const { t } = useTranslation();
   const history = useGame((s) => s.game?.history ?? []);
   const rows = byYear(history).reverse();
 
@@ -47,27 +60,22 @@ export function ReportsView() {
     <>
       <div className={gameStyles.viewHeader}>
         <div>
-          <h1 className={gameStyles.viewTitle}>Reports</h1>
-          <p className={gameStyles.viewSubtitle}>Your record in office, year by year</p>
+          <h1 className={gameStyles.viewTitle}>{t('nav.views.reports')}</h1>
+          <p className={gameStyles.viewSubtitle}>{t('reports.subtitle')}</p>
         </div>
       </div>
       <div className={gameStyles.grid}>
-        <Panel title="Annual record" className={gameStyles.span12}>
+        <Panel title={t('reports.annual')} className={gameStyles.span12}>
           {rows.length === 0 ? (
-            <p className={styles.muted}>The first figures arrive on the 1st of next month.</p>
+            <p className={styles.muted}>{t('reports.empty')}</p>
           ) : (
             <div className={styles.tableWrap}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>Year</th>
-                    <th>Real growth</th>
-                    <th>Inflation</th>
-                    <th>Unemployment</th>
-                    <th>Budget balance</th>
-                    <th>Balance % GDP</th>
-                    <th>Debt % GDP</th>
-                    <th>Approval</th>
+                    {COLUMNS.map((c) => (
+                      <th key={c}>{t(`reports.columns.${c}`)}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -75,7 +83,9 @@ export function ReportsView() {
                     <tr key={r.year}>
                       <td>
                         {r.year}
-                        {r.months < 12 && <span className={styles.muted}> ({r.months} mo)</span>}
+                        {r.months < 12 && (
+                          <span className={styles.muted}> {t('reports.partial', { months: r.months })}</span>
+                        )}
                       </td>
                       <td>{pct(r.growth)}</td>
                       <td>{pct(r.inflation)}</td>
@@ -91,9 +101,9 @@ export function ReportsView() {
             </div>
           )}
         </Panel>
-        <Panel title="Approval history" className={gameStyles.span12}>
+        <Panel title={t('reports.approvalHistory')} className={gameStyles.span12}>
           <LineChart
-            title="Approval of the President"
+            title={t('dashboard.approvalGauge')}
             data={history.map((h) => ({ label: formatMonth(h.month), value: h.approval }))}
             format={(v) => `${v.toFixed(0)}%`}
             height={180}

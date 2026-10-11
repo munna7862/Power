@@ -1,6 +1,7 @@
 import { APPROVAL_FACTORS, type ApprovalFactor, type MinistryId } from '../content/ids';
 import { DEFAULT_TAX_RATES } from '../economy/constants';
 import { resolve, type Resolution } from '../engine/modifiers';
+import { rulesFor } from '../state/difficulty';
 import type { GameState } from '../state/types';
 
 /** How much each factor weighs in the approval target. Sums to 1. */
@@ -36,8 +37,11 @@ export const SERVICE_MINISTRIES: readonly MinistryId[] = [
   'disaster',
 ];
 
-/** Approval below this for IMPEACHMENT_MONTHS consecutive months ends the game. */
+/** Approval below this for IMPEACHMENT_MONTHS consecutive months ends the game (on Normal; see impeachmentThreshold). */
 export const IMPEACHMENT_THRESHOLD = 15;
+
+/** The impeachment threshold for this game's difficulty. */
+export const impeachmentThreshold = (state: Pick<GameState, 'meta'>): number => rulesFor(state).impeachmentThreshold;
 export const IMPEACHMENT_MONTHS = 3;
 
 const clamp = (v: number) => Math.max(0, Math.min(100, v));

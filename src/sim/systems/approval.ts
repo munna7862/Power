@@ -1,7 +1,7 @@
 import { allEfficiencies } from '../economy/model';
 import { formatDate } from '../engine/calendar';
 import type { System } from '../engine/system';
-import { approvalTarget, computeSatisfaction, IMPEACHMENT_MONTHS, IMPEACHMENT_THRESHOLD } from '../politics/approval';
+import { approvalTarget, computeSatisfaction, IMPEACHMENT_MONTHS, impeachmentThreshold } from '../politics/approval';
 import { endGame } from '../state/gameOver';
 
 /** Fraction of the gap to the target closed each month. */
@@ -20,7 +20,7 @@ export const approvalSystem: System = {
     const target = approvalTarget(state, satisfaction).total;
     const drifted = state.nation.approval + (target - state.nation.approval) * DRIFT_RATE + rng.range(-1, 1);
     const approval = Math.round(Math.min(100, Math.max(0, drifted)) * 10) / 10;
-    const lowApprovalMonths = approval < IMPEACHMENT_THRESHOLD ? state.politics.lowApprovalMonths + 1 : 0;
+    const lowApprovalMonths = approval < impeachmentThreshold(state) ? state.politics.lowApprovalMonths + 1 : 0;
 
     const next = {
       ...state,
