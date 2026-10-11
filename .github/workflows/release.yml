@@ -1,0 +1,123 @@
+name: Release
+
+# Builds the desktop game for Windows, macOS and Linux when a version tag is pushed (git tag v1.0.0 &&
+# git push origin v1.0.0), publishes a GitHub release with the installers, and (optionally) pushes the
+# builds to itch.io. Release notes come from docs/release/<tag>.md.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: The tag matches package.json
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run balance
+
+  package:
+    name: Package (${{ matrix.os }})
+    needs: verify
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: --win
+          - os: macos-latest
+            target: --mac
+          - os: ubuntu-latest
+            target: --linux
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    env:
+      # Builds are unsigned for the hobby launch; see the Phase 7 backlog for code signing.
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run build:electron
+      - name: Build installers
+        run: npx electron-builder ${{ matrix.target }} --publish never
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}
+          path: |
+            release/*.exe
+            release/*.zip
+            release/*.dmg
+            release/*.AppImage
+            release/*.tar.gz
+          if-no-files-found: error
+          retention-days: 30
+
+  github-release:
+    name: GitHub release
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: release-*
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: India Apex Sovereign ${{ github.ref_name }}
+          body_path: docs/release/${{ github.ref_name }}.md
+          files: artifacts/*
+          fail_on_unmatched_files: true
+
+  itch:
+    # Optional: set the BUTLER_API_KEY secret and the ITCH_TARGET variable (e.g. "user/india-apex-sovereign")
+    # to push each build to its itch.io channel. Without them this job does nothing.
+    name: itch.io
+    needs: package
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+      ITCH_TARGET: ${{ vars.ITCH_TARGET }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: release-*
+          merge-multiple: true
+      - name: Push to itch.io with butler
+        run: |
+          if [ -z "$BUTLER_API_KEY" ] || [ -z "$ITCH_TARGET" ]; then
+            echo "itch.io is not configured (BUTLER_API_KEY secret / ITCH_TARGET variable); skipping."
+            exit 0
+          fi
+          curl -sSfL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler && chmod +x butler/butler
+          version="${GITHUB_REF_NAME#v}"
+          ./butler/butler push artifacts/*-win-x64.zip "$ITCH_TARGET:windows" --userversion "$version"
+          ./butler/butler push artifacts/*-mac-arm64.zip "$ITCH_TARGET:mac" --userversion "$version"
+          ./butler/butler push artifacts/*.AppImage "$ITCH_TARGET:linux" --userversion "$version"

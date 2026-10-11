@@ -13,6 +13,7 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - **Persistence goes through `src/platform/`** (storage adapters), so Electron and Capacitor can swap the backend.
 - **UI and tools import the simulation from `src/sim` (its `index.ts`) only**, never from deep paths.
 - **Game data lives in `content/*.json`** and is validated by zod in `src/sim/content`. Ids must match `src/sim/content/ids.ts`.
+- **UI text lives in `src/ui/i18n/en/*.json`**, never in components: use `t()` (`useTranslation()` in components, `t` from `src/ui/i18n` elsewhere). The lint rule `apex/no-ui-literals` (`eslint-rules/`) blocks hard-coded text in `src/ui`, and TypeScript checks every key. Each top-level section lives in exactly one file. Simulation and content text (events, inbox entries, sim "Why?" labels) is still English and comes from `src/sim` and `/content`.
 - **Explanations and the simulation share formulas.** Growth drivers (`economy/growth.ts`), fiscal projections (`projectMonth`) and approval (`politics/approval.ts`) are used by both the monthly systems and the UI, so the "Why?" tooltips can never drift from what the sim does.
 
 ## Events
@@ -20,6 +21,7 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.
 - Event text: fictional groups only; unrest is by region and cause (jobs, prices, corruption, policing), never religion or caste; keep terror non-graphic. `tests/sim/events.test.ts` blocks obvious violations but does not replace review.
 - Every decision needs exactly one `default` choice (applied if the President does not decide in time).
+- A random event fires at most twice in any five-year window (`MAX_REPEATS`, `events.fired`). Events with `weight: 0` are briefings the simulation raises itself (follow-ups, terror warnings, the tutorial's practice decision) and are exempt; give an event weight 0 if a system raises it.
 - The Security screen uses the schematic tile map for regional unrest. The world map is the only place India's boundary is drawn (see Diplomacy and the world map below).
 
 ## Military
@@ -40,9 +42,23 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - **The map** (`content/world/map.json`) is built by `tools/world/buildMap.ts` from Natural Earth's India point-of-view file, which draws India's boundaries as per the Survey of India. Never replace it with the default Natural Earth file or hand-edit it. `tests/world/boundary.test.ts` is the blocking check: it must keep passing for any map change.
 - Diplomatic events live in `content/events/diplomacy.json` and use the `countryPick` field to name the country they are about (`{country}` in text, also in choice text and outcomes).
 
+## Difficulty, options and the term
+
+- Everything that differs between Easy, Normal and Hard is in one table, `src/sim/state/difficulty.ts` (`rulesFor(state)`). Read rules from there, never by comparing `meta.difficulty` in a system.
+- New Game options live in `state.meta.options` (`noWars`, `noRiots`, `tutorial`). A new option needs the schema, a migration default, a probe in `tools/balance/release.ts` and a band.
+- The election and voter fatigue are `src/sim/systems/term.ts`. Victory causes are `VICTORY_CAUSES`; "served the term" is `TERM_COMPLETE_CAUSES`. Endless mode (`meta.endless`) only follows a win.
+
+## Desktop and release
+
+- The desktop app is the same web build inside Electron (`electron/`). Keep the renderer locked down: context isolation, no Node integration, sandbox, the `app://` scheme with its CSP, and IPC that checks the sender and validates every argument. The page reaches the desktop only through `window.apexDesktop` (`electron/preload.cts`, typed in `src/platform/desktop.ts`).
+- Desktop saves go through `electron/saves.ts`: temporary file, flush, rename; three autosave generations; slot names are whitelisted.
+- `npm run test:electron` runs the desktop smoke tests (the M6 demo) in the real Electron app; CI runs them too. Set `APEX_EXECUTABLE` to test a packaged build.
+- Releases: bump `package.json`, add `docs/release/v<version>.md` and a CHANGELOG entry, merge, then push the tag `v<version>`. The release workflow refuses a tag that does not match `package.json`.
+- Audio is synthesised in code (`src/ui/audio`); do not add audio files without a licence entry in `CREDITS.md`. Every third-party asset or dataset goes in `CREDITS.md`.
+
 ## Balance
 
-- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_5_diplomacy_world.md` (which include the Phase 3 and 4 bands, a war probe and the diplomacy bands). Run it after any formula change and update the bands deliberately, never to make a failure pass.
+- `npm run balance` plays 50 seeds × 5 years × 3 bots on every difficulty (`tools/balance`), plus a war probe and the option probes, and checks the KPI bands in `planning/Phases/phase_6_polish_release.md` (which add to the Phase 3–5 bands). It is a **blocking** CI check. Run it after any formula change and update the bands deliberately, never to make a failure pass.
 - Bots act only through `dispatch()`, like a player.
 
 ## Save compatibility
@@ -61,6 +77,8 @@ This runs format check, lint, typecheck, unit tests with coverage (≥ 85% on `s
 - Playwright runs in **Google Chrome only** (`channel: 'chrome'`).
 - No blind waits in e2e tests. Use web-first assertions; the one deliberate wait (proving the clock stays paused) is commented.
 - The dev-only `window.__APEX__` hook exists to fast-forward time in e2e tests. It is stripped from production builds.
+- E2e tests start games through `startGame()` in `e2e/support.ts`, which switches the tutorial off unless a test asks for it.
+- `tests/content/review.test.ts` scans all content and UI text for real people, parties, organisations, communal framing, trademarked weapon names and the reference game's name. Keep it passing; it does not replace a human read of new text.
 
 ## Content rules
 

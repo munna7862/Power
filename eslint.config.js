@@ -6,9 +6,9 @@ import tseslint from 'typescript-eslint';
 import apex from './eslint-rules/index.js';
 
 export default tseslint.config(
-  { ignores: ['dist', 'reports', 'coverage', 'node_modules'] },
+  { ignores: ['dist', 'dist-electron', 'release', 'reports', 'coverage', 'node_modules'] },
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ['**/*.{ts,tsx,cts}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: { ecmaVersion: 2022, globals: { ...globals.browser, ...globals.node } },
   },
