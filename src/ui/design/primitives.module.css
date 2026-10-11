@@ -1,0 +1,232 @@
+/* Button */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 38px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: #1a0e00;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--saffron-strong);
+}
+
+:global([data-theme='light']) .primary {
+  color: #ffffff;
+}
+
+.ghost {
+  background: transparent;
+  border-color: transparent;
+}
+
+.large {
+  min-height: 48px;
+  font-size: 15px;
+}
+
+.block {
+  width: 100%;
+}
+
+/* Panel */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.panelTitle {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Stat */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.statValue {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.statDelta {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.positive {
+  color: var(--green);
+}
+
+.negative {
+  color: var(--danger);
+}
+
+.neutral {
+  color: var(--text-muted);
+}
+
+/* Gauge */
+.gauge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+.gaugeDial {
+  position: relative;
+}
+
+.gaugeDial svg {
+  display: block;
+  width: 100%;
+}
+
+.gaugeValue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gaugeLabel {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Tooltip */
+.tooltipWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltipTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: help;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 6px);
+  right: 0;
+  width: max-content;
+  max-width: min(320px, 80vw);
+  padding: var(--space-3);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.tooltipWrap:hover .tooltip,
+.tooltipWrap:focus-within .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Modal */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgba(4, 8, 18, 0.65);
+}
+
+.modal {
+  width: min(560px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--bg-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 700;
+}

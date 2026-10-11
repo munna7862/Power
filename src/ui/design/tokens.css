@@ -1,0 +1,75 @@
+/*
+ * "Apex" design tokens. Saffron, white and green appear as accents on a deep
+ * navy command-centre base — never as flat flag colours.
+ */
+:root {
+  color-scheme: dark;
+  --font-sans: 'Inter Variable', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --bg: #0a1020;
+  --bg-raised: #0e1629;
+  --surface: #131d34;
+  --surface-hover: #1a2643;
+  --border: #22314f;
+  --border-strong: #31466e;
+
+  --text: #e8edf7;
+  --text-muted: #9aa7c0;
+  --text-faint: #6e7b97;
+
+  --saffron: #ff9933;
+  --saffron-strong: #ffb366;
+  --saffron-soft: rgba(255, 153, 51, 0.14);
+  --green: #3ccf7a;
+  --green-soft: rgba(60, 207, 122, 0.14);
+  --chakra: #7b98ff;
+  --chakra-soft: rgba(123, 152, 255, 0.14);
+  --danger: #f2555a;
+  --danger-soft: rgba(242, 85, 90, 0.14);
+  --warning: #f5c04a;
+  --warning-soft: rgba(245, 192, 74, 0.14);
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 4px var(--saffron);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --topbar-height: 60px;
+  --nav-width: 216px;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f3f5fa;
+  --bg-raised: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: #eef2f9;
+  --border: #dbe2ee;
+  --border-strong: #c3cee2;
+
+  --text: #111a2e;
+  --text-muted: #4c5873;
+  --text-faint: #77839c;
+
+  --saffron: #c25f00;
+  --saffron-strong: #a65100;
+  --saffron-soft: rgba(194, 95, 0, 0.1);
+  --green: #137a2e;
+  --green-soft: rgba(19, 122, 46, 0.1);
+  --chakra: #2442b8;
+  --chakra-soft: rgba(36, 66, 184, 0.1);
+  --danger: #c62828;
+  --danger-soft: rgba(198, 40, 40, 0.1);
+  --warning: #9a6200;
+  --warning-soft: rgba(154, 98, 0, 0.1);
+
+  --shadow: 0 10px 30px rgba(17, 26, 46, 0.12);
+}

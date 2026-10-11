@@ -1,0 +1,202 @@
+/* Main menu & new game */
+.menuScreen {
+  min-height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--space-6) var(--space-4);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, var(--saffron-soft), transparent 60%),
+    radial-gradient(900px 500px at 110% 110%, var(--green-soft), transparent 60%), var(--bg);
+}
+
+.menuCard {
+  width: min(440px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--saffron);
+}
+
+.title {
+  font-size: clamp(36px, 7vw, 52px);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+.menuButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.fieldLabel {
+  font-weight: 600;
+}
+
+.input {
+  min-height: 42px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.choice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  cursor: pointer;
+}
+
+.choice input {
+  position: absolute;
+  opacity: 0;
+}
+
+.choice:has(input:checked) {
+  border-color: var(--saffron);
+  background: var(--saffron-soft);
+}
+
+.choice:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.choiceTitle {
+  font-weight: 700;
+}
+
+.choiceText {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+}
+
+@media (max-width: 520px) {
+  .choices {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Save slots */
+.slotList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.slotName {
+  font-weight: 700;
+}
+
+.slotMeta {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.empty {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.notice {
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  bottom: 88px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: calc(100vw - 32px);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow);
+}
+
+.noticeError {
+  border-color: var(--danger);
+}
+
+.settingsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
