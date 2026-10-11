@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { advanceDays, openFresh, startGame } from './support';
+import { advanceDays, openFresh, openView, startGame } from './support';
 
 const year = new Date().getFullYear();
 
@@ -51,24 +51,29 @@ test.describe('playing the game', () => {
     await expect(page.getByText(`Annual report ${year}`)).toBeVisible();
   });
 
-  test('the "Why?" tooltip explains revenue and expenditure', async ({ page }) => {
+  test('the approval "Why?" tooltip shows voter scores and adjustments', async ({ page }) => {
     await openFresh(page);
     await startGame(page, 'Asha Rao', 'Hard');
     await page.getByRole('button', { name: 'Why?' }).hover();
     const tooltip = page.getByRole('tooltip');
     await expect(tooltip).toBeVisible();
-    await expect(tooltip).toContainText('Monthly revenue');
+    await expect(tooltip).toContainText('Jobs (22%)');
     await expect(tooltip).toContainText('Difficulty: Hard');
-    await expect(tooltip).toContainText('-3%');
+    await expect(tooltip).toContainText('−5');
+    await expect(tooltip).toContainText('Ideology: Liberalism');
+  });
+
+  test('the dashboard lists the top three issues', async ({ page }) => {
+    await openFresh(page);
+    await startGame(page);
+    await expect(page.getByRole('list', { name: 'Top issues' }).getByRole('listitem')).toHaveCount(3);
   });
 
   test('sections not yet built show their roadmap phase', async ({ page }) => {
     await openFresh(page);
     await startGame(page);
-    await page.getByRole('button', { name: 'Military' }).click();
-    await expect(page.getByRole('heading', { name: 'Military' })).toBeVisible();
+    await openView(page, 'Military');
     await expect(page.getByText('Arrives in Phase 4')).toBeVisible();
-    await page.getByRole('button', { name: 'Dashboard' }).click();
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    await openView(page, 'Dashboard');
   });
 });

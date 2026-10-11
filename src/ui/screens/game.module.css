@@ -349,10 +349,13 @@
     flex: 1 1 0;
     flex-direction: column;
     gap: 2px;
-    min-width: 48px;
+    min-width: 42px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     min-height: 52px;
     padding: var(--space-1) 2px;
-    font-size: 10px;
+    font-size: 9px;
     text-align: center;
     justify-content: center;
   }

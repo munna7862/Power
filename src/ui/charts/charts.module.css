@@ -1,0 +1,131 @@
+.chart {
+  margin: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.latest {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.plot {
+  position: relative;
+  width: 100%;
+  touch-action: pan-y;
+}
+
+.plot svg {
+  display: block;
+  overflow: visible;
+}
+
+.axisText {
+  fill: var(--text-faint);
+  font-size: 11px;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--text-faint);
+  font-size: 12px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  z-index: 5;
+  pointer-events: none;
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tooltipValue {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tooltipLabel {
+  color: var(--text-muted);
+}
+
+/* Comparison bars (budget) */
+.legend {
+  display: flex;
+  gap: var(--space-4);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.legendKey {
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+.barRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: minmax(96px, 150px) minmax(0, 1fr) minmax(92px, auto);
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 12px;
+}
+
+.barLabel {
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barTrack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bar {
+  height: 6px;
+  border-radius: 0 4px 4px 0;
+  min-width: 2px;
+}
+
+.barValue {
+  text-align: right;
+  font-weight: 600;
+}

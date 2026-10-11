@@ -1,13 +1,35 @@
 import { useEffect, useState } from 'react';
-import { gameStore, useGame } from '../../store';
+import { gameStore, useGame, type ViewId } from '../../store';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { ViewIcon } from '../icons';
 import { GameMenuModal } from '../modals/GameMenuModal';
+import { GameOverModal } from '../modals/GameOverModal';
+import { BudgetView } from '../views/BudgetView';
+import { CabinetView } from '../views/CabinetView';
 import { ComingSoonView } from '../views/ComingSoonView';
 import { DashboardView } from '../views/DashboardView';
+import { EconomyView } from '../views/EconomyView';
+import { ReportsView } from '../views/ReportsView';
 import { VIEW_LABELS, VIEWS } from '../views/viewLabels';
 import styles from './game.module.css';
 import { TopBar } from './TopBar';
+
+function ActiveView({ view }: { view: ViewId }) {
+  switch (view) {
+    case 'dashboard':
+      return <DashboardView />;
+    case 'economy':
+      return <EconomyView />;
+    case 'budget':
+      return <BudgetView />;
+    case 'cabinet':
+      return <CabinetView />;
+    case 'reports':
+      return <ReportsView />;
+    default:
+      return <ComingSoonView view={view} />;
+  }
+}
 
 export function GameScreen() {
   const view = useGame((s) => s.view);
@@ -51,9 +73,12 @@ export function GameScreen() {
         ))}
       </nav>
 
-      <main className={styles.main}>{view === 'dashboard' ? <DashboardView /> : <ComingSoonView view={view} />}</main>
+      <main className={styles.main}>
+        <ActiveView view={view} />
+      </main>
 
       {menuOpen && <GameMenuModal onClose={() => setMenuOpen(false)} />}
+      <GameOverModal />
     </div>
   );
 }
