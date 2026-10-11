@@ -1,6 +1,7 @@
 import { createStore } from 'zustand/vanilla';
 import {
   advanceDays as simAdvanceDays,
+  advanceUntilAttention,
   createInitialState,
   dispatch as simDispatch,
   parseSave,
@@ -19,7 +20,8 @@ export type Screen = 'menu' | 'new-game' | 'game';
 export const SPEEDS = [1, 2, 4] as const;
 /** 0 = paused; otherwise in-game days per real second. */
 export type Speed = 0 | (typeof SPEEDS)[number];
-export type ViewId = 'dashboard' | 'economy' | 'budget' | 'cabinet' | 'security' | 'military' | 'world' | 'reports';
+export type ViewId =
+  'dashboard' | 'inbox' | 'economy' | 'budget' | 'cabinet' | 'security' | 'military' | 'world' | 'reports';
 
 export interface SlotInfo {
   slot: SlotId;
@@ -49,11 +51,18 @@ export interface GameStoreState {
   view: ViewId;
   slots: SlotInfo[];
   notice: Notice | null;
+  /** The pending decision open in the decision dialog, if any. */
+  decisionId: string | null;
 
   goTo(screen: Screen): void;
   setView(view: ViewId): void;
+  openDecision(pendingId: string | null): void;
   startNewGame(input: NewGameInput): void;
-  advanceDays(days: number): void;
+  /**
+   * Advances the simulation. With `interrupt` (the default) the clock pauses as soon as a critical
+   * event arrives or a new decision is waiting, so the player never sleeps through a crisis.
+   */
+  advanceDays(days: number, options?: { interrupt?: boolean }): void;
   setSpeed(speed: Speed): void;
   togglePause(): void;
   dispatch(command: Command): boolean;
@@ -79,9 +88,11 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       view: 'dashboard',
       slots: [],
       notice: null,
+      decisionId: null,
 
       goTo: (screen) => set({ screen }),
       setView: (view) => set({ view }),
+      openDecision: (decisionId) => set({ decisionId }),
 
       startNewGame: ({ presidentName, difficulty, seed, ideology, strategy }) => {
         const game = createInitialState({
@@ -92,19 +103,22 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
           ...(ideology && { ideology }),
           ...(strategy && { strategy }),
         });
-        set({ game, screen: 'game', speed: 0, lastSpeed: 1, view: 'dashboard', notice: null });
+        set({ game, screen: 'game', speed: 0, lastSpeed: 1, view: 'dashboard', notice: null, decisionId: null });
       },
 
-      advanceDays: (days) => {
+      advanceDays: (days, options) => {
         const { game } = get();
         if (!game || days <= 0) return;
-        const next = simAdvanceDays(game, days);
+        const interrupt = options?.interrupt ?? true;
+        const { state: next, interrupted } = interrupt
+          ? advanceUntilAttention(game, days)
+          : { state: simAdvanceDays(game, days), interrupted: false };
         if (next.status.kind === 'over') {
           // Time stops when the presidency ends; keep the last autosave so the player can retry.
           set({ game: next, speed: 0 });
           return;
         }
-        set({ game: next });
+        set(interrupted ? { game: next, speed: 0 } : { game: next });
         // Autosave whenever a month closes.
         if (next.clock.date.month !== game.clock.date.month || next.clock.date.year !== game.clock.date.year) {
           writeSlot(AUTOSAVE_SLOT, next).catch(() =>
@@ -166,7 +180,7 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
           set({ notice: { tone: 'error', text: parsed.error } });
           return false;
         }
-        set({ game: parsed.save.state, screen: 'game', speed: 0, view: 'dashboard', notice: null });
+        set({ game: parsed.save.state, screen: 'game', speed: 0, view: 'dashboard', notice: null, decisionId: null });
         return true;
       },
 
