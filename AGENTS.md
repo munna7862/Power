@@ -22,9 +22,16 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Every decision needs exactly one `default` choice (applied if the President does not decide in time).
 - Do not draw India's boundary until we have Survey of India data; use the schematic tile map.
 
+## Military
+
+- Military code lives in `src/sim/military/` and its monthly and daily systems in `systems/military.ts`. Strength, funding and war formulas (`strength.ts`, `forces.ts`, `war.ts`) are shared by the systems, the Military screen and the bots, so the "Why?" tooltips cannot drift.
+- Units, the research tree and rival states are content: `content/weapons.json`, `research.json`, `rivals.json`. Use generic weapon class names only (no trademarked products). Rivals are fictional until the Phase 5 world map brings real countries with the neutral-tone review.
+- Upkeep comes out of the Defence expenditure line; the rest feeds the procurement fund that pays for orders, research and drills. War costs go straight to the treasury.
+- Fog of war: the UI shows a rival's strength only through `strengthView()`, never from `state.military.rivals[...].strength`.
+
 ## Balance
 
-- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_3_domestic_security.md`. Run it after any formula change and update the bands deliberately, never to make a failure pass.
+- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_4_military.md` (which include the Phase 3 bands and a war probe). Run it after any formula change and update the bands deliberately, never to make a failure pass.
 - Bots act only through `dispatch()`, like a player.
 
 ## Save compatibility
