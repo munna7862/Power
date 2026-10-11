@@ -24,4 +24,5 @@ Planning hub for the `Power` project.
 
 - [x] Master plan drafted (2026-10-11)
 - [x] Phase 1: Foundations (Sprints 1.1–1.3), **M1: Playable Skeleton** reached (2026-10-11)
-- [ ] Sprint 2.1: Economy Model (next)
+- [x] Phase 2: Economy & Governance (Sprints 2.1–2.4), **M2: Nation Builder** reached (2026-10-11)
+- [ ] Sprint 3.1: Event Engine & Presidential Inbox (next)
