@@ -22,6 +22,13 @@ async function launch(): Promise<{ app: ElectronApplication; page: Page }> {
   return { app, page };
 }
 
+/** Closes the app, and kills it if it has not exited within 15 s, so a stuck quit cannot hang the run. */
+async function close(app: ElectronApplication): Promise<void> {
+  const timeout = new Promise<'timeout'>((resolve) => setTimeout(() => resolve('timeout'), 15_000));
+  if ((await Promise.race([app.close().then(() => 'closed' as const), timeout])) === 'timeout')
+    app.process().kill('SIGKILL');
+}
+
 // Best-effort: Electron can hold the profile open for a moment after closing on Windows.
 test.afterAll(() => {
   try {
@@ -81,7 +88,7 @@ test('M6 demo: play the tutorial, save, quit, relaunch and continue', async () =
   await page.getByRole('button', { name: 'Game menu' }).click();
   await page.getByRole('button', { name: 'Settings' }).click();
   await expect(page.getByText(savesDir)).toBeVisible();
-  await app.close();
+  await close(app);
 });
 
 test('the window is locked down: sandboxed, isolated, no pop-ups or navigation away', async () => {
@@ -99,14 +106,21 @@ test('the window is locked down: sandboxed, isolated, no pop-ups or navigation a
   });
   expect(page.url()).toMatch(/^app:\/\/game\//);
 
-  // No pop-ups, and no navigating the game window away to another site.
+  // No pop-ups.
   expect(await page.evaluate(() => window.open('https://example.com') === null)).toBe(true);
-  await page.evaluate(() => {
-    window.location.href = 'https://example.com';
+  expect(app.windows()).toHaveLength(1);
+
+  // No navigating the game window away. The guard is exercised from the main process: a real refused
+  // navigation leaves Chromium half-way through it, and on Linux the app then never quits cleanly.
+  const refused = await app.evaluate(({ BrowserWindow }) => {
+    const contents = BrowserWindow.getAllWindows()[0]!.webContents;
+    const verdict = (url: string) => {
+      let prevented = false;
+      contents.emit('will-navigate', { preventDefault: () => (prevented = true) }, url);
+      return prevented;
+    };
+    return { away: verdict('https://example.com/'), file: verdict('file:///etc/passwd'), home: verdict('app://game/') };
   });
-  // Ask the main process (the page itself is mid-way through the refused navigation).
-  const urls = () =>
-    app.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows().map((w) => w.webContents.getURL()));
-  await expect.poll(urls).toEqual([expect.stringMatching(/^app:\/\/game\//)]);
-  await app.close();
+  expect(refused).toEqual({ away: true, file: true, home: false });
+  await close(app);
 });

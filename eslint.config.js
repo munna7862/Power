@@ -52,10 +52,19 @@ export default tseslint.config(
         { name: 'localStorage', message: 'Persistence goes through src/platform.' },
         { name: 'Date', message: 'Use the game clock; wall-clock time breaks determinism.' },
         { name: 'performance', message: 'Wall-clock time breaks determinism.' },
+        { name: 'Intl', message: 'Intl output depends on the host ICU data and breaks determinism.' },
       ],
       'no-restricted-properties': [
         'error',
         { object: 'Math', property: 'random', message: 'Use the seeded RNG in engine/rng.ts.' },
+        {
+          property: 'toLocaleString',
+          message: 'Locale formatting depends on the host ICU data; use groupIndian() from engine/numberFormat.ts.',
+        },
+        {
+          property: 'localeCompare',
+          message: 'Locale collation depends on the host ICU data; compare with < and > instead.',
+        },
       ],
     },
   },
