@@ -1,0 +1,129 @@
+[
+  {
+    "id": "zarnak",
+    "name": "Zarnak Republic",
+    "adjective": "Zarnaki",
+    "summary": "A large, well-armed northern neighbour with a long mountain frontier. Roughly India's equal.",
+    "strength": 96,
+    "growth": 0.025,
+    "relation": -25,
+    "aggression": 55,
+    "counterIntel": 65,
+    "gdpShare": 0.45,
+    "populationShare": 0.35,
+    "region": "north",
+    "nuclear": true,
+    "fronts": [
+      {
+        "name": "Northern mountain front",
+        "terrain": "mountains",
+        "share": 0.6,
+        "weights": { "land": 0.55, "air": 0.3, "sea": 0, "strategic": 0.15 }
+      },
+      {
+        "name": "Western desert front",
+        "terrain": "desert",
+        "share": 0.4,
+        "weights": { "land": 0.5, "air": 0.35, "sea": 0, "strategic": 0.15 }
+      }
+    ]
+  },
+  {
+    "id": "tirhan",
+    "name": "Tirhan Federation",
+    "adjective": "Tirhani",
+    "summary": "A mid-sized western neighbour with a land border and a busy coastline.",
+    "strength": 56,
+    "growth": 0.03,
+    "relation": -10,
+    "aggression": 45,
+    "counterIntel": 45,
+    "gdpShare": 0.12,
+    "populationShare": 0.15,
+    "region": "west",
+    "nuclear": false,
+    "fronts": [
+      {
+        "name": "Western plains front",
+        "terrain": "plains",
+        "share": 0.65,
+        "weights": { "land": 0.55, "air": 0.3, "sea": 0, "strategic": 0.15 }
+      },
+      {
+        "name": "Western coast",
+        "terrain": "coast",
+        "share": 0.35,
+        "weights": { "land": 0.1, "air": 0.25, "sea": 0.55, "strategic": 0.1 }
+      }
+    ]
+  },
+  {
+    "id": "oruvan",
+    "name": "Oruvan Union",
+    "adjective": "Oruvani",
+    "summary": "A maritime power across the southern sea lanes. A war there is mostly fought on water.",
+    "strength": 48,
+    "growth": 0.03,
+    "relation": 5,
+    "aggression": 30,
+    "counterIntel": 40,
+    "gdpShare": 0.1,
+    "populationShare": 0.1,
+    "region": "south",
+    "nuclear": false,
+    "fronts": [
+      {
+        "name": "Southern sea lanes",
+        "terrain": "coast",
+        "share": 1,
+        "weights": { "land": 0.1, "air": 0.3, "sea": 0.5, "strategic": 0.1 }
+      }
+    ]
+  },
+  {
+    "id": "velmora",
+    "name": "Velmora",
+    "adjective": "Velmoran",
+    "summary": "A smaller eastern neighbour with a jungle frontier. Weak, but proud.",
+    "strength": 26,
+    "growth": 0.02,
+    "relation": -5,
+    "aggression": 40,
+    "counterIntel": 30,
+    "gdpShare": 0.04,
+    "populationShare": 0.06,
+    "region": "east",
+    "nuclear": false,
+    "fronts": [
+      {
+        "name": "Eastern jungle front",
+        "terrain": "jungle",
+        "share": 1,
+        "weights": { "land": 0.6, "air": 0.25, "sea": 0, "strategic": 0.15 }
+      }
+    ]
+  },
+  {
+    "id": "haldrin",
+    "name": "Haldrin",
+    "adjective": "Haldrini",
+    "summary": "A small hill state in the north-east with little army to speak of.",
+    "strength": 13,
+    "growth": 0.015,
+    "relation": 10,
+    "aggression": 20,
+    "counterIntel": 20,
+    "gdpShare": 0.015,
+    "populationShare": 0.02,
+    "region": "northEast",
+    "nuclear": false,
+    "fronts": [
+      {
+        "name": "North-eastern hills",
+        "terrain": "mountains",
+        "share": 1,
+        "weights": { "land": 0.65, "air": 0.2, "sea": 0, "strategic": 0.15 }
+      }
+    ]
+  }
+]

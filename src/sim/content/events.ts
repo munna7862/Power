@@ -5,11 +5,12 @@ import economyJson from '../../../content/events/economy.json';
 import personalJson from '../../../content/events/personal.json';
 import securityJson from '../../../content/events/security.json';
 import terrorJson from '../../../content/events/terror.json';
+import militaryJson from '../../../content/events/military.json';
 import unrestJson from '../../../content/events/unrest.json';
 import groupsJson from '../../../content/groups.json';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
 import { STAT_IDS, type StatId } from '../events/stats';
-import { EVENT_CATEGORIES, MINISTRIES, OPERATION_KINDS, REGIONS } from './ids';
+import { EVENT_CATEGORIES, MINISTRIES, OPERATION_KINDS, REGIONS, RIVALS } from './ids';
 
 /**
  * Event content: one JSON file per category in /content/events, validated here at load.
@@ -60,6 +61,11 @@ const effectSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('terror'), delta: z.number(), scale: scaleSchema.optional() }),
   z.strictObject({ type: z.literal('borderTension'), delta: z.number() }),
   z.strictObject({ type: z.literal('militaryLoyalty'), delta: z.number() }),
+  /** Readiness and morale of the armed forces. */
+  z.strictObject({ type: z.literal('readiness'), delta: z.number() }),
+  z.strictObject({ type: z.literal('morale'), delta: z.number() }),
+  /** Relation with a rival state: the one the event is about (its ref) unless a rival is named. */
+  z.strictObject({ type: z.literal('relation'), delta: z.number(), rival: z.enum(RIVALS).optional() }),
   /** Immediate nudge to the national corruption index. */
   z.strictObject({ type: z.literal('corruption'), delta: z.number() }),
   /** Loyalty of one minister, or of the whole cabinet. */
@@ -100,7 +106,7 @@ const eventSchema = z.strictObject({
   category: z.enum(EVENT_CATEGORIES),
   severity: z.enum(['info', 'good', 'warning', 'critical']),
   title: z.string().min(1),
-  /** Placeholders: {region}, {president}, {group}. */
+  /** Placeholders: {region}, {president}, {group}, {rival}. */
   body: z.string().min(1),
   scope: z.enum(['national', 'region']).default('national'),
   /** Relative likelihood of each region for regional events (default 1 each). */
@@ -155,6 +161,7 @@ const FILES: [string, unknown, EventContent['category']][] = [
   ['unrest.json', unrestJson, 'unrest'],
   ['security.json', securityJson, 'security'],
   ['terror.json', terrorJson, 'terror'],
+  ['military.json', militaryJson, 'military'],
 ];
 
 /** Every event, in file order (the order events are rolled in, which keeps games deterministic). */

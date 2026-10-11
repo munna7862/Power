@@ -5,13 +5,47 @@ import {
   MINISTRIES,
   OPERATION_KINDS,
   STRATEGIES,
+  type DomainId,
+  type DrillKind,
   type IdeologyId,
+  type IntelKind,
   type MinistryId,
   type OperationKind,
+  type RivalId,
   type StrategyId,
+  type UnitId,
 } from '../content/ids';
 import { addDays, formatDate } from '../engine/calendar';
 import { Rng } from '../engine/rng';
+import { startDrill, validateDrill } from '../military/drills';
+import {
+  cancelOrder,
+  placeOrder,
+  startResearch,
+  validateCancel,
+  validateOrder,
+  validateResearch,
+} from '../military/forces';
+import { launchIntelOp, validateIntelOp } from '../military/intel';
+import {
+  nuclearStrike,
+  setDoctrine,
+  setProgramActive,
+  startProgram,
+  validateDoctrine,
+  validateNuclearStrike,
+  validateSetActive,
+  validateStartProgram,
+} from '../military/nuclear';
+import {
+  acceptCeasefire,
+  settleWar,
+  startWar,
+  suePeace,
+  validateDeclareWar,
+  validateWarAction,
+  type PeaceTerms,
+} from '../military/war';
 import { resolvePending } from '../events/engine';
 import { addTimedModifier, applyPolicy, POLICY_COOLDOWN_DAYS, type PolicySource } from '../politics/policy';
 import { OPERATIONS } from '../security/constants';
@@ -19,7 +53,7 @@ import { startInvestigation, validateInvestigation } from '../security/investiga
 import { launchOperation, operationBlocked } from '../security/operations';
 import { normalisePresidentName, PRESIDENT_NAME_MAX } from '../state/initialState';
 import { appendLog } from '../state/log';
-import type { GameState } from '../state/types';
+import type { GameState, NuclearDoctrine } from '../state/types';
 import { enactBudget, validateBudget, type BudgetProposal } from './budget';
 import { appointMinister, dismissMinister, validateAppointment } from './cabinet';
 
@@ -35,7 +69,20 @@ export type Command =
   | { type: 'SET_STRATEGY'; strategy: StrategyId }
   | { type: 'RESOLVE_EVENT'; pendingId: string; choiceId: string }
   | { type: 'LAUNCH_INVESTIGATION'; ministry: MinistryId }
-  | { type: 'LAUNCH_OPERATION'; kind: OperationKind };
+  | { type: 'LAUNCH_OPERATION'; kind: OperationKind }
+  | { type: 'ORDER_UNITS'; unit: UnitId; quantity: number }
+  | { type: 'CANCEL_ORDER'; orderId: string }
+  | { type: 'START_RESEARCH'; domain: DomainId }
+  | { type: 'START_DRILL'; kind: DrillKind }
+  | { type: 'LAUNCH_INTEL_OP'; kind: IntelKind; target: RivalId | null }
+  | { type: 'DECLARE_WAR'; rival: RivalId }
+  | { type: 'SUE_FOR_PEACE'; warId: string }
+  | { type: 'ACCEPT_CEASEFIRE'; warId: string }
+  | { type: 'SETTLE_WAR'; warId: string; terms: PeaceTerms }
+  | { type: 'START_NUCLEAR_PROGRAM' }
+  | { type: 'SET_NUCLEAR_PROGRAM'; active: boolean }
+  | { type: 'SET_NUCLEAR_DOCTRINE'; doctrine: NuclearDoctrine }
+  | { type: 'USE_NUCLEAR_WEAPON'; warId: string };
 
 export type CommandResult = { ok: true; state: GameState } | { ok: false; error: string; state: GameState };
 
@@ -160,6 +207,72 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       };
       return ok(withRng(paid, (rng) => launchOperation(paid, command.kind, rng, null)));
     }
+    case 'ORDER_UNITS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateOrder(state, command.unit, command.quantity);
+      return problem ? fail(state, problem) : ok(placeOrder(state, command.unit, command.quantity));
+    }
+    case 'CANCEL_ORDER': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateCancel(state, command.orderId);
+      return problem ? fail(state, problem) : ok(cancelOrder(state, command.orderId));
+    }
+    case 'START_RESEARCH': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateResearch(state, command.domain);
+      return problem ? fail(state, problem) : ok(startResearch(state, command.domain));
+    }
+    case 'START_DRILL': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDrill(state, command.kind);
+      return problem ? fail(state, problem) : ok(startDrill(state, command.kind));
+    }
+    case 'LAUNCH_INTEL_OP': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateIntelOp(state, command.kind, command.target);
+      return problem ? fail(state, problem) : ok(launchIntelOp(state, command.kind, command.target));
+    }
+    case 'DECLARE_WAR': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDeclareWar(state, command.rival);
+      return problem ? fail(state, problem) : ok(startWar(state, command.rival, 'india'));
+    }
+    case 'SUE_FOR_PEACE': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateWarAction(state, command.warId, 'suePeace');
+      return problem ? fail(state, problem) : ok(suePeace(state, command.warId));
+    }
+    case 'ACCEPT_CEASEFIRE': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateWarAction(state, command.warId, 'ceasefire');
+      return problem ? fail(state, problem) : ok(acceptCeasefire(state, command.warId));
+    }
+    case 'SETTLE_WAR': {
+      if (gameOver) return fail(state, 'The game is over.');
+      if (!['annex', 'reparations', 'whitePeace'].includes(command.terms)) return fail(state, 'Unknown peace terms.');
+      const problem = validateWarAction(state, command.warId, 'settle');
+      return problem ? fail(state, problem) : ok(settleWar(state, command.warId, command.terms));
+    }
+    case 'START_NUCLEAR_PROGRAM': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateStartProgram(state);
+      return problem ? fail(state, problem) : ok(startProgram(state));
+    }
+    case 'SET_NUCLEAR_PROGRAM': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateSetActive(state, command.active);
+      return problem ? fail(state, problem) : ok(setProgramActive(state, command.active));
+    }
+    case 'SET_NUCLEAR_DOCTRINE': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDoctrine(state, command.doctrine);
+      return problem ? fail(state, problem) : ok(setDoctrine(state, command.doctrine));
+    }
+    case 'USE_NUCLEAR_WEAPON': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateNuclearStrike(state, command.warId);
+      return problem ? fail(state, problem) : ok(nuclearStrike(state, command.warId));
+    }
     case 'SET_IDEOLOGY':
       return gameOver ? fail(state, 'The game is over.') : changePolicy(state, 'ideology', command.ideology);
     case 'SET_STRATEGY':
@@ -167,4 +280,4 @@ export function dispatch(state: GameState, command: Command): CommandResult {
   }
 }
 
-export type { BudgetProposal };
+export type { BudgetProposal, PeaceTerms };

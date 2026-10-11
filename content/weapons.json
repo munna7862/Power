@@ -1,0 +1,194 @@
+[
+  {
+    "id": "infantry",
+    "domain": "land",
+    "name": "Infantry Division",
+    "summary": "The backbone of the army: holds ground and absorbs punishment.",
+    "generations": [
+      "Infantry Division Gen 1",
+      "Mechanised Infantry Division Gen 2",
+      "Networked Infantry Division Gen 3"
+    ],
+    "attack": 6,
+    "defence": 9,
+    "cost": 1800,
+    "upkeep": 184,
+    "buildDays": 120,
+    "crew": 15000,
+    "start": 36
+  },
+  {
+    "id": "armour",
+    "domain": "land",
+    "name": "Armoured Brigade",
+    "summary": "Tanks and armoured carriers for breakthroughs on open ground.",
+    "generations": [
+      "Main Battle Tank Brigade Gen 2",
+      "Main Battle Tank Brigade Gen 3",
+      "Main Battle Tank Brigade Gen 3.5"
+    ],
+    "attack": 12,
+    "defence": 8,
+    "cost": 3500,
+    "upkeep": 299,
+    "buildDays": 180,
+    "crew": 4500,
+    "start": 25
+  },
+  {
+    "id": "artillery",
+    "domain": "land",
+    "name": "Artillery Regiment",
+    "summary": "Long-range guns and rocket launchers that soften the enemy line.",
+    "generations": ["Field Artillery Gen 2", "Self-propelled Artillery Gen 3", "Precision Rocket Artillery Gen 4"],
+    "attack": 9,
+    "defence": 3,
+    "cost": 1600,
+    "upkeep": 138,
+    "buildDays": 120,
+    "crew": 1200,
+    "start": 40
+  },
+  {
+    "id": "fighter",
+    "domain": "air",
+    "name": "Fighter Squadron",
+    "summary": "Wins the air, escorts strike aircraft and shields the front.",
+    "generations": ["Fighter Gen 3", "Multirole Fighter Gen 4", "Multirole Fighter Gen 4.5"],
+    "attack": 14,
+    "defence": 8,
+    "cost": 7000,
+    "upkeep": 437,
+    "buildDays": 240,
+    "crew": 400,
+    "start": 30
+  },
+  {
+    "id": "strike",
+    "domain": "air",
+    "name": "Strike Squadron",
+    "summary": "Deep-strike aircraft for hitting depots, bridges and airfields.",
+    "generations": ["Strike Aircraft Gen 3", "Deep Strike Aircraft Gen 4", "Stealth Strike Aircraft Gen 5"],
+    "attack": 16,
+    "defence": 3,
+    "cost": 6000,
+    "upkeep": 345,
+    "buildDays": 240,
+    "crew": 350,
+    "start": 8
+  },
+  {
+    "id": "airDefence",
+    "domain": "air",
+    "name": "Air Defence Battery",
+    "summary": "Surface-to-air missiles that protect cities and bases.",
+    "generations": ["Air Defence Battery Gen 2", "Medium-range SAM Battery Gen 3", "Layered SAM Battery Gen 4"],
+    "attack": 3,
+    "defence": 14,
+    "cost": 2500,
+    "upkeep": 173,
+    "buildDays": 150,
+    "crew": 600,
+    "start": 24
+  },
+  {
+    "id": "frigate",
+    "domain": "sea",
+    "name": "Frigate Flotilla",
+    "summary": "Surface escorts that guard sea lanes and the coast.",
+    "generations": [
+      "Frigate Flotilla Gen 2",
+      "Guided-missile Frigate Flotilla Gen 3",
+      "Stealth Frigate Flotilla Gen 4"
+    ],
+    "attack": 8,
+    "defence": 8,
+    "cost": 3500,
+    "upkeep": 253,
+    "buildDays": 270,
+    "crew": 1500,
+    "start": 14
+  },
+  {
+    "id": "submarine",
+    "domain": "sea",
+    "name": "Submarine Flotilla",
+    "summary": "Quiet hunters that threaten shipping and deter blockades.",
+    "generations": [
+      "Diesel-electric Submarine Gen 2",
+      "Air-independent Submarine Gen 3",
+      "Nuclear-powered Attack Submarine Gen 4"
+    ],
+    "attack": 13,
+    "defence": 5,
+    "cost": 6500,
+    "upkeep": 368,
+    "buildDays": 360,
+    "crew": 700,
+    "start": 6
+  },
+  {
+    "id": "carrier",
+    "domain": "sea",
+    "name": "Carrier Group",
+    "summary": "A floating airbase with escorts: projects power far from the coast.",
+    "generations": ["Carrier Group Gen 2", "Carrier Group Gen 3", "Carrier Group Gen 4"],
+    "attack": 15,
+    "defence": 10,
+    "cost": 20000,
+    "upkeep": 1035,
+    "buildDays": 720,
+    "crew": 6000,
+    "start": 2
+  },
+  {
+    "id": "missile",
+    "domain": "strategic",
+    "name": "Missile Battery",
+    "summary": "Conventional ballistic and cruise missiles with long reach.",
+    "generations": [
+      "Short-range Missile Battery Gen 2",
+      "Medium-range Missile Battery Gen 3",
+      "Hypersonic Missile Battery Gen 4"
+    ],
+    "attack": 17,
+    "defence": 2,
+    "cost": 4000,
+    "upkeep": 219,
+    "buildDays": 200,
+    "crew": 500,
+    "start": 8
+  },
+  {
+    "id": "cyber",
+    "domain": "strategic",
+    "name": "Cyber Command Wing",
+    "summary": "Defends national networks and disrupts the enemy's.",
+    "generations": ["Cyber Wing Gen 2", "Cyber Wing Gen 3", "Cyber Wing Gen 4"],
+    "attack": 6,
+    "defence": 10,
+    "cost": 1800,
+    "upkeep": 150,
+    "buildDays": 150,
+    "crew": 800,
+    "start": 5
+  },
+  {
+    "id": "satellite",
+    "domain": "strategic",
+    "name": "Recon Satellite Constellation",
+    "summary": "Eyes in orbit: better targeting, warning and recon.",
+    "generations": [
+      "Recon Satellites Gen 2",
+      "Imaging Constellation Gen 3",
+      "Persistent Surveillance Constellation Gen 4"
+    ],
+    "attack": 2,
+    "defence": 6,
+    "cost": 3000,
+    "upkeep": 115,
+    "buildDays": 300,
+    "crew": 200,
+    "start": 4
+  }
+]

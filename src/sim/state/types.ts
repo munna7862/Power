@@ -1,5 +1,10 @@
 import type {
   ApprovalFactor,
+  DomainId,
+  DrillKind,
+  IntelKind,
+  RivalId,
+  UnitId,
   IdeologyId,
   LogCategory,
   MinistryId,
@@ -14,7 +19,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -39,7 +44,7 @@ export interface ClockState {
   date: GameDate;
 }
 
-export const GAME_OVER_CAUSES = ['impeachment', 'coup', 'assassination', 'bankruptcy'] as const;
+export const GAME_OVER_CAUSES = ['impeachment', 'coup', 'assassination', 'bankruptcy', 'defeat', 'nuclear'] as const;
 export type GameOverCause = (typeof GAME_OVER_CAUSES)[number];
 
 export type GameStatus =
@@ -250,6 +255,160 @@ export interface SecurityState {
   attacksSuffered: number;
 }
 
+/** Equipment on order, paid for from the Defence procurement fund when ordered. */
+export interface ProductionOrder {
+  id: string;
+  unit: UnitId;
+  quantity: number;
+  startedTick: number;
+  endsTick: number;
+}
+
+export interface ResearchProject {
+  domain: DomainId;
+  /** The tier being unlocked (2 or 3). */
+  tier: 2 | 3;
+  startedTick: number;
+  endsTick: number;
+}
+
+export interface Drill {
+  id: string;
+  kind: DrillKind;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** The result card of a finished drill. */
+export interface DrillReport {
+  kind: DrillKind;
+  date: GameDate;
+  readiness: number;
+  morale: number;
+  deterrence: number;
+  accident: boolean;
+}
+
+export interface IntelOp {
+  id: string;
+  kind: IntelKind;
+  /** The country targeted; null for counter-intelligence, which protects India. */
+  target: RivalId | null;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** What a successful recon revealed about a rival, kept as a snapshot that ages. */
+export interface Sighting {
+  tick: number;
+  strength: number;
+  readiness: number;
+}
+
+export interface RivalState {
+  /** True military strength on the same index as India's. Hidden from the player behind the fog of war. */
+  strength: number;
+  /** 0–100; low readiness cuts effective strength. */
+  readiness: number;
+  /** Relation with India, −100…+100. */
+  relation: number;
+  /** Ticks until which the state is quietly rebuilding after a war. */
+  recoverUntilTick: number | null;
+  sighting: Sighting | null;
+  annexed: boolean;
+}
+
+export interface FrontState {
+  /** Index into the rival's fronts in content/rivals.json. */
+  index: number;
+  /** −100 (India routed) … +100 (enemy routed). */
+  progress: number;
+}
+
+export interface DailyReport {
+  tick: number;
+  date: GameDate;
+  /** Share of each side's strength lost today, as a percentage. */
+  indiaLoss: number;
+  enemyLoss: number;
+  /** Personnel casualties today. */
+  indiaCasualties: number;
+  enemyCasualties: number;
+  text: string;
+}
+
+export type WarStatus = 'active' | 'terms';
+
+export interface War {
+  id: string;
+  rival: RivalId;
+  declaredBy: 'india' | 'rival';
+  startedTick: number;
+  status: WarStatus;
+  fronts: FrontState[];
+  /** The enemy's strength when the war began, to measure how much of it is left. */
+  enemyStartStrength: number;
+  /** 0–100: how tired the public is of the war. */
+  weariness: number;
+  casualties: { india: number; enemy: number };
+  equipmentLost: number;
+  /** The enemy has offered a ceasefire that the President can accept. */
+  ceasefireOffered: boolean;
+  /** For status "terms": the day the default settlement (reparations) applies. */
+  termsDeadlineTick: number | null;
+  report: DailyReport | null;
+}
+
+export interface WarRecord {
+  rival: RivalId;
+  startedTick: number;
+  endedTick: number;
+  outcome: 'victory' | 'ceasefire' | 'peace' | 'defeat' | 'nuclear';
+  settlement: string;
+}
+
+export const NUCLEAR_DOCTRINES = ['noFirstUse', 'firstUse'] as const;
+export type NuclearDoctrine = (typeof NUCLEAR_DOCTRINES)[number];
+
+export interface NuclearProgram {
+  active: boolean;
+  /** 0–100 each; enrichment starts once research is complete. */
+  research: number;
+  enrichment: number;
+  warheads: number;
+  doctrine: NuclearDoctrine;
+  /** Months since the last warhead was completed. */
+  monthsSinceWarhead: number;
+}
+
+export interface MilitaryState {
+  /** Units in service. */
+  forces: Record<UnitId, number>;
+  /** 0–100: how quickly the forces could fight today. */
+  readiness: number;
+  /** 0–100: the troops' will to fight. */
+  morale: number;
+  /** Technology tier (1–3) of each domain. */
+  tech: Record<DomainId, 1 | 2 | 3>;
+  research: ResearchProject | null;
+  /** ₹ crore of Defence money left after upkeep, spent when equipment is ordered. */
+  procurementFund: number;
+  queue: ProductionOrder[];
+  drills: Drill[];
+  drillReports: DrillReport[];
+  /** 0–100: how strongly rivals are put off attacking. Phase 5 diplomacy builds on it. */
+  deterrence: number;
+  /** Counter-intelligence cover for India, 0–100. Rises while a counter-intelligence operation runs. */
+  counterIntel: number;
+  intelOps: IntelOp[];
+  /** Funding of the forces against their upkeep last month (1 = exactly covered). */
+  fundingRatio: number;
+  rivals: Record<RivalId, RivalState>;
+  wars: War[];
+  warHistory: WarRecord[];
+  nuclear: NuclearProgram;
+}
+
 export interface GameState {
   schemaVersion: typeof SCHEMA_VERSION;
   meta: GameMeta;
@@ -263,6 +422,7 @@ export interface GameState {
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;
+  military: MilitaryState;
   events: EventsState;
   history: MonthlySnapshot[];
   log: LogEntry[];

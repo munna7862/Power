@@ -47,3 +47,20 @@ describe('golden save fixtures', () => {
     expect(advanceDays(state, 365).status.kind).toBe('playing');
   });
 });
+
+describe('v3 → v4 migration (Phase 4)', () => {
+  it('keeps the v3 game and adds the armed forces, rivals and an idle nuclear program', () => {
+    const raw = JSON.parse(readFileSync(fixture(3), 'utf8'));
+    const result = parseSave(JSON.stringify(raw));
+    if (!result.ok) throw new Error(result.error);
+    const { state } = result.save;
+    expect(state.schemaVersion).toBe(SCHEMA_VERSION);
+    expect(state.clock).toEqual(raw.state.clock);
+    expect(state.nation.treasury).toBe(raw.state.nation.treasury);
+    expect(state.security.militaryLoyalty).toBe(raw.state.security.militaryLoyalty);
+    expect(state.military.wars).toEqual([]);
+    expect(state.military.forces.fighter).toBeGreaterThan(0);
+    expect(state.military.nuclear.warheads).toBe(0);
+    expect(advanceDays(state, 30).status.kind).toBe('playing');
+  });
+});

@@ -113,3 +113,56 @@ export { exposureChance, validateInvestigation } from './security/investigations
 export { operationBlocked } from './security/operations';
 export { nationalLeakageFactor } from './economy/model';
 export { advanceUntilAttention } from './engine/tick';
+export { UNIT_CONTENT, RESEARCH_LIST, RIVAL_CONTENT, researchNode } from './content/military';
+export type { UnitContent, ResearchContent, RivalContent, FrontContent } from './content/military';
+export {
+  DRILLS,
+  FUND_CAP_MONTHS,
+  INTEL_OPS,
+  MAX_DRILLS,
+  MAX_INTEL_OPS,
+  MAX_ORDER_SIZE,
+  MAX_QUEUE,
+  NUCLEAR,
+  TIER_COST,
+  TIER_POWER,
+  WAR,
+  type DrillSpec,
+  type IntelSpec,
+} from './military/constants';
+export {
+  domainRaw,
+  domainStrength,
+  enemyFrontPower,
+  frontPower,
+  militaryStrength,
+  monthlyUpkeep,
+  moraleFactor,
+  personnel,
+  readinessFactor,
+  rivalEffective,
+  strengthView,
+  unitCost,
+  unitGeneration,
+  unitsIn,
+  unitUpkeep,
+  type StrengthView,
+} from './military/strength';
+export { fundingFor, moraleTarget, orderCost, readinessTarget, type Funding } from './military/forces';
+export { deterrenceTarget } from './military/deterrence';
+export { directorCompetence, exposureOnFailure, opSuccessChance } from './military/intel';
+export { atWarWith, declarationChance, hostility, tensionTarget } from './military/rivals';
+export {
+  frontOdds,
+  frontRound,
+  MAX_WARS,
+  reparationsFor,
+  warScore,
+  type FrontOdds,
+  type FrontRoundResult,
+  type PeaceTerms,
+} from './military/war';
+export { nuclearDeterrence, nuclearStage, programStarted, type NuclearStage } from './military/nuclear';
+export { openingMilitary } from './military/opening';
+/** For debug hooks and tests: a rival declares war on India. */
+export { startWar } from './military/war';

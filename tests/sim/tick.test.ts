@@ -125,6 +125,8 @@ describe('engine.tick', () => {
       'leadership',
       'investigations',
       'cabinet',
+      'military-monthly',
+      'military-daily',
       'events',
       'approval',
       'history',

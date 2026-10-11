@@ -1,5 +1,15 @@
 import {
   choiceUtility,
+  DOMAINS,
+  DRILLS,
+  INTEL_OPS,
+  monthlyUpkeep,
+  RIVALS,
+  unitUpkeep,
+  UNIT_CONTENT,
+  warScore,
+  type DomainId,
+  type UnitId,
   debtToGdp,
   dispatch,
   EVENT_CONTENT,
@@ -80,10 +90,73 @@ function decide(state: GameState): GameState {
   return next;
 }
 
+/** Buy order for the balanced bot: a rounded force that stays within what the Defence budget can keep up. */
+const SHOPPING: readonly UnitId[] = ['fighter', 'armour', 'frigate', 'airDefence', 'infantry', 'artillery', 'missile'];
+
+/** Runs the armed forces the way a sensible President would: spend the fund, train, spy, end wars. */
+function manageMilitary(state: GameState): GameState {
+  let next = state;
+  const m = () => next.military;
+
+  // End wars: take what is offered, settle victories for reparations, ask for peace before a rout.
+  for (const war of m().wars) {
+    if (war.status === 'terms') next = apply(next, { type: 'SETTLE_WAR', warId: war.id, terms: 'reparations' });
+    else if (war.ceasefireOffered) next = apply(next, { type: 'ACCEPT_CEASEFIRE', warId: war.id });
+    else if (warScore(war) < -45) next = apply(next, { type: 'SUE_FOR_PEACE', warId: war.id });
+  }
+
+  // Train when readiness slips.
+  if (m().readiness < 82 && m().drills.length < 2) {
+    const kinds = ['joint', 'air', 'land', 'naval'] as const;
+    for (const kind of kinds) {
+      if (m().procurementFund > DRILLS[kind].cost + 12_000) {
+        next = apply(next, { type: 'START_DRILL', kind });
+        break;
+      }
+    }
+  }
+
+  // Research the weakest domain.
+  if (!m().research) {
+    const domain = [...DOMAINS].sort((a: DomainId, b: DomainId) => m().tech[a] - m().tech[b])[0];
+    if (domain && m().tech[domain] < 3) next = apply(next, { type: 'START_RESEARCH', domain });
+  }
+
+  // Buy equipment while upkeep stays below 85% of the Defence budget.
+  const spend = next.economy.lastMonth?.expenditure.defence ?? 0;
+  for (const unit of SHOPPING) {
+    if (m().queue.length >= 4) break;
+    const added = 2 * unitUpkeep(unit, m().tech[UNIT_CONTENT[unit].domain]);
+    const queued = m().queue.reduce(
+      (s, o) => s + o.quantity * unitUpkeep(o.unit, m().tech[UNIT_CONTENT[o.unit].domain]),
+      0,
+    );
+    if (monthlyUpkeep(m()) + queued + added > spend * 0.85) continue;
+    next = apply(next, { type: 'ORDER_UNITS', unit, quantity: 2 });
+  }
+
+  // Keep an eye on the most hostile neighbour, and spies out.
+  if (next.nation.treasury > 30_000) {
+    const target = [...RIVALS]
+      .filter((r) => !m().rivals[r].annexed)
+      .sort((a, b) => m().rivals[a].relation - m().rivals[b].relation)[0];
+    const stale = target
+      ? !m().rivals[target].sighting || next.clock.tick - (m().rivals[target].sighting?.tick ?? 0) > 400
+      : false;
+    if (target && stale && next.nation.treasury > INTEL_OPS.recon.cost * 20) {
+      next = apply(next, { type: 'LAUNCH_INTEL_OP', kind: 'recon', target });
+    }
+    if (!m().intelOps.some((o) => o.kind === 'counterIntel') && m().counterIntel < 50) {
+      next = apply(next, { type: 'LAUNCH_INTEL_OP', kind: 'counterIntel', target: null });
+    }
+  }
+  return next;
+}
+
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Hires the best candidates each January, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, investigates corruption and settles every decision on its merits.',
+    'Hires the best candidates each January, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, investigates corruption, runs the armed forces (equipment, drills, research, recon, ending wars) and settles every decision on its merits.',
   act(state) {
     let next = state;
     if (state.clock.date.month === 1) {
@@ -112,6 +185,8 @@ export const balancedBot: Bot = {
         next = apply(next, { type: 'LAUNCH_INVESTIGATION', ministry: suspect });
       }
     }
+
+    next = manageMilitary(next);
 
     // Keep surveillance running while the threat is high.
     if (next.security.terrorThreat > 50 && next.nation.treasury > OPERATIONS.surveillance.cost) {

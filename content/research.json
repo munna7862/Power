@@ -1,0 +1,10 @@
+[
+  { "domain": "land", "tier": 2, "name": "Mechanised and networked land forces", "cost": 8000, "days": 240 },
+  { "domain": "land", "tier": 3, "name": "Autonomous ground systems and precision fires", "cost": 20000, "days": 420 },
+  { "domain": "air", "tier": 2, "name": "Fourth-generation avionics and radar", "cost": 9000, "days": 240 },
+  { "domain": "air", "tier": 3, "name": "Stealth airframes and integrated air defence", "cost": 24000, "days": 450 },
+  { "domain": "sea", "tier": 2, "name": "Quiet propulsion and guided-missile ships", "cost": 9000, "days": 270 },
+  { "domain": "sea", "tier": 3, "name": "Nuclear propulsion and carrier aviation", "cost": 24000, "days": 480 },
+  { "domain": "strategic", "tier": 2, "name": "Medium-range missiles and orbital imaging", "cost": 10000, "days": 270 },
+  { "domain": "strategic", "tier": 3, "name": "Hypersonic missiles and cyber operations", "cost": 26000, "days": 480 }
+]

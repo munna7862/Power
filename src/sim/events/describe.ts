@@ -1,6 +1,7 @@
 import { EVENT_CONTENT, type EventChoice, type EventContent, type EventEffect } from '../content/events';
 import { MINISTRY_CONTENT } from '../content';
-import { REGION_LABELS, type RegionId } from '../content/ids';
+import { RIVAL_CONTENT } from '../content/military';
+import { REGION_LABELS, type RegionId, type RivalId } from '../content/ids';
 import type { ModifierTarget } from '../engine/modifiers';
 import { groupIndian } from '../engine/numberFormat';
 import { OPERATIONS } from '../security/constants';
@@ -47,7 +48,12 @@ const toneOf = (good: number, value: number): EffectLine['tone'] =>
   good === 0 || value === 0 ? 'neutral' : Math.sign(value) === good ? 'good' : 'bad';
 
 /** The effect as the player will experience it: scaled by ministry quality and difficulty. */
-export function describeEffect(state: GameState, effect: EventEffect, region: RegionId | null): EffectLine {
+export function describeEffect(
+  state: GameState,
+  effect: EventEffect,
+  region: RegionId | null,
+  relationTarget = 'the other country',
+): EffectLine {
   const severity = isHarmful(effect) ? EVENT_DIFFICULTY[state.meta.difficulty].severity : 1;
   switch (effect.type) {
     case 'modifier': {
@@ -86,6 +92,20 @@ export function describeEffect(state: GameState, effect: EventEffect, region: Re
         text: `Army loyalty ${signed(effect.delta * severity, 0)}`,
         tone: effect.delta > 0 ? 'good' : 'bad',
       };
+    case 'readiness':
+      return {
+        text: `Military readiness ${signed(effect.delta * severity, 0)}`,
+        tone: effect.delta > 0 ? 'good' : 'bad',
+      };
+    case 'morale':
+      return { text: `Troop morale ${signed(effect.delta * severity, 0)}`, tone: effect.delta > 0 ? 'good' : 'bad' };
+    case 'relation': {
+      const rival = effect.rival ? RIVAL_CONTENT[effect.rival].name : relationTarget;
+      return {
+        text: `Relations with ${rival} ${signed(effect.delta * severity, 0)}`,
+        tone: effect.delta > 0 ? 'good' : 'bad',
+      };
+    }
     case 'corruption':
       return {
         text: `Corruption ${signed(effect.delta * severity, 0)} points`,
@@ -134,6 +154,11 @@ export function effectUtility(state: GameState, effect: EventEffect): number {
       return -effect.delta * 0.1;
     case 'militaryLoyalty':
       return effect.delta * 0.15;
+    case 'readiness':
+    case 'morale':
+      return effect.delta * 0.12;
+    case 'relation':
+      return effect.delta * 0.08;
     case 'corruption':
       return -effect.delta * 0.5;
     case 'loyalty':
@@ -148,6 +173,9 @@ export function effectUtility(state: GameState, effect: EventEffect): number {
 export function choiceUtility(state: GameState, choice: EventChoice): number {
   return choice.effects.reduce((sum, e) => sum + effectUtility(state, e), 0) - choice.cost / 2500;
 }
+
+const rivalName = (ref: string | null): string =>
+  ref && ref in RIVAL_CONTENT ? RIVAL_CONTENT[ref as RivalId].name : 'the other country';
 
 export interface PendingView {
   pending: PendingEvent;
@@ -171,7 +199,7 @@ export function pendingView(state: GameState, pending: PendingEvent): PendingVie
     body,
     choices: def.choices.map((choice) => ({
       choice,
-      lines: choice.effects.map((e) => describeEffect(state, e, pending.region)),
+      lines: choice.effects.map((e) => describeEffect(state, e, pending.region, rivalName(pending.ref))),
     })),
     daysLeft: Math.max(0, pending.expiresTick - state.clock.tick),
   };
