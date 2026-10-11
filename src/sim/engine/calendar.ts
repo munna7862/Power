@@ -49,6 +49,12 @@ export function advanceDay(date: GameDate): DayAdvance {
   return { date: { year: date.year + 1, month: 1, day: 1 }, monthChanged: true, yearChanged: true };
 }
 
+export function addDays(date: GameDate, days: number): GameDate {
+  let next = date;
+  for (let i = 0; i < days; i++) next = advanceDay(next).date;
+  return next;
+}
+
 /** Negative if a < b, 0 if equal, positive if a > b. */
 export function compareDates(a: GameDate, b: GameDate): number {
   return a.year - b.year || a.month - b.month || a.day - b.day;

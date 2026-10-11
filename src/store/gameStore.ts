@@ -8,7 +8,9 @@ import {
   type Command,
   type Difficulty,
   type GameState,
+  type IdeologyId,
   type SaveSummary,
+  type StrategyId,
 } from '../sim';
 import { browserShell, type Shell } from '../platform/shell';
 import { ALL_SLOTS, AUTOSAVE_SLOT, type SaveStorage, type SlotId } from '../platform/storage';
@@ -17,7 +19,7 @@ export type Screen = 'menu' | 'new-game' | 'game';
 export const SPEEDS = [1, 2, 4] as const;
 /** 0 = paused; otherwise in-game days per real second. */
 export type Speed = 0 | (typeof SPEEDS)[number];
-export type ViewId = 'dashboard' | 'economy' | 'cabinet' | 'security' | 'military' | 'world' | 'reports';
+export type ViewId = 'dashboard' | 'economy' | 'budget' | 'cabinet' | 'security' | 'military' | 'world' | 'reports';
 
 export interface SlotInfo {
   slot: SlotId;
@@ -29,6 +31,8 @@ export interface NewGameInput {
   presidentName: string;
   difficulty: Difficulty;
   seed?: number;
+  ideology?: IdeologyId;
+  strategy?: StrategyId;
 }
 
 export interface Notice {
@@ -79,12 +83,14 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       goTo: (screen) => set({ screen }),
       setView: (view) => set({ view }),
 
-      startNewGame: ({ presidentName, difficulty, seed }) => {
+      startNewGame: ({ presidentName, difficulty, seed, ideology, strategy }) => {
         const game = createInitialState({
           presidentName,
           difficulty,
           seed: seed ?? Math.floor(Math.random() * 0xffffffff),
           startYear: shell.currentYear(),
+          ...(ideology && { ideology }),
+          ...(strategy && { strategy }),
         });
         set({ game, screen: 'game', speed: 0, lastSpeed: 1, view: 'dashboard', notice: null });
       },
@@ -93,19 +99,27 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
         const { game } = get();
         if (!game || days <= 0) return;
         const next = simAdvanceDays(game, days);
+        if (next.status.kind === 'over') {
+          // Time stops when the presidency ends; keep the last autosave so the player can retry.
+          set({ game: next, speed: 0 });
+          return;
+        }
         set({ game: next });
         // Autosave whenever a month closes.
-        if (next.history.length !== game.history.length) {
+        if (next.clock.date.month !== game.clock.date.month || next.clock.date.year !== game.clock.date.year) {
           writeSlot(AUTOSAVE_SLOT, next).catch(() =>
             set({ notice: { tone: 'error', text: 'Autosave failed. Save manually to keep your progress.' } }),
           );
         }
       },
 
-      setSpeed: (speed) => set(speed === 0 ? { speed } : { speed, lastSpeed: speed }),
+      setSpeed: (speed) => {
+        if (speed !== 0 && get().game?.status.kind === 'over') return;
+        set(speed === 0 ? { speed } : { speed, lastSpeed: speed });
+      },
       togglePause: () => {
         const { speed, lastSpeed } = get();
-        set({ speed: speed === 0 ? lastSpeed : 0 });
+        get().setSpeed(speed === 0 ? lastSpeed : 0);
       },
 
       dispatch: (command) => {

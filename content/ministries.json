@@ -1,0 +1,79 @@
+[
+  {
+    "id": "finance",
+    "name": "Ministry of Finance",
+    "shortName": "Finance",
+    "defaultAllocation": 0.024,
+    "role": "Subsidies, transfers to states and tax collection. Raises tax compliance and public services."
+  },
+  {
+    "id": "home",
+    "name": "Ministry of Home Affairs",
+    "shortName": "Home Affairs",
+    "defaultAllocation": 0.0067,
+    "role": "Police and internal order. Improves public services; drives law and order from Phase 3."
+  },
+  {
+    "id": "defence",
+    "name": "Ministry of Defence",
+    "shortName": "Defence",
+    "defaultAllocation": 0.0188,
+    "role": "Armed forces pay, upkeep and procurement. Drives military strength from Phase 4."
+  },
+  {
+    "id": "external",
+    "name": "Ministry of External Affairs",
+    "shortName": "External Affairs",
+    "defaultAllocation": 0.0008,
+    "role": "Diplomacy and trade promotion. Improves customs revenue; drives relations from Phase 5."
+  },
+  {
+    "id": "health",
+    "name": "Ministry of Health",
+    "shortName": "Health",
+    "defaultAllocation": 0.0027,
+    "role": "Hospitals and public health. Raises living standards (HDI) and public services."
+  },
+  {
+    "id": "education",
+    "name": "Ministry of Education",
+    "shortName": "Education",
+    "defaultAllocation": 0.0038,
+    "role": "Schools and universities. Raises HDI and long-term services and tech growth."
+  },
+  {
+    "id": "agriculture",
+    "name": "Ministry of Agriculture",
+    "shortName": "Agriculture",
+    "defaultAllocation": 0.0091,
+    "role": "Farm support, irrigation and food supply. Grows agriculture, eases food prices and rural jobs."
+  },
+  {
+    "id": "industry",
+    "name": "Ministry of Industry & Infrastructure",
+    "shortName": "Industry & Infra",
+    "defaultAllocation": 0.0242,
+    "role": "Roads, rail, power and industrial policy. Grows industry, energy and services and creates jobs."
+  },
+  {
+    "id": "disaster",
+    "name": "National Disaster Management Authority",
+    "shortName": "Disaster Mgmt",
+    "defaultAllocation": 0.0009,
+    "role": "Disaster preparedness and relief. Improves public services; handles emergencies from Phase 3."
+  },
+  {
+    "id": "intelligence",
+    "name": "Directorate of Intelligence",
+    "shortName": "Intelligence",
+    "defaultAllocation": 0.00045,
+    "role": "Domestic and foreign intelligence. Counters terror and espionage from Phase 3."
+  },
+  {
+    "id": "antiCorruption",
+    "name": "Anti-Corruption Bureau",
+    "shortName": "Anti-Corruption",
+    "defaultAllocation": 0.00015,
+    "role": "Investigations and audits. Lowers national corruption and exposes corrupt ministers."
+  }
+]

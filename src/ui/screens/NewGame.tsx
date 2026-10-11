@@ -1,5 +1,17 @@
 import { useState, type FormEvent } from 'react';
-import { DIFFICULTIES, PRESIDENT_NAME_MAX, type Difficulty } from '../../sim';
+import {
+  DEFAULT_IDEOLOGY,
+  DEFAULT_STRATEGY,
+  DIFFICULTIES,
+  IDEOLOGIES,
+  IDEOLOGY_CONTENT,
+  PRESIDENT_NAME_MAX,
+  STRATEGIES,
+  STRATEGY_CONTENT,
+  type Difficulty,
+  type IdeologyId,
+  type StrategyId,
+} from '../../sim';
 import { gameStore } from '../../store';
 import { Button } from '../design/primitives';
 import styles from './screens.module.css';
@@ -13,10 +25,12 @@ const DIFFICULTY_TEXT: Record<Difficulty, { title: string; text: string }> = {
 export function NewGame() {
   const [name, setName] = useState('');
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
+  const [ideology, setIdeology] = useState<IdeologyId>(DEFAULT_IDEOLOGY);
+  const [strategy, setStrategy] = useState<StrategyId>(DEFAULT_STRATEGY);
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    gameStore.getState().startNewGame({ presidentName: name, difficulty });
+    gameStore.getState().startNewGame({ presidentName: name, difficulty, ideology, strategy });
   };
 
   return (
@@ -60,6 +74,30 @@ export function NewGame() {
             ))}
           </fieldset>
         </div>
+
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Ideology</span>
+          <select className={styles.input} value={ideology} onChange={(e) => setIdeology(e.target.value as IdeologyId)}>
+            {IDEOLOGIES.map((id) => (
+              <option key={id} value={id}>
+                {IDEOLOGY_CONTENT[id].name}
+              </option>
+            ))}
+          </select>
+          <span className={styles.hint}>{IDEOLOGY_CONTENT[ideology].summary}</span>
+        </label>
+
+        <label className={styles.field}>
+          <span className={styles.fieldLabel}>Development strategy</span>
+          <select className={styles.input} value={strategy} onChange={(e) => setStrategy(e.target.value as StrategyId)}>
+            {STRATEGIES.map((id) => (
+              <option key={id} value={id}>
+                {STRATEGY_CONTENT[id].name}
+              </option>
+            ))}
+          </select>
+          <span className={styles.hint}>{STRATEGY_CONTENT[strategy].summary}</span>
+        </label>
 
         <div className={styles.actions}>
           <Button onClick={() => gameStore.getState().goTo('menu')}>Back</Button>

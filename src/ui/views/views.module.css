@@ -1,0 +1,358 @@
+/* Shared building blocks for the Phase 2 views. */
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.tileLabel {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.tileValue {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.tileNote {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.segmented button {
+  min-width: 52px;
+  height: 30px;
+  border: 0;
+  border-right: 1px solid var(--border-strong);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.segmented button:last-child {
+  border-right: 0;
+}
+
+.segmented button[aria-pressed='true'] {
+  background: var(--saffron-soft);
+  color: var(--saffron);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.table th:first-child,
+.table td:first-child {
+  text-align: left;
+}
+
+.table th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.table tfoot td {
+  font-weight: 700;
+  border-bottom: 0;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.positive {
+  color: var(--green);
+}
+
+.negative {
+  color: var(--danger);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.issues {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.issue {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px var(--space-3);
+  align-items: center;
+}
+
+.meter {
+  display: block;
+  grid-column: 1 / -1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.meterFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+/* Budget */
+.sliders {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.slider {
+  display: grid;
+  grid-template-columns: minmax(110px, 160px) minmax(0, 1fr) minmax(120px, auto);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.slider input[type='range'] {
+  width: 100%;
+  accent-color: var(--saffron);
+}
+
+.sliderLabel {
+  font-weight: 600;
+}
+
+.sliderValue {
+  text-align: right;
+  font-weight: 700;
+}
+
+.sliderHint {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+.changed {
+  color: var(--saffron);
+}
+
+.projection {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 6px var(--space-4);
+  font-size: 13px;
+}
+
+.projectionHead {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.projectionHead:first-child {
+  text-align: left;
+}
+
+.num {
+  text-align: right;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.note {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Cabinet */
+.programme {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.select {
+  min-height: 38px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.cabinetGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--space-3);
+}
+
+.ministryCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ministryHead {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.ministryName {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.personName {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--chakra-soft);
+  color: var(--chakra);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.traits {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 4px var(--space-2);
+  align-items: center;
+  font-size: 12px;
+}
+
+.trait {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.traitFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.cardActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+.candidates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.candidate {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 640px) {
+  .slider {
+    grid-template-columns: 1fr auto;
+  }
+
+  .slider input[type='range'] {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .candidate {
+    grid-template-columns: auto 1fr;
+  }
+
+  .candidate > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 900px) {
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

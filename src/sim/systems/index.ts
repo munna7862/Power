@@ -1,9 +1,12 @@
 import type { System } from '../engine/system';
 import { annualReportSystem } from './annualReport';
 import { approvalSystem } from './approval';
+import { cabinetSystem, candidateRefreshSystem } from './cabinet';
+import { economySystem } from './economy';
 import { fiscalSystem } from './fiscal';
 import { historySystem } from './history';
 import { modifierExpirySystem } from './modifierExpiry';
+import { societySystem } from './society';
 
 /**
  * Fixed execution order. Changing it changes outcomes for a given seed,
@@ -12,8 +15,12 @@ import { modifierExpirySystem } from './modifierExpiry';
  */
 export const SYSTEMS: readonly System[] = [
   modifierExpirySystem,
+  economySystem,
   fiscalSystem,
+  societySystem,
+  cabinetSystem,
   approvalSystem,
   historySystem,
   annualReportSystem,
+  candidateRefreshSystem,
 ];

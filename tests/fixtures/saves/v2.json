@@ -1,0 +1,1102 @@
+{
+  "format": "india-apex-sovereign/save",
+  "schemaVersion": 2,
+  "savedAt": "2026-10-11T00:00:00.000Z",
+  "checksum": "3beae2f6",
+  "summary": {
+    "presidentName": "Golden Fixture",
+    "difficulty": "normal",
+    "gameDate": "5 Feb 2027",
+    "tick": 400
+  },
+  "state": {
+    "schemaVersion": 2,
+    "meta": {
+      "seed": 2026,
+      "difficulty": "normal",
+      "presidentName": "Golden Fixture",
+      "startDate": {
+        "year": 2026,
+        "month": 1,
+        "day": 1
+      }
+    },
+    "clock": {
+      "tick": 400,
+      "date": {
+        "year": 2027,
+        "month": 2,
+        "day": 5
+      }
+    },
+    "rng": [
+      1062102899,
+      1872304745,
+      1099637317,
+      917416875
+    ],
+    "status": {
+      "kind": "playing"
+    },
+    "nation": {
+      "name": "India",
+      "treasury": 215778,
+      "approval": 58.6,
+      "population": 1454244834.6412542
+    },
+    "economy": {
+      "sectors": {
+        "agriculture": {
+          "output": 5826885.645613334,
+          "growth": 0.0420907401006906
+        },
+        "industry": {
+          "output": 8839383.82384214,
+          "growth": 0.06175473744087506
+        },
+        "services": {
+          "output": 15376611.262704488,
+          "growth": 0.07221823347472865
+        },
+        "energy": {
+          "output": 1756763.9927319023,
+          "growth": 0.0542044703916921
+        },
+        "tech": {
+          "output": 3662026.6379544195,
+          "growth": 0.10159792898613203
+        }
+      },
+      "priceIndex": 1.0480194768181348,
+      "inflation": 0.03935503947573463,
+      "unemployment": 0.07326068803950658,
+      "realGrowth": 0.06868031188998562,
+      "debt": 19361457.6583729,
+      "interestRate": 0.065,
+      "corruption": 38.26553538693233,
+      "hdi": 0.6430833978686458,
+      "lastMonth": {
+        "revenue": {
+          "income": 111264.539837144,
+          "corporate": 92720.44986428668,
+          "gst": 92757.17083452994,
+          "customs": 22162.166586605574,
+          "nonTax": 46707.483994404225
+        },
+        "expenditure": {
+          "finance": 74329.0445375736,
+          "home": 20750.19160007263,
+          "defence": 58224.41822109932,
+          "external": 2477.63481791912,
+          "health": 8362.01751047703,
+          "education": 11768.76538511582,
+          "agriculture": 28183.096053829988,
+          "industry": 74948.45324205337,
+          "disaster": 2787.33917015901,
+          "intelligence": 1393.669585079505,
+          "antiCorruption": 464.55652835983494,
+          "establishment": 43358.609313584595,
+          "interest": 104508.58114570967
+        },
+        "totalRevenue": 365611.81111697044,
+        "totalExpenditure": 431556.3771110334,
+        "balance": -65944.56599406298,
+        "borrowed": 67565.7545495797,
+        "repaid": 0
+      }
+    },
+    "budget": {
+      "taxRates": {
+        "income": 0.2,
+        "corporate": 0.25,
+        "gst": 0.18,
+        "customs": 0.1
+      },
+      "allocations": {
+        "finance": 0.024,
+        "home": 0.0067,
+        "defence": 0.0188,
+        "external": 0.0008,
+        "health": 0.0027,
+        "education": 0.0038,
+        "agriculture": 0.0091,
+        "industry": 0.0242,
+        "disaster": 0.0009,
+        "intelligence": 0.00045,
+        "antiCorruption": 0.00015
+      },
+      "lastEnactedTick": null
+    },
+    "cabinet": {
+      "ministers": {
+        "finance": {
+          "id": "min-6",
+          "name": "Debolina Ghosh",
+          "gender": "female",
+          "region": "east",
+          "competence": 35,
+          "corruption": 66,
+          "loyalty": 58.4,
+          "ideology": "technocracy",
+          "avatarSeed": 1165633502,
+          "appointedTick": 0
+        },
+        "home": {
+          "id": "min-7",
+          "name": "Shruti Sethi",
+          "gender": "female",
+          "region": "north",
+          "competence": 42,
+          "corruption": 12,
+          "loyalty": 75.9,
+          "ideology": "technocracy",
+          "avatarSeed": 876954221,
+          "appointedTick": 0
+        },
+        "defence": {
+          "id": "min-8",
+          "name": "Mousumi Kalita",
+          "gender": "female",
+          "region": "northEast",
+          "competence": 45,
+          "corruption": 23,
+          "loyalty": 56.9,
+          "ideology": "socialism",
+          "avatarSeed": 882552465,
+          "appointedTick": 0
+        },
+        "external": {
+          "id": "min-9",
+          "name": "Rutuja Parekh",
+          "gender": "female",
+          "region": "west",
+          "competence": 45,
+          "corruption": 19,
+          "loyalty": 57.1,
+          "ideology": "nationalism",
+          "avatarSeed": 135952137,
+          "appointedTick": 0
+        },
+        "health": {
+          "id": "min-10",
+          "name": "Suresh Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 40,
+          "corruption": 57,
+          "loyalty": 72.6,
+          "ideology": "conservatism",
+          "avatarSeed": 1107485340,
+          "appointedTick": 0
+        },
+        "education": {
+          "id": "min-11",
+          "name": "Ritwik Dutta",
+          "gender": "male",
+          "region": "east",
+          "competence": 47,
+          "corruption": 44,
+          "loyalty": 72.6,
+          "ideology": "nationalism",
+          "avatarSeed": 1062533377,
+          "appointedTick": 0
+        },
+        "agriculture": {
+          "id": "min-12",
+          "name": "Vandana Tiwari",
+          "gender": "female",
+          "region": "central",
+          "competence": 58,
+          "corruption": 43,
+          "loyalty": 74.3,
+          "ideology": "technocracy",
+          "avatarSeed": 1224186615,
+          "appointedTick": 0
+        },
+        "industry": {
+          "id": "min-13",
+          "name": "Ravi Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 58,
+          "corruption": 3,
+          "loyalty": 47.6,
+          "ideology": "technocracy",
+          "avatarSeed": 2267632,
+          "appointedTick": 0
+        },
+        "disaster": {
+          "id": "min-14",
+          "name": "Shalini Pandey",
+          "gender": "female",
+          "region": "central",
+          "competence": 35,
+          "corruption": 76,
+          "loyalty": 39.6,
+          "ideology": "nationalism",
+          "avatarSeed": 206511763,
+          "appointedTick": 0
+        },
+        "intelligence": {
+          "id": "min-15",
+          "name": "Anirban Das",
+          "gender": "male",
+          "region": "east",
+          "competence": 53,
+          "corruption": 30,
+          "loyalty": 66.2,
+          "ideology": "nationalism",
+          "avatarSeed": 1968597696,
+          "appointedTick": 0
+        },
+        "antiCorruption": {
+          "id": "min-16",
+          "name": "Sowmya Subramanian",
+          "gender": "female",
+          "region": "south",
+          "competence": 53,
+          "corruption": 12,
+          "loyalty": 56.6,
+          "ideology": "conservatism",
+          "avatarSeed": 1013511392,
+          "appointedTick": 0
+        }
+      },
+      "candidates": {
+        "finance": [
+          {
+            "id": "min-56",
+            "name": "Deepak Arora",
+            "gender": "male",
+            "region": "north",
+            "competence": 38,
+            "corruption": 62,
+            "loyalty": 83,
+            "ideology": "nationalism",
+            "avatarSeed": 1783082844,
+            "appointedTick": null
+          },
+          {
+            "id": "min-57",
+            "name": "Harsha Subramanian",
+            "gender": "male",
+            "region": "south",
+            "competence": 29,
+            "corruption": 31,
+            "loyalty": 58,
+            "ideology": "conservatism",
+            "avatarSeed": 706841852,
+            "appointedTick": null
+          },
+          {
+            "id": "min-58",
+            "name": "Saurabh Shukla",
+            "gender": "male",
+            "region": "central",
+            "competence": 65,
+            "corruption": 33,
+            "loyalty": 50,
+            "ideology": "technocracy",
+            "avatarSeed": 849532060,
+            "appointedTick": null
+          }
+        ],
+        "home": [
+          {
+            "id": "min-59",
+            "name": "Revathi Menon",
+            "gender": "female",
+            "region": "south",
+            "competence": 64,
+            "corruption": 69,
+            "loyalty": 38,
+            "ideology": "technocracy",
+            "avatarSeed": 257215141,
+            "appointedTick": null
+          },
+          {
+            "id": "min-60",
+            "name": "Jintu Lyngdoh",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 47,
+            "corruption": 71,
+            "loyalty": 82,
+            "ideology": "conservatism",
+            "avatarSeed": 83929901,
+            "appointedTick": null
+          },
+          {
+            "id": "min-61",
+            "name": "Vandana Pandey",
+            "gender": "female",
+            "region": "central",
+            "competence": 52,
+            "corruption": 35,
+            "loyalty": 54,
+            "ideology": "technocracy",
+            "avatarSeed": 1787466609,
+            "appointedTick": null
+          }
+        ],
+        "defence": [
+          {
+            "id": "min-62",
+            "name": "Debashis Das",
+            "gender": "male",
+            "region": "east",
+            "competence": 69,
+            "corruption": 24,
+            "loyalty": 88,
+            "ideology": "technocracy",
+            "avatarSeed": 1053767435,
+            "appointedTick": null
+          },
+          {
+            "id": "min-63",
+            "name": "Anirban Mitra",
+            "gender": "male",
+            "region": "east",
+            "competence": 64,
+            "corruption": 52,
+            "loyalty": 82,
+            "ideology": "technocracy",
+            "avatarSeed": 121874504,
+            "appointedTick": null
+          },
+          {
+            "id": "min-64",
+            "name": "Lakshmi Pillai",
+            "gender": "female",
+            "region": "south",
+            "competence": 54,
+            "corruption": 16,
+            "loyalty": 78,
+            "ideology": "liberalism",
+            "avatarSeed": 1574371924,
+            "appointedTick": null
+          }
+        ],
+        "external": [
+          {
+            "id": "min-65",
+            "name": "Juri Bora",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 43,
+            "corruption": 62,
+            "loyalty": 60,
+            "ideology": "technocracy",
+            "avatarSeed": 107645771,
+            "appointedTick": null
+          },
+          {
+            "id": "min-66",
+            "name": "Abhishek Pandey",
+            "gender": "male",
+            "region": "central",
+            "competence": 68,
+            "corruption": 59,
+            "loyalty": 90,
+            "ideology": "conservatism",
+            "avatarSeed": 775490585,
+            "appointedTick": null
+          },
+          {
+            "id": "min-67",
+            "name": "Juri Hazarika",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 55,
+            "corruption": 50,
+            "loyalty": 90,
+            "ideology": "conservatism",
+            "avatarSeed": 1804670590,
+            "appointedTick": null
+          }
+        ],
+        "health": [
+          {
+            "id": "min-68",
+            "name": "Karthik Hegde",
+            "gender": "male",
+            "region": "south",
+            "competence": 40,
+            "corruption": 56,
+            "loyalty": 60,
+            "ideology": "socialism",
+            "avatarSeed": 437286265,
+            "appointedTick": null
+          },
+          {
+            "id": "min-69",
+            "name": "Vivek Verma",
+            "gender": "male",
+            "region": "north",
+            "competence": 35,
+            "corruption": 65,
+            "loyalty": 58,
+            "ideology": "nationalism",
+            "avatarSeed": 1031754389,
+            "appointedTick": null
+          },
+          {
+            "id": "min-70",
+            "name": "Tanushree Mitra",
+            "gender": "female",
+            "region": "east",
+            "competence": 54,
+            "corruption": 20,
+            "loyalty": 88,
+            "ideology": "nationalism",
+            "avatarSeed": 1533440113,
+            "appointedTick": null
+          }
+        ],
+        "education": [
+          {
+            "id": "min-71",
+            "name": "Pranav Subramanian",
+            "gender": "male",
+            "region": "south",
+            "competence": 40,
+            "corruption": 57,
+            "loyalty": 46,
+            "ideology": "socialism",
+            "avatarSeed": 644478240,
+            "appointedTick": null
+          },
+          {
+            "id": "min-72",
+            "name": "Harish Malhotra",
+            "gender": "male",
+            "region": "north",
+            "competence": 65,
+            "corruption": 63,
+            "loyalty": 38,
+            "ideology": "socialism",
+            "avatarSeed": 277221936,
+            "appointedTick": null
+          },
+          {
+            "id": "min-73",
+            "name": "Rituparna Mitra",
+            "gender": "female",
+            "region": "east",
+            "competence": 55,
+            "corruption": 9,
+            "loyalty": 56,
+            "ideology": "nationalism",
+            "avatarSeed": 2119284832,
+            "appointedTick": null
+          }
+        ],
+        "agriculture": [
+          {
+            "id": "min-74",
+            "name": "Nidhi Shukla",
+            "gender": "female",
+            "region": "central",
+            "competence": 58,
+            "corruption": 28,
+            "loyalty": 85,
+            "ideology": "socialism",
+            "avatarSeed": 1864294709,
+            "appointedTick": null
+          },
+          {
+            "id": "min-75",
+            "name": "Manish Arora",
+            "gender": "male",
+            "region": "north",
+            "competence": 60,
+            "corruption": 12,
+            "loyalty": 84,
+            "ideology": "conservatism",
+            "avatarSeed": 644710854,
+            "appointedTick": null
+          },
+          {
+            "id": "min-76",
+            "name": "Kenneth Deka",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 64,
+            "corruption": 63,
+            "loyalty": 59,
+            "ideology": "socialism",
+            "avatarSeed": 1524796375,
+            "appointedTick": null
+          }
+        ],
+        "industry": [
+          {
+            "id": "min-77",
+            "name": "Rohan Parekh",
+            "gender": "male",
+            "region": "west",
+            "competence": 68,
+            "corruption": 71,
+            "loyalty": 45,
+            "ideology": "socialism",
+            "avatarSeed": 1675301723,
+            "appointedTick": null
+          },
+          {
+            "id": "min-78",
+            "name": "Swati Bhatia",
+            "gender": "female",
+            "region": "north",
+            "competence": 39,
+            "corruption": 43,
+            "loyalty": 48,
+            "ideology": "conservatism",
+            "avatarSeed": 1228434211,
+            "appointedTick": null
+          },
+          {
+            "id": "min-79",
+            "name": "Shruti Bhatia",
+            "gender": "female",
+            "region": "north",
+            "competence": 50,
+            "corruption": 24,
+            "loyalty": 35,
+            "ideology": "technocracy",
+            "avatarSeed": 833476641,
+            "appointedTick": null
+          }
+        ],
+        "disaster": [
+          {
+            "id": "min-80",
+            "name": "Sayan Chatterjee",
+            "gender": "male",
+            "region": "east",
+            "competence": 38,
+            "corruption": 20,
+            "loyalty": 68,
+            "ideology": "conservatism",
+            "avatarSeed": 2122166030,
+            "appointedTick": null
+          },
+          {
+            "id": "min-81",
+            "name": "Meera Hegde",
+            "gender": "female",
+            "region": "south",
+            "competence": 48,
+            "corruption": 43,
+            "loyalty": 70,
+            "ideology": "socialism",
+            "avatarSeed": 2113076531,
+            "appointedTick": null
+          },
+          {
+            "id": "min-82",
+            "name": "Suresh Nair",
+            "gender": "male",
+            "region": "south",
+            "competence": 63,
+            "corruption": 55,
+            "loyalty": 80,
+            "ideology": "technocracy",
+            "avatarSeed": 2060135094,
+            "appointedTick": null
+          }
+        ],
+        "intelligence": [
+          {
+            "id": "min-83",
+            "name": "Arnab Bose",
+            "gender": "male",
+            "region": "east",
+            "competence": 45,
+            "corruption": 65,
+            "loyalty": 48,
+            "ideology": "socialism",
+            "avatarSeed": 1826687769,
+            "appointedTick": null
+          },
+          {
+            "id": "min-84",
+            "name": "Aarav Sethi",
+            "gender": "male",
+            "region": "north",
+            "competence": 74,
+            "corruption": 6,
+            "loyalty": 65,
+            "ideology": "liberalism",
+            "avatarSeed": 1981706330,
+            "appointedTick": null
+          },
+          {
+            "id": "min-85",
+            "name": "Dhruba Hazarika",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 49,
+            "corruption": 59,
+            "loyalty": 59,
+            "ideology": "conservatism",
+            "avatarSeed": 1221211316,
+            "appointedTick": null
+          }
+        ],
+        "antiCorruption": [
+          {
+            "id": "min-86",
+            "name": "Rimpi Bora",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 70,
+            "corruption": 9,
+            "loyalty": 87,
+            "ideology": "nationalism",
+            "avatarSeed": 99115417,
+            "appointedTick": null
+          },
+          {
+            "id": "min-87",
+            "name": "Meenal Malhotra",
+            "gender": "female",
+            "region": "north",
+            "competence": 27,
+            "corruption": 13,
+            "loyalty": 82,
+            "ideology": "socialism",
+            "avatarSeed": 686362751,
+            "appointedTick": null
+          },
+          {
+            "id": "min-88",
+            "name": "Komal Desai",
+            "gender": "female",
+            "region": "west",
+            "competence": 45,
+            "corruption": 15,
+            "loyalty": 90,
+            "ideology": "socialism",
+            "avatarSeed": 493634310,
+            "appointedTick": null
+          }
+        ]
+      }
+    },
+    "politics": {
+      "ideology": "liberalism",
+      "strategy": "balanced",
+      "ideologyChangedTick": null,
+      "strategyChangedTick": null,
+      "lowApprovalMonths": 0,
+      "satisfaction": {
+        "jobs": 52.06538076444408,
+        "prices": 82.58046447183884,
+        "growth": 68.68031188998562,
+        "corruption": 61.73446461306767,
+        "livingStandards": 55.16668510532736,
+        "taxes": 60,
+        "services": 40.3576
+      }
+    },
+    "modifiers": [
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.003,
+        "id": "mod-0",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.services",
+        "kind": "add",
+        "value": 0.004,
+        "id": "mod-1",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.005,
+        "id": "mod-2",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.corruption",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-3",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "id": "mod-4",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.002,
+        "id": "mod-5",
+        "source": "strategy",
+        "label": "Strategy: Balanced",
+        "expiresAtTick": null
+      }
+    ],
+    "history": [
+      {
+        "month": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 196625,
+        "approval": 54.4,
+        "balance": -63352.89959463989,
+        "gdp": 33312421.297084343,
+        "realGrowth": 0.0628660097636077,
+        "inflation": 0.04895000958196678,
+        "unemployment": 0.07735594390218754,
+        "debtToGdp": 0.5565484834608679,
+        "revenue": 329896.40781970235,
+        "expenditure": 393249.30741434224,
+        "corruption": 40.092500015379656,
+        "hdi": 0.6438220743893952
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 2,
+          "day": 1
+        },
+        "treasury": 198188,
+        "approval": 54.8,
+        "balance": -64921.34439626249,
+        "gdp": 33630793.83485365,
+        "realGrowth": 0.06402155057232298,
+        "inflation": 0.04784633920305156,
+        "unemployment": 0.07728840153968397,
+        "debtToGdp": 0.5532566944790721,
+        "revenue": 331454.5197641677,
+        "expenditure": 396375.8641604302,
+        "corruption": 39.78459158042061,
+        "hdi": 0.6436640847852927
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "treasury": 199760,
+        "approval": 55.7,
+        "balance": -70632.00678069721,
+        "gdp": 33947269.74054283,
+        "realGrowth": 0.06497156250483548,
+        "inflation": 0.045973483469016155,
+        "unemployment": 0.07705175391324262,
+        "debtToGdp": 0.5502258787515582,
+        "revenue": 328888.9685140454,
+        "expenditure": 399520.9752947426,
+        "corruption": 39.499952524534294,
+        "hdi": 0.6435254630259756
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "treasury": 201336,
+        "approval": 56.2,
+        "balance": -69693.35051297839,
+        "gdp": 34261009.84918416,
+        "realGrowth": 0.06546199918508253,
+        "inflation": 0.04523145336322683,
+        "unemployment": 0.07631722537609235,
+        "debtToGdp": 0.5472674697920583,
+        "revenue": 332979.64541596005,
+        "expenditure": 402672.99592893844,
+        "corruption": 39.20608811863725,
+        "hdi": 0.6434053125935991
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 5,
+          "day": 1
+        },
+        "treasury": 202906,
+        "approval": 57.3,
+        "balance": -63812.52351868461,
+        "gdp": 34573926.32234198,
+        "realGrowth": 0.06582474917328385,
+        "inflation": 0.04407362602711073,
+        "unemployment": 0.07602649645807781,
+        "debtToGdp": 0.544205447588882,
+        "revenue": 342000.18238662876,
+        "expenditure": 405812.70590531337,
+        "corruption": 39.29494463240127,
+        "hdi": 0.6433030446838086
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "treasury": 204496,
+        "approval": 58.4,
+        "balance": -65684.8838740054,
+        "gdp": 34894874.29556947,
+        "realGrowth": 0.06665909401233336,
+        "inflation": 0.043304114629660835,
+        "unemployment": 0.07524128681554641,
+        "debtToGdp": 0.541127999939099,
+        "revenue": 343306.32144326303,
+        "expenditure": 408991.20531726844,
+        "corruption": 39.25425040854946,
+        "hdi": 0.6432187593158201
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "treasury": 206070,
+        "approval": 57.7,
+        "balance": -65163.48075017927,
+        "gdp": 35211212.93884114,
+        "realGrowth": 0.06696251036774348,
+        "inflation": 0.04241768153345567,
+        "unemployment": 0.07505643105004528,
+        "debtToGdp": 0.5381618277045644,
+        "revenue": 346975.9080965983,
+        "expenditure": 412139.38884677755,
+        "corruption": 39.08661637556831,
+        "hdi": 0.6431514913466262
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "treasury": 207666,
+        "approval": 57.9,
+        "balance": -68544.5539784098,
+        "gdp": 35532939.28511865,
+        "realGrowth": 0.06741145214493369,
+        "inflation": 0.042303560503084536,
+        "unemployment": 0.07501607454346255,
+        "debtToGdp": 0.5352631019091716,
+        "revenue": 346787.51974779996,
+        "expenditure": 415332.07372620975,
+        "corruption": 39.05774585187455,
+        "hdi": 0.6431009714471972
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "treasury": 209296,
+        "approval": 57.9,
+        "balance": -66785.72492912348,
+        "gdp": 35860113.932776794,
+        "realGrowth": 0.06807624788425011,
+        "inflation": 0.04171274188544091,
+        "unemployment": 0.07506431035749546,
+        "debtToGdp": 0.5322873940620225,
+        "revenue": 351805.4138968696,
+        "expenditure": 418591.13882599305,
+        "corruption": 38.85967548693342,
+        "hdi": 0.6430670542438522
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "treasury": 210878,
+        "approval": 58.4,
+        "balance": -66783.07490518532,
+        "gdp": 36177558.83777511,
+        "realGrowth": 0.0677937418131164,
+        "inflation": 0.04129545184047319,
+        "unemployment": 0.07490706304785809,
+        "debtToGdp": 0.5295064649128611,
+        "revenue": 354972.16192914604,
+        "expenditure": 421755.23683433136,
+        "corruption": 38.63065597117166,
+        "hdi": 0.6430482891620573
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "treasury": 212533,
+        "approval": 57.7,
+        "balance": -67990.72181574325,
+        "gdp": 36511660.58313634,
+        "realGrowth": 0.06857953089350784,
+        "inflation": 0.04111500408808853,
+        "unemployment": 0.07450512533606794,
+        "debtToGdp": 0.5265686776387667,
+        "revenue": 357074.9191332629,
+        "expenditure": 425065.64094900613,
+        "corruption": 38.421522300314166,
+        "hdi": 0.6430454045345576
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 12,
+          "day": 1
+        },
+        "treasury": 214157,
+        "approval": 58.6,
+        "balance": -66370.59482026717,
+        "gdp": 36838031.839332886,
+        "realGrowth": 0.0686347180087418,
+        "inflation": 0.04026828834684506,
+        "unemployment": 0.07394114828589253,
+        "debtToGdp": 0.5237492596774064,
+        "revenue": 361944.35987067415,
+        "expenditure": 428314.9546909413,
+        "corruption": 38.09146898766047,
+        "hdi": 0.6430572542168728
+      },
+      {
+        "month": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 215778,
+        "approval": 58.6,
+        "balance": -65944.56599406298,
+        "gdp": 37164522.268786795,
+        "realGrowth": 0.06868031188998562,
+        "inflation": 0.03935503947573463,
+        "unemployment": 0.07326068803950658,
+        "debtToGdp": 0.5209661385754963,
+        "revenue": 365611.81111697044,
+        "expenditure": 431556.3771110334,
+        "corruption": 38.26553538693233,
+        "hdi": 0.6430833978686458
+      }
+    ],
+    "log": [
+      {
+        "severity": "info",
+        "title": "Sworn in as President",
+        "body": "Golden Fixture takes the oath of office. Review the budget and your cabinet: the nation is watching your first decisions.",
+        "id": "log-50",
+        "tick": 0,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-51",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-52",
+        "tick": 181,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-53",
+        "tick": 273,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-54",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "Annual report 2026",
+        "body": "The government closed 2026 with a deficit of ₹7,99,735 crore. Growth 6.9%, inflation 4.0%, unemployment 7.4%, debt 52.4% of GDP. Approval stands at 58.6%.",
+        "id": "log-55",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "info",
+        "title": "New cabinet candidates",
+        "body": "A fresh set of candidates is available for every ministry. Review them in the Cabinet room.",
+        "id": "log-89",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      }
+    ],
+    "nextId": 90
+  }
+}

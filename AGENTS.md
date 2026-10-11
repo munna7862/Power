@@ -11,6 +11,14 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - **Every gameplay effect is a modifier** (`src/sim/engine/modifiers.ts`), so the "Why?" tooltips can explain it.
 - **System order is fixed** in `src/sim/systems/index.ts`. Changing it changes outcomes; review the determinism snapshot when you do.
 - **Persistence goes through `src/platform/`** (storage adapters), so Electron and Capacitor can swap the backend.
+- **UI and tools import the simulation from `src/sim` (its `index.ts`) only**, never from deep paths.
+- **Game data lives in `content/*.json`** and is validated by zod in `src/sim/content`. Ids must match `src/sim/content/ids.ts`.
+- **Explanations and the simulation share formulas.** Growth drivers (`economy/growth.ts`), fiscal projections (`projectMonth`) and approval (`politics/approval.ts`) are used by both the monthly systems and the UI, so the "Why?" tooltips can never drift from what the sim does.
+
+## Balance
+
+- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_2_economy_governance.md`. Run it after any formula change and update the bands deliberately, never to make a failure pass.
+- Bots act only through `dispatch()`, like a player.
 
 ## Save compatibility
 

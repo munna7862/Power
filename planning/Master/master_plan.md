@@ -45,11 +45,11 @@ Derived from the reference game's public store listing. We design all internals 
 | #   | Reference feature                            | Our system                                               | Phase |
 | --- | -------------------------------------------- | -------------------------------------------------------- | ----- |
 | F1  | Rule as President, with daily tasks          | Game clock, turn engine, inbox and decisions             | 1     |
-| F2  | Control government institutions              | Ministries and budget allocation                         | 2     |
-| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits                     | 2     |
-| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                         | 2     |
-| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)          | 2     |
-| F6  | Rating / approval                            | Approval model with drift and shocks                     | 2     |
+| F2  | Control government institutions              | Ministries and budget allocation                         | 2 ✅  |
+| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits                     | 2 ✅  |
+| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                         | 2 ✅  |
+| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)          | 2 ✅  |
+| F6  | Rating / approval                            | Approval model with drift and shocks                     | 2 ✅  |
 | F7  | Handle emergencies                           | Disaster events (flood, cyclone, quake, epidemic)        | 3     |
 | F8  | Fight corruption                             | Corruption index, anti-corruption agency, investigations | 3     |
 | F9  | Riots / unrest                               | Unrest per region, police response                       | 3     |

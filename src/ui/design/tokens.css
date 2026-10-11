@@ -44,6 +44,11 @@
 
   --topbar-height: 60px;
   --nav-width: 216px;
+
+  /* Data viz: reference palette slots 1–2 (dark steps), validated against --surface. */
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --chart-grid: rgba(154, 167, 192, 0.14);
 }
 
 :root[data-theme='light'] {
@@ -72,4 +77,8 @@
   --warning-soft: rgba(154, 98, 0, 0.1);
 
   --shadow: 0 10px 30px rgba(17, 26, 46, 0.12);
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --chart-grid: rgba(17, 26, 46, 0.08);
 }

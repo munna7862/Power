@@ -33,6 +33,38 @@ describe('game store', () => {
     expect(s.game?.clock.date).toEqual({ year: 2026, month: 1, day: 1 });
   });
 
+  it('starts with the chosen ideology and strategy', () => {
+    store.getState().startNewGame({
+      presidentName: 'A',
+      difficulty: 'normal',
+      seed: 1,
+      ideology: 'socialism',
+      strategy: 'agrarian',
+    });
+    expect(store.getState().game?.politics).toMatchObject({ ideology: 'socialism', strategy: 'agrarian' });
+  });
+
+  it('stops the clock and refuses to restart it when the presidency ends', async () => {
+    store.getState().startNewGame({ presidentName: 'A', difficulty: 'normal', seed: 1 });
+    const game = store.getState().game!;
+    store.setState({
+      game: {
+        ...game,
+        nation: { ...game.nation, approval: 2 },
+        economy: { ...game.economy, inflation: 0.45, unemployment: 0.35, corruption: 100 },
+      },
+    });
+    store.getState().setSpeed(4);
+    store.getState().advanceDays(200);
+    expect(store.getState().game?.status.kind).toBe('over');
+    expect(store.getState().speed).toBe(0);
+    store.getState().togglePause();
+    store.getState().setSpeed(2);
+    expect(store.getState().speed).toBe(0);
+    await flush();
+    expect((await storage.read('autosave')) ?? '').not.toContain('"kind":"over"');
+  });
+
   it('pauses and resumes at the last chosen speed', () => {
     const s = store.getState();
     s.setSpeed(4);

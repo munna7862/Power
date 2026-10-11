@@ -12,6 +12,18 @@ if (import.meta.env.DEV) {
     __APEX__: {
       advanceDays: (days: number) => gameStore.getState().advanceDays(days),
       getState: () => gameStore.getState(),
+      /** Shallow-merges into game.nation / game.economy, e.g. to stage a crisis in an e2e test. */
+      patchGame: (patch: { nation?: object; economy?: object }) => {
+        const { game } = gameStore.getState();
+        if (!game) return;
+        gameStore.setState({
+          game: {
+            ...game,
+            nation: { ...game.nation, ...patch.nation },
+            economy: { ...game.economy, ...patch.economy },
+          },
+        });
+      },
     },
   });
 }

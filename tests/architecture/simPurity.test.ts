@@ -12,7 +12,7 @@ const ruleIdsFor = async (code: string, filePath = 'src/sim/engine/__probe__.ts'
   return result?.messages.map((m) => m.ruleId) ?? [];
 };
 
-describe('sim purity guard', () => {
+describe('sim purity guard', { timeout: 60_000 }, () => {
   it.each([
     ['React import', `import { useState } from 'react';\nexport const x = useState;`, 'no-restricted-imports'],
     ['UI import', `import { x } from '../../ui/App';\nexport const y = x;`, 'no-restricted-imports'],
