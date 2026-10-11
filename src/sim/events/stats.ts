@@ -1,4 +1,5 @@
-import { MINISTRIES, REGIONS, type MinistryId, type RegionId } from '../content/ids';
+import { MINISTRIES, REGIONS, RIVALS, type MinistryId, type RegionId } from '../content/ids';
+import { FOCUS_IDS } from '../content/world';
 import { allEfficiencies, debtToGdp, ministryEfficiency } from '../economy/model';
 import { militaryStrength } from '../military/strength';
 import { coupRisk, presidentialSafety } from '../security/leadership';
@@ -53,6 +54,17 @@ export const BASE_STATS = [
   'nuclearResearch',
   /** Worst relation with any rival state, -100 to +100. */
   'worstRelation',
+  /** India's global reputation and the world's tension, 0-100. */
+  'reputation',
+  'worldTension',
+  /** Active trade contracts and non-aggression pacts. */
+  'tradeDeals',
+  'pacts',
+  /** Average relation with the focus nations, -100 to +100. */
+  'avgRelation',
+  /** Crises between other countries, and countries sanctioning India. */
+  'conflicts',
+  'sanctionsOnIndia',
 ] as const;
 export type BaseStat = (typeof BASE_STATS)[number];
 
@@ -131,7 +143,21 @@ export function statValue(state: GameState, stat: StatId, region: RegionId | nul
     case 'nuclearResearch':
       return state.military.nuclear.research;
     case 'worstRelation':
-      return Math.min(...Object.values(state.military.rivals).map((r) => r.relation));
+      return Math.min(...RIVALS.map((r) => state.diplomacy.countries[r]?.relation ?? 0));
+    case 'reputation':
+      return state.diplomacy.reputation;
+    case 'worldTension':
+      return state.diplomacy.worldTension;
+    case 'tradeDeals':
+      return state.diplomacy.treaties.filter((t) => t.type === 'trade').length;
+    case 'pacts':
+      return state.diplomacy.treaties.filter((t) => t.type === 'nonAggression').length;
+    case 'avgRelation':
+      return FOCUS_IDS.reduce((sum, id) => sum + (state.diplomacy.countries[id]?.relation ?? 0), 0) / FOCUS_IDS.length;
+    case 'conflicts':
+      return state.diplomacy.conflicts.length;
+    case 'sanctionsOnIndia':
+      return state.diplomacy.treaties.filter((t) => t.type === 'sanctions' && t.parties[1] === 'IND').length;
     default:
       return ministryEfficiency(state, stat.slice('efficiency.'.length) as MinistryId);
   }

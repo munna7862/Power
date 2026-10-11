@@ -1,5 +1,15 @@
 import {
   choiceUtility,
+  COUNTRY_CONTENT,
+  FOCUS_IDS,
+  MAX_TRADE_TREATIES,
+  pactAcceptance,
+  relationOf,
+  tradeAcceptance,
+  tradeSizesFor,
+  validateEmbassy,
+  validatePact,
+  validateTrade,
   DOMAINS,
   DRILLS,
   INTEL_OPS,
@@ -139,7 +149,7 @@ function manageMilitary(state: GameState): GameState {
   if (next.nation.treasury > 30_000) {
     const target = [...RIVALS]
       .filter((r) => !m().rivals[r].annexed)
-      .sort((a, b) => m().rivals[a].relation - m().rivals[b].relation)[0];
+      .sort((a, b) => (next.diplomacy.countries[a]?.relation ?? 0) - (next.diplomacy.countries[b]?.relation ?? 0))[0];
     const stale = target
       ? !m().rivals[target].sighting || next.clock.tick - (m().rivals[target].sighting?.tick ?? 0) > 400
       : false;
@@ -153,10 +163,56 @@ function manageMilitary(state: GameState): GameState {
   return next;
 }
 
+/**
+ * Runs foreign policy the way a sensible President would: answer offers, open a few embassies, sign trade
+ * contracts with the friendliest large economies and seek a pact with the neighbours it is not at war with.
+ */
+function manageDiplomacy(state: GameState): GameState {
+  let next = state;
+  const trades = () => next.diplomacy.treaties.filter((t) => t.type === 'trade').length;
+
+  for (const offer of state.diplomacy.offers) {
+    if (offer.type === 'trade' && trades() >= MAX_TRADE_TREATIES) continue;
+    next = apply(next, { type: 'ACCEPT_OFFER', offerId: offer.id });
+  }
+
+  const rich = next.nation.treasury > 30_000;
+  const embassies = next.diplomacy.treaties.filter((t) => t.type === 'embassy').length;
+  if (rich && embassies < 4) {
+    const target = [...FOCUS_IDS]
+      .filter((id) => !validateEmbassy(next, id))
+      .sort((a, b) => (COUNTRY_CONTENT[b]?.power ?? 0) - (COUNTRY_CONTENT[a]?.power ?? 0))[0];
+    if (target) next = apply(next, { type: 'OPEN_EMBASSY', country: target });
+  }
+
+  if (trades() < 4) {
+    const options = FOCUS_IDS.flatMap((id) => {
+      const c = COUNTRY_CONTENT[id];
+      const size = tradeSizesFor(next, id)[1]?.size ?? tradeSizesFor(next, id)[0]?.size;
+      const sector = c?.strengths[0];
+      if (!c || !size || !sector || validateTrade(next, id, sector, size, 3)) return [];
+      const value = tradeSizesFor(next, id).find((s) => s.size === size)?.value ?? 0;
+      return [{ id, sector, size, chance: tradeAcceptance(next, id, sector, value).chance }];
+    }).sort((a, b) => b.chance - a.chance);
+    const best = options[0];
+    if (best && best.chance > 0.4) {
+      next = apply(next, { type: 'PROPOSE_TRADE', country: best.id, sector: best.sector, size: best.size, years: 3 });
+    }
+  }
+
+  const neighbour = [...RIVALS]
+    .filter((id) => !next.military.rivals[id].annexed && !validatePact(next, id))
+    .sort((a, b) => relationOf(next, b) - relationOf(next, a))[0];
+  if (neighbour && pactAcceptance(next, neighbour).chance > 0.4) {
+    next = apply(next, { type: 'PROPOSE_PACT', country: neighbour });
+  }
+  return next;
+}
+
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Hires the best candidates each January, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, investigates corruption, runs the armed forces (equipment, drills, research, recon, ending wars) and settles every decision on its merits.',
+    'Hires the best candidates each January, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, investigates corruption, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
     let next = state;
     if (state.clock.date.month === 1) {
@@ -187,6 +243,7 @@ export const balancedBot: Bot = {
     }
 
     next = manageMilitary(next);
+    next = manageDiplomacy(next);
 
     // Keep surveillance running while the threat is high.
     if (next.security.terrorThreat > 50 && next.nation.treasury > OPERATIONS.surveillance.cost) {

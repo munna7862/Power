@@ -1,5 +1,7 @@
 import { RIVAL_CONTENT } from '../content/military';
 import { RIVALS, SECTORS, UNITS, type RivalId, type TerrainId } from '../content/ids';
+import { addIncident } from '../diplomacy/relations';
+import { adjustReputation, breakTreatiesForWar } from '../diplomacy/treaties';
 import { nominalGdp } from '../economy/model';
 import { formatDate } from '../engine/calendar';
 import { groupIndian } from '../engine/numberFormat';
@@ -132,7 +134,11 @@ export function startWar(state: GameState, rival: RivalId, declaredBy: War['decl
     for (const other of RIVALS) {
       if (other !== rival && !next.military.rivals[other].annexed) next = adjustRelation(next, other, -8);
     }
+    // Tearing up pacts and contracts to attack a partner costs standing with everyone.
+    next = breakTreatiesForWar(next, rival);
+    next = adjustReputation(next, -8);
     next = adjustRelation(next, rival, -30);
+    next = addIncident(next, rival, 30);
     return appendLog(next, {
       severity: 'critical',
       category: 'military',
@@ -323,6 +329,7 @@ export function settleWar(state: GameState, warId: string, terms: PeaceTerms): G
     for (const other of RIVALS) {
       if (other !== war.rival && !next.military.rivals[other].annexed) next = adjustRelation(next, other, -20);
     }
+    next = adjustReputation(next, -15);
     next = endWar(
       next,
       war,

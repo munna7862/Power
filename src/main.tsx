@@ -15,9 +15,9 @@ if (import.meta.env.DEV) {
       getState: () => gameStore.getState(),
       /** Shallow-merges into game.nation / game.economy, e.g. to stage a crisis in an e2e test. */
       /** Raises an event right now, e.g. to stage a decision in an e2e test. */
-      raiseEvent: (eventId: string, region?: RegionId) => {
+      raiseEvent: (eventId: string, region?: RegionId, ref?: string) => {
         const { game } = gameStore.getState();
-        if (game) gameStore.setState({ game: raiseEvent(game, eventId, region ?? null) });
+        if (game) gameStore.setState({ game: raiseEvent(game, eventId, region ?? null, ref ?? null) });
       },
       /** A rival declares war on India right now. */
       invade: (rival: RivalId) => {
@@ -31,7 +31,13 @@ if (import.meta.env.DEV) {
         const wars = game.military.wars.map((w) => ({ ...w, ceasefireOffered: true }));
         gameStore.setState({ game: { ...game, military: { ...game.military, wars } } });
       },
-      patchGame: (patch: { nation?: object; economy?: object; security?: object; military?: object }) => {
+      patchGame: (patch: {
+        nation?: object;
+        economy?: object;
+        security?: object;
+        military?: object;
+        diplomacy?: object;
+      }) => {
         const { game } = gameStore.getState();
         if (!game) return;
         gameStore.setState({
@@ -41,6 +47,7 @@ if (import.meta.env.DEV) {
             economy: { ...game.economy, ...patch.economy },
             security: { ...game.security, ...patch.security },
             military: { ...game.military, ...patch.military },
+            diplomacy: { ...game.diplomacy, ...patch.diplomacy },
           },
         });
       },

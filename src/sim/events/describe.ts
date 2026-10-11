@@ -1,13 +1,13 @@
 import { EVENT_CONTENT, type EventChoice, type EventContent, type EventEffect } from '../content/events';
 import { MINISTRY_CONTENT } from '../content';
-import { RIVAL_CONTENT } from '../content/military';
-import { REGION_LABELS, type RegionId, type RivalId } from '../content/ids';
+import { COUNTRY_CONTENT } from '../content/world';
+import { REGION_LABELS, type RegionId } from '../content/ids';
 import type { ModifierTarget } from '../engine/modifiers';
 import { groupIndian } from '../engine/numberFormat';
 import { OPERATIONS } from '../security/constants';
 import type { GameState, PendingEvent } from '../state/types';
 import { EVENT_DIFFICULTY, isHarmful, scaleFactor } from './effects';
-import { renderEventText } from './engine';
+import { fillText, renderEventText } from './engine';
 
 export interface EffectLine {
   text: string;
@@ -38,6 +38,7 @@ const TARGET_LABELS: Record<ModifierTarget, { label: string; unit: 'pts' | 'pct'
   'economy.inflation': { label: 'Inflation', unit: 'pts', good: -1 },
   'economy.unemployment': { label: 'Unemployment', unit: 'pts', good: -1 },
   'economy.revenue': { label: 'Government revenue', unit: 'pct', good: 1 },
+  'economy.customs': { label: 'Customs revenue', unit: 'pct', good: 1 },
   'economy.expenditure': { label: 'Ministry spending power', unit: 'pct', good: 0 },
   'politics.approvalTarget': { label: 'Approval', unit: 'raw', good: 1 },
   'politics.corruption': { label: 'Corruption', unit: 'raw', good: -1 },
@@ -100,12 +101,39 @@ export function describeEffect(
     case 'morale':
       return { text: `Troop morale ${signed(effect.delta * severity, 0)}`, tone: effect.delta > 0 ? 'good' : 'bad' };
     case 'relation': {
-      const rival = effect.rival ? RIVAL_CONTENT[effect.rival].name : relationTarget;
+      const country = effect.country ? (COUNTRY_CONTENT[effect.country]?.name ?? effect.country) : relationTarget;
       return {
-        text: `Relations with ${rival} ${signed(effect.delta * severity, 0)}`,
+        text: `Relations with ${country} ${signed(effect.delta * severity, 0)}`,
         tone: effect.delta > 0 ? 'good' : 'bad',
       };
     }
+    case 'worldRelation': {
+      const who =
+        effect.scope === 'focus' ? 'major powers' : effect.scope === 'neighbours' ? 'neighbours' : 'the world';
+      return {
+        text: `Relations with ${who} ${signed(effect.delta * severity, 0)}`,
+        tone: effect.delta > 0 ? 'good' : 'bad',
+      };
+    }
+    case 'reputation':
+      return {
+        text: `India’s reputation ${signed(effect.delta * severity, 0)}`,
+        tone: effect.delta > 0 ? 'good' : 'bad',
+      };
+    case 'worldTension':
+      return { text: `World tension ${signed(effect.delta * severity, 0)}`, tone: effect.delta > 0 ? 'bad' : 'good' };
+    case 'conflict':
+      return { text: 'A regional conflict spreads on the world map', tone: 'neutral' };
+    case 'treaty':
+      return {
+        text:
+          effect.kind === 'trade'
+            ? 'A trade agreement is signed'
+            : effect.kind === 'embassy'
+              ? 'An embassy is opened'
+              : 'A non-aggression pact is signed',
+        tone: 'good',
+      };
     case 'corruption':
       return {
         text: `Corruption ${signed(effect.delta * severity, 0)} points`,
@@ -159,6 +187,16 @@ export function effectUtility(state: GameState, effect: EventEffect): number {
       return effect.delta * 0.12;
     case 'relation':
       return effect.delta * 0.08;
+    case 'worldRelation':
+      return effect.delta * 0.12;
+    case 'reputation':
+      return effect.delta * 0.15;
+    case 'worldTension':
+      return -effect.delta * 0.08;
+    case 'conflict':
+      return -1;
+    case 'treaty':
+      return 2;
     case 'corruption':
       return -effect.delta * 0.5;
     case 'loyalty':
@@ -175,7 +213,7 @@ export function choiceUtility(state: GameState, choice: EventChoice): number {
 }
 
 const rivalName = (ref: string | null): string =>
-  ref && ref in RIVAL_CONTENT ? RIVAL_CONTENT[ref as RivalId].name : 'the other country';
+  ref && ref in COUNTRY_CONTENT ? (COUNTRY_CONTENT[ref]?.name ?? 'the other country') : 'the other country';
 
 export interface PendingView {
   pending: PendingEvent;
@@ -198,7 +236,11 @@ export function pendingView(state: GameState, pending: PendingEvent): PendingVie
     title,
     body,
     choices: def.choices.map((choice) => ({
-      choice,
+      choice: {
+        ...choice,
+        label: fillText(state, choice.label, pending.region, pending.ref),
+        description: fillText(state, choice.description, pending.region, pending.ref),
+      },
       lines: choice.effects.map((e) => describeEffect(state, e, pending.region, rivalName(pending.ref))),
     })),
     daysLeft: Math.max(0, pending.expiresTick - state.clock.tick),

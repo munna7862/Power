@@ -123,7 +123,8 @@ export function projectMonth(
   for (const tax of TAXES) {
     const rate = budget.taxRates[tax];
     let amount = gdpMonth * TAX_BASE_SHARE[tax] * rate * taxYieldFactor(tax, rate) * compliance * revenueMultiplier;
-    if (tax === 'customs') amount *= 0.95 + 0.05 * Math.min(external, 1.6);
+    if (tax === 'customs')
+      amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * multiplierFor(modifiers, 'economy.customs');
     revenue[tax] = amount;
   }
   revenue.nonTax = gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier;

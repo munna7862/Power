@@ -9,6 +9,7 @@ import { appendLog } from '../state/log';
 import type { GameState, NuclearDoctrine } from '../state/types';
 import { NUCLEAR } from './constants';
 import { patchMilitary } from './forces';
+import { adjustReputation } from '../diplomacy/treaties';
 import { adjustRelation, patchRival } from './rivals';
 import { activeWar, endWar } from './war';
 
@@ -241,6 +242,7 @@ export function nuclearStrike(state: GameState, warId: string): GameState {
     540,
   );
   for (const r of RIVALS) if (!next.military.rivals[r].annexed) next = adjustRelation(next, r, -60);
+  next = adjustReputation(next, -40);
   next = {
     ...next,
     security: {

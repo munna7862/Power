@@ -8,6 +8,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import { DIFFICULTIES, type Difficulty } from '../../src/sim';
 import { BOTS } from './bots';
+import { evaluateDiplomacy } from './diplomacy';
 import { evaluate, simulate, type RunResult } from './simulate';
 import { evaluateWars, probeWars } from './wars';
 
@@ -54,7 +55,7 @@ const csv = [
 ].join('\n');
 
 const warProbes = probeWars(Math.min(seeds, 30), 240, difficulty);
-const kpis = [...evaluate(results, years), ...evaluateWars(warProbes)];
+const kpis = [...evaluate(results, years), ...evaluateWars(warProbes), ...evaluateDiplomacy(results)];
 const finalRows = BOTS.map((bot) => {
   const runs = results.filter((r) => r.bot === bot.id);
   const finals = runs.map((r) => r.years.at(-1)!);

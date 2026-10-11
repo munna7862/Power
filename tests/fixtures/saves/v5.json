@@ -1,0 +1,4472 @@
+{
+  "format": "india-apex-sovereign/save",
+  "schemaVersion": 5,
+  "savedAt": "2026-10-11T00:00:00.000Z",
+  "checksum": "c95a22cb",
+  "summary": {
+    "presidentName": "Golden Fixture",
+    "difficulty": "normal",
+    "gameDate": "5 Feb 2027",
+    "tick": 400
+  },
+  "state": {
+    "schemaVersion": 5,
+    "meta": {
+      "seed": 2026,
+      "difficulty": "normal",
+      "presidentName": "Golden Fixture",
+      "startDate": {
+        "year": 2026,
+        "month": 1,
+        "day": 1
+      }
+    },
+    "clock": {
+      "tick": 400,
+      "date": {
+        "year": 2027,
+        "month": 2,
+        "day": 5
+      }
+    },
+    "rng": [
+      3953921805,
+      401440187,
+      852659981,
+      917477244
+    ],
+    "status": {
+      "kind": "playing"
+    },
+    "nation": {
+      "name": "India",
+      "treasury": 214732,
+      "approval": 29.4,
+      "population": 1454244834.6412542
+    },
+    "economy": {
+      "sectors": {
+        "agriculture": {
+          "output": 5737657.034685381,
+          "growth": 0.012688849167706462
+        },
+        "industry": {
+          "output": 8780700.093261302,
+          "growth": 0.06875458891468941
+        },
+        "services": {
+          "output": 15267511.234461645,
+          "growth": 0.07763327882452425
+        },
+        "energy": {
+          "output": 1745571.9862274702,
+          "growth": 0.053696068680936876
+        },
+        "tech": {
+          "output": 3632697.2348320736,
+          "growth": 0.09407574342682598
+        }
+      },
+      "priceIndex": 1.0495471717248794,
+      "inflation": 0.041766229872358,
+      "unemployment": 0.07662968137113323,
+      "realGrowth": 0.058763377487226175,
+      "debt": 19406568.11415225,
+      "interestRate": 0.065,
+      "corruption": 43.381585305029596,
+      "hdi": 0.6429606375811143,
+      "lastMonth": {
+        "revenue": {
+          "income": 108566.37095181669,
+          "corporate": 90471.97579318058,
+          "gst": 90507.80627864321,
+          "customs": 21619.96065441915,
+          "nonTax": 45859.2724708919
+        },
+        "expenditure": {
+          "finance": 73812.84229374648,
+          "home": 20606.08514033756,
+          "defence": 57820.05979676808,
+          "external": 2460.4280764582163,
+          "health": 8303.94475804648,
+          "education": 11687.033363176526,
+          "agriculture": 27987.36936971221,
+          "industry": 74427.94931286103,
+          "disaster": 2767.981586015493,
+          "intelligence": 1383.9907930077466,
+          "antiCorruption": 461.3302643359155,
+          "establishment": 43057.49133801878,
+          "interest": 104717.39228564256
+        },
+        "totalRevenue": 357025.38614895154,
+        "totalExpenditure": 429493.89837812714,
+        "balance": -72468.5122291756,
+        "borrowed": 74126.46141823917,
+        "repaid": 0
+      }
+    },
+    "budget": {
+      "taxRates": {
+        "income": 0.2,
+        "corporate": 0.25,
+        "gst": 0.18,
+        "customs": 0.1
+      },
+      "allocations": {
+        "finance": 0.024,
+        "home": 0.0067,
+        "defence": 0.0188,
+        "external": 0.0008,
+        "health": 0.0027,
+        "education": 0.0038,
+        "agriculture": 0.0091,
+        "industry": 0.0242,
+        "disaster": 0.0009,
+        "intelligence": 0.00045,
+        "antiCorruption": 0.00015
+      },
+      "lastEnactedTick": null
+    },
+    "cabinet": {
+      "ministers": {
+        "finance": {
+          "id": "min-6",
+          "name": "Debolina Ghosh",
+          "gender": "female",
+          "region": "east",
+          "competence": 35,
+          "corruption": 66,
+          "loyalty": 56.1,
+          "ideology": "technocracy",
+          "avatarSeed": 1165633502,
+          "appointedTick": 0
+        },
+        "home": {
+          "id": "min-7",
+          "name": "Shruti Sethi",
+          "gender": "female",
+          "region": "north",
+          "competence": 42,
+          "corruption": 12,
+          "loyalty": 76.8,
+          "ideology": "technocracy",
+          "avatarSeed": 876954221,
+          "appointedTick": 0
+        },
+        "defence": {
+          "id": "min-8",
+          "name": "Mousumi Kalita",
+          "gender": "female",
+          "region": "northEast",
+          "competence": 45,
+          "corruption": 23,
+          "loyalty": 46.2,
+          "ideology": "socialism",
+          "avatarSeed": 882552465,
+          "appointedTick": 0
+        },
+        "external": {
+          "id": "min-9",
+          "name": "Rutuja Parekh",
+          "gender": "female",
+          "region": "west",
+          "competence": 45,
+          "corruption": 19,
+          "loyalty": 56.2,
+          "ideology": "nationalism",
+          "avatarSeed": 135952137,
+          "appointedTick": 0
+        },
+        "health": {
+          "id": "min-10",
+          "name": "Suresh Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 40,
+          "corruption": 57,
+          "loyalty": 72.5,
+          "ideology": "conservatism",
+          "avatarSeed": 1107485340,
+          "appointedTick": 0
+        },
+        "education": {
+          "id": "min-11",
+          "name": "Ritwik Dutta",
+          "gender": "male",
+          "region": "east",
+          "competence": 47,
+          "corruption": 44,
+          "loyalty": 77.6,
+          "ideology": "nationalism",
+          "avatarSeed": 1062533377,
+          "appointedTick": 0
+        },
+        "agriculture": {
+          "id": "min-12",
+          "name": "Vandana Tiwari",
+          "gender": "female",
+          "region": "central",
+          "competence": 58,
+          "corruption": 43,
+          "loyalty": 70.7,
+          "ideology": "technocracy",
+          "avatarSeed": 1224186615,
+          "appointedTick": 0
+        },
+        "industry": {
+          "id": "min-13",
+          "name": "Ravi Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 58,
+          "corruption": 3,
+          "loyalty": 48.9,
+          "ideology": "technocracy",
+          "avatarSeed": 2267632,
+          "appointedTick": 0
+        },
+        "disaster": {
+          "id": "min-14",
+          "name": "Shalini Pandey",
+          "gender": "female",
+          "region": "central",
+          "competence": 35,
+          "corruption": 76,
+          "loyalty": 41.9,
+          "ideology": "nationalism",
+          "avatarSeed": 206511763,
+          "appointedTick": 0
+        },
+        "intelligence": {
+          "id": "min-15",
+          "name": "Anirban Das",
+          "gender": "male",
+          "region": "east",
+          "competence": 53,
+          "corruption": 30,
+          "loyalty": 68.6,
+          "ideology": "nationalism",
+          "avatarSeed": 1968597696,
+          "appointedTick": 0
+        },
+        "antiCorruption": {
+          "id": "min-16",
+          "name": "Sowmya Subramanian",
+          "gender": "female",
+          "region": "south",
+          "competence": 53,
+          "corruption": 12,
+          "loyalty": 58.8,
+          "ideology": "conservatism",
+          "avatarSeed": 1013511392,
+          "appointedTick": 0
+        }
+      },
+      "candidates": {
+        "finance": [
+          {
+            "id": "min-179",
+            "name": "Rohan Patil",
+            "gender": "male",
+            "region": "west",
+            "competence": 59,
+            "corruption": 21,
+            "loyalty": 75,
+            "ideology": "conservatism",
+            "avatarSeed": 687616983,
+            "appointedTick": null
+          },
+          {
+            "id": "min-180",
+            "name": "Rituparna Ghosh",
+            "gender": "female",
+            "region": "east",
+            "competence": 59,
+            "corruption": 7,
+            "loyalty": 87,
+            "ideology": "liberalism",
+            "avatarSeed": 1287108913,
+            "appointedTick": null
+          },
+          {
+            "id": "min-181",
+            "name": "Rupam Bora",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 46,
+            "corruption": 67,
+            "loyalty": 59,
+            "ideology": "liberalism",
+            "avatarSeed": 187081228,
+            "appointedTick": null
+          }
+        ],
+        "home": [
+          {
+            "id": "min-182",
+            "name": "Sreya Ghosh",
+            "gender": "female",
+            "region": "east",
+            "competence": 42,
+            "corruption": 49,
+            "loyalty": 90,
+            "ideology": "technocracy",
+            "avatarSeed": 1693290662,
+            "appointedTick": null
+          },
+          {
+            "id": "min-183",
+            "name": "Kunal Gokhale",
+            "gender": "male",
+            "region": "west",
+            "competence": 45,
+            "corruption": 35,
+            "loyalty": 62,
+            "ideology": "conservatism",
+            "avatarSeed": 896047900,
+            "appointedTick": null
+          },
+          {
+            "id": "min-184",
+            "name": "Meenal Bhatia",
+            "gender": "female",
+            "region": "north",
+            "competence": 61,
+            "corruption": 63,
+            "loyalty": 61,
+            "ideology": "technocracy",
+            "avatarSeed": 1879245883,
+            "appointedTick": null
+          }
+        ],
+        "defence": [
+          {
+            "id": "min-185",
+            "name": "Parth Gokhale",
+            "gender": "male",
+            "region": "west",
+            "competence": 64,
+            "corruption": 33,
+            "loyalty": 37,
+            "ideology": "nationalism",
+            "avatarSeed": 776738424,
+            "appointedTick": null
+          },
+          {
+            "id": "min-186",
+            "name": "Ankit Pandey",
+            "gender": "male",
+            "region": "central",
+            "competence": 52,
+            "corruption": 63,
+            "loyalty": 61,
+            "ideology": "nationalism",
+            "avatarSeed": 1526323082,
+            "appointedTick": null
+          },
+          {
+            "id": "min-187",
+            "name": "Shalini Dubey",
+            "gender": "female",
+            "region": "central",
+            "competence": 44,
+            "corruption": 13,
+            "loyalty": 61,
+            "ideology": "socialism",
+            "avatarSeed": 1937633679,
+            "appointedTick": null
+          }
+        ],
+        "external": [
+          {
+            "id": "min-188",
+            "name": "Tanushree Dutta",
+            "gender": "female",
+            "region": "east",
+            "competence": 69,
+            "corruption": 63,
+            "loyalty": 38,
+            "ideology": "technocracy",
+            "avatarSeed": 277718075,
+            "appointedTick": null
+          },
+          {
+            "id": "min-189",
+            "name": "Komal Deshmukh",
+            "gender": "female",
+            "region": "west",
+            "competence": 47,
+            "corruption": 69,
+            "loyalty": 71,
+            "ideology": "liberalism",
+            "avatarSeed": 1829872457,
+            "appointedTick": null
+          },
+          {
+            "id": "min-190",
+            "name": "Pranav Subramanian",
+            "gender": "male",
+            "region": "south",
+            "competence": 44,
+            "corruption": 32,
+            "loyalty": 84,
+            "ideology": "nationalism",
+            "avatarSeed": 1790446974,
+            "appointedTick": null
+          }
+        ],
+        "health": [
+          {
+            "id": "min-191",
+            "name": "Barnali Bora",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 62,
+            "corruption": 66,
+            "loyalty": 70,
+            "ideology": "conservatism",
+            "avatarSeed": 1309614838,
+            "appointedTick": null
+          },
+          {
+            "id": "min-192",
+            "name": "Sakshi Mishra",
+            "gender": "female",
+            "region": "central",
+            "competence": 54,
+            "corruption": 25,
+            "loyalty": 60,
+            "ideology": "nationalism",
+            "avatarSeed": 907270934,
+            "appointedTick": null
+          },
+          {
+            "id": "min-193",
+            "name": "Deepak Chauhan",
+            "gender": "male",
+            "region": "north",
+            "competence": 66,
+            "corruption": 44,
+            "loyalty": 75,
+            "ideology": "liberalism",
+            "avatarSeed": 811804912,
+            "appointedTick": null
+          }
+        ],
+        "education": [
+          {
+            "id": "min-194",
+            "name": "Arnab Mitra",
+            "gender": "male",
+            "region": "east",
+            "competence": 62,
+            "corruption": 70,
+            "loyalty": 77,
+            "ideology": "socialism",
+            "avatarSeed": 2071243011,
+            "appointedTick": null
+          },
+          {
+            "id": "min-195",
+            "name": "Shruti Bhatia",
+            "gender": "female",
+            "region": "north",
+            "competence": 64,
+            "corruption": 60,
+            "loyalty": 37,
+            "ideology": "liberalism",
+            "avatarSeed": 1346183708,
+            "appointedTick": null
+          },
+          {
+            "id": "min-196",
+            "name": "Dhruba Bora",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 75,
+            "corruption": 39,
+            "loyalty": 66,
+            "ideology": "socialism",
+            "avatarSeed": 1088018585,
+            "appointedTick": null
+          }
+        ],
+        "agriculture": [
+          {
+            "id": "min-197",
+            "name": "Payel Bose",
+            "gender": "female",
+            "region": "east",
+            "competence": 70,
+            "corruption": 31,
+            "loyalty": 36,
+            "ideology": "nationalism",
+            "avatarSeed": 1916175003,
+            "appointedTick": null
+          },
+          {
+            "id": "min-198",
+            "name": "Harish Sethi",
+            "gender": "male",
+            "region": "north",
+            "competence": 64,
+            "corruption": 5,
+            "loyalty": 51,
+            "ideology": "socialism",
+            "avatarSeed": 2125900621,
+            "appointedTick": null
+          },
+          {
+            "id": "min-199",
+            "name": "Revathi Hegde",
+            "gender": "female",
+            "region": "south",
+            "competence": 65,
+            "corruption": 65,
+            "loyalty": 76,
+            "ideology": "conservatism",
+            "avatarSeed": 1725793557,
+            "appointedTick": null
+          }
+        ],
+        "industry": [
+          {
+            "id": "min-200",
+            "name": "Barnali Singha",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 75,
+            "corruption": 33,
+            "loyalty": 60,
+            "ideology": "socialism",
+            "avatarSeed": 127211645,
+            "appointedTick": null
+          },
+          {
+            "id": "min-201",
+            "name": "Garima Mishra",
+            "gender": "female",
+            "region": "central",
+            "competence": 59,
+            "corruption": 16,
+            "loyalty": 49,
+            "ideology": "liberalism",
+            "avatarSeed": 1365536896,
+            "appointedTick": null
+          },
+          {
+            "id": "min-202",
+            "name": "Nilakshi Singha",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 75,
+            "corruption": 36,
+            "loyalty": 82,
+            "ideology": "liberalism",
+            "avatarSeed": 725523927,
+            "appointedTick": null
+          }
+        ],
+        "disaster": [
+          {
+            "id": "min-203",
+            "name": "Priya Krishnan",
+            "gender": "female",
+            "region": "south",
+            "competence": 54,
+            "corruption": 10,
+            "loyalty": 84,
+            "ideology": "socialism",
+            "avatarSeed": 1188827136,
+            "appointedTick": null
+          },
+          {
+            "id": "min-204",
+            "name": "Vignesh Krishnan",
+            "gender": "male",
+            "region": "south",
+            "competence": 61,
+            "corruption": 29,
+            "loyalty": 40,
+            "ideology": "technocracy",
+            "avatarSeed": 1940047510,
+            "appointedTick": null
+          },
+          {
+            "id": "min-205",
+            "name": "Nilakshi Hazarika",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 29,
+            "corruption": 11,
+            "loyalty": 63,
+            "ideology": "liberalism",
+            "avatarSeed": 720603155,
+            "appointedTick": null
+          }
+        ],
+        "intelligence": [
+          {
+            "id": "min-206",
+            "name": "Abhishek Tripathi",
+            "gender": "male",
+            "region": "central",
+            "competence": 56,
+            "corruption": 52,
+            "loyalty": 50,
+            "ideology": "technocracy",
+            "avatarSeed": 1335270390,
+            "appointedTick": null
+          },
+          {
+            "id": "min-207",
+            "name": "Sakshi Tiwari",
+            "gender": "female",
+            "region": "central",
+            "competence": 43,
+            "corruption": 26,
+            "loyalty": 65,
+            "ideology": "socialism",
+            "avatarSeed": 1725493217,
+            "appointedTick": null
+          },
+          {
+            "id": "min-208",
+            "name": "Rituparna Dutta",
+            "gender": "female",
+            "region": "east",
+            "competence": 32,
+            "corruption": 31,
+            "loyalty": 48,
+            "ideology": "conservatism",
+            "avatarSeed": 861249458,
+            "appointedTick": null
+          }
+        ],
+        "antiCorruption": [
+          {
+            "id": "min-209",
+            "name": "Moumita Ghosh",
+            "gender": "female",
+            "region": "east",
+            "competence": 53,
+            "corruption": 12,
+            "loyalty": 87,
+            "ideology": "technocracy",
+            "avatarSeed": 1588422261,
+            "appointedTick": null
+          },
+          {
+            "id": "min-210",
+            "name": "Saurabh Tiwari",
+            "gender": "male",
+            "region": "central",
+            "competence": 54,
+            "corruption": 18,
+            "loyalty": 68,
+            "ideology": "technocracy",
+            "avatarSeed": 1548291423,
+            "appointedTick": null
+          },
+          {
+            "id": "min-211",
+            "name": "Priya Shetty",
+            "gender": "female",
+            "region": "south",
+            "competence": 56,
+            "corruption": 19,
+            "loyalty": 75,
+            "ideology": "liberalism",
+            "avatarSeed": 725990899,
+            "appointedTick": null
+          }
+        ]
+      }
+    },
+    "politics": {
+      "ideology": "liberalism",
+      "strategy": "balanced",
+      "ideologyChangedTick": null,
+      "strategyChangedTick": null,
+      "lowApprovalMonths": 0,
+      "satisfaction": {
+        "jobs": 49.0332867659801,
+        "prices": 80.41039311487779,
+        "growth": 58.76337748722617,
+        "corruption": 56.618414694970404,
+        "livingStandards": 55.13161073746124,
+        "taxes": 60,
+        "services": 40.14295060484468,
+        "safety": 56.90388684658308
+      }
+    },
+    "modifiers": [
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.003,
+        "id": "mod-0",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.services",
+        "kind": "add",
+        "value": 0.004,
+        "id": "mod-1",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.005,
+        "id": "mod-2",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.corruption",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-3",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "id": "mod-4",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.002,
+        "id": "mod-5",
+        "source": "strategy",
+        "label": "Strategy: Balanced",
+        "expiresAtTick": null
+      },
+      {
+        "source": "event",
+        "label": "Weak monsoon",
+        "target": "economy.growth.agriculture",
+        "kind": "add",
+        "value": -0.02,
+        "id": "mod-118",
+        "expiresAtTick": 461
+      },
+      {
+        "source": "event",
+        "label": "Food prices",
+        "target": "economy.inflation",
+        "kind": "add",
+        "value": 0.006,
+        "id": "mod-119",
+        "expiresAtTick": 461
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-121",
+        "expiresAtTick": 401
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-124",
+        "expiresAtTick": 404
+      },
+      {
+        "source": "event",
+        "label": "Corridor built",
+        "target": "economy.growth.industry",
+        "kind": "add",
+        "value": 0.002,
+        "id": "mod-128",
+        "expiresAtTick": 418
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-130",
+        "expiresAtTick": 418
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -7,
+        "id": "mod-139",
+        "expiresAtTick": 440
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-144",
+        "expiresAtTick": 443
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -7,
+        "id": "mod-148",
+        "expiresAtTick": 452
+      },
+      {
+        "source": "event",
+        "label": "Procurement scam",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-162",
+        "expiresAtTick": 402
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-163",
+        "expiresAtTick": 492
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-166",
+        "expiresAtTick": 492
+      },
+      {
+        "source": "event",
+        "label": "Defending a minister",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-213",
+        "expiresAtTick": 490
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-214",
+        "expiresAtTick": 550
+      },
+      {
+        "source": "event",
+        "label": "Farmers blocked",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-218",
+        "expiresAtTick": 458
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-219",
+        "expiresAtTick": 563
+      },
+      {
+        "source": "event",
+        "label": "A supplier offers equipment at a discount",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 0.3,
+        "id": "mod-221",
+        "expiresAtTick": 423
+      }
+    ],
+    "security": {
+      "unrest": {
+        "north": 29.82698456161317,
+        "south": 25.316692877586586,
+        "east": 45.76058129705983,
+        "west": 27.843922135249077,
+        "central": 30.05124651186725,
+        "northEast": 32.03172962694265
+      },
+      "terrorThreat": 29.419931475624097,
+      "borderTension": 31.27862597290147,
+      "militaryLoyalty": 60.81511062029905,
+      "coupAlert": false,
+      "bankruptMonths": 0,
+      "investigations": [],
+      "operations": [],
+      "plots": [],
+      "plotsFoiled": 0,
+      "attacksSuffered": 0
+    },
+    "military": {
+      "forces": {
+        "infantry": 36,
+        "armour": 25,
+        "artillery": 40,
+        "fighter": 30,
+        "strike": 8,
+        "airDefence": 24,
+        "frigate": 14,
+        "submarine": 6,
+        "carrier": 2,
+        "missile": 8,
+        "cyber": 5,
+        "satellite": 4
+      },
+      "readiness": 69.64339697153514,
+      "morale": 65.63580803906105,
+      "tech": {
+        "land": 1,
+        "air": 1,
+        "sea": 1,
+        "strategic": 1
+      },
+      "research": null,
+      "procurementFund": 80208.41315479907,
+      "queue": [],
+      "drills": [],
+      "drillReports": [],
+      "deterrence": 39.32220592476021,
+      "counterIntel": 35.118786320090294,
+      "intelOps": [],
+      "fundingRatio": 1.1467001129795547,
+      "rivals": {
+        "CHN": {
+          "strength": 98.78370455443795,
+          "readiness": 70,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "PAK": {
+          "strength": 57.8045168895256,
+          "readiness": 70,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "MMR": {
+          "strength": 49.590488611343716,
+          "readiness": 70,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "BGD": {
+          "strength": 26.46736782714161,
+          "readiness": 70,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "LKA": {
+          "strength": 13.226241096282868,
+          "readiness": 70,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        }
+      },
+      "wars": [],
+      "warHistory": [],
+      "nuclear": {
+        "active": false,
+        "research": 0,
+        "enrichment": 0,
+        "warheads": 0,
+        "doctrine": "noFirstUse",
+        "monthsSinceWarhead": 0
+      }
+    },
+    "diplomacy": {
+      "countries": {
+        "ABW": {
+          "relation": 22.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AFG": {
+          "relation": -8.694402489395491,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AGO": {
+          "relation": 7.643850587246999,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ALA": {
+          "relation": 5.577713057517687,
+          "incidents": 2.0254122318832946,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ALB": {
+          "relation": 1.6885417714596462,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AND": {
+          "relation": -1.047414795965459,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ARE": {
+          "relation": 30.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ARG": {
+          "relation": 19.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ARM": {
+          "relation": 12.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ATG": {
+          "relation": 9.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AUS": {
+          "relation": 28.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AUT": {
+          "relation": 11.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "AZE": {
+          "relation": -0.07948444532273032,
+          "incidents": 2.027005560436845,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BDI": {
+          "relation": 19.28006208875016,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BEL": {
+          "relation": 10.6870540675768,
+          "incidents": 0.7094450816060524,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BEN": {
+          "relation": -1.7870039125843458,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BFA": {
+          "relation": 5.643850587246999,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BGD": {
+          "relation": 6.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BGR": {
+          "relation": 3.2465605908946076,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BHR": {
+          "relation": 12.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BHS": {
+          "relation": 3.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BIH": {
+          "relation": 16.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BLR": {
+          "relation": 15.937825974107065,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BLZ": {
+          "relation": -3.047414795965459,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BOL": {
+          "relation": 11.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BRA": {
+          "relation": 18.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BRB": {
+          "relation": 9.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BRN": {
+          "relation": 12.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BTN": {
+          "relation": -8.694402489395491,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "BWA": {
+          "relation": -3.6944024893954923,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CAF": {
+          "relation": 17.43175738631704,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CAN": {
+          "relation": 2.9378259741070654,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CHE": {
+          "relation": 21.01240208418137,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CHL": {
+          "relation": 1.937825974107066,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CHN": {
+          "relation": -27.893314623052717,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CIV": {
+          "relation": 14.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CMR": {
+          "relation": 7.16620232156696,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "COD": {
+          "relation": -3.20114462607139,
+          "incidents": 3.2902409435955624,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "COG": {
+          "relation": 8.88597016710322,
+          "incidents": 2.218975436842607,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "COL": {
+          "relation": -4.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "COM": {
+          "relation": 7.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CPV": {
+          "relation": 8.832946556705808,
+          "incidents": 3.0880905153906637,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CRI": {
+          "relation": 15.937825974107065,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CUB": {
+          "relation": 16.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CUW": {
+          "relation": 7.887764813322424,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CYP": {
+          "relation": 4.596733423924688,
+          "incidents": 1.152295454913378,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "CZE": {
+          "relation": 9.52982327047188,
+          "incidents": 3.0785562307956957,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DEU": {
+          "relation": 26.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DJI": {
+          "relation": -3.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DMA": {
+          "relation": 8.153346012577554,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DNK": {
+          "relation": 15.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DOM": {
+          "relation": 5.643850587246999,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "DZA": {
+          "relation": -2.6944024893954923,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ECU": {
+          "relation": 5.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "EGY": {
+          "relation": 14.139482067181177,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ERI": {
+          "relation": 3.3055975106045072,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ESP": {
+          "relation": 25.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "EST": {
+          "relation": 14.95258520403454,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ETH": {
+          "relation": 14.040050109834139,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "FIN": {
+          "relation": 23.778033001671638,
+          "incidents": 1.8559592580294766,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "FJI": {
+          "relation": -4.694402489395493,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "FRA": {
+          "relation": 28.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "FSM": {
+          "relation": 7.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GAB": {
+          "relation": -3.318528268097708,
+          "incidents": 5.621669974909317,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GBR": {
+          "relation": 24.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GEO": {
+          "relation": 11.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GGY": {
+          "relation": 13.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GHA": {
+          "relation": -1.047414795965459,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GIN": {
+          "relation": -2.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GMB": {
+          "relation": 0.9525852040345409,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GNB": {
+          "relation": -1.8750392288972741,
+          "incidents": 0.9920073988005569,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GNQ": {
+          "relation": 11.937825974107065,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GRC": {
+          "relation": -2.7197013325047013,
+          "incidents": 3.6474467708725933,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GRD": {
+          "relation": -3.7395391448743647,
+          "incidents": 2.580565632208879,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GRL": {
+          "relation": 13.937825974107065,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GTM": {
+          "relation": 2.899671489013054,
+          "incidents": 1.5636413567240564,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "GUY": {
+          "relation": 17.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "HKG": {
+          "relation": 12.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "HND": {
+          "relation": 2.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "HRV": {
+          "relation": 21.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "HTI": {
+          "relation": -3.047414795965459,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "HUN": {
+          "relation": 23.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "IDN": {
+          "relation": 12.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "IMN": {
+          "relation": 1.6106371142729319,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "IRL": {
+          "relation": 7.513550098008905,
+          "incidents": 2.245136917680502,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "IRN": {
+          "relation": -6.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "IRQ": {
+          "relation": 15.901571505750962,
+          "incidents": 1.8879624000936748,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ISL": {
+          "relation": 16.872658027534772,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ISR": {
+          "relation": -1.177988197231406,
+          "incidents": 2.4303302733777103,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ITA": {
+          "relation": 3.328251280973422,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "JAM": {
+          "relation": 11.688229042524187,
+          "incidents": 2.3549495424330233,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "JEY": {
+          "relation": 13.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "JOR": {
+          "relation": 16.708253955611678,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "JPN": {
+          "relation": 27.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KAZ": {
+          "relation": 4.937825974107066,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KEN": {
+          "relation": 13.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KGZ": {
+          "relation": 8.822803742710258,
+          "incidents": 0.7185813824173359,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KHM": {
+          "relation": 8.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KIR": {
+          "relation": 2.3055975106045077,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KNA": {
+          "relation": 3.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KOR": {
+          "relation": 18.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "KWT": {
+          "relation": 0.9525852040345409,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LAO": {
+          "relation": 12.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LBN": {
+          "relation": 16.246560590894607,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LBR": {
+          "relation": 13.452634026712127,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LBY": {
+          "relation": 12.810229556935521,
+          "incidents": 1.3732100588065552,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LCA": {
+          "relation": 26.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LIE": {
+          "relation": 2.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LKA": {
+          "relation": 10.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LSO": {
+          "relation": 7.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LTU": {
+          "relation": 24.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LUX": {
+          "relation": 12.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "LVA": {
+          "relation": 3.6438505872469986,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MAC": {
+          "relation": 26.55912249581078,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MAR": {
+          "relation": 2.3055975106045077,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MCO": {
+          "relation": 22.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MDA": {
+          "relation": 17.285216296495932,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MDG": {
+          "relation": -2.047414795965459,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MDV": {
+          "relation": -5.062174025892935,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MEX": {
+          "relation": 12.415761809264996,
+          "incidents": 0.8872291939152568,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MHL": {
+          "relation": 19.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MKD": {
+          "relation": 8.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MLI": {
+          "relation": 3.896830050215432,
+          "incidents": 2.4481214314181092,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MLT": {
+          "relation": 1.937825974107066,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MMR": {
+          "relation": -7.356149412753,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MNE": {
+          "relation": 5.2465605908946085,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MNG": {
+          "relation": 1.3055975106045077,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MOZ": {
+          "relation": 10.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MRT": {
+          "relation": 3.3055975106045072,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MUS": {
+          "relation": 16.937825974107064,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MWI": {
+          "relation": 7.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "MYS": {
+          "relation": 3.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NAM": {
+          "relation": 6.2465605908946085,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NER": {
+          "relation": 6.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NGA": {
+          "relation": 3.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NIC": {
+          "relation": 8.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NLD": {
+          "relation": 18.937825974107067,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NOR": {
+          "relation": 22.544382751256045,
+          "incidents": 0.774348602134254,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NPL": {
+          "relation": 24.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NRU": {
+          "relation": -3.6944024893954923,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "NZL": {
+          "relation": 2.4886242529465887,
+          "incidents": 0.7997140570341955,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "OMN": {
+          "relation": 18.104000724529733,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PAK": {
+          "relation": -12.356149412753,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PAN": {
+          "relation": -1.8244079159348021,
+          "incidents": 0.8016690839291402,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PER": {
+          "relation": 6.824846197867364,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PHL": {
+          "relation": 16.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PLW": {
+          "relation": 12.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PNG": {
+          "relation": 17.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "POL": {
+          "relation": 12.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PRK": {
+          "relation": 10.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PRT": {
+          "relation": 18.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PRY": {
+          "relation": 4.828175271107589,
+          "incidents": 1.4423317272649432,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "PSE": {
+          "relation": 13.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "QAT": {
+          "relation": 7.937825974107066,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ROU": {
+          "relation": 18.983947835022114,
+          "incidents": 1.6605391032785177,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "RUS": {
+          "relation": 12.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "RWA": {
+          "relation": 15.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SAU": {
+          "relation": 18.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SDN": {
+          "relation": 19.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SEN": {
+          "relation": 6.899819269436006,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SGP": {
+          "relation": 19.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SLB": {
+          "relation": 12.305597510604509,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SLE": {
+          "relation": 9.742102270560995,
+          "incidents": 1.7723689372626326,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SLV": {
+          "relation": 5.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SMR": {
+          "relation": 5.95258520403454,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SOM": {
+          "relation": 17.643850587246998,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SRB": {
+          "relation": 19.952585204034545,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SSD": {
+          "relation": 7.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "STP": {
+          "relation": 14.95258520403454,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SUR": {
+          "relation": 26.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SVK": {
+          "relation": 12.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SVN": {
+          "relation": 21.505981824402973,
+          "incidents": 2.222080341690258,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SWE": {
+          "relation": 9.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SWZ": {
+          "relation": 8.305597510604507,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SXM": {
+          "relation": 13.080570754110035,
+          "incidents": 2.6354368322495803,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SYC": {
+          "relation": 17.133770683612084,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "SYR": {
+          "relation": 14.95258520403454,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TCD": {
+          "relation": -1.949528451228967,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TGO": {
+          "relation": 11.042775669438079,
+          "incidents": 3.9103077440202236,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "THA": {
+          "relation": 2.2448874980347027,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TJK": {
+          "relation": 4.931492565163194,
+          "incidents": 1.3106407809336047,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TKM": {
+          "relation": 18.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TLS": {
+          "relation": 0.9525852040345409,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TON": {
+          "relation": 16.30559751060451,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TTO": {
+          "relation": 19.679139120329534,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TUN": {
+          "relation": 0.9525852040345409,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TUR": {
+          "relation": 3.2350299941882312,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TUV": {
+          "relation": -4.323409752167027,
+          "incidents": 1.6933237685486418,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TWN": {
+          "relation": 25.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "TZA": {
+          "relation": -2.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "UGA": {
+          "relation": -4.356149412753001,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "UKR": {
+          "relation": 11.643850587247,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "URY": {
+          "relation": -0.3561494127530007,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "USA": {
+          "relation": 22.261319820822084,
+          "incidents": 0,
+          "embassy": true,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "UZB": {
+          "relation": -2.4549137436331616,
+          "incidents": 1.3276942663120668,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "VAT": {
+          "relation": 14.246560590894608,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "VCT": {
+          "relation": -4.395137592995176,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "VEN": {
+          "relation": 14.643850587246998,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "VNM": {
+          "relation": 2.952585204034541,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "VUT": {
+          "relation": 18.872428476564355,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "WSM": {
+          "relation": 1.3055975106045077,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "YEM": {
+          "relation": 19.108721531598032,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ZAF": {
+          "relation": 26.24656059089461,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ZMB": {
+          "relation": 11.868248649321131,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        },
+        "ZWE": {
+          "relation": 5.273713122776256,
+          "incidents": 0,
+          "embassy": false,
+          "sanctioned": false,
+          "proposalReadyTick": 0,
+          "aidReadyTick": 0
+        }
+      },
+      "treaties": [
+        {
+          "id": "trt-51",
+          "type": "embassy",
+          "parties": [
+            "IND",
+            "USA"
+          ],
+          "startTick": 0,
+          "endTick": null,
+          "terms": {}
+        }
+      ],
+      "offers": [
+        {
+          "id": "ofr-169",
+          "from": "USA",
+          "type": "trade",
+          "years": 3,
+          "terms": {
+            "sector": "tech",
+            "value": 145100
+          },
+          "raisedTick": 334,
+          "expiresTick": 424
+        },
+        {
+          "id": "ofr-223",
+          "from": "AUS",
+          "type": "trade",
+          "years": 3,
+          "terms": {
+            "sector": "energy",
+            "value": 147600
+          },
+          "raisedTick": 396,
+          "expiresTick": 486
+        }
+      ],
+      "conflicts": [],
+      "reputation": 56.64383962274805,
+      "worldTension": 20,
+      "ai": {
+        "ARE": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.01660453488647487,
+            "seekPact": 0.03618352616577944,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.3093782597410707,
+            "powerRatio": -0.4296810135097282,
+            "ideology": 0.5,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.14738374685402958
+          }
+        },
+        "AUS": {
+          "tick": 396,
+          "action": "offerDeal",
+          "acted": true,
+          "utilities": {
+            "offerDeal": 0.3486979428450879,
+            "seekPact": 0.28796069965183624,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2824656059089461,
+            "powerRatio": -0.22216226387030621,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.027803237107582396
+          }
+        },
+        "BGD": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -0.27892998773634115,
+            "seekPact": -9,
+            "threaten": -0.4560832845202716,
+            "sanction": -9,
+            "declareWar": -0.9719432222229518,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.06305597510604506,
+            "powerRatio": -0.540877224177952,
+            "ideology": -0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.0054512182949110755
+          }
+        },
+        "BRA": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -0.03564437917227466,
+            "seekPact": -0.09656587389922991,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.1830559751060451,
+            "powerRatio": -0.19684922733532223,
+            "ideology": -0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.08913262733258306
+          }
+        },
+        "CHN": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": 0.2291234248969502,
+            "sanction": -0.08973216325352941,
+            "declareWar": -0.1675410703276412,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": -0.2789331462305272,
+            "powerRatio": 0.1590880792663656,
+            "ideology": -0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.062118402868509295
+          }
+        },
+        "DEU": {
+          "tick": 396,
+          "action": "offerDeal",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.41292789887730924,
+            "seekPact": 0.2816766398071159,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2624656059089461,
+            "powerRatio": -0.040877224177952066,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.08284043718595058
+          }
+        },
+        "FRA": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.2571175804855392,
+            "seekPact": 0.12386632141534575,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2824656059089461,
+            "powerRatio": -0.040877224177952066,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.09096988120581954
+          }
+        },
+        "GBR": {
+          "tick": 396,
+          "action": "offerDeal",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.3343564216714563,
+            "seekPact": 0.2132335595007321,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2424656059089461,
+            "powerRatio": -0.061198216426625075,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.025317108817398543
+          }
+        },
+        "IDN": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -0.1124272776248968,
+            "seekPact": -9,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.12643850587247,
+            "powerRatio": -0.23515986813677844,
+            "ideology": -0.3,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.09905204731039702
+          }
+        },
+        "IRN": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": -0.08753123941457874,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": -0.06356149412753001,
+            "powerRatio": -0.3039116300117459,
+            "ideology": -0.3,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.02776130342390387
+          }
+        },
+        "JPN": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.1964796873209598,
+            "seekPact": 0.06353716286755393,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.27937825974107067,
+            "powerRatio": -0.040877224177952066,
+            "ideology": 0.5,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.0011708371806889717
+          }
+        },
+        "KOR": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.10982162997334471,
+            "seekPact": 0.02902484373102629,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.18937825974107067,
+            "powerRatio": -0.14874156970567065,
+            "ideology": 0.5,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.01169243166223169
+          }
+        },
+        "LKA": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -1.1492858344804142,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.10305597510604508,
+            "powerRatio": -0.7756198658285622,
+            "ideology": -0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.04547992686275393
+          }
+        },
+        "MMR": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": -0.3560809544981747,
+            "sanction": -9,
+            "declareWar": -0.819379019677434,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": -0.07356149412753,
+            "powerRatio": -0.5018759681773155,
+            "ideology": -0.3,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.0881026763934642
+          }
+        },
+        "NPL": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -0.03989563372704945,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2430559751060451,
+            "powerRatio": -1,
+            "ideology": -0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.10298482566140592
+          }
+        },
+        "PAK": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": -0.017697417290598483,
+            "sanction": -9,
+            "declareWar": -0.4356820426226933,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": -0.12356149412753,
+            "powerRatio": -0.14874156970567065,
+            "ideology": -0.3,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.009027101425454015
+          }
+        },
+        "RUS": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -0.31592034949752196,
+            "seekPact": -9,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.12643850587247,
+            "powerRatio": 0.07885574316974268,
+            "ideology": -0.3,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.12788664330728353
+          }
+        },
+        "SAU": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -0.08082483957181832,
+            "seekPact": -0.13226810737821,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.18952585204034544,
+            "powerRatio": -0.22216226387030621,
+            "ideology": 0.2,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.07807376682758331
+          }
+        },
+        "USA": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": -9,
+            "seekPact": -9,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.22261319820822084,
+            "powerRatio": 0.1960883699882541,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": 0.07044879714958369
+          }
+        },
+        "ZAF": {
+          "tick": 396,
+          "action": "idle",
+          "acted": false,
+          "utilities": {
+            "offerDeal": 0.1810066063718026,
+            "seekPact": 0.21935472861259925,
+            "threaten": -9,
+            "sanction": -9,
+            "declareWar": -9,
+            "idle": 0.3
+          },
+          "inputs": {
+            "relation": 0.2624656059089461,
+            "powerRatio": -0.4648756774554271,
+            "ideology": 1,
+            "deterrence": 0.3932220592476021,
+            "noise": -0.0854810873279348
+          }
+        }
+      }
+    },
+    "events": {
+      "pending": [
+        {
+          "id": "evt-216",
+          "eventId": "cyber-intrusion",
+          "region": null,
+          "ref": null,
+          "raisedTick": 382,
+          "expiresTick": 412
+        }
+      ],
+      "scheduled": [],
+      "cooldowns": {
+        "land-allotment-scam": 356,
+        "anti-corruption-bill": 672,
+        "military-parade": 442,
+        "peace-overtures": 400,
+        "investor-summit": 642,
+        "ghost-beneficiaries": 475,
+        "disinformation-campaign": 329,
+        "global-slowdown": 695,
+        "flood-urban": 256,
+        "weak-monsoon": 731,
+        "police-reform-demand": 494,
+        "advisor-resigns": 649,
+        "land-acquisition-protest": 408,
+        "defence-minister-rift": 473,
+        "world-expo": 1244,
+        "barracks-murmurs": 345,
+        "flood-river": 352,
+        "procurement-scam": 552,
+        "relief-controversy": 297,
+        "un-vote": 598,
+        "minister-scandal": 460,
+        "farmers-protest": 503,
+        "arms-supplier-offer": 663,
+        "cyber-intrusion": 562
+      }
+    },
+    "history": [
+      {
+        "month": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 196652,
+        "approval": 55.6,
+        "balance": -70532.01595943153,
+        "gdp": 33322024.711870976,
+        "realGrowth": 0.06349815159222572,
+        "inflation": 0.04945124138851064,
+        "unemployment": 0.07772090302824326,
+        "debtToGdp": 0.556616804803103,
+        "revenue": 322801.80150503304,
+        "expenditure": 393333.8174644646,
+        "corruption": 40.09557527195083,
+        "hdi": 0.6438228143183818
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 2,
+          "day": 1
+        },
+        "treasury": 198244,
+        "approval": 56.8,
+        "balance": -70901.86894494406,
+        "gdp": 33642168.75801119,
+        "realGrowth": 0.0644547070254546,
+        "inflation": 0.04878882373144486,
+        "unemployment": 0.07747163764646711,
+        "debtToGdp": 0.5534752396769574,
+        "revenue": 325615.3769676343,
+        "expenditure": 396517.24591257836,
+        "corruption": 39.87744232598142,
+        "hdi": 0.6436653361215624
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "treasury": 199868,
+        "approval": 55.9,
+        "balance": -72954.62361979601,
+        "gdp": 33966747.00360047,
+        "realGrowth": 0.06548401120010709,
+        "inflation": 0.04803054064968935,
+        "unemployment": 0.07701417815006475,
+        "debtToGdp": 0.5503824426470248,
+        "revenue": 326811.66518509964,
+        "expenditure": 399766.28880489565,
+        "corruption": 40.687510139496794,
+        "hdi": 0.6435264109618986
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "treasury": 201473,
+        "approval": 56.2,
+        "balance": -65958.00552408851,
+        "gdp": 34285484.895392165,
+        "realGrowth": 0.06589304622260482,
+        "inflation": 0.04682511829588822,
+        "unemployment": 0.0766955183455535,
+        "debtToGdp": 0.5472367931589478,
+        "revenue": 337017.22630536114,
+        "expenditure": 402975.23182944965,
+        "corruption": 40.43850879282651,
+        "hdi": 0.643406232254945
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 5,
+          "day": 1
+        },
+        "treasury": 203082,
+        "approval": 55.9,
+        "balance": -69542.70988582884,
+        "gdp": 34609712.40470827,
+        "realGrowth": 0.06653667708484168,
+        "inflation": 0.04620826107499633,
+        "unemployment": 0.07634936342525267,
+        "debtToGdp": 0.5441664910529028,
+        "revenue": 336651.7694750629,
+        "expenditure": 406194.47936089174,
+        "corruption": 40.26555311307695,
+        "hdi": 0.6433046828717975
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "treasury": 204569,
+        "approval": 53.4,
+        "balance": -72234.05740360939,
+        "gdp": 34903830.134414054,
+        "realGrowth": 0.06502374793870863,
+        "inflation": 0.04432967683796276,
+        "unemployment": 0.07595740029975508,
+        "debtToGdp": 0.541693614761632,
+        "revenue": 336934.14562217717,
+        "expenditure": 409168.20302578656,
+        "corruption": 40.083109405905525,
+        "hdi": 0.6432187250598511
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "treasury": 206006,
+        "approval": 50.3,
+        "balance": -64303.94103987602,
+        "gdp": 35185116.95840302,
+        "realGrowth": 0.06284802873574984,
+        "inflation": 0.04366843156010685,
+        "unemployment": 0.0759704343584179,
+        "debtToGdp": 0.5392319242150747,
+        "revenue": 347738.99023114453,
+        "expenditure": 412042.93127102056,
+        "corruption": 39.943384796092055,
+        "hdi": 0.6431467610025848
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "treasury": 207367,
+        "approval": 47.2,
+        "balance": -64888.40179400798,
+        "gdp": 35453778.67150683,
+        "realGrowth": 0.06029804572470526,
+        "inflation": 0.0424712929000827,
+        "unemployment": 0.07581716938000461,
+        "debtToGdp": 0.5370147584790059,
+        "revenue": 349874.93308848445,
+        "expenditure": 414763.33488249243,
+        "corruption": 39.77080994244601,
+        "hdi": 0.6430873549693739
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "treasury": 208742,
+        "approval": 42.3,
+        "balance": -72037.612338092,
+        "gdp": 35725597.696086116,
+        "realGrowth": 0.058213628911768026,
+        "inflation": 0.04305641748592784,
+        "unemployment": 0.0761248160571414,
+        "debtToGdp": 0.5349841954139297,
+        "revenue": 345476.6603357223,
+        "expenditure": 417514.2726738143,
+        "corruption": 39.74794660074986,
+        "hdi": 0.6430401190653837
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "treasury": 210108,
+        "approval": 38.6,
+        "balance": -69330.88412640477,
+        "gdp": 35990775.81286505,
+        "realGrowth": 0.05595983764648468,
+        "inflation": 0.04294325759312913,
+        "unemployment": 0.07680994818966219,
+        "debtToGdp": 0.5330071768906319,
+        "revenue": 350914.68961372046,
+        "expenditure": 420245.5737401252,
+        "corruption": 39.499778048785686,
+        "hdi": 0.6430037989769791
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "treasury": 211499,
+        "approval": 33,
+        "balance": -72349.32769021485,
+        "gdp": 36263436.056940734,
+        "realGrowth": 0.0548082933155382,
+        "inflation": 0.041656911368941396,
+        "unemployment": 0.0774955714735719,
+        "debtToGdp": 0.5310334384830834,
+        "revenue": 350678.67774900724,
+        "expenditure": 423028.0054392221,
+        "corruption": 42.09735338173693,
+        "hdi": 0.6429753183097637
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 12,
+          "day": 1
+        },
+        "treasury": 213089,
+        "approval": 32.1,
+        "balance": -73739.40506546991,
+        "gdp": 36579424.784306,
+        "realGrowth": 0.056637284081537,
+        "inflation": 0.04219402388221161,
+        "unemployment": 0.07713908112476499,
+        "debtToGdp": 0.5285058955062734,
+        "revenue": 352468.80921428645,
+        "expenditure": 426208.21427975636,
+        "corruption": 41.775734938863145,
+        "hdi": 0.6429617019164389
+      },
+      {
+        "month": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 214732,
+        "approval": 29.4,
+        "balance": -72468.5122291756,
+        "gdp": 36906421.14687324,
+        "realGrowth": 0.058763377487226175,
+        "inflation": 0.041766229872358,
+        "unemployment": 0.07662968137113323,
+        "debtToGdp": 0.5258317526080796,
+        "revenue": 357025.38614895154,
+        "expenditure": 429493.89837812714,
+        "corruption": 43.381585305029596,
+        "hdi": 0.6429606375811143
+      }
+    ],
+    "log": [
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Sworn in as President",
+        "body": "Golden Fixture takes the oath of office. Review the budget and your cabinet: the nation is watching your first decisions.",
+        "id": "log-50",
+        "tick": 0,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Embassy opened in United States",
+        "body": "A permanent mission now works in United States (₹15 crore a month). Relations improve and proposals are likelier to succeed.",
+        "id": "log-52",
+        "tick": 0,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-53",
+        "severity": "warning",
+        "title": "Land allotment scandal",
+        "body": "Prime public land was allotted to well-connected developers at a fraction of its value, say auditors.",
+        "id": "log-54",
+        "tick": 56,
+        "date": {
+          "year": 2026,
+          "month": 2,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Myanmar agents probe your defences",
+        "body": "Foreign agents mapped sensitive sites before they were noticed. Readiness suffers while the leaks are plugged. Counter-intelligence reduces the risk.",
+        "id": "log-55",
+        "tick": 59,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Norway",
+        "body": "A dispute over trade and visas has soured the mood in Norway. Relations cool a little.",
+        "id": "log-56",
+        "tick": 59,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-57",
+        "severity": "info",
+        "title": "Anti-corruption bill",
+        "body": "A cross-party group offers a bill to give the anti-corruption agency stronger powers and tougher penalties.",
+        "id": "log-58",
+        "tick": 72,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 14
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-59",
+        "severity": "good",
+        "title": "Proposal for a grand military parade",
+        "body": "The service chiefs suggest a large parade to show the forces to the public and raise morale.",
+        "id": "log-60",
+        "tick": 77,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 19
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Land allotment scandal: no decision",
+        "body": "No decision was made in time. A committee is formed. The story drags on for months.",
+        "id": "log-63",
+        "tick": 86,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 28
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-64",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "good",
+        "title": "China spy ring uncovered",
+        "body": "Counter-intelligence caught agents of China probing military sites. No damage was done.",
+        "id": "log-65",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Germany proposes a trade contract",
+        "body": "Germany offers a 3-year industry contract worth ₹1,35,900 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-67",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "France proposes a trade contract",
+        "body": "France offers a 3-year industry contract worth ₹1,35,900 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-69",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Mexico",
+        "body": "A dispute over trade and visas has soured the mood in Mexico. Relations cool a little.",
+        "id": "log-70",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-71",
+        "severity": "info",
+        "title": "A chance to ease tensions",
+        "body": "Intermediaries suggest that a quiet round of talks with the most hostile neighbour might lower the temperature.",
+        "id": "log-72",
+        "tick": 100,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Anti-corruption bill: no decision",
+        "body": "No decision was made in time. You shelve the bill. Campaigners are disappointed.",
+        "id": "log-74",
+        "tick": 102,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 13
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": "evt-75",
+        "severity": "info",
+        "title": "Invitation to host an investor summit",
+        "body": "Industry bodies propose a global investor summit. It would be expensive, but could bring in factories and funds.",
+        "id": "log-76",
+        "tick": 102,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 13
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Proposal for a grand military parade: no decision",
+        "body": "No decision was made in time. The parade is shelved and units keep to their training schedule.",
+        "id": "log-77",
+        "tick": 107,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 18
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-78",
+        "severity": "warning",
+        "title": "Ghost beneficiaries in welfare schemes",
+        "body": "An audit finds millions of rupees paid out every month to people who do not exist.",
+        "id": "log-79",
+        "tick": 115,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-80",
+        "severity": "warning",
+        "title": "Disinformation campaign",
+        "body": "A flood of fake videos and forwarded messages is stoking panic and distrust online.",
+        "id": "log-81",
+        "tick": 129,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "A chance to ease tensions: no decision",
+        "body": "No decision was made in time. You keep your distance. The opposition asks what you are afraid of.",
+        "id": "log-82",
+        "tick": 130,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Invitation to host an investor summit: no decision",
+        "body": "No decision was made in time. You decline. The idea quietly dies.",
+        "id": "log-83",
+        "tick": 132,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 13
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Ghost beneficiaries in welfare schemes: no decision",
+        "body": "No decision was made in time. Nothing changes, and the money keeps leaking.",
+        "id": "log-86",
+        "tick": 145,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "United States proposes a trade contract",
+        "body": "United States offers a 3-year services contract worth ₹1,38,400 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-88",
+        "tick": 151,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": "evt-89",
+        "severity": "warning",
+        "title": "Global slowdown",
+        "body": "Major trading partners are slowing sharply. Export orders are drying up and factories are warning of short-time work.",
+        "id": "log-90",
+        "tick": 155,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 5
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Disinformation campaign: no decision",
+        "body": "No decision was made in time. The rumours spread and anger builds.",
+        "id": "log-93",
+        "tick": 159,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": "evt-94",
+        "severity": "critical",
+        "title": "City flooding in the West",
+        "body": "Record rain has swamped streets, power lines and underpasses in the West. Commuters are stranded and shops are shut.",
+        "id": "log-95",
+        "tick": 166,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 16
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": null,
+        "severity": "info",
+        "title": "City flooding in the West: no decision",
+        "body": "No decision was made in time. The central government stays out. Anger builds in the West.",
+        "id": "log-99",
+        "tick": 176,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-100",
+        "tick": 181,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Czechia",
+        "body": "A dispute over trade and visas has soured the mood in Czechia. Relations cool a little.",
+        "id": "log-101",
+        "tick": 181,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Israel",
+        "body": "A dispute over trade and visas has soured the mood in Israel. Relations cool a little.",
+        "id": "log-102",
+        "tick": 181,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Global slowdown: no decision",
+        "body": "No decision was made in time. You wait. Growth takes the full hit for half a year.",
+        "id": "log-106",
+        "tick": 185,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 5
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": "evt-107",
+        "severity": "warning",
+        "title": "Weak monsoon",
+        "body": "Monsoon rainfall is running well below normal. Farm output is at risk and food prices are starting to climb.",
+        "id": "log-108",
+        "tick": 191,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-109",
+        "severity": "warning",
+        "title": "Police reform demanded",
+        "body": "After a controversial arrest, civil-rights groups demand sweeping police reform: body cameras, training and oversight.",
+        "id": "log-110",
+        "tick": 194,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 14
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Senior adviser resigns",
+        "body": "A trusted adviser has resigned, citing differences over direction. Leaks about infighting follow.",
+        "id": "log-112",
+        "tick": 199,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 19
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-113",
+        "severity": "warning",
+        "title": "Land acquisition protests in the North",
+        "body": "Villagers in the North are blocking surveyors from a planned industrial corridor, saying compensation is far too low.",
+        "id": "log-114",
+        "tick": 208,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 28
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Sri Lanka agents probe your defences",
+        "body": "Foreign agents mapped sensitive sites before they were noticed. Readiness suffers while the leaks are plugged. Counter-intelligence reduces the risk.",
+        "id": "log-115",
+        "tick": 212,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Australia proposes a trade contract",
+        "body": "Australia offers a 3-year energy contract worth ₹1,40,700 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-117",
+        "tick": 212,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Weak monsoon: no decision",
+        "body": "No decision was made in time. The rains do not recover in time. Farm output falls and food prices rise.",
+        "id": "log-122",
+        "tick": 221,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Police reform demanded: no decision",
+        "body": "No decision was made in time. You reject the demand. The criticism gets louder.",
+        "id": "log-125",
+        "tick": 224,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 13
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-126",
+        "severity": "warning",
+        "title": "Rift with the defence minister",
+        "body": "The defence minister is openly at odds with you over strategy and spending.",
+        "id": "log-127",
+        "tick": 233,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 22
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Land acquisition protests in the North: no decision",
+        "body": "No decision was made in time. Work proceeds under heavy police guard. Resentment burns.",
+        "id": "log-131",
+        "tick": 238,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 27
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Germany proposes a trade contract",
+        "body": "Germany offers a 3-year industry contract worth ₹1,41,800 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-133",
+        "tick": 243,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Finland",
+        "body": "A dispute over trade and visas has soured the mood in Finland. Relations cool a little.",
+        "id": "log-134",
+        "tick": 243,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": "evt-135",
+        "severity": "good",
+        "title": "India is asked to host a world trade expo",
+        "body": "The organisers of a major trade expo want India as host. Delegations from dozens of countries would visit, with the contracts and publicity that follow.",
+        "id": "log-136",
+        "tick": 244,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 2
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-137",
+        "severity": "critical",
+        "title": "Murmurs in the barracks",
+        "body": "Senior officers are grumbling about pay, promotions and the government's direction. Some talk of \"restoring order\".",
+        "id": "log-138",
+        "tick": 245,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 3
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Murmurs in the barracks: no decision",
+        "body": "No decision was made in time. You ignore the chatter. Resentment hardens.",
+        "id": "log-140",
+        "tick": 260,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 18
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": "evt-141",
+        "severity": "critical",
+        "title": "River floods in the East",
+        "body": "Rivers have burst their banks across the East. Villages are cut off and thousands have moved to relief camps.",
+        "id": "log-142",
+        "tick": 262,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 20
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Rift with the defence minister: no decision",
+        "body": "No decision was made in time. The rift festers and leaks to the press.",
+        "id": "log-145",
+        "tick": 263,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 21
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": null,
+        "severity": "info",
+        "title": "River floods in the East: no decision",
+        "body": "No decision was made in time. The central government stays out. Anger builds in the East.",
+        "id": "log-149",
+        "tick": 272,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 30
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-150",
+        "tick": 273,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Japan proposes a trade contract",
+        "body": "Japan offers a 3-year tech contract worth ₹1,42,900 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-152",
+        "tick": 273,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "India is asked to host a world trade expo: no decision",
+        "body": "No decision was made in time. Another country takes the expo.",
+        "id": "log-153",
+        "tick": 274,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 2
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-154",
+        "severity": "warning",
+        "title": "Procurement scam exposed",
+        "body": "A leaked audit shows inflated prices on a large defence-supply and infrastructure contract. Bidders cry foul.",
+        "id": "log-155",
+        "tick": 282,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": "evt-156",
+        "severity": "warning",
+        "title": "Relief supplies diverted in the East",
+        "body": "Reports say relief grain and blankets meant for the East were sold in the open market. Survivors are furious.",
+        "id": "log-157",
+        "tick": 297,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 25
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": "evt-158",
+        "severity": "info",
+        "title": "Vote at the UN: Saudi Arabia seeks India’s support",
+        "body": "Saudi Arabia has asked India to back its draft resolution at the General Assembly. Other delegations are lobbying the other way.",
+        "id": "log-159",
+        "tick": 298,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Goodwill from Ethiopia",
+        "body": "Ethiopia praised India’s role in a regional forum. Relations warm a little.",
+        "id": "log-160",
+        "tick": 304,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Friction with Greece",
+        "body": "A dispute over trade and visas has soured the mood in Greece. Relations cool a little.",
+        "id": "log-161",
+        "tick": 304,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Procurement scam exposed: no decision",
+        "body": "No decision was made in time. The contract stands. Whispers of a cover-up follow you.",
+        "id": "log-164",
+        "tick": 312,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Relief supplies diverted in the East: no decision",
+        "body": "No decision was made in time. The denials ring hollow and the story grows.",
+        "id": "log-167",
+        "tick": 312,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Vote at the UN: Saudi Arabia seeks India’s support: no decision",
+        "body": "No decision was made in time. India abstains. No one is offended and no one is grateful.",
+        "id": "log-168",
+        "tick": 323,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 20
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "United States proposes a trade contract",
+        "body": "United States offers a 3-year tech contract worth ₹1,45,100 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-170",
+        "tick": 334,
+        "date": {
+          "year": 2026,
+          "month": 12,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-171",
+        "severity": "warning",
+        "title": "Allegations against a minister",
+        "body": "Newspapers allege that a minister has steered contracts to friends and relatives. The opposition wants answers.",
+        "id": "log-172",
+        "tick": 340,
+        "date": {
+          "year": 2026,
+          "month": 12,
+          "day": 7
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-173",
+        "severity": "warning",
+        "title": "Farmers march on the capital from the East",
+        "body": "Farmers from the East have set out for the capital, demanding better support prices and debt relief.",
+        "id": "log-174",
+        "tick": 353,
+        "date": {
+          "year": 2026,
+          "month": 12,
+          "day": 20
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-175",
+        "severity": "info",
+        "title": "A supplier offers equipment at a discount",
+        "body": "A friendly industrial power offers a batch of modern equipment on favourable terms, if you act this quarter.",
+        "id": "log-176",
+        "tick": 363,
+        "date": {
+          "year": 2026,
+          "month": 12,
+          "day": 30
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-177",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "critical",
+        "title": "Annual report 2026",
+        "body": "The government closed 2026 with a deficit of ₹8,38,773 crore. Growth 5.7%, inflation 4.2%, unemployment 7.7%, debt 52.9% of GDP. Approval stands at 32.1%.",
+        "id": "log-178",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "New cabinet candidates",
+        "body": "A fresh set of candidates is available for every ministry. Review them in the Cabinet room.",
+        "id": "log-212",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Allegations against a minister: no decision",
+        "body": "No decision was made in time. You defend the minister. Public anger grows and corruption feels entrenched.",
+        "id": "log-215",
+        "tick": 370,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 6
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-216",
+        "severity": "warning",
+        "title": "Hostile hackers probe defence networks",
+        "body": "Cyber teams detect an intrusion into logistics systems. The origin is hidden behind several countries.",
+        "id": "log-217",
+        "tick": 382,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 18
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Farmers march on the capital from the East: no decision",
+        "body": "No decision was made in time. The march is stopped at the border of the capital region. Angry scenes follow.",
+        "id": "log-220",
+        "tick": 383,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 19
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "A supplier offers equipment at a discount: no decision",
+        "body": "No decision was made in time. The offer lapses. Domestic manufacturers are pleased.",
+        "id": "log-222",
+        "tick": 393,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 29
+        },
+        "read": false
+      },
+      {
+        "category": "diplomacy",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Australia proposes a trade contract",
+        "body": "Australia offers a 3-year energy contract worth ₹1,47,600 crore a year. Answer on the Diplomacy screen within 90 days.",
+        "id": "log-224",
+        "tick": 396,
+        "date": {
+          "year": 2027,
+          "month": 2,
+          "day": 1
+        },
+        "read": false
+      }
+    ],
+    "nextId": 225
+  }
+}

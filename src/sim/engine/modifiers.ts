@@ -17,6 +17,8 @@ export const MODIFIER_TARGETS = [
   'economy.unemployment',
   /** Multiplies all tax and non-tax revenue. */
   'economy.revenue',
+  /** Multiplies customs revenue only (trade contracts and sanctions). */
+  'economy.customs',
   /** Multiplies ministry spending. */
   'economy.expenditure',
   /** Added to the approval target (points). */

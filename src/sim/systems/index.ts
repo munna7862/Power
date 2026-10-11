@@ -2,6 +2,7 @@ import type { System } from '../engine/system';
 import { annualReportSystem } from './annualReport';
 import { approvalSystem } from './approval';
 import { cabinetSystem, candidateRefreshSystem } from './cabinet';
+import { diplomacyMonthlySystem } from './diplomacy';
 import { economySystem } from './economy';
 import { eventsSystem } from './events';
 import { fiscalSystem } from './fiscal';
@@ -32,6 +33,7 @@ export const SYSTEMS: readonly System[] = [
   cabinetSystem,
   militaryMonthlySystem,
   militaryDailySystem,
+  diplomacyMonthlySystem,
   eventsSystem,
   approvalSystem,
   historySystem,

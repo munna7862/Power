@@ -62,6 +62,7 @@ export const EVENT_CATEGORIES = [
   'security',
   'terror',
   'military',
+  'diplomacy',
 ] as const;
 export type EventCategory = (typeof EVENT_CATEGORIES)[number];
 
@@ -100,9 +101,38 @@ export const UNITS = [
 ] as const;
 export type UnitId = (typeof UNITS)[number];
 
-/** Fictional rival states. Phase 5 replaces them with the real world map. */
-export const RIVALS = ['zarnak', 'tirhan', 'oruvan', 'velmora', 'haldrin'] as const;
+/**
+ * The neighbours India can go to war with, each with a military profile in content/rivals.json. They are
+ * also ordinary countries in content/countries.json (the diplomacy layer), keyed by the same ISO code.
+ */
+export const RIVALS = ['CHN', 'PAK', 'MMR', 'BGD', 'LKA'] as const;
 export type RivalId = (typeof RIVALS)[number];
+
+/** ISO 3166 alpha-3 code from content/countries.json (validated at load in content/world.ts). */
+export type CountryId = string;
+
+/** What kind of country a diplomatic event is about. */
+export const COUNTRY_PICKS = ['any', 'neighbour', 'focus', 'rival', 'friend', 'hostile', 'poor'] as const;
+export type CountryPick = (typeof COUNTRY_PICKS)[number];
+
+/** Kinds of treaty and measure between India and another country. */
+export const TREATY_TYPES = ['trade', 'nonAggression', 'embassy', 'sanctions'] as const;
+export type TreatyType = (typeof TREATY_TYPES)[number];
+
+/** The ways a country can feel about India: why a relation is where it is. */
+export const RELATION_DRIVERS = [
+  'base',
+  'ideology',
+  'trade',
+  'embassy',
+  'pact',
+  'sanctions',
+  'reputation',
+  'incidents',
+  'war',
+  'tension',
+] as const;
+export type RelationDriver = (typeof RELATION_DRIVERS)[number];
 
 export const DRILL_KINDS = ['land', 'air', 'naval', 'joint'] as const;
 export type DrillKind = (typeof DRILL_KINDS)[number];

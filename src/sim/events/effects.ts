@@ -1,16 +1,20 @@
 import type { EffectScale, EventEffect } from '../content/events';
 import { MINISTRY_CONTENT } from '../content';
-import { MINISTRIES, REGIONS, RIVALS, type MinistryId, type RegionId } from '../content/ids';
+import { MINISTRIES, REGIONS, type MinistryId, type RegionId } from '../content/ids';
+import { COUNTRY_LIST, isCountryId } from '../content/world';
+import { PACT_YEARS } from '../diplomacy/constants';
+import { adjustRelation as adjustCountryRelation, hasTreaty } from '../diplomacy/relations';
+import { adjustReputation, signTreaty } from '../diplomacy/treaties';
+import { startConflict } from '../diplomacy/world';
 import { ministryEfficiency } from '../economy/model';
 import type { ModifierTarget } from '../engine/modifiers';
 import type { Rng } from '../engine/rng';
 import { exposeMinister, pickCorruptMinister } from '../cabinet/scandal';
 import { addModifier } from '../politics/policy';
 import { patchMilitary } from '../military/forces';
-import { adjustRelation } from '../military/rivals';
 import { launchOperation } from '../security/operations';
 import { clamp } from '../security/unrest';
-import type { Difficulty, GameState } from '../state/types';
+import { INDIA, type Difficulty, type GameState } from '../state/types';
 
 /** How often events happen and how hard their harm lands, by difficulty. */
 export const EVENT_DIFFICULTY: Record<Difficulty, { frequency: number; severity: number }> = {
@@ -30,6 +34,7 @@ const GOOD_DIRECTION: Record<ModifierTarget, 1 | -1 | 0> = {
   'economy.inflation': -1,
   'economy.unemployment': -1,
   'economy.revenue': 1,
+  'economy.customs': 1,
   'economy.expenditure': 0,
   'politics.approvalTarget': 1,
   'politics.corruption': -1,
@@ -76,7 +81,11 @@ export function isHarmful(effect: EventEffect): boolean {
     case 'readiness':
     case 'morale':
     case 'relation':
+    case 'worldRelation':
+    case 'reputation':
       return effect.delta < 0;
+    case 'worldTension':
+      return effect.delta > 0;
     default:
       return false;
   }
@@ -154,8 +163,39 @@ export function applyEffect(state: GameState, effect: EventEffect, ctx: EffectCo
     case 'morale':
       return patchMilitary(state, { morale: clamp(state.military.morale + effect.delta * severity, 0, 100) });
     case 'relation': {
-      const rival = effect.rival ?? RIVALS.find((r) => r === ctx.ref);
-      return rival ? adjustRelation(state, rival, effect.delta * severity) : state;
+      const country = effect.country ?? ctx.ref;
+      return country && isCountryId(country) ? adjustCountryRelation(state, country, effect.delta * severity) : state;
+    }
+    case 'worldRelation': {
+      const delta = effect.delta * severity;
+      const countries = { ...state.diplomacy.countries };
+      for (const c of COUNTRY_LIST) {
+        if (effect.scope === 'focus' && !c.focus) continue;
+        if (effect.scope === 'neighbours' && !c.neighbour) continue;
+        const current = countries[c.id];
+        if (current) countries[c.id] = { ...current, relation: clamp(current.relation + delta, -100, 100) };
+      }
+      return { ...state, diplomacy: { ...state.diplomacy, countries } };
+    }
+    case 'reputation':
+      return adjustReputation(state, effect.delta * severity);
+    case 'worldTension':
+      return {
+        ...state,
+        diplomacy: {
+          ...state.diplomacy,
+          worldTension: clamp(state.diplomacy.worldTension + effect.delta * severity, 0, 100),
+        },
+      };
+    case 'conflict':
+      return startConflict(state, ctx.ref, effect.days, ctx.rng);
+    case 'treaty': {
+      const country = ctx.ref;
+      if (!country || !isCountryId(country) || hasTreaty(state, country, effect.kind)) return state;
+      if (effect.kind === 'embassy' && state.diplomacy.countries[country]?.embassy) return state;
+      const years =
+        effect.kind === 'nonAggression' ? effect.years || PACT_YEARS : effect.kind === 'embassy' ? null : effect.years;
+      return signTreaty(state, { type: effect.kind, parties: [INDIA, country], years });
     }
     case 'corruption':
       return {

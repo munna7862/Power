@@ -286,24 +286,6 @@
   font-weight: 700;
 }
 
-.comingSoon {
-  display: grid;
-  place-items: center;
-  text-align: center;
-  gap: var(--space-2);
-  min-height: 320px;
-}
-
-.phaseTag {
-  display: inline-block;
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--chakra-soft);
-  color: var(--chakra);
-  font-weight: 700;
-  font-size: 12px;
-}
-
 @media (max-width: 1100px) {
   .span4,
   .span8 {

@@ -9,11 +9,12 @@ import { Button } from '../design/primitives';
 import { GameOverModal } from '../modals/GameOverModal';
 import { BudgetView } from '../views/BudgetView';
 import { CabinetView } from '../views/CabinetView';
-import { ComingSoonView } from '../views/ComingSoonView';
 import { DashboardView } from '../views/DashboardView';
+import { DiplomacyView } from '../views/DiplomacyView';
 import { InboxView } from '../views/InboxView';
 import { MilitaryView } from '../views/MilitaryView';
 import { SecurityView } from '../views/SecurityView';
+import { WorldView } from '../views/WorldView';
 import { EconomyView } from '../views/EconomyView';
 import { ReportsView } from '../views/ReportsView';
 import { VIEW_LABELS, VIEWS } from '../views/viewLabels';
@@ -36,10 +37,12 @@ function ActiveView({ view }: { view: ViewId }) {
       return <SecurityView />;
     case 'military':
       return <MilitaryView />;
+    case 'world':
+      return <WorldView />;
+    case 'diplomacy':
+      return <DiplomacyView />;
     case 'reports':
       return <ReportsView />;
-    default:
-      return <ComingSoonView view={view} />;
   }
 }
 
@@ -48,6 +51,7 @@ export function GameScreen() {
   const unread = useGame((s) => s.game?.log.filter((e) => !e.read).length ?? 0);
   const waiting = useGame((s) => s.game?.events.pending ?? []);
   const wars = useGame((s) => s.game?.military.wars ?? []);
+  const offers = useGame((s) => s.game?.diplomacy.offers.length ?? 0);
   const [menuOpen, setMenuOpen] = useState(false);
   useGameLoop();
 
@@ -107,6 +111,16 @@ export function GameScreen() {
               }}
             >
               Review
+            </Button>
+          </div>
+        )}
+        {offers > 0 && view !== 'diplomacy' && (
+          <div className={styles.alertBar} role="region" aria-label="Diplomatic offers">
+            <span>
+              {offers} diplomatic offer{offers === 1 ? '' : 's'} awaiting an answer
+            </span>
+            <Button variant="primary" onClick={() => gameStore.getState().setView('diplomacy')}>
+              Diplomacy
             </Button>
           </div>
         )}

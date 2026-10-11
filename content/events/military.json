@@ -306,7 +306,7 @@
           {
             "type": "relation",
             "delta": 2,
-            "rival": "zarnak"
+            "country": "CHN"
           },
           {
             "type": "borderTension",
@@ -324,7 +324,7 @@
           {
             "type": "relation",
             "delta": -5,
-            "rival": "zarnak"
+            "country": "CHN"
           },
           {
             "type": "morale",
@@ -384,7 +384,7 @@
           {
             "type": "relation",
             "delta": -1,
-            "rival": "tirhan"
+            "country": "PAK"
           }
         ]
       },
@@ -402,7 +402,7 @@
           {
             "type": "relation",
             "delta": -4,
-            "rival": "tirhan"
+            "country": "PAK"
           },
           {
             "type": "borderTension",
@@ -431,7 +431,7 @@
           {
             "type": "relation",
             "delta": 3,
-            "rival": "oruvan"
+            "country": "MMR"
           },
           {
             "type": "modifier",
@@ -452,7 +452,7 @@
           {
             "type": "relation",
             "delta": -4,
-            "rival": "oruvan"
+            "country": "MMR"
           },
           {
             "type": "morale",
@@ -748,7 +748,7 @@
           {
             "type": "relation",
             "delta": 8,
-            "rival": "zarnak"
+            "country": "CHN"
           },
           {
             "type": "borderTension",

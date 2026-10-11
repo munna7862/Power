@@ -4,11 +4,17 @@ declare global {
   interface Window {
     __APEX__: {
       advanceDays(days: number): void;
-      raiseEvent(eventId: string, region?: string): void;
+      raiseEvent(eventId: string, region?: string, ref?: string): void;
       getState(): { game: { clock: { tick: number }; military: { rivals: Record<string, Record<string, unknown>> } } };
       invade(rival: string): void;
       offerCeasefire(): void;
-      patchGame(patch: { nation?: object; economy?: object; security?: object; military?: object }): void;
+      patchGame(patch: {
+        nation?: object;
+        economy?: object;
+        security?: object;
+        military?: object;
+        diplomacy?: object;
+      }): void;
     };
   }
 }
@@ -37,7 +43,7 @@ export async function advanceDays(page: Page, days: number): Promise<void> {
 /** Overrides parts of the game state through the dev-only debug hook. */
 export async function patchGame(
   page: Page,
-  patch: { nation?: object; economy?: object; security?: object; military?: object },
+  patch: { nation?: object; economy?: object; security?: object; military?: object; diplomacy?: object },
 ): Promise<void> {
   await page.evaluate((p) => window.__APEX__.patchGame(p), patch);
 }
@@ -48,9 +54,9 @@ export async function openView(page: Page, name: string): Promise<void> {
 }
 
 /** Raises a specific event now through the dev-only debug hook. */
-export async function raiseEvent(page: Page, eventId: string, region?: string): Promise<void> {
+export async function raiseEvent(page: Page, eventId: string, region?: string, ref?: string): Promise<void> {
   await page.evaluate(
-    ([id, r]) => window.__APEX__.raiseEvent(id as string, r as string | undefined),
-    [eventId, region],
+    ([id, r, c]) => window.__APEX__.raiseEvent(id as string, r as string | undefined, c as string | undefined),
+    [eventId, region, ref],
   );
 }

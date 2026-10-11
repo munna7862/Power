@@ -6,11 +6,13 @@ import personalJson from '../../../content/events/personal.json';
 import securityJson from '../../../content/events/security.json';
 import terrorJson from '../../../content/events/terror.json';
 import militaryJson from '../../../content/events/military.json';
+import diplomacyJson from '../../../content/events/diplomacy.json';
 import unrestJson from '../../../content/events/unrest.json';
 import groupsJson from '../../../content/groups.json';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
 import { STAT_IDS, type StatId } from '../events/stats';
-import { EVENT_CATEGORIES, MINISTRIES, OPERATION_KINDS, REGIONS, RIVALS } from './ids';
+import { COUNTRY_PICKS, EVENT_CATEGORIES, MINISTRIES, OPERATION_KINDS, REGIONS, TREATY_TYPES } from './ids';
+import { isCountryId } from './world';
 
 /**
  * Event content: one JSON file per category in /content/events, validated here at load.
@@ -64,8 +66,26 @@ const effectSchema = z.discriminatedUnion('type', [
   /** Readiness and morale of the armed forces. */
   z.strictObject({ type: z.literal('readiness'), delta: z.number() }),
   z.strictObject({ type: z.literal('morale'), delta: z.number() }),
-  /** Relation with a rival state: the one the event is about (its ref) unless a rival is named. */
-  z.strictObject({ type: z.literal('relation'), delta: z.number(), rival: z.enum(RIVALS).optional() }),
+  /** Relation with a country: the one the event is about (its ref) unless a country is named. */
+  z.strictObject({ type: z.literal('relation'), delta: z.number(), country: z.string().optional() }),
+  /** Shifts every country’s relation with India (a global mood), or only the focus nations’ or the neighbours’. */
+  z.strictObject({
+    type: z.literal('worldRelation'),
+    delta: z.number(),
+    scope: z.enum(['all', 'focus', 'neighbours']).default('all'),
+  }),
+  /** India’s standing in the world. */
+  z.strictObject({ type: z.literal('reputation'), delta: z.number() }),
+  /** How tense the world is, 0–100. */
+  z.strictObject({ type: z.literal('worldTension'), delta: z.number() }),
+  /** A crisis between countries in the region of the one the event is about; it shows on the map. */
+  z.strictObject({ type: z.literal('conflict'), days: z.number().int().positive() }),
+  /** Signs a treaty with the country the event is about. */
+  z.strictObject({
+    type: z.literal('treaty'),
+    kind: z.enum(TREATY_TYPES.filter((t) => t !== 'sanctions') as ['trade', 'nonAggression', 'embassy']),
+    years: z.number().int().positive().default(3),
+  }),
   /** Immediate nudge to the national corruption index. */
   z.strictObject({ type: z.literal('corruption'), delta: z.number() }),
   /** Loyalty of one minister, or of the whole cabinet. */
@@ -106,9 +126,11 @@ const eventSchema = z.strictObject({
   category: z.enum(EVENT_CATEGORIES),
   severity: z.enum(['info', 'good', 'warning', 'critical']),
   title: z.string().min(1),
-  /** Placeholders: {region}, {president}, {group}, {rival}. */
+  /** Placeholders: {region}, {president}, {group}, {rival}, {country}. */
   body: z.string().min(1),
   scope: z.enum(['national', 'region']).default('national'),
+  /** For diplomatic events: the kind of country the event is about, picked when it fires (its ref). */
+  countryPick: z.enum(COUNTRY_PICKS).optional(),
   /** Relative likelihood of each region for regional events (default 1 each). */
   regionWeights: z.record(z.enum(REGIONS), z.number().min(0)).optional(),
   /** All must hold for the event to be eligible. */
@@ -162,6 +184,7 @@ const FILES: [string, unknown, EventContent['category']][] = [
   ['security.json', securityJson, 'security'],
   ['terror.json', terrorJson, 'terror'],
   ['military.json', militaryJson, 'military'],
+  ['diplomacy.json', diplomacyJson, 'diplomacy'],
 ];
 
 /** Every event, in file order (the order events are rolled in, which keeps games deterministic). */
@@ -178,6 +201,23 @@ for (const event of EVENT_LIST) {
 export const EVENT_CONTENT: Readonly<Record<string, EventContent>> = Object.fromEntries(
   EVENT_LIST.map((e) => [e.id, e]),
 );
+
+// Named countries must exist, and text about “the country” needs a country to be about.
+for (const event of EVENT_LIST) {
+  const effects = [...event.effects, ...event.choices.flatMap((c) => c.effects)];
+  for (const e of effects) {
+    if (e.type === 'relation' && e.country !== undefined && !isCountryId(e.country)) {
+      throw new Error(`content/events: event "${event.id}" names unknown country "${e.country}"`);
+    }
+    if (
+      (e.type === 'treaty' || (e.type === 'relation' && e.country === undefined)) &&
+      event.countryPick === undefined &&
+      event.category === 'diplomacy'
+    ) {
+      throw new Error(`content/events: event "${event.id}" needs a countryPick for its ${e.type} effect`);
+    }
+  }
+}
 
 // Follow-ups must point at real events.
 for (const event of EVENT_LIST) {

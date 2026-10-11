@@ -21,7 +21,16 @@ export const SPEEDS = [1, 2, 4] as const;
 /** 0 = paused; otherwise in-game days per real second. */
 export type Speed = 0 | (typeof SPEEDS)[number];
 export type ViewId =
-  'dashboard' | 'inbox' | 'economy' | 'budget' | 'cabinet' | 'security' | 'military' | 'world' | 'reports';
+  | 'dashboard'
+  | 'inbox'
+  | 'economy'
+  | 'budget'
+  | 'cabinet'
+  | 'security'
+  | 'military'
+  | 'world'
+  | 'diplomacy'
+  | 'reports';
 
 export interface SlotInfo {
   slot: SlotId;
@@ -49,6 +58,8 @@ export interface GameStoreState {
   /** Speed to resume at when un-pausing. */
   lastSpeed: Exclude<Speed, 0>;
   view: ViewId;
+  /** The country open in the World screen, by ISO code. */
+  country: string | null;
   slots: SlotInfo[];
   notice: Notice | null;
   /** The pending decision open in the decision dialog, if any. */
@@ -56,6 +67,8 @@ export interface GameStoreState {
 
   goTo(screen: Screen): void;
   setView(view: ViewId): void;
+  /** Opens a country in the World screen. */
+  openCountry(id: string | null): void;
   openDecision(pendingId: string | null): void;
   startNewGame(input: NewGameInput): void;
   /**
@@ -86,12 +99,14 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       speed: 0,
       lastSpeed: 1,
       view: 'dashboard',
+      country: null,
       slots: [],
       notice: null,
       decisionId: null,
 
       goTo: (screen) => set({ screen }),
       setView: (view) => set({ view }),
+      openCountry: (country) => set(country ? { country, view: 'world' } : { country }),
       openDecision: (decisionId) => set({ decisionId }),
 
       startNewGame: ({ presidentName, difficulty, seed, ideology, strategy }) => {
@@ -103,7 +118,16 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
           ...(ideology && { ideology }),
           ...(strategy && { strategy }),
         });
-        set({ game, screen: 'game', speed: 0, lastSpeed: 1, view: 'dashboard', notice: null, decisionId: null });
+        set({
+          game,
+          screen: 'game',
+          speed: 0,
+          lastSpeed: 1,
+          view: 'dashboard',
+          country: null,
+          notice: null,
+          decisionId: null,
+        });
       },
 
       advanceDays: (days, options) => {

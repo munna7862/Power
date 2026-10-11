@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { advanceDays, openFresh, openView, patchGame, startGame } from './support';
+import { advanceDays, openFresh, patchGame, startGame } from './support';
 
 const year = new Date().getFullYear();
 
@@ -69,13 +69,5 @@ test.describe('playing the game', () => {
     await openFresh(page);
     await startGame(page);
     await expect(page.getByRole('list', { name: 'Top issues' }).getByRole('listitem')).toHaveCount(3);
-  });
-
-  test('sections not yet built show their roadmap phase', async ({ page }) => {
-    await openFresh(page);
-    await startGame(page);
-    await openView(page, 'World');
-    await expect(page.getByText('Arrives in Phase 5')).toBeVisible();
-    await openView(page, 'Dashboard');
   });
 });

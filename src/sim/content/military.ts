@@ -6,7 +6,7 @@ import { DOMAINS, REGIONS, RIVALS, TERRAINS, UNITS, type DomainId, type RivalId,
 
 /**
  * Military content: units (content/weapons.json), the defence research tree (research.json) and the
- * fictional rival states (rivals.json). Validated at load; a broken file fails `npm test`.
+ * neighbouring states India can fight (rivals.json). Validated at load; a broken file fails `npm test`.
  */
 
 const unitSchema = z.strictObject({
@@ -66,10 +66,6 @@ const rivalSchema = z.strictObject({
   strength: z.number().positive(),
   /** Annual growth of strength when at peace. */
   growth: z.number().min(0).max(0.1),
-  /** Starting relation with India, −100…+100. */
-  relation: z.number().min(-100).max(100),
-  /** 0–100: how readily this state picks a fight. */
-  aggression: z.number().min(0).max(100),
   /** 0–100: how hard its secret services are to crack. */
   counterIntel: z.number().min(0).max(100),
   /** Annexation adds this share of India's GDP and population. */

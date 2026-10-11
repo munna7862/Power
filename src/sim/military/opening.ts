@@ -16,7 +16,6 @@ export function openingRival(id: RivalId): RivalState {
   return {
     strength: content.strength,
     readiness: RIVAL_START_READINESS,
-    relation: content.relation,
     recoverUntilTick: null,
     sighting: null,
     annexed: false,

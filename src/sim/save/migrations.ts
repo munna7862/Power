@@ -11,6 +11,7 @@ import { allEfficiencies } from '../economy/model';
 import type { GameDate } from '../engine/calendar';
 import type { Modifier, ModifierTarget } from '../engine/modifiers';
 import { Rng, type RngState } from '../engine/rng';
+import { openingDiplomacy } from '../diplomacy/opening';
 import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
 import { applyPolicy } from '../politics/policy';
@@ -25,7 +26,15 @@ import {
   openingSecurity,
 } from '../state/initialState';
 import { appendLog } from '../state/log';
-import { SCHEMA_VERSION, type Difficulty, type GameState, type LogEntry } from '../state/types';
+import {
+  SCHEMA_VERSION,
+  type Difficulty,
+  type GameState,
+  type LogEntry,
+  type MilitaryState,
+  type RivalState,
+} from '../state/types';
+import type { RivalId } from '../content/ids';
 
 /** Upgrades a raw state from version N to N + 1. */
 export type Migration = (state: unknown) => unknown;
@@ -75,6 +84,7 @@ function migrateV1toV2(raw: unknown): unknown {
     politics: openingPolitics(DEFAULT_IDEOLOGY, DEFAULT_STRATEGY),
     security: openingSecurity(),
     military: openingMilitary(),
+    diplomacy: openingDiplomacy(),
     events: emptyEvents(),
     modifiers: v1.modifiers.flatMap((m) => {
       const target = V1_TARGETS[m.target];
@@ -146,6 +156,58 @@ function migrateV3toV4(raw: unknown): unknown {
   return { ...v3, schemaVersion: 4, military: openingMilitary() };
 }
 
+/** The Phase 4 fictional rivals and the countries that replaced them in Phase 5. */
+const RIVAL_RENAMES: Record<string, RivalId> = {
+  zarnak: 'CHN',
+  tirhan: 'PAK',
+  oruvan: 'MMR',
+  velmora: 'BGD',
+  haldrin: 'LKA',
+};
+const renamed = (id: string): string => RIVAL_RENAMES[id] ?? id;
+
+/** Shape of a schema v4 rival (it still carried its own relation), as far as the migration needs it. */
+interface RivalV4 extends Omit<RivalState, 'relation'> {
+  /** Missing when the save was just upgraded from v3, whose military state is built fresh. */
+  relation?: number;
+}
+
+/**
+ * v4 → v5 (Phase 5): adds diplomacy (relations with every country, treaties, offers, reputation) and
+ * replaces the five fictional rivals with their real-world stand-ins. Each rival keeps its strength, war and
+ * relation; the relation moves into the diplomacy state. Treaties, offers and the AI start empty.
+ */
+function migrateV4toV5(raw: unknown): unknown {
+  const v4 = raw as Omit<GameState, 'military' | 'diplomacy' | 'events'> & {
+    military: Omit<MilitaryState, 'rivals'> & { rivals: Record<string, RivalV4> };
+    events: GameState['events'];
+  };
+  const diplomacy = openingDiplomacy();
+  const rivals: Record<string, RivalState> = {};
+  for (const [oldId, { relation, ...rival }] of Object.entries(v4.military.rivals)) {
+    const id = renamed(oldId);
+    rivals[id] = rival;
+    const country = diplomacy.countries[id];
+    if (country && typeof relation === 'number') diplomacy.countries[id] = { ...country, relation };
+  }
+  return {
+    ...v4,
+    schemaVersion: 5,
+    military: {
+      ...v4.military,
+      rivals,
+      intelOps: v4.military.intelOps.map((o) => ({ ...o, target: o.target === null ? null : renamed(o.target) })),
+      wars: v4.military.wars.map((w) => ({ ...w, rival: renamed(w.rival) })),
+      warHistory: v4.military.warHistory.map((w) => ({ ...w, rival: renamed(w.rival) })),
+    },
+    diplomacy,
+    events: {
+      ...v4.events,
+      pending: v4.events.pending.map((p) => ({ ...p, ref: p.ref === null ? null : renamed(p.ref) })),
+    },
+  };
+}
+
 /**
  * Registry keyed by the version being migrated FROM.
  * When SCHEMA_VERSION goes up, add a step here and a golden fixture for the old version.
@@ -154,6 +216,7 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: migrateV1toV2,
   2: migrateV2toV3,
   3: migrateV3toV4,
+  4: migrateV4toV5,
 };
 
 export function migrate(

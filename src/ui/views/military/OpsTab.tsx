@@ -9,6 +9,8 @@ import {
   MAX_DRILLS,
   MAX_INTEL_OPS,
   opSuccessChance,
+  relationOf,
+  relationWord,
   RIVAL_CONTENT,
   RIVALS,
   strengthView,
@@ -35,9 +37,6 @@ function describeStrength(view: StrengthView): string {
       return `${view.low}–${view.high} (recon ${view.ageDays} days old)`;
   }
 }
-
-const relationWord = (v: number) =>
-  v >= 40 ? 'Friendly' : v >= 5 ? 'Cordial' : v > -20 ? 'Cool' : v > -50 ? 'Tense' : 'Hostile';
 
 export function OpsTab({ game }: { game: GameState }) {
   const { military, clock } = game;
@@ -149,7 +148,7 @@ export function OpsTab({ game }: { game: GameState }) {
                       <div className={styles.muted}>{content.summary}</div>
                     </td>
                     <td>
-                      {Math.round(rival.relation)} · {relationWord(rival.relation)}
+                      {Math.round(relationOf(game, id))} · {relationWord(relationOf(game, id))}
                     </td>
                     <td data-testid={`strength-${id}`}>{describeStrength(strengthView(game, id, eff.intelligence))}</td>
                     <td className={styles.num}>{Math.round(hostility(game, id))}</td>
