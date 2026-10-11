@@ -29,4 +29,19 @@ describe('golden save fixtures', () => {
     expect(result.save.state.schemaVersion).toBe(SCHEMA_VERSION);
     expect(result.save.summary.presidentName).toBe('Golden Fixture');
   });
+
+  it('upgrades a v1 (Phase 1) save: keeps the date, treasury, approval and inbox, and adds the new systems', () => {
+    const raw = JSON.parse(readFileSync(fixture(1), 'utf8'));
+    const result = parseSave(JSON.stringify(raw));
+    if (!result.ok) throw new Error(result.error);
+    const { state } = result.save;
+    expect(state.clock).toEqual(raw.state.clock);
+    expect(state.nation).toMatchObject({ treasury: raw.state.nation.treasury, approval: raw.state.nation.approval });
+    expect(state.history).toHaveLength(raw.state.history.length);
+    expect(state.log.slice(0, raw.state.log.length)).toEqual(raw.state.log);
+    expect(state.log.at(-1)?.title).toBe('Save upgraded');
+    expect(state.cabinet.ministers.finance).not.toBeNull();
+    expect(state.modifiers.every((m) => m.target !== ('economy.monthlyRevenue' as never))).toBe(true);
+    expect(advanceDays(state, 365).status.kind).toBe('playing');
+  });
 });

@@ -5,7 +5,7 @@ const mod = (overrides: Partial<Modifier>): Modifier => ({
   id: 'm',
   source: 'test',
   label: 'Test',
-  target: 'economy.monthlyRevenue',
+  target: 'economy.revenue',
   kind: 'add',
   value: 0,
   expiresAtTick: null,
@@ -14,7 +14,7 @@ const mod = (overrides: Partial<Modifier>): Modifier => ({
 
 describe('modifier stack', () => {
   it('returns the base unchanged when nothing applies', () => {
-    expect(resolve([], 'economy.monthlyRevenue', 100)).toEqual({ base: 100, total: 100, breakdown: [] });
+    expect(resolve([], 'economy.revenue', 100)).toEqual({ base: 100, total: 100, breakdown: [] });
   });
 
   it('applies (base + Σadd) × (1 + Σmult) and reports a breakdown', () => {
@@ -25,7 +25,7 @@ describe('modifier stack', () => {
         mod({ id: 'c', label: 'Strike', kind: 'mult', value: -0.05 }),
         mod({ id: 'd', label: 'Other target', target: 'politics.approvalTarget', value: 999 }),
       ],
-      'economy.monthlyRevenue',
+      'economy.revenue',
       100,
     );
     expect(result.total).toBeCloseTo(120 * 1.05);

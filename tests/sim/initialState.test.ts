@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_PRESIDENT_NAME, SCHEMA_VERSION, resolve, type GameState } from '../../src/sim';
+import {
+  DEFAULT_IDEOLOGY,
+  DEFAULT_PRESIDENT_NAME,
+  DEFAULT_STRATEGY,
+  MINISTRIES,
+  SCHEMA_VERSION,
+  debtToGdp,
+  nominalGdp,
+  resolve,
+  type GameState,
+} from '../../src/sim';
 import { newGame } from '../helpers';
 
 describe('createInitialState', () => {
@@ -24,10 +34,50 @@ describe('createInitialState', () => {
     expect(normal.nation.treasury).toBeGreaterThan(hard.nation.treasury);
     expect(easy.nation.approval).toBeGreaterThan(hard.nation.approval);
 
-    const revenue = (s: GameState) => resolve(s.modifiers, 'economy.monthlyRevenue', 100).total;
+    const revenue = (s: GameState) => resolve(s.modifiers, 'economy.revenue', 100).total;
     expect(revenue(easy)).toBeGreaterThan(revenue(normal));
     expect(revenue(hard)).toBeLessThan(revenue(normal));
-    expect(resolve(hard.modifiers, 'politics.approvalTarget', 55).total).toBe(50);
+    const approval = (s: GameState) => resolve(s.modifiers, 'politics.approvalTarget', 55).total;
+    expect(approval(hard) - approval(normal)).toBe(-5);
+    expect(debtToGdp(hard.economy)).toBeGreaterThan(debtToGdp(easy.economy));
+  });
+
+  it('opens with a calibrated economy close to India today', () => {
+    const { economy } = newGame();
+    expect(nominalGdp(economy)).toBe(33_000_000);
+    expect(debtToGdp(economy)).toBeCloseTo(0.56);
+    expect(economy.inflation).toBe(0.05);
+    expect(economy.unemployment).toBe(0.078);
+    expect(economy.lastMonth).toBeNull();
+  });
+
+  it('appoints a full, mediocre opening cabinet with three candidates per ministry', () => {
+    const { cabinet } = newGame();
+    for (const m of MINISTRIES) {
+      const minister = cabinet.ministers[m];
+      expect(minister).not.toBeNull();
+      expect(minister?.competence).toBeGreaterThanOrEqual(35);
+      expect(minister?.competence).toBeLessThanOrEqual(60);
+      expect(cabinet.candidates[m]).toHaveLength(3);
+    }
+    const names = MINISTRIES.flatMap((m) => [cabinet.ministers[m]?.name, ...cabinet.candidates[m].map((c) => c.name)]);
+    expect(new Set(names).size).toBe(names.length);
+  });
+
+  it('applies the chosen ideology and strategy as permanent modifiers', () => {
+    const state = newGame({ ideology: 'technocracy', strategy: 'industrial' });
+    expect(state.politics).toMatchObject({ ideology: 'technocracy', strategy: 'industrial' });
+    expect(
+      state.modifiers.filter((m) => m.source === 'ideology').every((m) => m.label === 'Ideology: Technocracy'),
+    ).toBe(true);
+    expect(state.modifiers.some((m) => m.source === 'strategy' && m.target === 'economy.growth.industry')).toBe(true);
+    expect(newGame().politics).toMatchObject({ ideology: DEFAULT_IDEOLOGY, strategy: DEFAULT_STRATEGY });
+  });
+
+  it('computes opening voter satisfaction instead of placeholders', () => {
+    const { satisfaction } = newGame().politics;
+    expect(satisfaction.jobs).toBeCloseTo(47.8, 0);
+    expect(Object.values(satisfaction).some((v) => v !== 50)).toBe(true);
   });
 
   it('gives modifiers unique ids and keeps nextId ahead of them', () => {

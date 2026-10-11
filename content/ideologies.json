@@ -1,0 +1,60 @@
+[
+  {
+    "id": "liberalism",
+    "name": "Liberalism",
+    "summary": "Open markets and lighter regulation. Faster services and tech growth, cleaner institutions, but voters worry about inequality.",
+    "modifiers": [
+      { "target": "economy.growth", "kind": "add", "value": 0.003 },
+      { "target": "economy.growth.services", "kind": "add", "value": 0.004 },
+      { "target": "economy.growth.tech", "kind": "add", "value": 0.005 },
+      { "target": "politics.corruption", "kind": "add", "value": -3 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": -1 }
+    ]
+  },
+  {
+    "id": "socialism",
+    "name": "Socialism",
+    "summary": "A strong state that protects workers. Fewer jobless and better living standards, at the cost of growth and some inflation.",
+    "modifiers": [
+      { "target": "economy.growth", "kind": "add", "value": -0.003 },
+      { "target": "economy.unemployment", "kind": "add", "value": -0.008 },
+      { "target": "society.hdi", "kind": "add", "value": 0.01 },
+      { "target": "economy.inflation", "kind": "add", "value": 0.004 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": 2 }
+    ]
+  },
+  {
+    "id": "conservatism",
+    "name": "Conservatism",
+    "summary": "Stability, tradition and fiscal caution. Calmer prices and steady farming, but slower social progress.",
+    "modifiers": [
+      { "target": "economy.inflation", "kind": "add", "value": -0.005 },
+      { "target": "economy.growth.agriculture", "kind": "add", "value": 0.005 },
+      { "target": "economy.growth", "kind": "add", "value": 0.001 },
+      { "target": "society.hdi", "kind": "add", "value": -0.005 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": 1 }
+    ]
+  },
+  {
+    "id": "nationalism",
+    "name": "Nationalism",
+    "summary": "Self-reliance and national pride. A popular rallying cry that favours domestic industry, but trade suffers.",
+    "modifiers": [
+      { "target": "economy.growth.industry", "kind": "add", "value": 0.006 },
+      { "target": "economy.growth", "kind": "add", "value": -0.002 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": 3 },
+      { "target": "economy.inflation", "kind": "add", "value": 0.002 }
+    ]
+  },
+  {
+    "id": "technocracy",
+    "name": "Technocracy",
+    "summary": "Government by experts and data. Strong tech growth and less corruption, but voters see it as distant and elitist.",
+    "modifiers": [
+      { "target": "economy.growth.tech", "kind": "add", "value": 0.01 },
+      { "target": "economy.growth", "kind": "add", "value": 0.002 },
+      { "target": "politics.corruption", "kind": "add", "value": -5 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": -3 }
+    ]
+  }
+]

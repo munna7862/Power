@@ -1,0 +1,52 @@
+[
+  {
+    "id": "balanced",
+    "name": "Balanced",
+    "summary": "No sector is favoured. A small, steady boost to the whole economy with no trade-offs.",
+    "modifiers": [{ "target": "economy.growth", "kind": "add", "value": 0.002 }]
+  },
+  {
+    "id": "agrarian",
+    "name": "Agrarian",
+    "summary": "Farms first. Strong agriculture, cheaper food and rural jobs, but industry grows more slowly.",
+    "modifiers": [
+      { "target": "economy.growth.agriculture", "kind": "add", "value": 0.015 },
+      { "target": "economy.growth.industry", "kind": "add", "value": -0.003 },
+      { "target": "economy.unemployment", "kind": "add", "value": -0.003 },
+      { "target": "economy.inflation", "kind": "add", "value": -0.003 }
+    ]
+  },
+  {
+    "id": "industrial",
+    "name": "Industrial",
+    "summary": "Factories and power plants. Many new jobs and faster industry, with some inflation and slower farming.",
+    "modifiers": [
+      { "target": "economy.growth.industry", "kind": "add", "value": 0.015 },
+      { "target": "economy.growth.energy", "kind": "add", "value": 0.01 },
+      { "target": "economy.growth.agriculture", "kind": "add", "value": -0.003 },
+      { "target": "economy.unemployment", "kind": "add", "value": -0.005 },
+      { "target": "economy.inflation", "kind": "add", "value": 0.003 }
+    ]
+  },
+  {
+    "id": "servicesTech",
+    "name": "Services & Tech",
+    "summary": "A knowledge economy. Rapid services and tech growth, but it creates fewer jobs for the many.",
+    "modifiers": [
+      { "target": "economy.growth.services", "kind": "add", "value": 0.01 },
+      { "target": "economy.growth.tech", "kind": "add", "value": 0.02 },
+      { "target": "economy.growth.industry", "kind": "add", "value": -0.003 },
+      { "target": "economy.unemployment", "kind": "add", "value": 0.002 }
+    ]
+  },
+  {
+    "id": "defenceFirst",
+    "name": "Defence-first",
+    "summary": "Security above all. Defence industry grows and voters feel safer, but the wider economy pays for it.",
+    "modifiers": [
+      { "target": "economy.growth.industry", "kind": "add", "value": 0.005 },
+      { "target": "economy.growth", "kind": "add", "value": -0.003 },
+      { "target": "politics.approvalTarget", "kind": "add", "value": 1 }
+    ]
+  }
+]

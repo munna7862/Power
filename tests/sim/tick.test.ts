@@ -35,14 +35,24 @@ describe('engine.tick', () => {
     expect(() => advanceDays(start, 400)).not.toThrow();
   });
 
-  it('settles the treasury monthly, not daily', () => {
+  it('settles the economy monthly, not daily', () => {
     const start = newGame();
     const day30 = advanceDays(start, 30);
     expect(day30.nation.treasury).toBe(start.nation.treasury);
+    expect(day30.economy).toEqual(start.economy);
     const feb1 = tick(day30);
     expect(feb1.clock.date).toEqual({ year: 2026, month: 2, day: 1 });
-    expect(feb1.nation.treasury).toBe(start.nation.treasury + feb1.nation.lastMonthBalance);
-    expect(feb1.nation.lastMonthBalance).not.toBe(0);
+    expect(feb1.economy.lastMonth?.balance).toBeLessThan(0);
+    expect(feb1.economy.priceIndex).toBeGreaterThan(1);
+  });
+
+  it('stops time once the game is over', () => {
+    const over: GameState = {
+      ...newGame(),
+      status: { kind: 'over', cause: 'impeachment', date: { year: 2026, month: 1, day: 1 }, title: 'x', summary: 'y' },
+    };
+    expect(tick(over)).toBe(over);
+    expect(advanceDays(over, 100)).toBe(over);
   });
 
   it('records a monthly snapshot labelled with the month that closed', () => {
@@ -71,15 +81,15 @@ describe('engine.tick', () => {
     expect(state.log[0]?.title).toBe('#5');
   });
 
-  it('keeps approval within 0–100 and drags it down while the treasury is overdrawn', () => {
-    const broke = newGame();
-    const overdrawn: GameState = {
-      ...broke,
-      nation: { ...broke.nation, treasury: -10_000_000, baseMonthlyRevenue: 0 },
+  it('keeps approval within 0–100 and drags it down in a crisis', () => {
+    const start = newGame();
+    const crisis: GameState = {
+      ...start,
+      economy: { ...start.economy, inflation: 0.3, unemployment: 0.25, corruption: 90 },
     };
-    const later = advanceDays(overdrawn, 365 * 3);
+    const later = advanceDays(crisis, 120);
     expect(later.nation.approval).toBeGreaterThanOrEqual(0);
-    expect(later.nation.approval).toBeLessThan(broke.nation.approval);
+    expect(later.nation.approval).toBeLessThan(start.nation.approval - 10);
   });
 
   it('expires timed modifiers', () => {
@@ -92,7 +102,7 @@ describe('engine.tick', () => {
           id: 'temp',
           source: 'test',
           label: 'Temporary boost',
-          target: 'economy.monthlyRevenue',
+          target: 'economy.revenue',
           kind: 'mult',
           value: 0.5,
           expiresAtTick: 10,
@@ -104,6 +114,16 @@ describe('engine.tick', () => {
   });
 
   it('registers systems in the documented order', () => {
-    expect(SYSTEMS.map((s) => s.id)).toEqual(['modifier-expiry', 'fiscal', 'approval', 'history', 'annual-report']);
+    expect(SYSTEMS.map((s) => s.id)).toEqual([
+      'modifier-expiry',
+      'economy',
+      'fiscal',
+      'society',
+      'cabinet',
+      'approval',
+      'history',
+      'annual-report',
+      'candidate-refresh',
+    ]);
   });
 });

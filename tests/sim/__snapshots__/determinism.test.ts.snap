@@ -2,8 +2,8 @@
 
 exports[`determinism > matches the 5-year golden hash (review deliberately if a sim change moves it) 1`] = `
 {
-  "approval": 52.8,
-  "hash": "a68fa5af",
-  "treasury": 474221,
+  "approval": 58.9,
+  "hash": "dababfe3",
+  "treasury": 303300,
 }
 `;
