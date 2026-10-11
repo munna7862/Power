@@ -33,14 +33,16 @@ export const assassinationSuccessChance = (safety: number): number => clamp((70 
 
 /** The level of military loyalty the armed forces are drifting toward. */
 export function militaryLoyaltyTarget(
-  state: Pick<GameState, 'cabinet' | 'nation'>,
+  state: Pick<GameState, 'cabinet' | 'nation' | 'military'>,
   efficiency: Record<MinistryId, number>,
 ): number {
   return clamp(
     35 +
       0.35 * loyaltyOf(state, 'defence') +
       0.2 * state.nation.approval +
-      12 * (Math.min(efficiency.defence, 1.8) - 1),
+      12 * (Math.min(efficiency.defence, 1.8) - 1) +
+      0.12 * (state.military.morale - 65) -
+      12 * Math.max(0, 1 - state.military.fundingRatio),
     0,
     100,
   );

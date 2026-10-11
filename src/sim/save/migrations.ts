@@ -11,6 +11,7 @@ import { allEfficiencies } from '../economy/model';
 import type { GameDate } from '../engine/calendar';
 import type { Modifier, ModifierTarget } from '../engine/modifiers';
 import { Rng, type RngState } from '../engine/rng';
+import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
 import { applyPolicy } from '../politics/policy';
 import {
@@ -73,6 +74,7 @@ function migrateV1toV2(raw: unknown): unknown {
     cabinet: emptyCabinet(),
     politics: openingPolitics(DEFAULT_IDEOLOGY, DEFAULT_STRATEGY),
     security: openingSecurity(),
+    military: openingMilitary(),
     events: emptyEvents(),
     modifiers: v1.modifiers.flatMap((m) => {
       const target = V1_TARGETS[m.target];
@@ -135,12 +137,23 @@ function migrateV2toV3(raw: unknown): unknown {
 }
 
 /**
+ * v3 → v4 (Phase 4): adds the armed forces, rivals, drills, intelligence, wars and the nuclear program.
+ * Everything already in the save carries over; the military starts from its opening forces. The army’s
+ * loyalty, which Phase 3 kept as a placeholder, is unchanged.
+ */
+function migrateV3toV4(raw: unknown): unknown {
+  const v3 = raw as GameState;
+  return { ...v3, schemaVersion: 4, military: openingMilitary() };
+}
+
+/**
  * Registry keyed by the version being migrated FROM.
  * When SCHEMA_VERSION goes up, add a step here and a golden fixture for the old version.
  */
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: migrateV1toV2,
   2: migrateV2toV3,
+  3: migrateV3toV4,
 };
 
 export function migrate(

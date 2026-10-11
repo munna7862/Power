@@ -74,8 +74,8 @@ test.describe('playing the game', () => {
   test('sections not yet built show their roadmap phase', async ({ page }) => {
     await openFresh(page);
     await startGame(page);
-    await openView(page, 'Military');
-    await expect(page.getByText('Arrives in Phase 4')).toBeVisible();
+    await openView(page, 'World');
+    await expect(page.getByText('Arrives in Phase 5')).toBeVisible();
     await openView(page, 'Dashboard');
   });
 });

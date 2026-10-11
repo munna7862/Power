@@ -1,0 +1,2133 @@
+{
+  "format": "india-apex-sovereign/save",
+  "schemaVersion": 4,
+  "savedAt": "2026-10-11T00:00:00.000Z",
+  "checksum": "96277965",
+  "summary": {
+    "presidentName": "Golden Fixture",
+    "difficulty": "normal",
+    "gameDate": "5 Feb 2027",
+    "tick": 400
+  },
+  "state": {
+    "schemaVersion": 4,
+    "meta": {
+      "seed": 2026,
+      "difficulty": "normal",
+      "presidentName": "Golden Fixture",
+      "startDate": {
+        "year": 2026,
+        "month": 1,
+        "day": 1
+      }
+    },
+    "clock": {
+      "tick": 400,
+      "date": {
+        "year": 2027,
+        "month": 2,
+        "day": 5
+      }
+    },
+    "rng": [
+      120723158,
+      4214232665,
+      3017509110,
+      917465321
+    ],
+    "status": {
+      "kind": "playing"
+    },
+    "nation": {
+      "name": "India",
+      "treasury": 215530,
+      "approval": 31.6,
+      "population": 1454244834.6412542
+    },
+    "economy": {
+      "sectors": {
+        "agriculture": {
+          "output": 5807717.154093253,
+          "growth": 0.034804033050666476
+        },
+        "industry": {
+          "output": 8814794.998537237,
+          "growth": 0.05974587704302912
+        },
+        "services": {
+          "output": 15320169.646711988,
+          "growth": 0.07425396328978104
+        },
+        "energy": {
+          "output": 1750581.485958392,
+          "growth": 0.05868562572294835
+        },
+        "tech": {
+          "output": 3649126.1421163296,
+          "growth": 0.09703254212032106
+        }
+      },
+      "priceIndex": 1.049358070634434,
+      "inflation": 0.040190659308893845,
+      "unemployment": 0.07479937338014866,
+      "realGrowth": 0.06434348777036808,
+      "debt": 19402616.76208612,
+      "interestRate": 0.065,
+      "corruption": 42.86159043396363,
+      "hdi": 0.6430179734588296,
+      "lastMonth": {
+        "revenue": {
+          "income": 109056.36889029124,
+          "corporate": 90880.30740857606,
+          "gst": 90916.29960952993,
+          "customs": 21717.984353115873,
+          "nonTax": 46048.101677621984
+        },
+        "expenditure": {
+          "finance": 74173.64316233066,
+          "home": 20706.80871615064,
+          "defence": 58102.687143825686,
+          "external": 2472.4547720776886,
+          "health": 8344.5348557622,
+          "education": 11744.16016736902,
+          "agriculture": 28124.173032383707,
+          "industry": 74791.75685535008,
+          "disaster": 2781.5116185873994,
+          "intelligence": 1390.7558092936997,
+          "antiCorruption": 463.5852697645666,
+          "establishment": 43267.95851135955,
+          "interest": 104696.34640586913
+        },
+        "totalRevenue": 358619.061939135,
+        "totalExpenditure": 431060.376320124,
+        "balance": -72441.314380989,
+        "borrowed": 74060.50254105101,
+        "repaid": 0
+      }
+    },
+    "budget": {
+      "taxRates": {
+        "income": 0.2,
+        "corporate": 0.25,
+        "gst": 0.18,
+        "customs": 0.1
+      },
+      "allocations": {
+        "finance": 0.024,
+        "home": 0.0067,
+        "defence": 0.0188,
+        "external": 0.0008,
+        "health": 0.0027,
+        "education": 0.0038,
+        "agriculture": 0.0091,
+        "industry": 0.0242,
+        "disaster": 0.0009,
+        "intelligence": 0.00045,
+        "antiCorruption": 0.00015
+      },
+      "lastEnactedTick": null
+    },
+    "cabinet": {
+      "ministers": {
+        "finance": {
+          "id": "min-6",
+          "name": "Debolina Ghosh",
+          "gender": "female",
+          "region": "east",
+          "competence": 35,
+          "corruption": 66,
+          "loyalty": 61.8,
+          "ideology": "technocracy",
+          "avatarSeed": 1165633502,
+          "appointedTick": 0
+        },
+        "home": {
+          "id": "min-7",
+          "name": "Shruti Sethi",
+          "gender": "female",
+          "region": "north",
+          "competence": 42,
+          "corruption": 12,
+          "loyalty": 80,
+          "ideology": "technocracy",
+          "avatarSeed": 876954221,
+          "appointedTick": 0
+        },
+        "defence": {
+          "id": "min-8",
+          "name": "Mousumi Kalita",
+          "gender": "female",
+          "region": "northEast",
+          "competence": 45,
+          "corruption": 23,
+          "loyalty": 54,
+          "ideology": "socialism",
+          "avatarSeed": 882552465,
+          "appointedTick": 0
+        },
+        "external": {
+          "id": "min-9",
+          "name": "Rutuja Parekh",
+          "gender": "female",
+          "region": "west",
+          "competence": 45,
+          "corruption": 19,
+          "loyalty": 60.8,
+          "ideology": "nationalism",
+          "avatarSeed": 135952137,
+          "appointedTick": 0
+        },
+        "health": {
+          "id": "min-10",
+          "name": "Suresh Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 40,
+          "corruption": 57,
+          "loyalty": 73.5,
+          "ideology": "conservatism",
+          "avatarSeed": 1107485340,
+          "appointedTick": 0
+        },
+        "education": {
+          "id": "min-11",
+          "name": "Ritwik Dutta",
+          "gender": "male",
+          "region": "east",
+          "competence": 47,
+          "corruption": 44,
+          "loyalty": 77.7,
+          "ideology": "nationalism",
+          "avatarSeed": 1062533377,
+          "appointedTick": 0
+        },
+        "agriculture": {
+          "id": "min-12",
+          "name": "Vandana Tiwari",
+          "gender": "female",
+          "region": "central",
+          "competence": 58,
+          "corruption": 43,
+          "loyalty": 75.1,
+          "ideology": "technocracy",
+          "avatarSeed": 1224186615,
+          "appointedTick": 0
+        },
+        "industry": {
+          "id": "min-13",
+          "name": "Ravi Shetty",
+          "gender": "male",
+          "region": "south",
+          "competence": 58,
+          "corruption": 3,
+          "loyalty": 50.3,
+          "ideology": "technocracy",
+          "avatarSeed": 2267632,
+          "appointedTick": 0
+        },
+        "disaster": {
+          "id": "min-14",
+          "name": "Shalini Pandey",
+          "gender": "female",
+          "region": "central",
+          "competence": 35,
+          "corruption": 76,
+          "loyalty": 42.5,
+          "ideology": "nationalism",
+          "avatarSeed": 206511763,
+          "appointedTick": 0
+        },
+        "intelligence": {
+          "id": "min-15",
+          "name": "Anirban Das",
+          "gender": "male",
+          "region": "east",
+          "competence": 53,
+          "corruption": 30,
+          "loyalty": 73.4,
+          "ideology": "nationalism",
+          "avatarSeed": 1968597696,
+          "appointedTick": 0
+        },
+        "antiCorruption": {
+          "id": "min-16",
+          "name": "Sowmya Subramanian",
+          "gender": "female",
+          "region": "south",
+          "competence": 53,
+          "corruption": 12,
+          "loyalty": 60.2,
+          "ideology": "conservatism",
+          "avatarSeed": 1013511392,
+          "appointedTick": 0
+        }
+      },
+      "candidates": {
+        "finance": [
+          {
+            "id": "min-162",
+            "name": "Bidisha Bora",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 62,
+            "corruption": 26,
+            "loyalty": 69,
+            "ideology": "nationalism",
+            "avatarSeed": 211251545,
+            "appointedTick": null
+          },
+          {
+            "id": "min-163",
+            "name": "Ishita Mitra",
+            "gender": "female",
+            "region": "east",
+            "competence": 43,
+            "corruption": 9,
+            "loyalty": 51,
+            "ideology": "liberalism",
+            "avatarSeed": 1850725413,
+            "appointedTick": null
+          },
+          {
+            "id": "min-164",
+            "name": "Vikas Shukla",
+            "gender": "male",
+            "region": "central",
+            "competence": 55,
+            "corruption": 49,
+            "loyalty": 59,
+            "ideology": "liberalism",
+            "avatarSeed": 2033539346,
+            "appointedTick": null
+          }
+        ],
+        "home": [
+          {
+            "id": "min-165",
+            "name": "Rimpi Bora",
+            "gender": "female",
+            "region": "northEast",
+            "competence": 51,
+            "corruption": 30,
+            "loyalty": 52,
+            "ideology": "technocracy",
+            "avatarSeed": 1449909122,
+            "appointedTick": null
+          },
+          {
+            "id": "min-166",
+            "name": "Arjun Nair",
+            "gender": "male",
+            "region": "south",
+            "competence": 63,
+            "corruption": 23,
+            "loyalty": 36,
+            "ideology": "nationalism",
+            "avatarSeed": 2022946721,
+            "appointedTick": null
+          },
+          {
+            "id": "min-167",
+            "name": "Harish Malhotra",
+            "gender": "male",
+            "region": "north",
+            "competence": 51,
+            "corruption": 63,
+            "loyalty": 85,
+            "ideology": "socialism",
+            "avatarSeed": 383335875,
+            "appointedTick": null
+          }
+        ],
+        "defence": [
+          {
+            "id": "min-168",
+            "name": "Ashish Tiwari",
+            "gender": "male",
+            "region": "central",
+            "competence": 71,
+            "corruption": 60,
+            "loyalty": 38,
+            "ideology": "conservatism",
+            "avatarSeed": 878095741,
+            "appointedTick": null
+          },
+          {
+            "id": "min-169",
+            "name": "Rupam Kalita",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 62,
+            "corruption": 28,
+            "loyalty": 46,
+            "ideology": "nationalism",
+            "avatarSeed": 1433989307,
+            "appointedTick": null
+          },
+          {
+            "id": "min-170",
+            "name": "Meenal Sharma",
+            "gender": "female",
+            "region": "north",
+            "competence": 62,
+            "corruption": 37,
+            "loyalty": 85,
+            "ideology": "technocracy",
+            "avatarSeed": 635367390,
+            "appointedTick": null
+          }
+        ],
+        "external": [
+          {
+            "id": "min-171",
+            "name": "Pritam Mitra",
+            "gender": "male",
+            "region": "east",
+            "competence": 59,
+            "corruption": 44,
+            "loyalty": 60,
+            "ideology": "conservatism",
+            "avatarSeed": 698294742,
+            "appointedTick": null
+          },
+          {
+            "id": "min-172",
+            "name": "Manab Singha",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 56,
+            "corruption": 51,
+            "loyalty": 68,
+            "ideology": "socialism",
+            "avatarSeed": 882576559,
+            "appointedTick": null
+          },
+          {
+            "id": "min-173",
+            "name": "Debashis Chatterjee",
+            "gender": "male",
+            "region": "east",
+            "competence": 55,
+            "corruption": 27,
+            "loyalty": 72,
+            "ideology": "liberalism",
+            "avatarSeed": 2062233940,
+            "appointedTick": null
+          }
+        ],
+        "health": [
+          {
+            "id": "min-174",
+            "name": "Anjali Khanna",
+            "gender": "female",
+            "region": "north",
+            "competence": 63,
+            "corruption": 66,
+            "loyalty": 40,
+            "ideology": "conservatism",
+            "avatarSeed": 1699066615,
+            "appointedTick": null
+          },
+          {
+            "id": "min-175",
+            "name": "Yash Joshi",
+            "gender": "male",
+            "region": "west",
+            "competence": 44,
+            "corruption": 42,
+            "loyalty": 68,
+            "ideology": "nationalism",
+            "avatarSeed": 404222384,
+            "appointedTick": null
+          },
+          {
+            "id": "min-176",
+            "name": "Vandana Saxena",
+            "gender": "female",
+            "region": "central",
+            "competence": 84,
+            "corruption": 12,
+            "loyalty": 55,
+            "ideology": "technocracy",
+            "avatarSeed": 678161869,
+            "appointedTick": null
+          }
+        ],
+        "education": [
+          {
+            "id": "min-177",
+            "name": "Pritam Ghosh",
+            "gender": "male",
+            "region": "east",
+            "competence": 78,
+            "corruption": 0,
+            "loyalty": 78,
+            "ideology": "liberalism",
+            "avatarSeed": 812247758,
+            "appointedTick": null
+          },
+          {
+            "id": "min-178",
+            "name": "Manab Kalita",
+            "gender": "male",
+            "region": "northEast",
+            "competence": 59,
+            "corruption": 27,
+            "loyalty": 47,
+            "ideology": "conservatism",
+            "avatarSeed": 990274255,
+            "appointedTick": null
+          },
+          {
+            "id": "min-179",
+            "name": "Manish Sethi",
+            "gender": "male",
+            "region": "north",
+            "competence": 68,
+            "corruption": 70,
+            "loyalty": 70,
+            "ideology": "technocracy",
+            "avatarSeed": 529752106,
+            "appointedTick": null
+          }
+        ],
+        "agriculture": [
+          {
+            "id": "min-180",
+            "name": "Aditya Desai",
+            "gender": "male",
+            "region": "west",
+            "competence": 31,
+            "corruption": 41,
+            "loyalty": 49,
+            "ideology": "liberalism",
+            "avatarSeed": 1705518395,
+            "appointedTick": null
+          },
+          {
+            "id": "min-181",
+            "name": "Yash Parekh",
+            "gender": "male",
+            "region": "west",
+            "competence": 66,
+            "corruption": 45,
+            "loyalty": 53,
+            "ideology": "technocracy",
+            "avatarSeed": 1940610113,
+            "appointedTick": null
+          },
+          {
+            "id": "min-182",
+            "name": "Aditi Mehta",
+            "gender": "female",
+            "region": "west",
+            "competence": 69,
+            "corruption": 46,
+            "loyalty": 63,
+            "ideology": "liberalism",
+            "avatarSeed": 1176126500,
+            "appointedTick": null
+          }
+        ],
+        "industry": [
+          {
+            "id": "min-183",
+            "name": "Meenal Chauhan",
+            "gender": "female",
+            "region": "north",
+            "competence": 57,
+            "corruption": 32,
+            "loyalty": 67,
+            "ideology": "nationalism",
+            "avatarSeed": 607373873,
+            "appointedTick": null
+          },
+          {
+            "id": "min-184",
+            "name": "Ankit Shukla",
+            "gender": "male",
+            "region": "central",
+            "competence": 47,
+            "corruption": 47,
+            "loyalty": 60,
+            "ideology": "nationalism",
+            "avatarSeed": 646119988,
+            "appointedTick": null
+          },
+          {
+            "id": "min-185",
+            "name": "Sakshi Pandey",
+            "gender": "female",
+            "region": "central",
+            "competence": 51,
+            "corruption": 49,
+            "loyalty": 54,
+            "ideology": "nationalism",
+            "avatarSeed": 2064383686,
+            "appointedTick": null
+          }
+        ],
+        "disaster": [
+          {
+            "id": "min-186",
+            "name": "Ravi Pillai",
+            "gender": "male",
+            "region": "south",
+            "competence": 78,
+            "corruption": 45,
+            "loyalty": 47,
+            "ideology": "liberalism",
+            "avatarSeed": 1218111731,
+            "appointedTick": null
+          },
+          {
+            "id": "min-187",
+            "name": "Naveen Shetty",
+            "gender": "male",
+            "region": "south",
+            "competence": 59,
+            "corruption": 62,
+            "loyalty": 82,
+            "ideology": "liberalism",
+            "avatarSeed": 145079681,
+            "appointedTick": null
+          },
+          {
+            "id": "min-188",
+            "name": "Nidhi Saxena",
+            "gender": "female",
+            "region": "central",
+            "competence": 65,
+            "corruption": 60,
+            "loyalty": 40,
+            "ideology": "socialism",
+            "avatarSeed": 105585492,
+            "appointedTick": null
+          }
+        ],
+        "intelligence": [
+          {
+            "id": "min-189",
+            "name": "Abhishek Saxena",
+            "gender": "male",
+            "region": "central",
+            "competence": 49,
+            "corruption": 67,
+            "loyalty": 46,
+            "ideology": "conservatism",
+            "avatarSeed": 1468825159,
+            "appointedTick": null
+          },
+          {
+            "id": "min-190",
+            "name": "Rutuja Gokhale",
+            "gender": "female",
+            "region": "west",
+            "competence": 45,
+            "corruption": 55,
+            "loyalty": 46,
+            "ideology": "conservatism",
+            "avatarSeed": 1037666035,
+            "appointedTick": null
+          },
+          {
+            "id": "min-191",
+            "name": "Komal Patil",
+            "gender": "female",
+            "region": "west",
+            "competence": 54,
+            "corruption": 8,
+            "loyalty": 48,
+            "ideology": "conservatism",
+            "avatarSeed": 1603192262,
+            "appointedTick": null
+          }
+        ],
+        "antiCorruption": [
+          {
+            "id": "min-192",
+            "name": "Anurag Shrivastava",
+            "gender": "male",
+            "region": "central",
+            "competence": 45,
+            "corruption": 24,
+            "loyalty": 41,
+            "ideology": "nationalism",
+            "avatarSeed": 1750736542,
+            "appointedTick": null
+          },
+          {
+            "id": "min-193",
+            "name": "Vivek Sethi",
+            "gender": "male",
+            "region": "north",
+            "competence": 45,
+            "corruption": 64,
+            "loyalty": 46,
+            "ideology": "conservatism",
+            "avatarSeed": 1621496107,
+            "appointedTick": null
+          },
+          {
+            "id": "min-194",
+            "name": "Janhavi Desai",
+            "gender": "female",
+            "region": "west",
+            "competence": 65,
+            "corruption": 29,
+            "loyalty": 74,
+            "ideology": "socialism",
+            "avatarSeed": 123771309,
+            "appointedTick": null
+          }
+        ]
+      }
+    },
+    "politics": {
+      "ideology": "liberalism",
+      "strategy": "balanced",
+      "ideologyChangedTick": null,
+      "strategyChangedTick": null,
+      "lowApprovalMonths": 0,
+      "satisfaction": {
+        "jobs": 50.680563957866205,
+        "prices": 81.82840662199554,
+        "growth": 64.34348777036807,
+        "corruption": 57.13840956603637,
+        "livingStandards": 55.14799241680846,
+        "taxes": 60,
+        "services": 40.17595778180164,
+        "safety": 55.03606340155592
+      }
+    },
+    "modifiers": [
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.003,
+        "id": "mod-0",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.services",
+        "kind": "add",
+        "value": 0.004,
+        "id": "mod-1",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.005,
+        "id": "mod-2",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.corruption",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-3",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "id": "mod-4",
+        "source": "ideology",
+        "label": "Ideology: Liberalism",
+        "expiresAtTick": null
+      },
+      {
+        "target": "economy.growth",
+        "kind": "add",
+        "value": 0.002,
+        "id": "mod-5",
+        "source": "strategy",
+        "label": "Strategy: Balanced",
+        "expiresAtTick": null
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-118",
+        "expiresAtTick": 411
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -7,
+        "id": "mod-122",
+        "expiresAtTick": 414
+      },
+      {
+        "source": "event",
+        "label": "Scheme leakage",
+        "target": "politics.corruption",
+        "kind": "add",
+        "value": 1.5,
+        "id": "mod-129",
+        "expiresAtTick": 456
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-130",
+        "expiresAtTick": 456
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-138",
+        "expiresAtTick": 470
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-144",
+        "expiresAtTick": 491
+      },
+      {
+        "source": "event",
+        "label": "Defending a minister",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -3,
+        "id": "mod-148",
+        "expiresAtTick": 447
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-149",
+        "expiresAtTick": 507
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -7,
+        "id": "mod-153",
+        "expiresAtTick": 512
+      },
+      {
+        "source": "event",
+        "label": "Electricity tariff protests in the East",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "id": "mod-196",
+        "expiresAtTick": 420
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -2.5,
+        "id": "mod-197",
+        "expiresAtTick": 555
+      },
+      {
+        "source": "indecision",
+        "label": "Seen as indecisive in a crisis",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -7,
+        "id": "mod-199",
+        "expiresAtTick": 555
+      }
+    ],
+    "security": {
+      "unrest": {
+        "north": 34.64649344239693,
+        "south": 27.587170197110314,
+        "east": 36.14210846737629,
+        "west": 30.95892624681954,
+        "central": 31.749800617951642,
+        "northEast": 36.15173889746095
+      },
+      "terrorThreat": 31.109619248714445,
+      "borderTension": 30.195154834535632,
+      "militaryLoyalty": 61.79486452597071,
+      "coupAlert": false,
+      "bankruptMonths": 0,
+      "investigations": [],
+      "operations": [],
+      "plots": [
+        {
+          "id": "plot-157",
+          "group": "Shadow Meridian",
+          "region": "west",
+          "strikeTick": 423,
+          "mitigation": 0
+        }
+      ],
+      "plotsFoiled": 1,
+      "attacksSuffered": 0
+    },
+    "military": {
+      "forces": {
+        "infantry": 36,
+        "armour": 25,
+        "artillery": 40,
+        "fighter": 30,
+        "strike": 8,
+        "airDefence": 24,
+        "frigate": 14,
+        "submarine": 6,
+        "carrier": 2,
+        "missile": 8,
+        "cyber": 5,
+        "satellite": 4
+      },
+      "readiness": 68.23257530441185,
+      "morale": 64.98556867674888,
+      "tech": {
+        "land": 1,
+        "air": 1,
+        "sea": 1,
+        "strategic": 1
+      },
+      "research": null,
+      "procurementFund": 24595.288078405414,
+      "queue": [],
+      "drills": [],
+      "drillReports": [],
+      "deterrence": 38.866239663463055,
+      "counterIntel": 35.118786320090294,
+      "intelOps": [],
+      "fundingRatio": 1.060151938543694,
+      "rivals": {
+        "zarnak": {
+          "strength": 99.18195455515439,
+          "readiness": 70,
+          "relation": -24.573124008544323,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "tirhan": {
+          "strength": 57.500354719753155,
+          "readiness": 70,
+          "relation": -12.06960236837378,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "oruvan": {
+          "strength": 49.56622332638839,
+          "readiness": 70,
+          "relation": 2.92905498794818,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "velmora": {
+          "strength": 26.636298362313525,
+          "readiness": 70,
+          "relation": -6.464911016324615,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        },
+        "haldrin": {
+          "strength": 13.274570650138887,
+          "readiness": 70,
+          "relation": 11.152980541642082,
+          "recoverUntilTick": null,
+          "sighting": null,
+          "annexed": false
+        }
+      },
+      "wars": [],
+      "warHistory": [],
+      "nuclear": {
+        "active": false,
+        "research": 0,
+        "enrichment": 0,
+        "warheads": 0,
+        "doctrine": "noFirstUse",
+        "monthsSinceWarhead": 0
+      }
+    },
+    "events": {
+      "pending": [],
+      "scheduled": [],
+      "cooldowns": {
+        "peace-overtures": 311,
+        "bridge-collapse": 240,
+        "defence-export-deal": 421,
+        "cyber-intrusion": 247,
+        "minister-scandal": 417,
+        "foreign-trip-invite": 384,
+        "police-reform-demand": 421,
+        "investor-summit": 666,
+        "maritime-incident-south": 343,
+        "disinformation-campaign": 344,
+        "health-checkup": 699,
+        "smuggling-network": 360,
+        "land-acquisition-protest": 376,
+        "police-modernisation-offer": 552,
+        "water-dispute": 401,
+        "flood-river": 314,
+        "ghost-beneficiaries": 606,
+        "trade-union-strike": 620,
+        "military-parade": 643,
+        "intelligence-leak": 641,
+        "barracks-murmurs": 417,
+        "interview-gaffe": 597,
+        "power-tariff-protest": 495,
+        "terror-warning": 365
+      }
+    },
+    "history": [
+      {
+        "month": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 196644,
+        "approval": 54.6,
+        "balance": -64155.384105932375,
+        "gdp": 33316804.21648582,
+        "realGrowth": 0.06310197955083563,
+        "inflation": 0.04942483969604904,
+        "unemployment": 0.0780672655662863,
+        "debtToGdp": 0.556499933252425,
+        "revenue": 329132.49299914285,
+        "expenditure": 393287.8771050752,
+        "corruption": 39.970389289580076,
+        "hdi": 0.6438223508508651
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 2,
+          "day": 1
+        },
+        "treasury": 198209,
+        "approval": 54.5,
+        "balance": -72738.4954668365,
+        "gdp": 33634981.881147355,
+        "realGrowth": 0.06414621680622319,
+        "inflation": 0.04806273387096703,
+        "unemployment": 0.07786401829576092,
+        "debtToGdp": 0.5534446984099151,
+        "revenue": 323678.6747516603,
+        "expenditure": 396417.1702184968,
+        "corruption": 39.91039456966196,
+        "hdi": 0.6436645920373903
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "treasury": 199796,
+        "approval": 55.2,
+        "balance": -64566.55715531914,
+        "gdp": 33950068.36032396,
+        "realGrowth": 0.06456736301407534,
+        "inflation": 0.047836023237068794,
+        "unemployment": 0.07760721765550244,
+        "debtToGdp": 0.5502568055311902,
+        "revenue": 335025.84909971885,
+        "expenditure": 399592.406255038,
+        "corruption": 39.555748708557715,
+        "hdi": 0.6435256802962971
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "treasury": 201375,
+        "approval": 54.6,
+        "balance": -72873.65032985987,
+        "gdp": 34268174.45641891,
+        "realGrowth": 0.0653564374762456,
+        "inflation": 0.04573358261610373,
+        "unemployment": 0.07742813288737628,
+        "debtToGdp": 0.5473215059671345,
+        "revenue": 329876.42243901244,
+        "expenditure": 402750.0727688723,
+        "corruption": 39.13334358541173,
+        "hdi": 0.6434059541193594
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 5,
+          "day": 1
+        },
+        "treasury": 202986,
+        "approval": 54,
+        "balance": -69697.9210771675,
+        "gdp": 34588497.889948495,
+        "realGrowth": 0.06606124385090825,
+        "inflation": 0.04512238215199041,
+        "unemployment": 0.0765399590832644,
+        "debtToGdp": 0.5443144114958859,
+        "revenue": 336274.28329313424,
+        "expenditure": 405972.20437030174,
+        "corruption": 41.05969344148109,
+        "hdi": 0.6433024688374163
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "treasury": 204625,
+        "approval": 51.3,
+        "balance": -68033.20064857189,
+        "gdp": 34917047.45400642,
+        "realGrowth": 0.06697458876607418,
+        "inflation": 0.04528763768857223,
+        "unemployment": 0.07568636288882906,
+        "debtToGdp": 0.5411880814924409,
+        "revenue": 341216.4970947772,
+        "expenditure": 409249.69774334907,
+        "corruption": 40.99469832495501,
+        "hdi": 0.6432172437016552
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "treasury": 206244,
+        "approval": 48.6,
+        "balance": -66212.32984349661,
+        "gdp": 35242126.51506083,
+        "realGrowth": 0.06751862506820638,
+        "inflation": 0.04391040495441516,
+        "unemployment": 0.07489240954671998,
+        "debtToGdp": 0.5381207951974077,
+        "revenue": 346275.4539053659,
+        "expenditure": 412487.7837488625,
+        "corruption": 42.40134339529369,
+        "hdi": 0.6431475959900449
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "treasury": 207741,
+        "approval": 45.1,
+        "balance": -73181.26966143306,
+        "gdp": 35540580.64630235,
+        "realGrowth": 0.06580379543549678,
+        "inflation": 0.044004057945877716,
+        "unemployment": 0.07484737966773614,
+        "debtToGdp": 0.5357030996055256,
+        "revenue": 342300.3295599937,
+        "expenditure": 415481.59922142676,
+        "corruption": 42.26242199113997,
+        "hdi": 0.643092475152823
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "treasury": 209267,
+        "approval": 43.5,
+        "balance": -72778.71847583301,
+        "gdp": 35841491.58674189,
+        "realGrowth": 0.06449527439657142,
+        "inflation": 0.04368016812154205,
+        "unemployment": 0.07503914202716992,
+        "debtToGdp": 0.533278698713626,
+        "revenue": 345755.4032300191,
+        "expenditure": 418534.1217058521,
+        "corruption": 42.120121505913644,
+        "hdi": 0.6430515780408356
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "treasury": 210709,
+        "approval": 40.7,
+        "balance": -69366.14530408225,
+        "gdp": 36123410.53618609,
+        "realGrowth": 0.062202011001159754,
+        "inflation": 0.04242337581833836,
+        "unemployment": 0.0749721687424842,
+        "debtToGdp": 0.5310769830484509,
+        "revenue": 352051.3473782429,
+        "expenditure": 421417.49268232513,
+        "corruption": 41.96706911265435,
+        "hdi": 0.6430230070003037
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "treasury": 212270,
+        "approval": 36.9,
+        "balance": -72833.15535590157,
+        "gdp": 36434621.48951781,
+        "realGrowth": 0.062225974954928605,
+        "inflation": 0.04255816093808145,
+        "unemployment": 0.07469628507507332,
+        "debtToGdp": 0.5285825706130628,
+        "revenue": 351706.5364621544,
+        "expenditure": 424539.691818056,
+        "corruption": 43.56996581415984,
+        "hdi": 0.6430060612353194
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 12,
+          "day": 1
+        },
+        "treasury": 213911,
+        "approval": 34.1,
+        "balance": -68209.77728433732,
+        "gdp": 36761727.47929393,
+        "realGrowth": 0.06349834554433552,
+        "inflation": 0.04098577333116447,
+        "unemployment": 0.07490821081548624,
+        "debtToGdp": 0.5257793249904237,
+        "revenue": 359611.4147506003,
+        "expenditure": 427821.1920349376,
+        "corruption": 43.42505697567254,
+        "hdi": 0.6430047135708895
+      },
+      {
+        "month": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 215530,
+        "approval": 31.6,
+        "balance": -72441.314380989,
+        "gdp": 37086821.58116533,
+        "realGrowth": 0.06434348777036808,
+        "inflation": 0.040190659308893845,
+        "unemployment": 0.07479937338014866,
+        "debtToGdp": 0.5231674199856428,
+        "revenue": 358619.061939135,
+        "expenditure": 431060.376320124,
+        "corruption": 42.86159043396363,
+        "hdi": 0.6430179734588296
+      }
+    ],
+    "log": [
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Sworn in as President",
+        "body": "Golden Fixture takes the oath of office. Review the budget and your cabinet: the nation is watching your first decisions.",
+        "id": "log-50",
+        "tick": 0,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-51",
+        "severity": "info",
+        "title": "A chance to ease tensions",
+        "body": "Intermediaries suggest that a quiet round of talks with the most hostile neighbour might lower the temperature.",
+        "id": "log-52",
+        "tick": 11,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 12
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Oruvan Union agents probe your defences",
+        "body": "Foreign agents mapped sensitive sites before they were noticed. Readiness suffers while the leaks are plugged. Counter-intelligence reduces the risk.",
+        "id": "log-53",
+        "tick": 31,
+        "date": {
+          "year": 2026,
+          "month": 2,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-54",
+        "severity": "warning",
+        "title": "Bridge collapse in the South",
+        "body": "A newly built bridge in the South collapsed within a year of opening. Locals allege that cement and steel were skimped on.",
+        "id": "log-55",
+        "tick": 40,
+        "date": {
+          "year": 2026,
+          "month": 2,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "A chance to ease tensions: no decision",
+        "body": "No decision was made in time. You keep your distance. The opposition asks what you are afraid of.",
+        "id": "log-56",
+        "tick": 41,
+        "date": {
+          "year": 2026,
+          "month": 2,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-57",
+        "severity": "good",
+        "title": "A friendly country wants to buy Indian equipment",
+        "body": "A buyer from abroad has requested a batch of surplus equipment. The deal would bring in cash.",
+        "id": "log-58",
+        "tick": 56,
+        "date": {
+          "year": 2026,
+          "month": 2,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "terror",
+        "pendingId": null,
+        "severity": "good",
+        "title": "Intelligence foils a plot by Shadow Meridian",
+        "body": "Agents uncovered Shadow Meridian preparing an attack in the East. The cell was rolled up before it could act.",
+        "id": "log-60",
+        "tick": 59,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-61",
+        "severity": "warning",
+        "title": "Hostile hackers probe defence networks",
+        "body": "Cyber teams detect an intrusion into logistics systems. The origin is hidden behind several countries.",
+        "id": "log-62",
+        "tick": 67,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Bridge collapse in the South: no decision",
+        "body": "No decision was made in time. An inquiry is ordered. Locals do not expect much.",
+        "id": "log-65",
+        "tick": 70,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 12
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "A friendly country wants to buy Indian equipment: no decision",
+        "body": "No decision was made in time. You decline. The forces appreciate it.",
+        "id": "log-66",
+        "tick": 86,
+        "date": {
+          "year": 2026,
+          "month": 3,
+          "day": 28
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-67",
+        "tick": 90,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-68",
+        "severity": "warning",
+        "title": "Allegations against a minister",
+        "body": "Newspapers allege that a minister has steered contracts to friends and relatives. The opposition wants answers.",
+        "id": "log-69",
+        "tick": 95,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 6
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Hostile hackers probe defence networks: no decision",
+        "body": "No decision was made in time. Some data is lost and units spend weeks re-checking their records.",
+        "id": "log-71",
+        "tick": 97,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 8
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": "evt-72",
+        "severity": "info",
+        "title": "Invitation for a state visit",
+        "body": "A friendly government invites you for a state visit and a round of trade talks.",
+        "id": "log-73",
+        "tick": 114,
+        "date": {
+          "year": 2026,
+          "month": 4,
+          "day": 25
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-74",
+        "severity": "warning",
+        "title": "Police reform demanded",
+        "body": "After a controversial arrest, civil-rights groups demand sweeping police reform: body cameras, training and oversight.",
+        "id": "log-75",
+        "tick": 121,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 2
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Allegations against a minister: no decision",
+        "body": "No decision was made in time. You defend the minister. Public anger grows and corruption feels entrenched.",
+        "id": "log-78",
+        "tick": 125,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 6
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": "evt-79",
+        "severity": "info",
+        "title": "Invitation to host an investor summit",
+        "body": "Industry bodies propose a global investor summit. It would be expensive, but could bring in factories and funds.",
+        "id": "log-80",
+        "tick": 126,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 7
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-81",
+        "severity": "info",
+        "title": "Fishing boats detained in the south",
+        "body": "Oruvani patrol boats have detained a group of Indian fishing crews in disputed waters. Families are appealing to the government.",
+        "id": "log-82",
+        "tick": 143,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 24
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Invitation for a state visit: no decision",
+        "body": "No decision was made in time. You decline and stay home.",
+        "id": "log-83",
+        "tick": 144,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 25
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-84",
+        "severity": "warning",
+        "title": "Disinformation campaign",
+        "body": "A flood of fake videos and forwarded messages is stoking panic and distrust online.",
+        "id": "log-85",
+        "tick": 144,
+        "date": {
+          "year": 2026,
+          "month": 5,
+          "day": 25
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Police reform demanded: no decision",
+        "body": "No decision was made in time. You reject the demand. The criticism gets louder.",
+        "id": "log-88",
+        "tick": 151,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Invitation to host an investor summit: no decision",
+        "body": "No decision was made in time. You decline. The idea quietly dies.",
+        "id": "log-89",
+        "tick": 156,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 6
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": "evt-90",
+        "severity": "info",
+        "title": "Doctors advise rest",
+        "body": "A routine check-up shows signs of overwork. Your physician urges you to slow down for a few days.",
+        "id": "log-91",
+        "tick": 159,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-92",
+        "severity": "warning",
+        "title": "Smuggling network along the border",
+        "body": "Gold, arms and drugs are flowing across a porous stretch of the frontier, with local officials turning a blind eye.",
+        "id": "log-93",
+        "tick": 160,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Fishing boats detained in the south: no decision",
+        "body": "No decision was made in time. The case drags on and the families blame the government.",
+        "id": "log-95",
+        "tick": 173,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 23
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Disinformation campaign: no decision",
+        "body": "No decision was made in time. The rumours spread and anger builds.",
+        "id": "log-98",
+        "tick": 174,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 24
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-99",
+        "severity": "warning",
+        "title": "Land acquisition protests in the North-East",
+        "body": "Villagers in the North-East are blocking surveyors from a planned industrial corridor, saying compensation is far too low.",
+        "id": "log-100",
+        "tick": 176,
+        "date": {
+          "year": 2026,
+          "month": 6,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-101",
+        "tick": 181,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Doctors advise rest: no decision",
+        "body": "No decision was made in time. You push on and stumble through a long speech. Photographs circulate.",
+        "id": "log-103",
+        "tick": 189,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Smuggling network along the border: no decision",
+        "body": "No decision was made in time. Smuggling continues, and so does the bribery that enables it.",
+        "id": "log-105",
+        "tick": 190,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 10
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-106",
+        "severity": "info",
+        "title": "Police modernisation plan",
+        "body": "The Home ministry proposes a plan to upgrade police radios, forensics and patrol vehicles nationwide.",
+        "id": "log-107",
+        "tick": 192,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 12
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-108",
+        "severity": "warning",
+        "title": "Water-sharing dispute in the West",
+        "body": "Two neighbouring states in the West are at loggerheads over a river dam. Farmers are blocking highways.",
+        "id": "log-109",
+        "tick": 201,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 21
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Land acquisition protests in the North-East: no decision",
+        "body": "No decision was made in time. Work proceeds under heavy police guard. Resentment burns.",
+        "id": "log-113",
+        "tick": 206,
+        "date": {
+          "year": 2026,
+          "month": 7,
+          "day": 26
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Police modernisation plan: no decision",
+        "body": "No decision was made in time. You defer the plan.",
+        "id": "log-114",
+        "tick": 222,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": "evt-115",
+        "severity": "critical",
+        "title": "River floods in the North",
+        "body": "Rivers have burst their banks across the North. Villages are cut off and thousands have moved to relief camps.",
+        "id": "log-116",
+        "tick": 224,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 13
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Water-sharing dispute in the West: no decision",
+        "body": "No decision was made in time. The dispute festers and violence flares.",
+        "id": "log-119",
+        "tick": 231,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 20
+        },
+        "read": false
+      },
+      {
+        "category": "disaster",
+        "pendingId": null,
+        "severity": "info",
+        "title": "River floods in the North: no decision",
+        "body": "No decision was made in time. The central government stays out. Anger builds in the {region}.",
+        "id": "log-123",
+        "tick": 234,
+        "date": {
+          "year": 2026,
+          "month": 8,
+          "day": 23
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-124",
+        "severity": "warning",
+        "title": "Ghost beneficiaries in welfare schemes",
+        "body": "An audit finds millions of rupees paid out every month to people who do not exist.",
+        "id": "log-125",
+        "tick": 246,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 4
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": "evt-126",
+        "severity": "warning",
+        "title": "Trade unions call a strike",
+        "body": "Major unions have called a day of action over wages and contract work. Ports and factories may stand idle.",
+        "id": "log-127",
+        "tick": 260,
+        "date": {
+          "year": 2026,
+          "month": 9,
+          "day": 18
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (74%).",
+        "id": "log-128",
+        "tick": 273,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Ghost beneficiaries in welfare schemes: no decision",
+        "body": "No decision was made in time. Nothing changes, and the money keeps leaking.",
+        "id": "log-131",
+        "tick": 276,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 4
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": "evt-132",
+        "severity": "good",
+        "title": "Proposal for a grand military parade",
+        "body": "The service chiefs suggest a large parade to show the forces to the public and raise morale.",
+        "id": "log-133",
+        "tick": 278,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 6
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-134",
+        "severity": "warning",
+        "title": "Classified files leaked",
+        "body": "A trove of classified files has surfaced online, exposing sources and embarrassing the intelligence services.",
+        "id": "log-135",
+        "tick": 281,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 9
+        },
+        "read": false
+      },
+      {
+        "category": "economy",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Trade unions call a strike: no decision",
+        "body": "No decision was made in time. The strike goes ahead. Output suffers and tempers fray.",
+        "id": "log-139",
+        "tick": 290,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 18
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": "evt-140",
+        "severity": "warning",
+        "title": "Allegations against a minister",
+        "body": "Newspapers allege that a minister has steered contracts to friends and relatives. The opposition wants answers.",
+        "id": "log-141",
+        "tick": 297,
+        "date": {
+          "year": 2026,
+          "month": 10,
+          "day": 25
+        },
+        "read": false
+      },
+      {
+        "category": "military",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Proposal for a grand military parade: no decision",
+        "body": "No decision was made in time. The parade is shelved and units keep to their training schedule.",
+        "id": "log-142",
+        "tick": 308,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 5
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Classified files leaked: no decision",
+        "body": "No decision was made in time. A review is ordered. Sources go quiet in the meantime.",
+        "id": "log-145",
+        "tick": 311,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 8
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": "evt-146",
+        "severity": "critical",
+        "title": "Murmurs in the barracks",
+        "body": "Senior officers are grumbling about pay, promotions and the government's direction. Some talk of \"restoring order\".",
+        "id": "log-147",
+        "tick": 317,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 14
+        },
+        "read": false
+      },
+      {
+        "category": "corruption",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Allegations against a minister: no decision",
+        "body": "No decision was made in time. You defend the minister. Public anger grows and corruption feels entrenched.",
+        "id": "log-150",
+        "tick": 327,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 24
+        },
+        "read": false
+      },
+      {
+        "category": "personal",
+        "pendingId": null,
+        "severity": "warning",
+        "title": "Gaffe in a live interview",
+        "body": "An off-the-cuff remark in a live interview has gone viral for the wrong reasons.",
+        "id": "log-152",
+        "tick": 327,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 24
+        },
+        "read": false
+      },
+      {
+        "category": "security",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Murmurs in the barracks: no decision",
+        "body": "No decision was made in time. You ignore the chatter. Resentment hardens.",
+        "id": "log-154",
+        "tick": 332,
+        "date": {
+          "year": 2026,
+          "month": 11,
+          "day": 29
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": "evt-155",
+        "severity": "warning",
+        "title": "Electricity tariff protests in the East",
+        "body": "Households in the East are protesting a steep rise in power bills.",
+        "id": "log-156",
+        "tick": 345,
+        "date": {
+          "year": 2026,
+          "month": 12,
+          "day": 12
+        },
+        "read": false
+      },
+      {
+        "category": "terror",
+        "pendingId": "evt-158",
+        "severity": "critical",
+        "title": "Intelligence warning: Shadow Meridian plotting an attack in the West",
+        "body": "Intelligence has picked up chatter that Shadow Meridian is preparing a strike in the West. There is a window of a few weeks to act.",
+        "id": "log-159",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Quarterly cabinet report",
+        "body": "Best run: Industry & Infra (104% efficiency). Weakest: Disaster Mgmt (73%).",
+        "id": "log-160",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "critical",
+        "title": "Annual report 2026",
+        "body": "The government closed 2026 with a deficit of ₹8,34,647 crore. Growth 6.3%, inflation 4.1%, unemployment 7.5%, debt 52.6% of GDP. Approval stands at 34.1%.",
+        "id": "log-161",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "general",
+        "pendingId": null,
+        "severity": "info",
+        "title": "New cabinet candidates",
+        "body": "A fresh set of candidates is available for every ministry. Review them in the Cabinet room.",
+        "id": "log-195",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "category": "unrest",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Electricity tariff protests in the East: no decision",
+        "body": "No decision was made in time. You hold firm. The protests continue for weeks.",
+        "id": "log-198",
+        "tick": 375,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 11
+        },
+        "read": false
+      },
+      {
+        "category": "terror",
+        "pendingId": null,
+        "severity": "info",
+        "title": "Intelligence warning: Shadow Meridian plotting an attack in the West: no decision",
+        "body": "No decision was made in time. You raise the alert level and wait.",
+        "id": "log-200",
+        "tick": 375,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 11
+        },
+        "read": false
+      }
+    ],
+    "nextId": 201
+  }
+}

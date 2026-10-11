@@ -1,5 +1,6 @@
 import { EVENT_CONTENT, EVENT_LIST, type Condition, type EventChoice, type EventContent } from '../content/events';
-import { REGION_LABELS, REGIONS, type RegionId } from '../content/ids';
+import { REGION_LABELS, REGIONS, type RegionId, type RivalId } from '../content/ids';
+import { RIVAL_CONTENT } from '../content/military';
 import { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
@@ -55,11 +56,13 @@ export function renderEventText(
   ref: string | null,
 ): EventText {
   const group = state.security.plots.find((p) => p.id === ref)?.group ?? 'a militant group';
+  const rival = ref && ref in RIVAL_CONTENT ? RIVAL_CONTENT[ref as RivalId].name : 'a neighbouring state';
   const fill = (text: string) =>
     text
       .replaceAll('{region}', region ? REGION_LABELS[region] : 'the country')
       .replaceAll('{president}', state.meta.presidentName)
-      .replaceAll('{group}', group);
+      .replaceAll('{group}', group)
+      .replaceAll('{rival}', rival);
   return { title: fill(def.title), body: fill(def.body) };
 }
 

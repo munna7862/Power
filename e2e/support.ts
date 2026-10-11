@@ -5,7 +5,10 @@ declare global {
     __APEX__: {
       advanceDays(days: number): void;
       raiseEvent(eventId: string, region?: string): void;
-      patchGame(patch: { nation?: object; economy?: object; security?: object }): void;
+      getState(): { game: { clock: { tick: number }; military: { rivals: Record<string, Record<string, unknown>> } } };
+      invade(rival: string): void;
+      offerCeasefire(): void;
+      patchGame(patch: { nation?: object; economy?: object; security?: object; military?: object }): void;
     };
   }
 }
@@ -34,7 +37,7 @@ export async function advanceDays(page: Page, days: number): Promise<void> {
 /** Overrides parts of the game state through the dev-only debug hook. */
 export async function patchGame(
   page: Page,
-  patch: { nation?: object; economy?: object; security?: object },
+  patch: { nation?: object; economy?: object; security?: object; military?: object },
 ): Promise<void> {
   await page.evaluate((p) => window.__APEX__.patchGame(p), patch);
 }

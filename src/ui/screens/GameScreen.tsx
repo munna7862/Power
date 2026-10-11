@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { RIVAL_CONTENT } from '../../sim';
 import { gameStore, useGame, type ViewId } from '../../store';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { ViewIcon } from '../icons';
@@ -11,6 +12,7 @@ import { CabinetView } from '../views/CabinetView';
 import { ComingSoonView } from '../views/ComingSoonView';
 import { DashboardView } from '../views/DashboardView';
 import { InboxView } from '../views/InboxView';
+import { MilitaryView } from '../views/MilitaryView';
 import { SecurityView } from '../views/SecurityView';
 import { EconomyView } from '../views/EconomyView';
 import { ReportsView } from '../views/ReportsView';
@@ -32,6 +34,8 @@ function ActiveView({ view }: { view: ViewId }) {
       return <InboxView />;
     case 'security':
       return <SecurityView />;
+    case 'military':
+      return <MilitaryView />;
     case 'reports':
       return <ReportsView />;
     default:
@@ -43,6 +47,7 @@ export function GameScreen() {
   const view = useGame((s) => s.view);
   const unread = useGame((s) => s.game?.log.filter((e) => !e.read).length ?? 0);
   const waiting = useGame((s) => s.game?.events.pending ?? []);
+  const wars = useGame((s) => s.game?.military.wars ?? []);
   const [menuOpen, setMenuOpen] = useState(false);
   useGameLoop();
 
@@ -102,6 +107,14 @@ export function GameScreen() {
               }}
             >
               Review
+            </Button>
+          </div>
+        )}
+        {wars.length > 0 && view !== 'military' && (
+          <div className={styles.alertBar} role="region" aria-label="War">
+            <span>At war with {wars.map((w) => RIVAL_CONTENT[w.rival].name).join(' and ')}</span>
+            <Button variant="primary" onClick={() => gameStore.getState().setView('military')}>
+              War room
             </Button>
           </div>
         )}

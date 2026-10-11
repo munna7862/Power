@@ -9,6 +9,7 @@ import { parseArgs } from 'node:util';
 import { DIFFICULTIES, type Difficulty } from '../../src/sim';
 import { BOTS } from './bots';
 import { evaluate, simulate, type RunResult } from './simulate';
+import { evaluateWars, probeWars } from './wars';
 
 const { values } = parseArgs({
   options: {
@@ -52,7 +53,8 @@ const csv = [
   ),
 ].join('\n');
 
-const kpis = evaluate(results, years);
+const warProbes = probeWars(Math.min(seeds, 30), 240, difficulty);
+const kpis = [...evaluate(results, years), ...evaluateWars(warProbes)];
 const finalRows = BOTS.map((bot) => {
   const runs = results.filter((r) => r.bot === bot.id);
   const finals = runs.map((r) => r.years.at(-1)!);
@@ -79,6 +81,17 @@ const summary = [
   '| Result | KPI | Measured |',
   '|---|---|---|',
   ...kpis.map((k) => `| ${k.pass ? '✅' : '❌'} | ${k.description} | ${k.detail} |`),
+  '',
+  `## War probe`,
+  '',
+  'Declares war on each neighbour from the opening forces and lets it run for 240 days with no player action.',
+  '',
+  '| Country | Won | Game over | Undecided | Mean score | Mean days | India casualties |',
+  '|---|---|---|---|---|---|---|',
+  ...warProbes.map(
+    (p) =>
+      `| ${p.rival} | ${p.won}/${p.seeds} | ${p.lost}/${p.seeds} | ${p.undecided}/${p.seeds} | ${p.meanScore.toFixed(0)} | ${p.meanDays.toFixed(0)} | ${Math.round(p.meanCasualties)} |`,
+  ),
   '',
   `## Final year averages`,
   '',

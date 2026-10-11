@@ -5,7 +5,7 @@ import { evaluate, simulate } from '../../tools/balance/simulate';
 
 describe('balance harness', () => {
   it('plays whole years month by month and records one row per year', () => {
-    const run = simulate(passiveBot, 1, 2);
+    const run = simulate(passiveBot, 2, 2);
     expect(run.years.map((y) => y.year)).toEqual([1, 2]);
     expect(run.final.clock.date).toEqual({ year: 2028, month: 1, day: 1 });
     expect(run.endedInYear).toBeNull();
@@ -24,6 +24,14 @@ describe('balance harness', () => {
   it('meets the Normal-difficulty KPI bands on a small sample', () => {
     const results = BOTS.flatMap((bot) => [1, 2, 3, 4, 5].map((seed) => simulate(bot, seed, 3)));
     const failing = evaluate(results, 3).filter((k) => !k.pass);
+    expect(failing).toEqual([]);
+  });
+});
+
+describe('war balance', () => {
+  it('meets the war KPI bands on a small sample', async () => {
+    const { evaluateWars, probeWars } = await import('../../tools/balance/wars');
+    const failing = evaluateWars(probeWars(8, 240)).filter((k) => !k.pass);
     expect(failing).toEqual([]);
   });
 });

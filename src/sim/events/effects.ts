@@ -1,11 +1,13 @@
 import type { EffectScale, EventEffect } from '../content/events';
 import { MINISTRY_CONTENT } from '../content';
-import { MINISTRIES, REGIONS, type MinistryId, type RegionId } from '../content/ids';
+import { MINISTRIES, REGIONS, RIVALS, type MinistryId, type RegionId } from '../content/ids';
 import { ministryEfficiency } from '../economy/model';
 import type { ModifierTarget } from '../engine/modifiers';
 import type { Rng } from '../engine/rng';
 import { exposeMinister, pickCorruptMinister } from '../cabinet/scandal';
 import { addModifier } from '../politics/policy';
+import { patchMilitary } from '../military/forces';
+import { adjustRelation } from '../military/rivals';
 import { launchOperation } from '../security/operations';
 import { clamp } from '../security/unrest';
 import type { Difficulty, GameState } from '../state/types';
@@ -71,6 +73,9 @@ export function isHarmful(effect: EventEffect): boolean {
       return effect.delta > 0;
     case 'militaryLoyalty':
     case 'loyalty':
+    case 'readiness':
+    case 'morale':
+    case 'relation':
       return effect.delta < 0;
     default:
       return false;
@@ -142,6 +147,16 @@ export function applyEffect(state: GameState, effect: EventEffect, ctx: EffectCo
           militaryLoyalty: clamp(state.security.militaryLoyalty + effect.delta * severity, 0, 100),
         },
       };
+    case 'readiness':
+      return patchMilitary(state, {
+        readiness: clamp(state.military.readiness + effect.delta * severity, 0, 100),
+      });
+    case 'morale':
+      return patchMilitary(state, { morale: clamp(state.military.morale + effect.delta * severity, 0, 100) });
+    case 'relation': {
+      const rival = effect.rival ?? RIVALS.find((r) => r === ctx.ref);
+      return rival ? adjustRelation(state, rival, effect.delta * severity) : state;
+    }
     case 'corruption':
       return {
         ...state,

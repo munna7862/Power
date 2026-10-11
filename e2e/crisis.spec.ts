@@ -71,8 +71,11 @@ test.describe('crises and security (Phase 3)', () => {
   });
 
   test('a collapse in army loyalty ends in a coup', async ({ page }) => {
-    await patchGame(page, { nation: { approval: 10 }, security: { militaryLoyalty: 0 } });
-    await advanceDays(page, 700);
+    // Keep the collapse going month after month: either the generals move or Parliament impeaches.
+    for (let month = 0; month < 12; month++) {
+      await patchGame(page, { nation: { approval: 0 }, security: { militaryLoyalty: 0 } });
+      await advanceDays(page, 30);
+    }
     const dialog = page.getByRole('dialog', { name: /Overthrown in a coup|Impeached/ });
     await expect(dialog).toBeVisible();
   });

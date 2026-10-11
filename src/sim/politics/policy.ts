@@ -47,3 +47,16 @@ export function addModifier(
   };
   return { ...state, modifiers: [...state.modifiers, full], nextId: state.nextId + 1 };
 }
+
+/**
+ * Sets a modifier that a monthly system refreshes (war weariness, sanction pressure…): any earlier modifier
+ * with the same source and label is replaced, so the stack never grows.
+ */
+export function replaceTimedModifier(
+  state: GameState,
+  modifier: Omit<Modifier, 'id' | 'expiresAtTick'>,
+  days: number,
+): GameState {
+  const kept = state.modifiers.filter((m) => !(m.source === modifier.source && m.label === modifier.label));
+  return addTimedModifier({ ...state, modifiers: kept }, modifier, days);
+}

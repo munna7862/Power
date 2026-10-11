@@ -2,10 +2,9 @@ import { ViewIcon } from '../icons';
 import styles from '../screens/game.module.css';
 import { VIEW_LABELS } from './viewLabels';
 
-export type FutureView = 'military' | 'world';
+export type FutureView = 'world';
 
 const ROADMAP: Record<FutureView, { phase: string; text: string }> = {
-  military: { phase: 'Phase 4', text: 'Armed forces, drills, espionage, war and the nuclear program.' },
   world: { phase: 'Phase 5', text: 'World map, relations, trade contracts and treaties.' },
 };
 

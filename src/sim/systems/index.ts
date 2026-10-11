@@ -8,6 +8,7 @@ import { fiscalSystem } from './fiscal';
 import { historySystem } from './history';
 import { investigationSystem } from './investigations';
 import { leadershipSystem } from './leadership';
+import { militaryDailySystem, militaryMonthlySystem } from './military';
 import { modifierExpirySystem } from './modifierExpiry';
 import { societySystem } from './society';
 import { plotSystem, terrorSystem } from './terror';
@@ -29,6 +30,8 @@ export const SYSTEMS: readonly System[] = [
   leadershipSystem,
   investigationSystem,
   cabinetSystem,
+  militaryMonthlySystem,
+  militaryDailySystem,
   eventsSystem,
   approvalSystem,
   historySystem,

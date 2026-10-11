@@ -1,17 +1,22 @@
 import { z } from 'zod';
 import {
   APPROVAL_FACTORS,
+  DOMAINS,
+  DRILL_KINDS,
   IDEOLOGIES,
+  INTEL_KINDS,
   LOG_CATEGORIES,
   MINISTRIES,
   OPERATION_KINDS,
   REGIONS,
+  RIVALS,
   SECTORS,
   STRATEGIES,
   TAXES,
+  UNITS,
 } from '../content/ids';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
-import { DIFFICULTIES, GAME_OVER_CAUSES, REVENUE_LINES, SCHEMA_VERSION } from '../state/types';
+import { DIFFICULTIES, GAME_OVER_CAUSES, NUCLEAR_DOCTRINES, REVENUE_LINES, SCHEMA_VERSION } from '../state/types';
 
 const date = z.object({
   year: z.number().int(),
@@ -40,6 +45,110 @@ const expenditureLines = z.object({
   ...Object.fromEntries(MINISTRIES.map((m) => [m, finite])),
   establishment: finite,
   interest: finite,
+});
+
+const tick = z.number().int();
+const keyed = <K extends readonly [string, ...string[]], V extends z.ZodType>(keys: K, value: V) =>
+  z.record(z.enum(keys), value);
+
+const front = z.object({ index: z.number().int().min(0), progress: z.number().min(-100).max(100) });
+
+const war = z.object({
+  id: z.string(),
+  rival: z.enum(RIVALS),
+  declaredBy: z.enum(['india', 'rival']),
+  startedTick: tick,
+  status: z.enum(['active', 'terms']),
+  fronts: z.array(front).min(1),
+  enemyStartStrength: z.number().positive(),
+  weariness: score,
+  casualties: z.object({ india: z.number().min(0), enemy: z.number().min(0) }),
+  equipmentLost: z.number().min(0),
+  ceasefireOffered: z.boolean(),
+  termsDeadlineTick: tick.nullable(),
+  report: z
+    .object({
+      tick,
+      date,
+      indiaLoss: finite,
+      enemyLoss: finite,
+      indiaCasualties: z.number().min(0),
+      enemyCasualties: z.number().min(0),
+      text: z.string(),
+    })
+    .nullable(),
+});
+
+const military = z.object({
+  forces: keyed(UNITS, z.number().int().min(0)),
+  readiness: score,
+  morale: score,
+  tech: keyed(DOMAINS, z.union([z.literal(1), z.literal(2), z.literal(3)])),
+  research: z
+    .object({ domain: z.enum(DOMAINS), tier: z.union([z.literal(2), z.literal(3)]), startedTick: tick, endsTick: tick })
+    .nullable(),
+  procurementFund: z.number().min(0),
+  queue: z.array(
+    z.object({
+      id: z.string(),
+      unit: z.enum(UNITS),
+      quantity: z.number().int().min(1),
+      startedTick: tick,
+      endsTick: tick,
+    }),
+  ),
+  drills: z.array(z.object({ id: z.string(), kind: z.enum(DRILL_KINDS), startedTick: tick, endsTick: tick })),
+  drillReports: z.array(
+    z.object({
+      kind: z.enum(DRILL_KINDS),
+      date,
+      readiness: finite,
+      morale: finite,
+      deterrence: finite,
+      accident: z.boolean(),
+    }),
+  ),
+  deterrence: score,
+  counterIntel: score,
+  intelOps: z.array(
+    z.object({
+      id: z.string(),
+      kind: z.enum(INTEL_KINDS),
+      target: z.enum(RIVALS).nullable(),
+      startedTick: tick,
+      endsTick: tick,
+    }),
+  ),
+  fundingRatio: z.number().min(0),
+  rivals: keyed(
+    RIVALS,
+    z.object({
+      strength: z.number().min(0),
+      readiness: score,
+      relation: z.number().min(-100).max(100),
+      recoverUntilTick: tick.nullable(),
+      sighting: z.object({ tick, strength: z.number().min(0), readiness: score }).nullable(),
+      annexed: z.boolean(),
+    }),
+  ),
+  wars: z.array(war),
+  warHistory: z.array(
+    z.object({
+      rival: z.enum(RIVALS),
+      startedTick: tick,
+      endedTick: tick,
+      outcome: z.enum(['victory', 'ceasefire', 'peace', 'defeat', 'nuclear']),
+      settlement: z.string(),
+    }),
+  ),
+  nuclear: z.object({
+    active: z.boolean(),
+    research: score,
+    enrichment: score,
+    warheads: z.number().int().min(0),
+    doctrine: z.enum(NUCLEAR_DOCTRINES),
+    monthsSinceWarhead: z.number().int().min(0),
+  }),
 });
 
 /** Runtime validation of a loaded GameState (current schema version). Keep in sync with state/types.ts. */
@@ -154,6 +263,7 @@ export const gameStateSchema = z.object({
     plotsFoiled: z.number().int().min(0),
     attacksSuffered: z.number().int().min(0),
   }),
+  military,
   events: z.object({
     pending: z.array(
       z.object({

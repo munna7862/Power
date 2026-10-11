@@ -1,5 +1,6 @@
 import { MINISTRIES, REGIONS, type MinistryId, type RegionId } from '../content/ids';
 import { allEfficiencies, debtToGdp, ministryEfficiency } from '../economy/model';
+import { militaryStrength } from '../military/strength';
 import { coupRisk, presidentialSafety } from '../security/leadership';
 import { averageUnrest } from '../security/terror';
 import type { GameState } from '../state/types';
@@ -35,6 +36,23 @@ export const BASE_STATS = [
   'vacancies',
   'livePlots',
   'activeOperations',
+  /** Armed forces, 0-100. */
+  'readiness',
+  'morale',
+  'deterrence',
+  /** The military strength index (about 80 at the start). */
+  'militaryStrength',
+  /** Funding of the forces against their upkeep, in percent (100 = exactly covered). */
+  'defenceFunding',
+  /** Number of wars being fought. */
+  'wars',
+  /** Highest war weariness among current wars, 0-100. */
+  'warWeariness',
+  'warheads',
+  /** Nuclear program research progress, 0-100. */
+  'nuclearResearch',
+  /** Worst relation with any rival state, -100 to +100. */
+  'worstRelation',
 ] as const;
 export type BaseStat = (typeof BASE_STATS)[number];
 
@@ -94,6 +112,26 @@ export function statValue(state: GameState, stat: StatId, region: RegionId | nul
       return security.plots.length;
     case 'activeOperations':
       return security.operations.length;
+    case 'readiness':
+      return state.military.readiness;
+    case 'morale':
+      return state.military.morale;
+    case 'deterrence':
+      return state.military.deterrence;
+    case 'militaryStrength':
+      return militaryStrength(state.military);
+    case 'defenceFunding':
+      return state.military.fundingRatio * 100;
+    case 'wars':
+      return state.military.wars.length;
+    case 'warWeariness':
+      return Math.max(0, ...state.military.wars.map((w) => w.weariness));
+    case 'warheads':
+      return state.military.nuclear.warheads;
+    case 'nuclearResearch':
+      return state.military.nuclear.research;
+    case 'worstRelation':
+      return Math.min(...Object.values(state.military.rivals).map((r) => r.relation));
     default:
       return ministryEfficiency(state, stat.slice('efficiency.'.length) as MinistryId);
   }

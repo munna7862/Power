@@ -1,0 +1,918 @@
+[
+  {
+    "id": "diplomatic-incident",
+    "category": "military",
+    "severity": "warning",
+    "title": "Diplomatic incident: {rival} protests",
+    "body": "An intelligence operation on foreign soil has been exposed. {rival} has summoned the ambassador and the press is demanding answers.",
+    "weight": 0,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "apologise",
+        "label": "Express regret",
+        "description": "Relations recover somewhat; the opposition calls it weak.",
+        "outcome": "A carefully worded statement of regret calms the capitals. Critics at home complain.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 10
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "expel",
+        "label": "Expel their diplomats in return",
+        "description": "Plays well at home; relations sour further and tension rises.",
+        "outcome": "Both countries expel diplomats. The public likes the firmness; the border grows tenser.",
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -8
+          },
+          {
+            "type": "borderTension",
+            "delta": 4
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "deny",
+        "label": "Deny everything",
+        "description": "No cost, but relations stay poor.",
+        "outcome": "The government denies all knowledge. Nobody believes it, but the story fades.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "officers-pay-dispute",
+    "category": "military",
+    "severity": "warning",
+    "title": "Officers and jawans press for a pay rise",
+    "body": "Service associations say the cost of living has outrun military pay. Retired officers have joined the campaign.",
+    "conditions": [
+      {
+        "stat": "morale",
+        "op": "<",
+        "value": 58
+      }
+    ],
+    "weight": 1.4,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "raise-pay",
+        "label": "Approve a pay rise",
+        "description": "Costs ₹3,000 cr; morale and army loyalty improve.",
+        "outcome": "A generous pay award lifts spirits across the services.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 8
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 4
+          }
+        ]
+      },
+      {
+        "id": "commission",
+        "label": "Set up a pay commission",
+        "description": "Costs ₹300 cr; a small, slow improvement.",
+        "outcome": "A commission is appointed. The services wait, cautiously.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Say the budget is tight",
+        "description": "No cost; morale and loyalty fall.",
+        "outcome": "The services feel overlooked. Grumbling spreads in the messes.",
+        "default": true,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": -5
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": -4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "procurement-scandal",
+    "category": "military",
+    "severity": "warning",
+    "title": "Questions over a defence contract",
+    "body": "A newspaper alleges inflated prices and favoured suppliers in a recent equipment contract. The opposition wants an inquiry.",
+    "conditions": [
+      {
+        "stat": "efficiency.defence",
+        "op": ">",
+        "value": 0.3
+      }
+    ],
+    "weight": 0.7,
+    "cooldownDays": 365,
+    "choices": [
+      {
+        "id": "audit",
+        "label": "Order an independent audit",
+        "description": "Costs ₹400 cr; cleaner procurement, a short embarrassment.",
+        "outcome": "Auditors recover some money and tighten the rules. The story fades with credit to you.",
+        "cost": 400,
+        "effects": [
+          {
+            "type": "corruption",
+            "delta": -1
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "defend",
+        "label": "Defend the ministry",
+        "description": "No cost; scandal lingers.",
+        "outcome": "The ministry insists the contract was sound. The press keeps digging.",
+        "default": true,
+        "effects": [
+          {
+            "type": "corruption",
+            "delta": 2
+          },
+          {
+            "type": "morale",
+            "delta": -2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arms-supplier-offer",
+    "category": "military",
+    "severity": "info",
+    "title": "A supplier offers equipment at a discount",
+    "body": "A friendly industrial power offers a batch of modern equipment on favourable terms, if you act this quarter.",
+    "conditions": [
+      {
+        "stat": "treasury",
+        "op": ">",
+        "value": 40000
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "buy",
+        "label": "Buy the batch",
+        "description": "Costs ₹5,000 cr; readiness and morale improve.",
+        "outcome": "The equipment arrives within weeks and units re-equip quickly.",
+        "cost": 5000,
+        "effects": [
+          {
+            "type": "readiness",
+            "delta": 5
+          },
+          {
+            "type": "morale",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline politely",
+        "description": "No cost.",
+        "outcome": "The offer lapses. Domestic manufacturers are pleased.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.3,
+            "days": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cyber-intrusion",
+    "category": "military",
+    "severity": "warning",
+    "title": "Hostile hackers probe defence networks",
+    "body": "Cyber teams detect an intrusion into logistics systems. The origin is hidden behind several countries.",
+    "weight": 1,
+    "cooldownDays": 180,
+    "choices": [
+      {
+        "id": "harden",
+        "label": "Harden the networks",
+        "description": "Costs ₹800 cr; contained, and the lessons stick.",
+        "outcome": "The intrusion is sealed off and systems are upgraded.",
+        "cost": 800,
+        "effects": [
+          {
+            "type": "readiness",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "quiet",
+        "label": "Contain it quietly",
+        "description": "No cost; readiness slips for a while.",
+        "outcome": "Some data is lost and units spend weeks re-checking their records.",
+        "default": true,
+        "effects": [
+          {
+            "type": "readiness",
+            "delta": -4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "border-incursion-north",
+    "category": "military",
+    "severity": "warning",
+    "title": "Patrol crosses the northern line",
+    "body": "A Zarnaki patrol has crossed the mountain frontier and camped on a ridge India patrols. Both sides are on alert.",
+    "conditions": [
+      {
+        "stat": "borderTension",
+        "op": ">",
+        "value": 36
+      }
+    ],
+    "weight": 0.9,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "protest",
+        "label": "Protest through diplomats",
+        "description": "Costs ₹100 cr; the patrol withdraws.",
+        "outcome": "After a formal protest the patrol withdraws and tension eases.",
+        "cost": 100,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 2,
+            "rival": "zarnak"
+          },
+          {
+            "type": "borderTension",
+            "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "surge",
+        "label": "Surge troops to the ridge",
+        "description": "Costs ₹1,500 cr; shows resolve but wears on readiness.",
+        "outcome": "India matches the move with a show of force. The standoff ends in a stalemate and a crowded ridge.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -5,
+            "rival": "zarnak"
+          },
+          {
+            "type": "morale",
+            "delta": 3
+          },
+          {
+            "type": "readiness",
+            "delta": -2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "watch",
+        "label": "Watch and wait",
+        "description": "No cost.",
+        "outcome": "Commanders watch the ridge for weeks. Nothing happens, and nobody is comfortable.",
+        "default": true,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "airspace-violation-west",
+    "category": "military",
+    "severity": "warning",
+    "title": "Aircraft stray into Indian airspace",
+    "body": "Tirhani aircraft crossed the western frontier for several minutes before turning back. Fighters were scrambled.",
+    "conditions": [
+      {
+        "stat": "borderTension",
+        "op": ">",
+        "value": 33
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "protest",
+        "label": "Lodge a protest",
+        "description": "No cost; relations dip slightly.",
+        "outcome": "Tirhan calls it a navigation error. The note is filed.",
+        "default": true,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -1,
+            "rival": "tirhan"
+          }
+        ]
+      },
+      {
+        "id": "show",
+        "label": "Fly a show of force",
+        "description": "Costs ₹600 cr; morale up, relations down.",
+        "outcome": "A large formation flies along the border. Pilots are delighted; the neighbours less so.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 3
+          },
+          {
+            "type": "relation",
+            "delta": -4,
+            "rival": "tirhan"
+          },
+          {
+            "type": "borderTension",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "maritime-incident-south",
+    "category": "military",
+    "severity": "info",
+    "title": "Fishing boats detained in the south",
+    "body": "Oruvani patrol boats have detained a group of Indian fishing crews in disputed waters. Families are appealing to the government.",
+    "weight": 0.8,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "negotiate",
+        "label": "Negotiate their release",
+        "description": "Costs ₹150 cr; the crews come home.",
+        "outcome": "Quiet talks bring the crews home within the month.",
+        "cost": 150,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 3,
+            "rival": "oruvan"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "escort",
+        "label": "Send naval escorts",
+        "description": "Costs ₹700 cr; firmness at some risk.",
+        "outcome": "Naval escorts shadow the fleet. The crews are released, and the coast guard is proud.",
+        "cost": 700,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": -4,
+            "rival": "oruvan"
+          },
+          {
+            "type": "morale",
+            "delta": 2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Leave it to the courts",
+        "description": "No cost; the families are angry.",
+        "outcome": "The case drags on and the families blame the government.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "war-protests",
+    "category": "military",
+    "severity": "warning",
+    "title": "Demonstrations against the war",
+    "body": "Casualty lists and rising prices have brought crowds to the streets in several cities. Some demand an end to the fighting.",
+    "conditions": [
+      {
+        "stat": "wars",
+        "op": ">=",
+        "value": 1
+      },
+      {
+        "stat": "warWeariness",
+        "op": ">",
+        "value": 35
+      }
+    ],
+    "weight": 6,
+    "cooldownDays": 120,
+    "choices": [
+      {
+        "id": "address",
+        "label": "Address the nation",
+        "description": "No cost; steadies opinion for a while.",
+        "outcome": "Your broadcast steadies the country, though not everyone is convinced.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 2,
+            "days": 45
+          },
+          {
+            "type": "morale",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "crack",
+        "label": "Restrict demonstrations",
+        "description": "Calms the streets; voters resent it.",
+        "outcome": "Marches are restricted. The streets quieten and the editorials turn sharp.",
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -6,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 90
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Stay the course",
+        "description": "No cost.",
+        "outcome": "The marches continue and the opposition makes the most of them.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 4,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "war-bonds",
+    "category": "military",
+    "severity": "info",
+    "title": "The finance ministry proposes war bonds",
+    "body": "With the treasury paying for the war, officials propose a patriotic bond issue to share the burden.",
+    "conditions": [
+      {
+        "stat": "wars",
+        "op": ">=",
+        "value": 1
+      }
+    ],
+    "weight": 5,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "issue",
+        "label": "Issue war bonds",
+        "description": "Raises ₹20,000 cr now; a small drag on growth.",
+        "outcome": "The bonds sell out within days.",
+        "effects": [
+          {
+            "type": "treasury",
+            "amount": 20000
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 180
+          }
+        ]
+      },
+      {
+        "id": "skip",
+        "label": "Not now",
+        "description": "No cost.",
+        "outcome": "The treasury carries the cost for now.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "nuclear-pressure",
+    "category": "military",
+    "severity": "warning",
+    "title": "Foreign envoys press on the nuclear program",
+    "body": "Several governments have noticed unusual activity at research sites and ask for assurances. Trade talks have slowed.",
+    "conditions": [
+      {
+        "stat": "nuclearResearch",
+        "op": ">",
+        "value": 30
+      },
+      {
+        "stat": "warheads",
+        "op": "==",
+        "value": 0
+      }
+    ],
+    "weight": 3,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "defy",
+        "label": "Reject outside interference",
+        "description": "Popular at home; costs growth for a while.",
+        "outcome": "You call the demands an insult to sovereignty. Voters cheer; some partners cool.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 120
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "reassure",
+        "label": "Offer vague assurances",
+        "description": "Eases the pressure; some voters see weakness.",
+        "outcome": "Your assurances buy time with trading partners, and cost a little at home.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "defence-export-deal",
+    "category": "military",
+    "severity": "good",
+    "title": "A friendly country wants to buy Indian equipment",
+    "body": "A buyer from abroad has requested a batch of surplus equipment. The deal would bring in cash.",
+    "conditions": [
+      {
+        "stat": "militaryStrength",
+        "op": ">",
+        "value": 60
+      }
+    ],
+    "weight": 0.7,
+    "cooldownDays": 365,
+    "choices": [
+      {
+        "id": "sell",
+        "label": "Approve the sale",
+        "description": "Brings in ₹4,000 cr.",
+        "outcome": "The sale goes through and the exchequer gains.",
+        "effects": [
+          {
+            "type": "treasury",
+            "amount": 4000
+          }
+        ]
+      },
+      {
+        "id": "refuse",
+        "label": "Keep it for the forces",
+        "description": "No cost.",
+        "outcome": "You decline. The forces appreciate it.",
+        "default": true,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "peace-overtures",
+    "category": "military",
+    "severity": "info",
+    "title": "A chance to ease tensions",
+    "body": "Intermediaries suggest that a quiet round of talks with the most hostile neighbour might lower the temperature.",
+    "conditions": [
+      {
+        "stat": "wars",
+        "op": "==",
+        "value": 0
+      },
+      {
+        "stat": "worstRelation",
+        "op": "<",
+        "value": -20
+      }
+    ],
+    "weight": 1.2,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "talk",
+        "label": "Open talks",
+        "description": "Costs ₹300 cr; relations and tension improve.",
+        "outcome": "Two rounds of talks end with a joint statement and fewer patrols along the frontier.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "relation",
+            "delta": 8,
+            "rival": "zarnak"
+          },
+          {
+            "type": "borderTension",
+            "delta": -6
+          }
+        ]
+      },
+      {
+        "id": "hold",
+        "label": "Hold back",
+        "description": "No cost.",
+        "outcome": "You keep your distance. The opposition asks what you are afraid of.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "military-parade",
+    "category": "military",
+    "severity": "good",
+    "title": "Proposal for a grand military parade",
+    "body": "The service chiefs suggest a large parade to show the forces to the public and raise morale.",
+    "conditions": [
+      {
+        "stat": "wars",
+        "op": "==",
+        "value": 0
+      }
+    ],
+    "weight": 0.9,
+    "cooldownDays": 365,
+    "choices": [
+      {
+        "id": "hold",
+        "label": "Hold the parade",
+        "description": "Costs ₹600 cr; morale and approval up, readiness dips.",
+        "outcome": "The parade fills the avenue. Crowds cheer and the troops stand taller.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 4
+          },
+          {
+            "type": "readiness",
+            "delta": -1
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "skip",
+        "label": "Keep the forces training",
+        "description": "No cost.",
+        "outcome": "The parade is shelved and units keep to their training schedule.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "recruitment-shortfall",
+    "category": "military",
+    "severity": "warning",
+    "title": "Units report a shortfall of trained recruits",
+    "body": "Commanders say several units are below strength and training slots are unfilled.",
+    "conditions": [
+      {
+        "stat": "readiness",
+        "op": "<",
+        "value": 60
+      }
+    ],
+    "weight": 1.5,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "drive",
+        "label": "Launch a recruitment drive",
+        "description": "Costs ₹2,000 cr; readiness recovers.",
+        "outcome": "Recruitment centres fill and training schools run a double shift.",
+        "cost": 2000,
+        "effects": [
+          {
+            "type": "readiness",
+            "delta": 6
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Make do",
+        "description": "No cost; readiness slips.",
+        "outcome": "Commanders stretch what they have. Readiness slips again.",
+        "default": true,
+        "effects": [
+          {
+            "type": "readiness",
+            "delta": -3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "veterans-march",
+    "category": "military",
+    "severity": "info",
+    "title": "Veterans march for better care",
+    "body": "Thousands of veterans have gathered in the capital to demand better pensions and medical care.",
+    "conditions": [
+      {
+        "stat": "morale",
+        "op": "<",
+        "value": 62
+      }
+    ],
+    "weight": 1,
+    "cooldownDays": 365,
+    "choices": [
+      {
+        "id": "meet",
+        "label": "Meet the delegation and announce a package",
+        "description": "Costs ₹1,200 cr; veterans and serving troops both notice.",
+        "outcome": "Veterans leave satisfied. Serving soldiers note how they will be treated.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": 4
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "delay",
+        "label": "Promise a review",
+        "description": "No cost.",
+        "outcome": "The review drags on and the march is repeated.",
+        "default": true,
+        "effects": [
+          {
+            "type": "morale",
+            "delta": -2
+          }
+        ]
+      }
+    ]
+  }
+]

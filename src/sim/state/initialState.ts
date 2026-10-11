@@ -26,6 +26,7 @@ import {
 import { allEfficiencies, interestRateFor } from '../economy/model';
 import type { Modifier } from '../engine/modifiers';
 import { Rng, seedRng } from '../engine/rng';
+import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
 import { applyPolicy } from '../politics/policy';
 import { START_BORDER_TENSION, START_MILITARY_LOYALTY, START_TERROR_THREAT, START_UNREST } from '../security/constants';
@@ -207,6 +208,7 @@ export function createInitialState(options: NewGameOptions): GameState {
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
     security: openingSecurity(),
+    military: openingMilitary(),
     events: emptyEvents(),
     history: [],
     log: [],
