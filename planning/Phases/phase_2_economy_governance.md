@@ -104,6 +104,8 @@
 
 ## Balance KPI bands
 
+> **Superseded in Phase 3:** once crises arrive a passive President no longer completes the term. Current bands: [phase_3_domestic_security.md](phase_3_domestic_security.md#balance-kpi-bands). The table below is the Phase 2 record.
+
 `npm run balance` plays 50 seeds × 5 years × 3 bots and fails (exit 1) on Normal if any band is missed. CI runs it as a non-blocking job until Sprint 6.1.
 
 | KPI                      | Band                                                     | Result at merge (Normal) |

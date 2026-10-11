@@ -15,9 +15,16 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - **Game data lives in `content/*.json`** and is validated by zod in `src/sim/content`. Ids must match `src/sim/content/ids.ts`.
 - **Explanations and the simulation share formulas.** Growth drivers (`economy/growth.ts`), fiscal projections (`projectMonth`) and approval (`politics/approval.ts`) are used by both the monthly systems and the UI, so the "Why?" tooltips can never drift from what the sim does.
 
+## Events
+
+- Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.
+- Event text: fictional groups only; unrest is by region and cause (jobs, prices, corruption, policing), never religion or caste; keep terror non-graphic. `tests/sim/events.test.ts` blocks obvious violations but does not replace review.
+- Every decision needs exactly one `default` choice (applied if the President does not decide in time).
+- Do not draw India's boundary until we have Survey of India data; use the schematic tile map.
+
 ## Balance
 
-- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_2_economy_governance.md`. Run it after any formula change and update the bands deliberately, never to make a failure pass.
+- `npm run balance` plays 50 seeds × 5 years × 3 bots (`tools/balance`) and checks the KPI bands in `planning/Phases/phase_3_domestic_security.md`. Run it after any formula change and update the bands deliberately, never to make a failure pass.
 - Bots act only through `dispatch()`, like a player.
 
 ## Save compatibility
