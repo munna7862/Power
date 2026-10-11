@@ -1,4 +1,11 @@
-import { advanceDays, createInitialState, debtToGdp, type Difficulty, type GameState } from '../../src/sim';
+import {
+  advanceDays,
+  createInitialState,
+  debtToGdp,
+  type Difficulty,
+  type GameOverCause,
+  type GameState,
+} from '../../src/sim';
 import type { Bot } from './bots';
 
 export interface YearRecord {
@@ -20,6 +27,8 @@ export interface RunResult {
   years: YearRecord[];
   /** Year (1-based) the game ended in, or null if the term was completed. */
   endedInYear: number | null;
+  /** What ended the game, or null if the term was completed. */
+  cause: GameOverCause | null;
   final: GameState;
 }
 
@@ -36,9 +45,11 @@ export function simulate(bot: Bot, seed: number, years: number, difficulty: Diff
     for (let month = 0; month < 12 && state.status.kind === 'playing'; month++) {
       state = bot.act(state);
       const target = { ...state.clock.date };
-      // Advance to the first day of the next month.
-      do state = advanceDays(state, 1);
-      while (state.status.kind === 'playing' && state.clock.date.month === target.month);
+      // Advance to the first day of the next month, letting the bot react to anything that needs a decision.
+      do {
+        state = advanceDays(state, 1);
+        if (bot.react && state.status.kind === 'playing') state = bot.react(state);
+      } while (state.status.kind === 'playing' && state.clock.date.month === target.month);
     }
     if (!finite(state)) throw new Error(`Non-finite value in state (bot ${bot.id}, seed ${seed}, year ${year})`);
     const { economy } = state;
@@ -59,7 +70,8 @@ export function simulate(bot: Bot, seed: number, years: number, difficulty: Diff
       break;
     }
   }
-  return { seed, bot: bot.id, years: records, endedInYear, final: state };
+  const cause = state.status.kind === 'over' ? state.status.cause : null;
+  return { seed, bot: bot.id, years: records, endedInYear, cause, final: state };
 }
 
 export interface Kpi {
@@ -69,18 +81,14 @@ export interface Kpi {
   detail: string;
 }
 
-const median = (values: number[]) => {
-  const sorted = [...values].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? (sorted[mid] as number) : ((sorted[mid - 1] as number) + (sorted[mid] as number)) / 2;
-};
-
-/** KPI bands for Normal difficulty (documented in planning/Phases/phase_2_economy_governance.md). */
+/** KPI bands for Normal difficulty (documented in planning/Phases/phase_3_domestic_security.md). */
 export function evaluate(results: RunResult[], years: number): Kpi[] {
   const by = (bot: string) => results.filter((r) => r.bot === bot);
   const survival = (bot: string) => by(bot).filter((r) => r.endedInYear === null).length / Math.max(1, by(bot).length);
-  const finalApproval = (bot: string) => median(by(bot).map((r) => r.final.nation.approval));
+  const endedByYear3 = (bot: string) =>
+    by(bot).filter((r) => r.endedInYear !== null && r.endedInYear <= 3).length / Math.max(1, by(bot).length);
   const earlyBankrupt = results.filter((r) => r.years.some((y) => y.year <= 2 && y.debtToGdp > 1));
+  const percent = (v: number) => `${(v * 100).toFixed(0)}%`;
 
   return [
     {
@@ -90,28 +98,28 @@ export function evaluate(results: RunResult[], years: number): Kpi[] {
       detail: `${earlyBankrupt.length} runs`,
     },
     {
-      id: 'passive-survives',
-      description: `A passive President completes the ${years}-year term in ≥ 95% of seeds`,
-      pass: survival('passive') >= 0.95,
-      detail: `${(survival('passive') * 100).toFixed(0)}%`,
+      id: 'passive-loses-early',
+      description: 'The median passive President is out of office by year 3 (≥ 50% of seeds)',
+      pass: endedByYear3('passive') >= 0.5,
+      detail: percent(endedByYear3('passive')),
     },
     {
       id: 'balanced-survives',
-      description: `The balanced bot completes the term in ≥ 95% of seeds`,
-      pass: survival('balanced') >= 0.95,
-      detail: `${(survival('balanced') * 100).toFixed(0)}%`,
+      description: `The balanced bot completes the ${years}-year term in ≥ 60% of seeds`,
+      pass: survival('balanced') >= 0.6,
+      detail: percent(survival('balanced')),
     },
     {
       id: 'balanced-beats-passive',
-      description: 'Median final approval: balanced ≥ passive',
-      pass: finalApproval('balanced') >= finalApproval('passive'),
-      detail: `${finalApproval('balanced').toFixed(1)} vs ${finalApproval('passive').toFixed(1)}`,
+      description: 'Term completion: balanced at least 30 points above passive',
+      pass: survival('balanced') - survival('passive') >= 0.3,
+      detail: `${percent(survival('balanced'))} vs ${percent(survival('passive'))}`,
     },
     {
       id: 'greedy-punished',
-      description: 'Median final approval: greedy at least 5 points below passive',
-      pass: finalApproval('greedy') <= finalApproval('passive') - 5,
-      detail: `${finalApproval('greedy').toFixed(1)} vs ${finalApproval('passive').toFixed(1)}`,
+      description: 'Term completion: greedy at least 30 points below balanced',
+      pass: survival('balanced') - survival('greedy') >= 0.3,
+      detail: `${percent(survival('greedy'))} vs ${percent(survival('balanced'))}`,
     },
     {
       id: 'no-runaway-approval',

@@ -1,0 +1,3570 @@
+[
+  {
+    "id": "flood-river",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "River floods in the {region}",
+    "body": "Rivers have burst their banks across the {region}. Villages are cut off and thousands have moved to relief camps.",
+    "scope": "region",
+    "regionWeights": {
+      "east": 3,
+      "northEast": 3,
+      "north": 2,
+      "central": 1,
+      "south": 1,
+      "west": 1
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 6
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 9
+          }
+        ]
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 90,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹2,500 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00245,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.0499999999999998,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3.5,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹1,500 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0035,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 5,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹7,500 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 7500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0021,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.8999999999999999,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.007,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "River floods in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 10,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "flood-urban",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "City flooding in the {region}",
+    "body": "Record rain has swamped streets, power lines and underpasses in the {region}. Commuters are stranded and shops are shut.",
+    "scope": "region",
+    "regionWeights": {
+      "west": 3,
+      "south": 3,
+      "east": 2,
+      "north": 1,
+      "central": 0.5,
+      "northEast": 0.5
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 6
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 9
+          }
+        ]
+      }
+    ],
+    "weight": 0.6,
+    "cooldownDays": 90,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹1,800 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0017499999999999998,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.875,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹1,080 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 1080,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0025,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.25,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹5,400 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 5400,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.75,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.4,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.005,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 75,
+            "label": "City flooding in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "landslide-hills",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Landslides in the hills of the {region}",
+    "body": "Heavy rain has triggered landslides on hill roads in the {region}. Highways are blocked and settlements are isolated.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 3,
+      "northEast": 3,
+      "south": 1,
+      "west": 0.7,
+      "east": 0.3,
+      "central": 0
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 7
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 9
+          }
+        ]
+      }
+    ],
+    "weight": 0.45,
+    "cooldownDays": 90,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹1,200 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00105,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.0999999999999996,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹720 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 720,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹3,600 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 3600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0009,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.6,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.7999999999999998,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Landslides in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 6,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "cyclone",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Cyclone approaches the {region}",
+    "body": "A cyclone is bearing down on the {region} coast with strong winds and a storm surge. Evacuations are under way.",
+    "scope": "region",
+    "regionWeights": {
+      "east": 3,
+      "south": 2,
+      "west": 2,
+      "northEast": 0.3,
+      "north": 0,
+      "central": 0
+    },
+    "conditions": [
+      {
+        "any": [
+          {
+            "all": [
+              {
+                "stat": "month",
+                "op": ">=",
+                "value": 4
+              },
+              {
+                "stat": "month",
+                "op": "<=",
+                "value": 6
+              }
+            ]
+          },
+          {
+            "all": [
+              {
+                "stat": "month",
+                "op": ">=",
+                "value": 10
+              },
+              {
+                "stat": "month",
+                "op": "<=",
+                "value": 12
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "weight": 0.55,
+    "cooldownDays": 90,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹3,000 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00245,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.0499999999999998,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3.15,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹1,800 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 1800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0035,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.5,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹9,000 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 9000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0021,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.8999999999999999,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.6999999999999997,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.007,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Cyclone approaches the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 9,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "cyclone-severe",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Severe cyclone hits the {region}",
+    "body": "A very severe cyclone has made landfall in the {region}, flattening homes and crops and cutting power to millions.",
+    "scope": "region",
+    "regionWeights": {
+      "east": 3,
+      "south": 2,
+      "west": 2,
+      "northEast": 0.3,
+      "north": 0,
+      "central": 0
+    },
+    "conditions": [
+      {
+        "any": [
+          {
+            "all": [
+              {
+                "stat": "month",
+                "op": ">=",
+                "value": 4
+              },
+              {
+                "stat": "month",
+                "op": "<=",
+                "value": 6
+              }
+            ]
+          },
+          {
+            "all": [
+              {
+                "stat": "month",
+                "op": ">=",
+                "value": 10
+              },
+              {
+                "stat": "month",
+                "op": "<=",
+                "value": 12
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "weight": 0.23,
+    "cooldownDays": 180,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹5,500 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 5500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0042,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.75,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.8999999999999995,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹3,300 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 3300,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.006,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 7,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ],
+        "followUp": {
+          "eventId": "international-aid-offer",
+          "delayDays": 10,
+          "chance": 0.7
+        }
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹16,500 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 16500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0036,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.2,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.012,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -5,
+            "days": 120,
+            "label": "Severe cyclone hits the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 14,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "earthquake",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Earthquake in the {region}",
+    "body": "A strong earthquake has shaken the {region}. Buildings have collapsed and rescue teams are digging through rubble.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 2,
+      "northEast": 3,
+      "west": 1,
+      "east": 0.7,
+      "central": 0.3,
+      "south": 0.3
+    },
+    "weight": 0.2,
+    "cooldownDays": 180,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹4,500 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 4500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0031499999999999996,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.4,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.199999999999999,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹2,700 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 2700,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0045,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 6,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹13,500 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 13500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0026999999999999997,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.2,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3.5999999999999996,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.009,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -4,
+            "days": 120,
+            "label": "Earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 12,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "earthquake-major",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Major earthquake in the {region}",
+    "body": "A very powerful earthquake has struck the {region} at night. The damage is widespread and communications are down.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 2,
+      "northEast": 3,
+      "west": 1.5,
+      "east": 0.5,
+      "central": 0.2,
+      "south": 0.2
+    },
+    "weight": 0.08,
+    "cooldownDays": 365,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹8,000 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 8000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0056,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.0999999999999996,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 5.6,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹4,800 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 4800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.008,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ],
+        "followUp": {
+          "eventId": "international-aid-offer",
+          "delayDays": 10,
+          "chance": 0.7
+        }
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹24,000 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 24000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0048,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.7999999999999998,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.016,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -6,
+            "days": 150,
+            "label": "Major earthquake in the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 16,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "drought",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Drought grips the {region}",
+    "body": "Reservoirs in the {region} are running dry and crops are failing. Farmers are selling livestock and leaving for towns.",
+    "scope": "region",
+    "regionWeights": {
+      "central": 3,
+      "west": 3,
+      "south": 2,
+      "north": 1,
+      "east": 0.5,
+      "northEast": 0.2
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 3
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 8
+          }
+        ]
+      }
+    ],
+    "weight": 0.45,
+    "cooldownDays": 180,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Launch an emergency water and fodder mission",
+        "description": "Costs ₹2,200 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 2200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0017499999999999998,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.875,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3.15,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹1,320 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 1320,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0025,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.25,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4.5,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹6,600 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 6600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.75,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.6999999999999997,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.005,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 150,
+            "label": "Drought grips the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 9,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "water-crisis-city",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Water crisis in the cities of the {region}",
+    "body": "Taps have run dry in cities across the {region}. Tankers are rationed and tempers are short.",
+    "scope": "region",
+    "regionWeights": {
+      "south": 3,
+      "west": 2,
+      "north": 2,
+      "central": 1.5,
+      "east": 0.5,
+      "northEast": 0.2
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 4
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 7
+          }
+        ]
+      }
+    ],
+    "weight": 0.35,
+    "cooldownDays": 180,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹1,500 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00105,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹900 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 900,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹4,500 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 4500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0009,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.6,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.4,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Water crisis in the cities of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 8,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "heatwave",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Heatwave in the {region}",
+    "body": "Temperatures in the {region} have crossed 46 °C for days. Hospitals report heatstroke cases and outdoor work has stopped.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 3,
+      "central": 3,
+      "west": 2,
+      "east": 1.5,
+      "south": 1,
+      "northEast": 0.1
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 4
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 6
+          }
+        ]
+      }
+    ],
+    "weight": 0.6,
+    "cooldownDays": 150,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Open cooling centres and heat-action teams",
+        "description": "Costs ₹1,000 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00105,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.75,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹600 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.5,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹3,000 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0009,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.6,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.5,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 45,
+            "label": "Heatwave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 5,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "cold-wave",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Cold wave in the {region}",
+    "body": "A bitter cold wave and dense fog have gripped the {region}. Trains and flights are delayed and the homeless are at risk.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 3,
+      "central": 1.5,
+      "east": 1,
+      "west": 0.5,
+      "south": 0,
+      "northEast": 0.7
+    },
+    "conditions": [
+      {
+        "any": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 12
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 1
+          }
+        ]
+      }
+    ],
+    "weight": 0.3,
+    "cooldownDays": 150,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Open night shelters and distribute blankets",
+        "description": "Costs ₹700 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 700,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0007,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5249999999999999,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.4,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹420 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 420,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.75,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹2,100 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 2100,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0006,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.44999999999999996,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.2,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 30,
+            "label": "Cold wave in the {region}",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 4,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "locust-swarm",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Locust swarms over the {region}",
+    "body": "Huge swarms of locusts are stripping fields across the {region}. Farmers are watching a season of work disappear.",
+    "scope": "region",
+    "regionWeights": {
+      "west": 3,
+      "central": 2,
+      "north": 2,
+      "south": 0.5,
+      "east": 0.3,
+      "northEast": 0
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 6
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 10
+          }
+        ]
+      }
+    ],
+    "weight": 0.18,
+    "cooldownDays": 365,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy spraying teams and aircraft",
+        "description": "Costs ₹1,400 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1400,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0014,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.0999999999999996,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹840 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 840,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹4,200 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 4200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0012,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.6,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.7999999999999998,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.004,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 90,
+            "label": "Locust swarms over the {region}",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 6,
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "industrial-fire",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Major industrial accident in the {region}",
+    "body": "A fire and chemical leak at a factory estate in the {region} has killed workers and forced thousands from their homes.",
+    "scope": "region",
+    "regionWeights": {
+      "west": 2,
+      "north": 2,
+      "east": 1.5,
+      "south": 1.5,
+      "central": 1,
+      "northEast": 0.2
+    },
+    "weight": 0.2,
+    "cooldownDays": 150,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Send hazmat and rescue teams",
+        "description": "Costs ₹1,000 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0007,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.875,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.4499999999999997,
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹600 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.25,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3.5,
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹3,000 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0006,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.75,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.1,
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 60,
+            "label": "Major industrial accident in the {region}",
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 7,
+            "scale": {
+              "ministry": "industry",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "cloudburst",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Cloudburst in the hills of the {region}",
+    "body": "A sudden cloudburst has sent flash floods tearing through mountain valleys in the {region}.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 3,
+      "northEast": 2,
+      "west": 0.3,
+      "south": 0.3,
+      "east": 0.1,
+      "central": 0
+    },
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 7
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 8
+          }
+        ]
+      }
+    ],
+    "weight": 0.23,
+    "cooldownDays": 120,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "agency",
+        "label": "Deploy the national disaster response force",
+        "description": "Costs ₹1,000 cr; trained teams cut the damage sharply.",
+        "outcome": "Response teams reach the {region} quickly. The damage is far lower than it could have been.",
+        "cost": 1000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.00105,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.7,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2.0999999999999996,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20,
+          "chance": 0.6
+        }
+      },
+      {
+        "id": "army",
+        "label": "Request army assistance",
+        "description": "Costs ₹600 cr; fast on the ground, less specialised.",
+        "outcome": "Soldiers reach the {region} within hours. Rescue is fast, though recovery is patchy.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0015,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "relief",
+        "label": "Announce a large relief package",
+        "description": "Costs ₹3,000 cr; goodwill and rebuilding funds.",
+        "outcome": "A generous relief package is announced for the {region}. Anger turns into gratitude.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.0009,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.6,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1.7999999999999998,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90,
+            "label": "Relief package"
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 20
+        }
+      },
+      {
+        "id": "nothing",
+        "label": "Leave it to the state government",
+        "description": "No cost; the full damage lands.",
+        "outcome": "The central government stays out. Anger builds in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Cloudburst in the hills of the {region}",
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 6,
+            "scale": {
+              "ministry": "disaster",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "relief-controversy",
+          "delayDays": 25,
+          "chance": 0.4
+        }
+      }
+    ]
+  },
+  {
+    "id": "epidemic-outbreak",
+    "category": "disaster",
+    "severity": "critical",
+    "title": "Disease outbreak in the {region}",
+    "body": "Doctors in the {region} report a fast-spreading infection. Clinics are overflowing and neighbouring districts are on alert.",
+    "scope": "region",
+    "weight": 0.25,
+    "cooldownDays": 270,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "vaccinate",
+        "label": "Launch an emergency vaccination drive",
+        "description": "Costs ₹6,000 cr; the Health ministry contains the outbreak.",
+        "outcome": "Teams vaccinate door to door. The outbreak is contained within weeks.",
+        "cost": 6000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 60,
+            "label": "Outbreak (contained)",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 45,
+            "label": "Outbreak",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 2,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ],
+        "followUp": {
+          "eventId": "disaster-reconstruction",
+          "delayDays": 30,
+          "chance": 0.3
+        }
+      },
+      {
+        "id": "restrict",
+        "label": "Impose movement restrictions",
+        "description": "Costs ₹1,500 cr; slows the spread but hurts business.",
+        "outcome": "Restrictions slow the spread, but shops and factories pay for it.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.005,
+            "days": 60,
+            "label": "Movement restrictions"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          },
+          {
+            "type": "unrest",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Monitor and wait",
+        "description": "No cost; the outbreak spreads.",
+        "outcome": "The outbreak spreads across the region before it is brought under control.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.007,
+            "days": 90,
+            "label": "Outbreak",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Outbreak",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 9,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "seasonal-fever",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Fever season overwhelms hospitals in the {region}",
+    "body": "Mosquito-borne fevers are surging after the rains. Hospitals in the {region} have run out of beds.",
+    "scope": "region",
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 7
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 10
+          }
+        ]
+      }
+    ],
+    "weight": 0.4,
+    "cooldownDays": 200,
+    "deadlineDays": 15,
+    "choices": [
+      {
+        "id": "fogging",
+        "label": "Fund fogging and testing camps",
+        "description": "Costs ₹900 cr; the Health ministry limits the damage.",
+        "outcome": "Camps and fogging drives bring cases down within a fortnight.",
+        "cost": 900,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30,
+            "label": "Fever season",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 1,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      },
+      {
+        "id": "leave",
+        "label": "Leave it to local hospitals",
+        "description": "No cost.",
+        "outcome": "Hospitals cope as best they can. Families blame the government.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Fever season",
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": 5,
+            "scale": {
+              "ministry": "health",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "disaster-reconstruction",
+    "category": "disaster",
+    "severity": "info",
+    "title": "Rebuilding the {region}",
+    "body": "Weeks after the disaster, the {region} needs money to rebuild homes, roads and schools. Local leaders are asking for central funds.",
+    "scope": "region",
+    "weight": 0,
+    "deadlineDays": 20,
+    "choices": [
+      {
+        "id": "fund",
+        "label": "Fund full reconstruction",
+        "description": "Costs ₹4,000 cr; rebuilds and calms the region.",
+        "outcome": "Homes, roads and schools go up again. The {region} remembers who helped.",
+        "cost": 4000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": 0.003,
+            "days": 180,
+            "label": "Reconstruction"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90
+          },
+          {
+            "type": "unrest",
+            "delta": -8
+          }
+        ]
+      },
+      {
+        "id": "loan",
+        "label": "Offer soft loans",
+        "description": "Costs ₹1,200 cr; partial help.",
+        "outcome": "Soft loans help the {region} slowly rebuild.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": 0.001,
+            "days": 180,
+            "label": "Reconstruction"
+          },
+          {
+            "type": "unrest",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "none",
+        "label": "Leave it to the state",
+        "description": "No cost.",
+        "outcome": "The state is left to cope on its own.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "relief-controversy",
+    "category": "disaster",
+    "severity": "warning",
+    "title": "Relief supplies diverted in the {region}",
+    "body": "Reports say relief grain and blankets meant for the {region} were sold in the open market. Survivors are furious.",
+    "scope": "region",
+    "weight": 0,
+    "deadlineDays": 15,
+    "choices": [
+      {
+        "id": "probe",
+        "label": "Order an immediate probe",
+        "description": "Costs ₹400 cr; shows you care.",
+        "outcome": "The probe nets a handful of officials. The anger fades.",
+        "cost": 400,
+        "effects": [
+          {
+            "type": "corruption",
+            "delta": -1
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          },
+          {
+            "type": "unrest",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "deny",
+        "label": "Deny and move on",
+        "description": "No cost; the story grows.",
+        "outcome": "The denials ring hollow and the story grows.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Relief scandal"
+          },
+          {
+            "type": "unrest",
+            "delta": 4
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "international-aid-offer",
+    "category": "disaster",
+    "severity": "info",
+    "title": "Foreign governments offer disaster aid",
+    "body": "Friendly governments have offered money and teams to help with recovery in the {region}.",
+    "scope": "region",
+    "weight": 0,
+    "choices": [
+      {
+        "id": "accept",
+        "label": "Accept the aid",
+        "description": "Brings ₹3,000 cr and goodwill.",
+        "outcome": "The aid arrives and is put to work quickly.",
+        "effects": [
+          {
+            "type": "treasury",
+            "amount": 3000
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline with thanks",
+        "description": "Self-reliance plays well at home.",
+        "outcome": "You thank them and decline. Many voters approve of the self-reliance.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  }
+]

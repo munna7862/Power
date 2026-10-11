@@ -1,0 +1,961 @@
+[
+  {
+    "id": "global-slowdown",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Global slowdown",
+    "body": "Major trading partners are slowing sharply. Export orders are drying up and factories are warning of short-time work.",
+    "weight": 0.41,
+    "cooldownDays": 540,
+    "deadlineDays": 30,
+    "choices": [
+      {
+        "id": "stimulus",
+        "label": "Announce a stimulus package",
+        "description": "Costs ₹8,000 cr; cushions growth but adds to prices.",
+        "outcome": "The stimulus keeps orders flowing. Growth dips less than feared, though prices edge up.",
+        "cost": 8000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 180,
+            "label": "Global slowdown (cushioned)"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.003,
+            "days": 180,
+            "label": "Stimulus spending"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "austerity",
+        "label": "Hold the line on spending",
+        "description": "No cost, but the slowdown bites harder and voters grumble.",
+        "outcome": "You hold the line. The slowdown bites and the opposition calls you passive.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.005,
+            "days": 180,
+            "label": "Global slowdown"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.003,
+            "days": 180,
+            "label": "Global slowdown"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Wait and watch",
+        "description": "Let the cycle run its course.",
+        "outcome": "You wait. Growth takes the full hit for half a year.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.006,
+            "days": 180,
+            "label": "Global slowdown"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.004,
+            "days": 180,
+            "label": "Global slowdown"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "oil-price-spike",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Oil price spike",
+    "body": "Crude prices have jumped on supply worries. Petrol, diesel and freight costs are rising across the country.",
+    "weight": 0.41,
+    "cooldownDays": 450,
+    "choices": [
+      {
+        "id": "subsidy",
+        "label": "Cap fuel prices with a subsidy",
+        "description": "Costs ₹6,000 cr; softens the price shock.",
+        "outcome": "The subsidy blunts the spike. Inflation rises less than it might have.",
+        "cost": 6000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.004,
+            "days": 270,
+            "label": "Oil price spike (subsidised)"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "pass-through",
+        "label": "Let prices follow the market",
+        "description": "Inflation rises and households complain.",
+        "outcome": "Prices follow the market. Households feel it at the pump and in the shops.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.012,
+            "days": 270,
+            "label": "Oil price spike"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 90
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bumper-harvest",
+    "category": "economy",
+    "severity": "good",
+    "title": "Bumper harvest",
+    "body": "Good rains and a strong season have produced a record crop. Grain prices are easing and farm incomes are up.",
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 9
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 12
+          }
+        ]
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 540,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.agriculture",
+        "kind": "add",
+        "value": 0.012,
+        "days": 240,
+        "label": "Bumper harvest"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.inflation",
+        "kind": "add",
+        "value": -0.004,
+        "days": 240,
+        "label": "Cheaper food"
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 90
+      }
+    ]
+  },
+  {
+    "id": "weak-monsoon",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Weak monsoon",
+    "body": "Monsoon rainfall is running well below normal. Farm output is at risk and food prices are starting to climb.",
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 6
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 9
+          }
+        ]
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 540,
+    "choices": [
+      {
+        "id": "farm-relief",
+        "label": "Fund farm relief and irrigation",
+        "description": "Costs ₹5,000 cr; the Agriculture ministry limits the damage.",
+        "outcome": "Relief and emergency irrigation reach the worst-hit districts. The harvest takes a smaller hit.",
+        "cost": 5000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.agriculture",
+            "kind": "add",
+            "value": -0.012,
+            "days": 240,
+            "label": "Weak monsoon",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.003,
+            "days": 240,
+            "label": "Food prices",
+            "scale": {
+              "ministry": "agriculture",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      },
+      {
+        "id": "hope",
+        "label": "Hope the rains recover",
+        "description": "No cost; the full shortfall is felt.",
+        "outcome": "The rains do not recover in time. Farm output falls and food prices rise.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth.agriculture",
+            "kind": "add",
+            "value": -0.02,
+            "days": 240,
+            "label": "Weak monsoon"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.006,
+            "days": 240,
+            "label": "Food prices"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 90
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "export-boom",
+    "category": "economy",
+    "severity": "good",
+    "title": "Export boom",
+    "body": "Overseas demand for manufactured goods and services is surging. Order books are full and customs receipts are up.",
+    "conditions": [
+      {
+        "stat": "growth",
+        "op": ">",
+        "value": 4
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 450,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.industry",
+        "kind": "add",
+        "value": 0.008,
+        "days": 240,
+        "label": "Export boom"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.revenue",
+        "kind": "mult",
+        "value": 0.02,
+        "days": 180,
+        "label": "Export boom"
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 60
+      }
+    ]
+  },
+  {
+    "id": "tech-investment-wave",
+    "category": "economy",
+    "severity": "good",
+    "title": "Tech investment wave",
+    "body": "Global firms are announcing new design centres and data campuses, drawn by a deep pool of graduates.",
+    "conditions": [
+      {
+        "stat": "efficiency.education",
+        "op": ">",
+        "value": 0.95
+      }
+    ],
+    "weight": 0.45,
+    "cooldownDays": 540,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.015,
+        "days": 365,
+        "label": "Tech investment wave"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.unemployment",
+        "kind": "add",
+        "value": -0.002,
+        "days": 365,
+        "label": "New tech jobs"
+      }
+    ]
+  },
+  {
+    "id": "banking-stress",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Banks under stress",
+    "body": "A cluster of lenders is struggling with bad loans. Depositors are nervous and credit is tightening.",
+    "conditions": [
+      {
+        "any": [
+          {
+            "stat": "debtToGdp",
+            "op": ">",
+            "value": 62
+          },
+          {
+            "stat": "inflation",
+            "op": ">",
+            "value": 7
+          }
+        ]
+      }
+    ],
+    "weight": 0.63,
+    "cooldownDays": 540,
+    "choices": [
+      {
+        "id": "bailout",
+        "label": "Recapitalise the banks",
+        "description": "Costs ₹12,000 cr; calms markets but angers taxpayers.",
+        "outcome": "The banks are recapitalised and credit keeps flowing. Taxpayers are not pleased.",
+        "cost": 12000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 120,
+            "label": "Bank stress (contained)"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 120,
+            "label": "Bank bailout"
+          }
+        ]
+      },
+      {
+        "id": "let-fail",
+        "label": "Let weak lenders fail",
+        "description": "No cost now; credit crunch and job losses follow.",
+        "outcome": "Weak lenders fail and credit tightens. Firms cut jobs.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.008,
+            "days": 240,
+            "label": "Credit crunch"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": 0.006,
+            "days": 240,
+            "label": "Credit crunch"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 90
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "food-price-surge",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Food prices surge",
+    "body": "Vegetable, pulse and edible oil prices have shot up. Kitchen budgets are stretched in every city.",
+    "conditions": [
+      {
+        "stat": "inflation",
+        "op": ">",
+        "value": 6
+      }
+    ],
+    "weight": 1.08,
+    "cooldownDays": 270,
+    "choices": [
+      {
+        "id": "buffer-stock",
+        "label": "Release buffer stocks",
+        "description": "Costs ₹3,000 cr; brings prices down.",
+        "outcome": "Buffer stocks reach the markets. Prices ease within weeks.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": -0.006,
+            "days": 180,
+            "label": "Buffer stock release"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "import-duty",
+        "label": "Cut import duties",
+        "description": "Costs revenue, but imports flow in.",
+        "outcome": "Cheaper imports arrive, and customs revenue takes a small hit.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": -0.004,
+            "days": 180,
+            "label": "Import duty cut"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": -0.01,
+            "days": 180,
+            "label": "Import duty cut"
+          }
+        ]
+      },
+      {
+        "id": "nothing",
+        "label": "Do nothing",
+        "description": "Prices stay high; voters notice.",
+        "outcome": "Prices stay high and voters notice.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 90,
+            "label": "Food prices"
+          },
+          {
+            "type": "unrest",
+            "delta": 2,
+            "where": "all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "youth-jobs-demand",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Young people demand jobs",
+    "body": "Graduates are rallying in several cities, demanding jobs and a clear plan to bring unemployment down.",
+    "conditions": [
+      {
+        "stat": "unemployment",
+        "op": ">",
+        "value": 8
+      }
+    ],
+    "weight": 1.08,
+    "cooldownDays": 270,
+    "choices": [
+      {
+        "id": "public-works",
+        "label": "Launch a public works drive",
+        "description": "Costs ₹7,000 cr; creates jobs quickly.",
+        "outcome": "Road, rail and housing works hire thousands. Unemployment eases.",
+        "cost": 7000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": -0.006,
+            "days": 240,
+            "label": "Public works drive"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90
+          }
+        ]
+      },
+      {
+        "id": "skills",
+        "label": "Fund a national skills mission",
+        "description": "Costs ₹3,000 cr; slower but lasting.",
+        "outcome": "Training places open up. The effect builds over the year.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.unemployment",
+            "kind": "add",
+            "value": -0.003,
+            "days": 365,
+            "label": "Skills mission"
+          },
+          {
+            "type": "modifier",
+            "target": "society.hdi",
+            "kind": "add",
+            "value": 0.0005,
+            "days": 365,
+            "label": "Skills mission"
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Say the economy will provide",
+        "description": "No cost; the protests grow.",
+        "outcome": "The rallies grow and the opposition takes up the cause.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 90,
+            "label": "Youth unrest"
+          },
+          {
+            "type": "unrest",
+            "delta": 2,
+            "where": "all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "trade-union-strike",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Trade unions call a strike",
+    "body": "Major unions have called a day of action over wages and contract work. Ports and factories may stand idle.",
+    "weight": 0.5,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "negotiate",
+        "label": "Negotiate a wage deal",
+        "description": "Costs ₹2,500 cr; the strike is called off.",
+        "outcome": "A deal is struck. Work resumes and the unions claim a win.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "loyalty",
+            "delta": 2,
+            "ministry": "finance"
+          }
+        ]
+      },
+      {
+        "id": "hardline",
+        "label": "Take a hard line",
+        "description": "No cost; output suffers for a while.",
+        "outcome": "The strike goes ahead. Output suffers and tempers fray.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 60,
+            "label": "General strike"
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stock-rally",
+    "category": "economy",
+    "severity": "good",
+    "title": "Markets rally",
+    "body": "Share indices have hit record highs on strong earnings and foreign inflows. Confidence is high.",
+    "conditions": [
+      {
+        "stat": "growth",
+        "op": ">",
+        "value": 5.5
+      }
+    ],
+    "weight": 0.32,
+    "cooldownDays": 360,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1.5,
+        "days": 60,
+        "label": "Market rally"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.revenue",
+        "kind": "mult",
+        "value": 0.01,
+        "days": 120,
+        "label": "Market rally"
+      }
+    ]
+  },
+  {
+    "id": "currency-pressure",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Pressure on the rupee",
+    "body": "The rupee is sliding as investors move money out. Import costs are climbing.",
+    "conditions": [
+      {
+        "any": [
+          {
+            "stat": "inflation",
+            "op": ">",
+            "value": 7
+          },
+          {
+            "stat": "debtToGdp",
+            "op": ">",
+            "value": 70
+          }
+        ]
+      }
+    ],
+    "weight": 0.72,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "defend",
+        "label": "Spend reserves to defend the currency",
+        "description": "Costs ₹9,000 cr; steadies the rupee.",
+        "outcome": "Reserves steady the rupee. Import prices hold.",
+        "cost": 9000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.001,
+            "days": 180,
+            "label": "Rupee pressure (contained)"
+          }
+        ]
+      },
+      {
+        "id": "float",
+        "label": "Let it slide",
+        "description": "No cost; imported inflation rises.",
+        "outcome": "The rupee falls and imported goods get dearer.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.007,
+            "days": 180,
+            "label": "Weaker rupee"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth.industry",
+            "kind": "add",
+            "value": 0.002,
+            "days": 180,
+            "label": "Cheaper exports"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "power-shortage",
+    "category": "economy",
+    "severity": "warning",
+    "title": "Power shortage",
+    "body": "Heat and low coal stocks have pushed electricity demand past supply. Cities face long power cuts.",
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 4
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 7
+          }
+        ]
+      }
+    ],
+    "weight": 0.45,
+    "cooldownDays": 365,
+    "choices": [
+      {
+        "id": "emergency-power",
+        "label": "Buy emergency power",
+        "description": "Costs ₹4,000 cr; keeps the lights on.",
+        "outcome": "Emergency purchases keep supply going through the peak.",
+        "cost": 4000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 45,
+            "label": "Power shortage (contained)"
+          }
+        ]
+      },
+      {
+        "id": "blackouts",
+        "label": "Ration with rolling blackouts",
+        "description": "No cost; factories and homes suffer.",
+        "outcome": "Rolling blackouts hit homes and factories.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.004,
+            "days": 60,
+            "label": "Rolling blackouts"
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "startup-boom",
+    "category": "economy",
+    "severity": "good",
+    "title": "Start-up boom",
+    "body": "A wave of young companies is raising funds and hiring. Cities are buzzing.",
+    "conditions": [
+      {
+        "stat": "unemployment",
+        "op": "<",
+        "value": 8.5
+      }
+    ],
+    "weight": 0.32,
+    "cooldownDays": 450,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "economy.growth.tech",
+        "kind": "add",
+        "value": 0.01,
+        "days": 300,
+        "label": "Start-up boom"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.growth.services",
+        "kind": "add",
+        "value": 0.003,
+        "days": 300,
+        "label": "Start-up boom"
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 0.5,
+        "days": 90
+      }
+    ]
+  },
+  {
+    "id": "investor-summit",
+    "category": "economy",
+    "severity": "info",
+    "title": "Invitation to host an investor summit",
+    "body": "Industry bodies propose a global investor summit. It would be expensive, but could bring in factories and funds.",
+    "weight": 0.27,
+    "cooldownDays": 540,
+    "choices": [
+      {
+        "id": "host",
+        "label": "Host the summit",
+        "description": "Costs ₹1,500 cr; lifts investment.",
+        "outcome": "The summit lands big pledges. Some will turn into real factories.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": 0.004,
+            "days": 365,
+            "label": "Investor summit"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.005,
+            "days": 365,
+            "label": "Investor summit"
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline politely",
+        "description": "No cost.",
+        "outcome": "You decline. The idea quietly dies.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  }
+]

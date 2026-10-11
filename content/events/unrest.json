@@ -1,0 +1,1159 @@
+[
+  {
+    "id": "riot-economic",
+    "category": "unrest",
+    "severity": "critical",
+    "title": "Riots over jobs and prices in the {region}",
+    "body": "Protests in the {region} have turned violent. Shops are burning and police are outnumbered as angry crowds demand jobs and lower prices.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 62
+      }
+    ],
+    "weight": 4,
+    "cooldownDays": 60,
+    "deadlineDays": 7,
+    "choices": [
+      {
+        "id": "police",
+        "label": "Deploy reinforcements and restore order",
+        "description": "Costs ₹1,200 cr; the Home ministry decides how well it goes.",
+        "outcome": "Reinforcements retake the streets. Order returns, with few injuries.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -14,
+            "scale": {
+              "ministry": "home",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "talks",
+        "label": "Open talks with local leaders",
+        "description": "Costs ₹800 cr; slower but lasting.",
+        "outcome": "Talks calm the crowds over several days. A package of local jobs is promised.",
+        "cost": 800,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -9
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          }
+        ],
+        "followUp": {
+          "eventId": "talks-outcome",
+          "delayDays": 20,
+          "chance": 0.7
+        }
+      },
+      {
+        "id": "crackdown",
+        "label": "Order a hard crackdown",
+        "description": "No cost; fast, but the backlash is real.",
+        "outcome": "A hard crackdown ends the violence quickly. Images of it spread nationwide.",
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -16
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Crackdown backlash"
+          },
+          {
+            "type": "loyalty",
+            "delta": -2
+          }
+        ],
+        "followUp": {
+          "eventId": "riot-backlash",
+          "delayDays": 15,
+          "chance": 0.5
+        }
+      },
+      {
+        "id": "wait",
+        "label": "Wait for it to burn out",
+        "description": "No cost; things get worse first.",
+        "outcome": "The riots rage for days. Businesses shut and investors worry.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 6
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 60,
+            "label": "Riots"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 45,
+            "label": "Riots"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "riot-law-order",
+    "category": "unrest",
+    "severity": "critical",
+    "title": "Clashes with police in the {region}",
+    "body": "Law and order has broken down in parts of the {region}. Police stations have been attacked and curfews are being imposed.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 72
+      }
+    ],
+    "weight": 4,
+    "cooldownDays": 75,
+    "deadlineDays": 5,
+    "choices": [
+      {
+        "id": "curfew",
+        "label": "Impose a curfew and bring in extra forces",
+        "description": "Costs ₹1,800 cr; the Home ministry decides the outcome.",
+        "outcome": "A curfew and extra forces restore a tense calm.",
+        "cost": 1800,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -16,
+            "scale": {
+              "ministry": "home",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 30,
+            "label": "Curfew"
+          }
+        ]
+      },
+      {
+        "id": "talk",
+        "label": "Call an all-party meeting",
+        "description": "Costs ₹500 cr; takes time.",
+        "outcome": "An all-party meeting produces a joint appeal for calm.",
+        "cost": 500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -7
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Wait and watch",
+        "description": "No cost; the situation worsens.",
+        "outcome": "Violence spreads to neighbouring districts.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 8
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3.5,
+            "days": 75,
+            "label": "Breakdown of order"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 60,
+            "label": "Disorder"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "protest-prices",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Price-rise protests in the {region}",
+    "body": "Thousands have marched in the {region} against rising prices, blocking roads and demanding relief.",
+    "scope": "region",
+    "conditions": [
+      {
+        "any": [
+          {
+            "stat": "inflation",
+            "op": ">",
+            "value": 7
+          },
+          {
+            "stat": "regionUnrest",
+            "op": ">",
+            "value": 48
+          }
+        ]
+      }
+    ],
+    "weight": 2,
+    "cooldownDays": 90,
+    "choices": [
+      {
+        "id": "subsidy",
+        "label": "Announce targeted subsidies",
+        "description": "Costs ₹2,500 cr; calms the streets.",
+        "outcome": "Subsidies on staples calm the crowds.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -9
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "dialogue",
+        "label": "Meet the protest leaders",
+        "description": "Costs ₹200 cr.",
+        "outcome": "You meet the leaders. The march disperses peacefully.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -4
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore the protests",
+        "description": "No cost.",
+        "outcome": "The protests drag on and spread.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 5
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "farmers-protest",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Farmers march on the capital from the {region}",
+    "body": "Farmers from the {region} have set out for the capital, demanding better support prices and debt relief.",
+    "scope": "region",
+    "regionWeights": {
+      "north": 3,
+      "central": 2,
+      "west": 2,
+      "south": 1.5,
+      "east": 1,
+      "northEast": 0.3
+    },
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 38
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 150,
+    "choices": [
+      {
+        "id": "msp",
+        "label": "Raise support prices",
+        "description": "Costs ₹6,000 cr; ends the march.",
+        "outcome": "Higher support prices end the march. Consumers feel it later.",
+        "cost": 6000,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -10
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.002,
+            "days": 180
+          }
+        ]
+      },
+      {
+        "id": "talks",
+        "label": "Hold talks",
+        "description": "Costs ₹300 cr; modest results.",
+        "outcome": "Talks go on for weeks and end with a partial deal.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -5
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "block",
+        "label": "Block the march",
+        "description": "No cost; angry scenes.",
+        "outcome": "The march is stopped at the border of the capital region. Angry scenes follow.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 7
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2.5,
+            "days": 75,
+            "label": "Farmers blocked"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "student-protest",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Student protests over jobs and fees",
+    "body": "Campuses across the country are in ferment over fees and the lack of graduate jobs.",
+    "conditions": [
+      {
+        "stat": "unemployment",
+        "op": ">",
+        "value": 8.2
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 180,
+    "choices": [
+      {
+        "id": "scholarships",
+        "label": "Fund scholarships and internships",
+        "description": "Costs ₹2,500 cr.",
+        "outcome": "Scholarships and paid internships take the heat out of the campuses.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "dialogue",
+        "label": "Hold a national dialogue",
+        "description": "Costs ₹200 cr.",
+        "outcome": "A dialogue with student leaders eases tension.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -1.5,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore them",
+        "description": "No cost.",
+        "outcome": "Protests spread to more campuses.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "general-strike",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "General strike called",
+    "body": "A coalition of unions and shopkeepers has called a nationwide strike to protest the cost of living and the government's record.",
+    "conditions": [
+      {
+        "stat": "approval",
+        "op": "<",
+        "value": 42
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "concessions",
+        "label": "Offer concessions",
+        "description": "Costs ₹4,000 cr.",
+        "outcome": "Concessions end the strike within a day.",
+        "cost": 4000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          },
+          {
+            "type": "unrest",
+            "delta": -3,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "endure",
+        "label": "Wait it out",
+        "description": "No cost; a costly day.",
+        "outcome": "The strike shuts the cities for days.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.004,
+            "days": 45,
+            "label": "General strike"
+          },
+          {
+            "type": "unrest",
+            "delta": 4,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "water-dispute",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Water-sharing dispute in the {region}",
+    "body": "Two neighbouring states in the {region} are at loggerheads over a river dam. Farmers are blocking highways.",
+    "scope": "region",
+    "conditions": [
+      {
+        "all": [
+          {
+            "stat": "month",
+            "op": ">=",
+            "value": 3
+          },
+          {
+            "stat": "month",
+            "op": "<=",
+            "value": 7
+          }
+        ]
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "tribunal",
+        "label": "Refer to a tribunal",
+        "description": "Costs ₹300 cr; slow but accepted.",
+        "outcome": "The tribunal process cools tempers for now.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -6
+          }
+        ]
+      },
+      {
+        "id": "mediate",
+        "label": "Mediate personally",
+        "description": "Costs ₹100 cr; gains credit if it works.",
+        "outcome": "Your personal mediation brokers a temporary truce.",
+        "cost": 100,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -8
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Stay out of a state matter",
+        "description": "No cost.",
+        "outcome": "The dispute festers and violence flares.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 6
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "autonomy-demand",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Demand for greater autonomy in the {region}",
+    "body": "Civil-society groups in the {region} are demanding more control over local resources and decisions, and say distant policy-making ignores them.",
+    "scope": "region",
+    "regionWeights": {
+      "northEast": 3,
+      "east": 2,
+      "central": 1.5,
+      "north": 1,
+      "south": 0.5,
+      "west": 0.5
+    },
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 42
+      }
+    ],
+    "weight": 0.64,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "devolve",
+        "label": "Devolve funds and powers",
+        "description": "Costs ₹3,000 cr.",
+        "outcome": "Devolved funds and a regional development council settle the mood.",
+        "cost": 3000,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -12
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "talks",
+        "label": "Open a dialogue",
+        "description": "Costs ₹300 cr.",
+        "outcome": "A dialogue process starts. It is slow but respected.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -5
+          }
+        ]
+      },
+      {
+        "id": "refuse",
+        "label": "Refuse the demand",
+        "description": "No cost; resentment grows.",
+        "outcome": "The refusal deepens resentment in the {region}.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 7
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "migrant-labour-crisis",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Migrant workers stranded in the {region}",
+    "body": "Thousands of workers who lost their jobs in the {region} are walking home, with no transport and little food.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "unemployment",
+        "op": ">",
+        "value": 8.5
+      }
+    ],
+    "weight": 0.64,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "trains",
+        "label": "Run special trains and food stops",
+        "description": "Costs ₹1,500 cr.",
+        "outcome": "Special trains and food stops bring the workers home safely.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -5
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Leave it to the states",
+        "description": "No cost.",
+        "outcome": "The walk home becomes a national shame.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 6
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 75,
+            "label": "Migrant crisis"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "land-acquisition-protest",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Land acquisition protests in the {region}",
+    "body": "Villagers in the {region} are blocking surveyors from a planned industrial corridor, saying compensation is far too low.",
+    "scope": "region",
+    "weight": 0.56,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "fair-pay",
+        "label": "Raise compensation",
+        "description": "Costs ₹1,800 cr.",
+        "outcome": "Higher compensation ends the blockade.",
+        "cost": 1800,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -6
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "push",
+        "label": "Push ahead",
+        "description": "No cost; projects go on, trust drops.",
+        "outcome": "Work proceeds under heavy police guard. Resentment burns.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 6
+          },
+          {
+            "type": "modifier",
+            "target": "economy.growth.industry",
+            "kind": "add",
+            "value": 0.002,
+            "days": 180,
+            "label": "Corridor built"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "power-tariff-protest",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Electricity tariff protests in the {region}",
+    "body": "Households in the {region} are protesting a steep rise in power bills.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 30
+      }
+    ],
+    "weight": 0.64,
+    "cooldownDays": 150,
+    "choices": [
+      {
+        "id": "rollback",
+        "label": "Roll back part of the rise",
+        "description": "Costs ₹1,200 cr.",
+        "outcome": "A partial rollback calms households.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -6
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "hold",
+        "label": "Hold firm",
+        "description": "No cost.",
+        "outcome": "You hold firm. The protests continue for weeks.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 4
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "highway-blockade",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Highway blockade in the {region}",
+    "body": "Truckers and locals have blockaded major highways in the {region}, stopping freight for days.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "regionUnrest",
+        "op": ">",
+        "value": 45
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 120,
+    "choices": [
+      {
+        "id": "clear",
+        "label": "Clear the highways with police",
+        "description": "Costs ₹600 cr.",
+        "outcome": "Police clear the highways. Goods start moving again.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -5,
+            "scale": {
+              "ministry": "home",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 20
+          }
+        ]
+      },
+      {
+        "id": "negotiate",
+        "label": "Negotiate demands",
+        "description": "Costs ₹600 cr.",
+        "outcome": "Demands are met in part and the highways reopen.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -7
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Let it run",
+        "description": "No cost; freight stalls.",
+        "outcome": "Freight stalls and prices rise.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.002,
+            "days": 30,
+            "label": "Highway blockade"
+          },
+          {
+            "type": "unrest",
+            "delta": 3
+          },
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.002,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unrest-spreading",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Unrest spreading nationwide",
+    "body": "Protests that began in one region are being echoed in others. Analysts warn of a national movement.",
+    "conditions": [
+      {
+        "stat": "maxUnrest",
+        "op": ">",
+        "value": 70
+      }
+    ],
+    "weight": 2,
+    "cooldownDays": 150,
+    "effects": [
+      {
+        "type": "unrest",
+        "delta": 4,
+        "where": "all"
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1.5,
+        "days": 45,
+        "label": "Spreading unrest"
+      }
+    ]
+  },
+  {
+    "id": "peace-march",
+    "category": "unrest",
+    "severity": "good",
+    "title": "Citizens march for peace",
+    "body": "Hundreds of thousands have joined a peaceful march for harmony and development. The mood across the country lifts.",
+    "conditions": [
+      {
+        "stat": "avgUnrest",
+        "op": "<",
+        "value": 30
+      }
+    ],
+    "weight": 0.32,
+    "cooldownDays": 300,
+    "effects": [
+      {
+        "type": "unrest",
+        "delta": -4,
+        "where": "all"
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1.5,
+        "days": 60,
+        "label": "Mood of harmony"
+      }
+    ]
+  },
+  {
+    "id": "police-reform-demand",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Police reform demanded",
+    "body": "After a controversial arrest, civil-rights groups demand sweeping police reform: body cameras, training and oversight.",
+    "conditions": [
+      {
+        "stat": "efficiency.home",
+        "op": "<",
+        "value": 1
+      }
+    ],
+    "weight": 0.72,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "fund",
+        "label": "Fund modernisation and training",
+        "description": "Costs ₹3,500 cr.",
+        "outcome": "Better training and equipment make the police both stronger and fairer.",
+        "cost": 3500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "loyalty",
+            "delta": 2,
+            "ministry": "home"
+          }
+        ]
+      },
+      {
+        "id": "commission",
+        "label": "Appoint a commission",
+        "description": "Costs ₹200 cr.",
+        "outcome": "A commission is appointed. Reform is promised \"in due course\".",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "reject",
+        "label": "Reject the demand",
+        "description": "No cost.",
+        "outcome": "You reject the demand. The criticism gets louder.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 2,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "riot-backlash",
+    "category": "unrest",
+    "severity": "warning",
+    "title": "Backlash after the crackdown in the {region}",
+    "body": "Rights groups and opposition leaders condemn the force used in the {region}. Demands for accountability are growing.",
+    "scope": "region",
+    "weight": 0,
+    "effects": [
+      {
+        "type": "unrest",
+        "delta": 5
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1.5,
+        "days": 60,
+        "label": "Crackdown backlash"
+      },
+      {
+        "type": "loyalty",
+        "delta": -2,
+        "ministry": "home"
+      }
+    ]
+  },
+  {
+    "id": "talks-outcome",
+    "category": "unrest",
+    "severity": "good",
+    "title": "Talks bear fruit in the {region}",
+    "body": "Weeks of dialogue in the {region} have produced a settlement: local jobs, a development fund and a joint monitoring committee.",
+    "scope": "region",
+    "weight": 0,
+    "effects": [
+      {
+        "type": "unrest",
+        "delta": -6
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 60,
+        "label": "Settlement in the region"
+      }
+    ]
+  }
+]

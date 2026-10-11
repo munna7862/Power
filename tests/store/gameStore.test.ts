@@ -55,7 +55,7 @@ describe('game store', () => {
       },
     });
     store.getState().setSpeed(4);
-    store.getState().advanceDays(200);
+    store.getState().advanceDays(200, { interrupt: false });
     expect(store.getState().game?.status.kind).toBe('over');
     expect(store.getState().speed).toBe(0);
     store.getState().togglePause();
@@ -76,22 +76,22 @@ describe('game store', () => {
 
   it('autosaves when a month closes, and only then', async () => {
     store.getState().startNewGame({ presidentName: 'A', difficulty: 'normal', seed: 1 });
-    store.getState().advanceDays(10);
+    store.getState().advanceDays(10, { interrupt: false });
     await flush();
     expect(await storage.read('autosave')).toBeNull();
-    store.getState().advanceDays(25);
+    store.getState().advanceDays(25, { interrupt: false });
     await flush();
     expect(await storage.read('autosave')).toContain('"tick":35');
   });
 
   it('saves to a slot and loads it back', async () => {
     store.getState().startNewGame({ presidentName: 'Saver', difficulty: 'normal', seed: 7 });
-    store.getState().advanceDays(95);
+    store.getState().advanceDays(95, { interrupt: false });
     const saved = store.getState().game;
     expect(await store.getState().saveTo('slot-3')).toBe(true);
     expect(store.getState().slots.map((s) => s.slot)).toContain('slot-3');
 
-    store.getState().advanceDays(50);
+    store.getState().advanceDays(50, { interrupt: false });
     expect(await store.getState().loadFrom('slot-3')).toBe(true);
     expect(store.getState().game).toEqual(saved);
     expect(store.getState().speed).toBe(0);

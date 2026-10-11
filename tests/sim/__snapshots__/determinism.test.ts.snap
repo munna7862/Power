@@ -1,9 +1,16 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`determinism > matches the 5-year golden hash (review deliberately if a sim change moves it) 1`] = `
+exports[`determinism > matches the golden hash of a full balanced-bot term (review deliberately if a sim change moves it) 1`] = `
 {
-  "approval": 58.9,
-  "hash": "dababfe3",
-  "treasury": 303300,
+  "approval": 74,
+  "date": {
+    "day": 1,
+    "month": 1,
+    "year": 2031,
+  },
+  "events": 280,
+  "hash": "48e0a22a",
+  "status": "playing",
+  "treasury": 352215,
 }
 `;

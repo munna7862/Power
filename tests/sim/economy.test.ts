@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  advanceDays,
   allEfficiencies,
   debtToGdp,
   DEFAULT_TAX_RATES,
@@ -19,7 +18,7 @@ import {
 } from '../../src/sim';
 import { expectedSectorGrowth } from '../../src/sim/economy/growth';
 import { interestRateFor, ministryEfficiencyFor, taxYieldFactor } from '../../src/sim/economy/model';
-import { newGame } from '../helpers';
+import { calm, newGame } from '../helpers';
 
 const withTaxes = (state: GameState, rate: (t: TaxId) => number): GameState => ({
   ...state,
@@ -95,7 +94,7 @@ describe('fiscal model', () => {
 
 describe('economy over time', () => {
   it('grows at a plausible rate and keeps debt sustainable under default policy', () => {
-    const later = advanceDays(newGame(), 365 * 5 + 1);
+    const later = calm(newGame(), 365 * 5 + 1);
     const growth = (nominalGdp(later.economy) / 33_000_000) ** (1 / 5) - 1;
     expect(growth).toBeGreaterThan(0.08);
     expect(growth).toBeLessThan(0.14);
@@ -106,7 +105,7 @@ describe('economy over time', () => {
 
   it('turns permanent maximum taxes into a surplus with slower growth and more joblessness', () => {
     const start = withTaxes(newGame(), (t) => TAX_LIMITS[t].max);
-    const later = advanceDays(start, 365 * 2);
+    const later = calm(start, 365 * 2);
     expect(later.economy.lastMonth!.balance).toBeGreaterThan(0);
     expect(later.economy.realGrowth).toBeLessThan(0.055);
     expect(later.economy.unemployment).toBeGreaterThan(0.08);
@@ -114,7 +113,7 @@ describe('economy over time', () => {
 
   it('turns permanent minimum taxes into deficits, inflation and dearer debt', () => {
     const start = withTaxes(newGame(), (t) => TAX_LIMITS[t].min);
-    const later = advanceDays(start, 365 * 2);
+    const later = calm(start, 365 * 2);
     expect(later.economy.lastMonth!.borrowed).toBeGreaterThan(0);
     expect(later.economy.inflation).toBeGreaterThan(0.1);
     expect(later.economy.interestRate).toBeGreaterThan(0.08);
@@ -126,7 +125,7 @@ describe('economy over time', () => {
   ])('stays finite and within bounds after 50 years at %s taxes', (_label, rate) => {
     const start = withTaxes(newGame({ difficulty: 'hard' }), rate);
     const forced: GameState = { ...start, politics: { ...start.politics, lowApprovalMonths: -10_000 } };
-    const later = advanceDays(forced, 365 * 50);
+    const later = calm(forced, 365 * 50);
     expect(allNumbersFinite(later)).toBe(true);
     expect(later.economy.inflation).toBeLessThanOrEqual(0.5);
     expect(later.economy.unemployment).toBeLessThanOrEqual(0.4);
@@ -138,7 +137,7 @@ describe('economy over time', () => {
   it('repays debt once cash piles up above twice the reserve', () => {
     const start = newGame();
     const flush: GameState = { ...start, nation: { ...start.nation, treasury: 5_000_000 } };
-    const feb1 = advanceDays(flush, 31);
+    const feb1 = calm(flush, 31);
     expect(feb1.economy.lastMonth!.repaid).toBeGreaterThan(0);
     expect(feb1.economy.debt).toBeLessThan(start.economy.debt);
   });
@@ -157,13 +156,13 @@ describe('economy over time', () => {
       },
     };
     expect(allEfficiencies(clean).antiCorruption).toBeGreaterThan(1.5);
-    expect(advanceDays(clean, 365 * 2).economy.corruption).toBeLessThan(30);
+    expect(calm(clean, 365 * 2).economy.corruption).toBeLessThan(30);
   });
 });
 
 describe('growth explanation', () => {
   it('lists every driver and adds up to the expected growth the economy system uses', () => {
-    const state = advanceDays(newGame({ strategy: 'industrial' }), 200);
+    const state = calm(newGame({ strategy: 'industrial' }), 200);
     const lines = explainGrowth(state);
     expect(lines.map((l) => l.driver)).toEqual(Object.keys(GROWTH_DRIVER_LABELS));
     const efficiency = allEfficiencies(state);

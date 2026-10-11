@@ -1,6 +1,15 @@
 import { createOpeningCabinet } from '../cabinet/generate';
 import { MINISTRY_CONTENT } from '../content';
-import { MINISTRIES, SECTORS, type IdeologyId, type MinistryId, type SectorId, type StrategyId } from '../content/ids';
+import {
+  MINISTRIES,
+  REGIONS,
+  SECTORS,
+  type IdeologyId,
+  type MinistryId,
+  type RegionId,
+  type SectorId,
+  type StrategyId,
+} from '../content/ids';
 import {
   DEFAULT_TAX_RATES,
   SECTOR_BASE_GROWTH,
@@ -19,15 +28,18 @@ import type { Modifier } from '../engine/modifiers';
 import { Rng, seedRng } from '../engine/rng';
 import { computeSatisfaction } from '../politics/approval';
 import { applyPolicy } from '../politics/policy';
+import { START_BORDER_TENSION, START_MILITARY_LOYALTY, START_TERROR_THREAT, START_UNREST } from '../security/constants';
 import { appendLog } from './log';
 import {
   SCHEMA_VERSION,
   type CabinetState,
   type Difficulty,
   type EconomyState,
+  type EventsState,
   type GameState,
   type Minister,
   type PoliticsState,
+  type SecurityState,
   type SectorState,
 } from './types';
 
@@ -138,8 +150,37 @@ export function openingPolitics(ideology: IdeologyId, strategy: StrategyId): Pol
     ideologyChangedTick: null,
     strategyChangedTick: null,
     lowApprovalMonths: 0,
-    satisfaction: { jobs: 50, prices: 50, growth: 50, corruption: 50, livingStandards: 50, taxes: 50, services: 50 },
+    satisfaction: {
+      jobs: 50,
+      prices: 50,
+      growth: 50,
+      corruption: 50,
+      livingStandards: 50,
+      taxes: 50,
+      services: 50,
+      safety: 65,
+    },
   };
+}
+
+export function openingSecurity(): SecurityState {
+  return {
+    unrest: Object.fromEntries(REGIONS.map((r) => [r, START_UNREST])) as Record<RegionId, number>,
+    terrorThreat: START_TERROR_THREAT,
+    borderTension: START_BORDER_TENSION,
+    militaryLoyalty: START_MILITARY_LOYALTY,
+    coupAlert: false,
+    bankruptMonths: 0,
+    investigations: [],
+    operations: [],
+    plots: [],
+    plotsFoiled: 0,
+    attacksSuffered: 0,
+  };
+}
+
+export function emptyEvents(): EventsState {
+  return { pending: [], scheduled: [], cooldowns: {} };
 }
 
 export function createInitialState(options: NewGameOptions): GameState {
@@ -165,6 +206,8 @@ export function createInitialState(options: NewGameOptions): GameState {
     cabinet: emptyCabinet(),
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
+    security: openingSecurity(),
+    events: emptyEvents(),
     history: [],
     log: [],
     nextId: profile.modifiers.length,

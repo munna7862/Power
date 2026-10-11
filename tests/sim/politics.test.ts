@@ -38,6 +38,7 @@ describe('approval model', () => {
     const bad = computeSatisfaction(
       {
         economy: { ...state.economy, inflation: 0.12, unemployment: 0.15 },
+        security: state.security,
         budget: { ...state.budget, taxRates: { ...state.budget.taxRates, income: 0.35, gst: 0.25 } },
       },
       eff,

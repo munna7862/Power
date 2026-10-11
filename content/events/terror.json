@@ -1,0 +1,573 @@
+[
+  {
+    "id": "terror-warning",
+    "category": "terror",
+    "severity": "critical",
+    "title": "Intelligence warning: {group} plotting an attack in the {region}",
+    "body": "Intelligence has picked up chatter that {group} is preparing a strike in the {region}. There is a window of a few weeks to act.",
+    "scope": "region",
+    "weight": 0,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "raid",
+        "label": "Authorise a raid",
+        "description": "Costs ₹1,200 cr; decisive, but risky.",
+        "outcome": "Security forces move on the suspected hideouts.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "operation",
+            "kind": "raid"
+          }
+        ]
+      },
+      {
+        "id": "surveil",
+        "label": "Step up surveillance",
+        "description": "Costs ₹600 cr; slower but safer.",
+        "outcome": "Surveillance is expanded around the likely targets.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "operation",
+            "kind": "surveillance"
+          }
+        ]
+      },
+      {
+        "id": "seal",
+        "label": "Seal the border sector",
+        "description": "Costs ₹1,500 cr; hurts trade.",
+        "outcome": "The border is sealed. Trade slows to a trickle.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "operation",
+            "kind": "borderSeal"
+          }
+        ]
+      },
+      {
+        "id": "hold",
+        "label": "Hold the alert and wait",
+        "description": "No cost; hope intelligence is enough.",
+        "outcome": "You raise the alert level and wait.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "terror-aftermath",
+    "category": "terror",
+    "severity": "warning",
+    "title": "The nation responds to the attack in the {region}",
+    "body": "Funerals and vigils continue in the {region}. The public is looking to you for answers.",
+    "scope": "region",
+    "weight": 0,
+    "deadlineDays": 10,
+    "choices": [
+      {
+        "id": "review",
+        "label": "Order a security review and mourning day",
+        "description": "Costs ₹1,500 cr.",
+        "outcome": "A day of mourning and a high-level review show you are in command.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60,
+            "label": "Leadership after attack"
+          },
+          {
+            "type": "terror",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "compensate",
+        "label": "Announce compensation and rebuilding",
+        "description": "Costs ₹3,500 cr; calms the region.",
+        "outcome": "Compensation and rebuilding aid reach the {region} quickly.",
+        "cost": 3500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60
+          },
+          {
+            "type": "unrest",
+            "delta": -8
+          }
+        ]
+      },
+      {
+        "id": "silence",
+        "label": "Let the agencies speak",
+        "description": "No cost.",
+        "outcome": "You leave it to the agencies. The public notices the silence.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 45
+          },
+          {
+            "type": "unrest",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "threat-level-raised",
+    "category": "terror",
+    "severity": "warning",
+    "title": "Terror threat level raised",
+    "body": "Agencies have raised the national threat level after a spike in intercepted messages. Airports and stations are on high alert.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 52
+      }
+    ],
+    "weight": 1.6,
+    "cooldownDays": 150,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "days": 30,
+        "label": "High alert"
+      },
+      {
+        "type": "modifier",
+        "target": "economy.growth",
+        "kind": "add",
+        "value": -0.001,
+        "days": 45,
+        "label": "Tourism slump"
+      }
+    ]
+  },
+  {
+    "id": "hoax-alarm",
+    "category": "terror",
+    "severity": "info",
+    "title": "Hoax bomb threats",
+    "body": "A wave of hoax threats against schools and stations disrupts a day of travel before being declared false.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 30
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 150,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -0.5,
+        "days": 20,
+        "label": "Hoax threats"
+      }
+    ]
+  },
+  {
+    "id": "sleeper-cell-arrests",
+    "category": "terror",
+    "severity": "good",
+    "title": "Sleeper cell arrested",
+    "body": "Acting on a tip, police arrested members of a dormant cell planning to rebuild a network.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 33
+      },
+      {
+        "stat": "efficiency.intelligence",
+        "op": ">",
+        "value": 0.9
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 200,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -4
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 45,
+        "label": "Cell arrested"
+      }
+    ]
+  },
+  {
+    "id": "terror-funding-network",
+    "category": "terror",
+    "severity": "warning",
+    "title": "Terror funding network traced",
+    "body": "Financial investigators have traced a web of shell companies and cash couriers funding militant groups.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 35
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "freeze",
+        "label": "Freeze assets and prosecute",
+        "description": "Costs ₹500 cr.",
+        "outcome": "Accounts are frozen and the network is dismantled.",
+        "cost": 500,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -5,
+            "scale": {
+              "ministry": "intelligence",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "pressure",
+        "label": "Press foreign governments to act",
+        "description": "Raises tension, lowers threat.",
+        "outcome": "Diplomatic pressure squeezes the money, but relations cool.",
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -3
+          },
+          {
+            "type": "borderTension",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Let agencies work it quietly",
+        "description": "No cost.",
+        "outcome": "The money keeps moving.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "online-radicalisation",
+    "category": "terror",
+    "severity": "warning",
+    "title": "Online radicalisation alarm",
+    "body": "Researchers warn that extremist recruiters are targeting angry young people on social platforms.",
+    "conditions": [
+      {
+        "stat": "avgUnrest",
+        "op": ">",
+        "value": 32
+      }
+    ],
+    "weight": 0.72,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "counter",
+        "label": "Fund counter-narrative and youth programmes",
+        "description": "Costs ₹700 cr.",
+        "outcome": "Youth programmes and counter-messaging blunt the recruiters.",
+        "cost": 700,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -3,
+            "scale": {
+              "ministry": "intelligence",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "unrest",
+            "delta": -1,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore it",
+        "description": "No cost.",
+        "outcome": "Recruiters find more followers.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "sleeper-cell-alert",
+    "category": "terror",
+    "severity": "critical",
+    "title": "Possible cell located in the {region}",
+    "body": "A tip points to a hideout in the {region}. Acting now could stop an attack, but the information is thin.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 45
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 150,
+    "deadlineDays": 7,
+    "choices": [
+      {
+        "id": "raid",
+        "label": "Raid the hideout",
+        "description": "Costs ₹1,200 cr; risky on thin information.",
+        "outcome": "Forces move in on the tip.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "operation",
+            "kind": "raid"
+          }
+        ]
+      },
+      {
+        "id": "watch",
+        "label": "Watch and gather evidence",
+        "description": "Costs ₹600 cr.",
+        "outcome": "Surveillance builds a firmer case.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "operation",
+            "kind": "surveillance"
+          }
+        ]
+      },
+      {
+        "id": "skip",
+        "label": "Do nothing on a thin tip",
+        "description": "No cost.",
+        "outcome": "The tip is filed away.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "group-splits",
+    "category": "terror",
+    "severity": "good",
+    "title": "Militant group splits",
+    "body": "Infighting has split one of the active militant groups into feuding factions, weakening both.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 35
+      }
+    ],
+    "weight": 0.48,
+    "cooldownDays": 300,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -4
+      }
+    ]
+  },
+  {
+    "id": "explosives-cache",
+    "category": "terror",
+    "severity": "good",
+    "title": "Explosives cache found",
+    "body": "A tip-off led police to a hidden store of explosives and detonators before they could be used.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 30
+      }
+    ],
+    "weight": 0.64,
+    "cooldownDays": 200,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -3
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 0.5,
+        "days": 30
+      }
+    ]
+  },
+  {
+    "id": "airport-security-gap",
+    "category": "terror",
+    "severity": "warning",
+    "title": "Security gap at major airports",
+    "body": "A surprise audit shows that screening at several airports and rail hubs can be bypassed.",
+    "conditions": [
+      {
+        "stat": "efficiency.home",
+        "op": "<",
+        "value": 1.1
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "upgrade",
+        "label": "Upgrade screening at once",
+        "description": "Costs ₹900 cr.",
+        "outcome": "New scanners and procedures close the gap.",
+        "cost": 900,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "plan",
+        "label": "Add it to the five-year plan",
+        "description": "No cost.",
+        "outcome": "The upgrade is added to a long list of plans.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "intel-sharing-offer",
+    "category": "terror",
+    "severity": "info",
+    "title": "Intelligence-sharing offer",
+    "body": "Friendly services offer to share information on militant networks, if you agree to joint monitoring.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 30
+      }
+    ],
+    "weight": 0.48,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "accept",
+        "label": "Accept the partnership",
+        "description": "Costs ₹300 cr; sensitive trade-offs.",
+        "outcome": "Shared information helps break up two networks.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -4
+          },
+          {
+            "type": "loyalty",
+            "delta": -2,
+            "ministry": "intelligence"
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline",
+        "description": "Go it alone.",
+        "outcome": "You decline. The agencies are relieved, if not entirely pleased.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "recruitment-drive-fails",
+    "category": "terror",
+    "severity": "good",
+    "title": "Recruitment drive fails",
+    "body": "Defectors report that a militant group is struggling to find new recruits after local backlash against its tactics.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 28
+      }
+    ],
+    "weight": 0.4,
+    "cooldownDays": 300,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -3
+      }
+    ]
+  }
+]

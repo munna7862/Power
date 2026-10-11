@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { advanceDays, hashState } from '../../src/sim';
+import { balancedBot } from '../../tools/balance/bots';
+import { simulate } from '../../tools/balance/simulate';
 import { newGame } from '../helpers';
 
 const FIVE_YEARS = 365 * 5 + 1; // includes one leap day (2028)
@@ -23,14 +25,22 @@ describe('determinism', () => {
     expect(hashState(resumed)).toBe(hashState(straight));
   });
 
-  it('matches the 5-year golden hash (review deliberately if a sim change moves it)', () => {
-    const state = advanceDays(newGame({ seed: 42 }), FIVE_YEARS);
-    expect(state.clock.date).toEqual({ year: 2031, month: 1, day: 1 });
+  it('matches the golden hash of a full balanced-bot term (review deliberately if a sim change moves it)', () => {
+    const { final: state } = simulate(balancedBot, 42, 5);
     expect({
       hash: hashState(state),
+      date: state.clock.date,
+      status: state.status.kind,
       treasury: state.nation.treasury,
       approval: state.nation.approval,
+      events: state.log.length,
     }).toMatchSnapshot();
+  });
+
+  it('plays the same whether a bot reacts daily or the game is resumed from a save', () => {
+    const a = simulate(balancedBot, 7, 2).final;
+    const b = simulate(balancedBot, 7, 2).final;
+    expect(hashState(a)).toBe(hashState(b));
   });
 
   it('simulates 5 years headless in under 1 second', () => {
