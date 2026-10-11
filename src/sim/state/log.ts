@@ -1,10 +1,15 @@
 import { LOG_LIMIT, type GameState, type LogEntry } from './types';
 
-export type NewLogEntry = Pick<LogEntry, 'severity' | 'title' | 'body'>;
+export type NewLogEntry = Pick<LogEntry, 'severity' | 'title' | 'body'> & {
+  category?: LogEntry['category'];
+  pendingId?: string | null;
+};
 
 /** Appends an inbox entry stamped with the current game date, keeping at most LOG_LIMIT entries. */
 export function appendLog(state: GameState, entry: NewLogEntry): GameState {
   const full: LogEntry = {
+    category: 'general',
+    pendingId: null,
     ...entry,
     id: `log-${state.nextId}`,
     tick: state.clock.tick,

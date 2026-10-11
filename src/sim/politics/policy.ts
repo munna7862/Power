@@ -33,3 +33,17 @@ export function addTimedModifier(
   const full: Modifier = { ...modifier, id: `mod-${state.nextId}`, expiresAtTick: state.clock.tick + days };
   return { ...state, modifiers: [...state.modifiers, full], nextId: state.nextId + 1 };
 }
+
+/** Adds a modifier that lasts `days` days, or forever when `days` is null (events with lasting consequences). */
+export function addModifier(
+  state: GameState,
+  modifier: Omit<Modifier, 'id' | 'expiresAtTick'>,
+  days: number | null,
+): GameState {
+  const full: Modifier = {
+    ...modifier,
+    id: `mod-${state.nextId}`,
+    expiresAtTick: days === null ? null : state.clock.tick + days,
+  };
+  return { ...state, modifiers: [...state.modifiers, full], nextId: state.nextId + 1 };
+}

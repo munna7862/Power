@@ -71,3 +71,45 @@ export {
   type SaveSummary,
   type ParseResult,
 } from './save/saveFile';
+export {
+  EVENT_CONTENT,
+  EVENT_LIST,
+  THREAT_GROUPS,
+  type EventContent,
+  type EventChoice,
+  type EventEffect,
+} from './content/events';
+export { describeEffect, choiceUtility, pendingView, type EffectLine, type PendingView } from './events/describe';
+export { statValue, STAT_IDS, type StatId } from './events/stats';
+export { MAX_PENDING, raiseEvent } from './events/engine';
+export {
+  BANKRUPTCY_DEBT_RATIO,
+  BANKRUPTCY_MONTHS,
+  COUP_RISK_THRESHOLD,
+  INVESTIGATION_COST,
+  INVESTIGATION_DAYS,
+  MAX_INVESTIGATIONS,
+  OPERATIONS,
+  RIOT_UNREST,
+  TENSE_UNREST,
+} from './security/constants';
+export { unrestTarget, type Driver, type Explained } from './security/unrest';
+export {
+  averageUnrest,
+  hasOperation,
+  intelligenceFoilChance,
+  plotFormationChance,
+  plotSuccessChance,
+  terrorTarget,
+} from './security/terror';
+export {
+  assassinationAttemptChance,
+  assassinationSuccessChance,
+  coupChance,
+  coupRisk,
+  presidentialSafety,
+} from './security/leadership';
+export { exposureChance, validateInvestigation } from './security/investigations';
+export { operationBlocked } from './security/operations';
+export { nationalLeakageFactor } from './economy/model';
+export { advanceUntilAttention } from './engine/tick';

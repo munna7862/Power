@@ -1,6 +1,7 @@
 import { SECTORS, type MinistryId, type SectorId } from '../content/ids';
 import { sumAdd } from '../engine/modifiers';
 import type { GameState } from '../state/types';
+import { averageUnrest } from '../security/terror';
 import { SECTOR_BASE_GROWTH, SECTOR_MINISTRY_LINKS } from './constants';
 import { allEfficiencies, debtToGdp, lastDeficitRatio, sectorShare } from './model';
 
@@ -9,7 +10,16 @@ import { allEfficiencies, debtToGdp, lastDeficitRatio, sectorShare } from './mod
  * explanation in the UI so the two can never disagree. Values are annual rates.
  */
 export type GrowthDriver =
-  'trend' | 'policy' | 'ministries' | 'taxes' | 'debt' | 'corruption' | 'inflation' | 'stimulus' | 'crowdingOut';
+  | 'trend'
+  | 'policy'
+  | 'ministries'
+  | 'taxes'
+  | 'debt'
+  | 'corruption'
+  | 'inflation'
+  | 'stimulus'
+  | 'crowdingOut'
+  | 'disorder';
 
 export const GROWTH_DRIVER_LABELS: Record<GrowthDriver, string> = {
   trend: 'Trend growth',
@@ -21,6 +31,7 @@ export const GROWTH_DRIVER_LABELS: Record<GrowthDriver, string> = {
   inflation: 'High inflation',
   stimulus: 'Fiscal stimulus',
   crowdingOut: 'Crowding out by deficits',
+  disorder: 'Unrest and terror',
 };
 
 const capped = (efficiency: number) => Math.min(efficiency, 1.8);
@@ -28,7 +39,7 @@ const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(ma
 
 /** Drivers that apply equally to every sector. */
 export function sharedDrivers(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security'>,
   efficiency: Record<MinistryId, number>,
 ): Record<Exclude<GrowthDriver, 'trend'>, number> {
   const { economy, budget, modifiers } = state;
@@ -43,6 +54,8 @@ export function sharedDrivers(
     inflation: -0.25 * Math.max(0, economy.inflation - 0.06),
     stimulus: 0.1 * clamp(deficit - 0.03, -0.05, 0.05),
     crowdingOut: -0.1 * Math.max(0, deficit - 0.05),
+    disorder:
+      -0.00025 * Math.max(0, averageUnrest(state) - 30) - 0.00015 * Math.max(0, state.security.terrorThreat - 30),
   };
 }
 
@@ -62,7 +75,7 @@ export function sectorDrivers(
 
 /** Expected growth of a sector before random noise. */
 export function expectedSectorGrowth(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security'>,
   efficiency: Record<MinistryId, number>,
   sector: SectorId,
 ): number {

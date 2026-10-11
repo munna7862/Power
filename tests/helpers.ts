@@ -1,4 +1,5 @@
-import { createInitialState, type GameState, type NewGameOptions } from '../src/sim';
+import { advanceDays, createInitialState, type GameState, type NewGameOptions } from '../src/sim';
+import { SYSTEMS } from '../src/sim/systems';
 
 export const DEFAULT_OPTIONS: NewGameOptions = {
   seed: 42,
@@ -19,3 +20,10 @@ export function deepFreeze<T>(value: T): T {
   }
   return value;
 }
+
+/** The Phase 2 systems only: no events, unrest, terror or leadership threats, so a hands-off game cannot end early. */
+export const CALM_SYSTEMS = SYSTEMS.filter(
+  (s) => !['events', 'unrest', 'terror', 'plots', 'leadership', 'investigations'].includes(s.id),
+);
+
+export const calm = (state: GameState, days: number): GameState => advanceDays(state, days, CALM_SYSTEMS);

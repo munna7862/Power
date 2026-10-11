@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { advanceDays, openFresh, openView, startGame } from './support';
+import { advanceDays, openFresh, openView, patchGame, startGame } from './support';
 
 const year = new Date().getFullYear();
 
@@ -47,6 +47,8 @@ test.describe('playing the game', () => {
     await expect(page.getByText(new RegExp(`^[+−]₹.* in Jan ${year}$`))).toBeVisible();
     await expect(page.getByText(/first monthly settlement arrives/)).toHaveCount(0);
 
+    // Start popular so the crises of a hands-off first year cannot end the game before the report.
+    await patchGame(page, { nation: { approval: 95 } });
     await advanceDays(page, 334);
     await expect(page.getByText(`Annual report ${year}`)).toBeVisible();
   });
@@ -57,7 +59,7 @@ test.describe('playing the game', () => {
     await page.getByRole('button', { name: 'Why?' }).hover();
     const tooltip = page.getByRole('tooltip');
     await expect(tooltip).toBeVisible();
-    await expect(tooltip).toContainText('Jobs (22%)');
+    await expect(tooltip).toContainText('Jobs (20%)');
     await expect(tooltip).toContainText('Difficulty: Hard');
     await expect(tooltip).toContainText('−5');
     await expect(tooltip).toContainText('Ideology: Liberalism');

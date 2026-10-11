@@ -19,7 +19,9 @@ import {
   DEFAULT_STRATEGY,
   defaultAllocations,
   emptyCabinet,
+  emptyEvents,
   openingPolitics,
+  openingSecurity,
 } from '../state/initialState';
 import { appendLog } from '../state/log';
 import { SCHEMA_VERSION, type Difficulty, type GameState, type LogEntry } from '../state/types';
@@ -50,12 +52,12 @@ const V1_TARGETS: Record<string, ModifierTarget> = {
  * President, date, treasury, approval, inbox and history carry over; the new
  * systems start from opening values, with the cabinet rolled from the save's RNG.
  */
-function migrateV1toV2(raw: unknown): GameState {
+function migrateV1toV2(raw: unknown): unknown {
   const v1 = raw as StateV1;
   const rng = new Rng(v1.rng);
   const economy = createStartingEconomy(v1.meta.difficulty);
   let state: GameState = {
-    schemaVersion: 2,
+    schemaVersion: SCHEMA_VERSION,
     meta: v1.meta,
     clock: v1.clock,
     rng: v1.rng,
@@ -70,6 +72,8 @@ function migrateV1toV2(raw: unknown): GameState {
     budget: { taxRates: { ...DEFAULT_TAX_RATES }, allocations: defaultAllocations(), lastEnactedTick: null },
     cabinet: emptyCabinet(),
     politics: openingPolitics(DEFAULT_IDEOLOGY, DEFAULT_STRATEGY),
+    security: openingSecurity(),
+    events: emptyEvents(),
     modifiers: v1.modifiers.flatMap((m) => {
       const target = V1_TARGETS[m.target];
       return target ? [{ ...m, target }] : [];
@@ -86,7 +90,7 @@ function migrateV1toV2(raw: unknown): GameState {
       corruption: START_CORRUPTION,
       hdi: START_HDI,
     })),
-    log: v1.log,
+    log: v1.log.map((e) => ({ ...e, category: 'general' as const, pendingId: null })),
     nextId: v1.nextId,
   };
   state = applyPolicy(state, 'ideology', DEFAULT_IDEOLOGY);
@@ -97,11 +101,37 @@ function migrateV1toV2(raw: unknown): GameState {
     rng: rng.state,
     politics: { ...state.politics, satisfaction: computeSatisfaction(state, allEfficiencies(state)) },
   };
-  return appendLog(state, {
+  const upgraded = appendLog(state, {
     severity: 'info',
     title: 'Save upgraded',
     body: 'This game was started in an earlier version. The economy, budget and cabinet begin from their opening values today.',
   });
+  return { ...upgraded, schemaVersion: 2 };
+}
+
+/** Shape of a schema v2 (Phase 2) log entry. */
+interface LogEntryV2 extends Omit<LogEntry, 'category' | 'pendingId'> {
+  category?: LogEntry['category'];
+  pendingId?: string | null;
+}
+
+/**
+ * v2 → v3 (Phase 3): adds regional unrest, terror, the army's mood, inquiries and the event engine, plus
+ * inbox categories. Everything already in the save carries over unchanged.
+ */
+function migrateV2toV3(raw: unknown): unknown {
+  const v2 = raw as Omit<GameState, 'log'> & { log: LogEntryV2[] };
+  return {
+    ...v2,
+    schemaVersion: 3,
+    politics: {
+      ...v2.politics,
+      satisfaction: { ...v2.politics.satisfaction, safety: v2.politics.satisfaction.safety ?? 65 },
+    },
+    security: v2.security ?? openingSecurity(),
+    events: v2.events ?? emptyEvents(),
+    log: v2.log.map((e) => ({ ...e, category: e.category ?? 'general', pendingId: e.pendingId ?? null })),
+  };
 }
 
 /**
@@ -110,6 +140,7 @@ function migrateV1toV2(raw: unknown): GameState {
  */
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   1: migrateV1toV2,
+  2: migrateV2toV3,
 };
 
 export function migrate(

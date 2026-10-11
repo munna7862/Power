@@ -2,6 +2,7 @@ import type { ViewId } from '../../store';
 
 export const VIEW_LABELS: Record<ViewId, string> = {
   dashboard: 'Dashboard',
+  inbox: 'Inbox',
   economy: 'Economy',
   budget: 'Budget',
   cabinet: 'Cabinet',

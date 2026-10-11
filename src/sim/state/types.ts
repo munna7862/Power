@@ -1,10 +1,20 @@
-import type { ApprovalFactor, IdeologyId, MinistryId, RegionId, SectorId, StrategyId, TaxId } from '../content/ids';
+import type {
+  ApprovalFactor,
+  IdeologyId,
+  LogCategory,
+  MinistryId,
+  OperationKind,
+  RegionId,
+  SectorId,
+  StrategyId,
+  TaxId,
+} from '../content/ids';
 import type { GameDate } from '../engine/calendar';
 import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 2;
+export const SCHEMA_VERSION = 3;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -14,7 +24,7 @@ export const TERM_YEARS = 5;
 /** Monthly snapshots kept for charts (10 years). */
 export const HISTORY_LIMIT = 120;
 /** Inbox entries kept before the oldest are dropped. */
-export const LOG_LIMIT = 200;
+export const LOG_LIMIT = 400;
 
 export interface GameMeta {
   seed: number;
@@ -29,7 +39,7 @@ export interface ClockState {
   date: GameDate;
 }
 
-export const GAME_OVER_CAUSES = ['impeachment'] as const;
+export const GAME_OVER_CAUSES = ['impeachment', 'coup', 'assassination', 'bankruptcy'] as const;
 export type GameOverCause = (typeof GAME_OVER_CAUSES)[number];
 
 export type GameStatus =
@@ -160,9 +170,84 @@ export interface LogEntry {
   tick: number;
   date: GameDate;
   severity: LogSeverity;
+  category: LogCategory;
+  /** The pending decision this entry announces, if any. */
+  pendingId: string | null;
   title: string;
   body: string;
   read: boolean;
+}
+
+/** A decision the President has not yet made. Text and choices come from the event's content. */
+export interface PendingEvent {
+  id: string;
+  eventId: string;
+  /** The region the event is happening in, for regional events. */
+  region: RegionId | null;
+  /** Extra reference, e.g. the id of the terror plot a warning is about. */
+  ref: string | null;
+  raisedTick: number;
+  /** If undecided by this tick, the event's default choice is applied. */
+  expiresTick: number;
+}
+
+/** A follow-up event waiting for its day. */
+export interface ScheduledEvent {
+  eventId: string;
+  dueTick: number;
+  region: RegionId | null;
+}
+
+export interface EventsState {
+  pending: PendingEvent[];
+  scheduled: ScheduledEvent[];
+  /** Event id → first tick it may fire again. */
+  cooldowns: Record<string, number>;
+}
+
+export interface Investigation {
+  id: string;
+  ministry: MinistryId;
+  startedTick: number;
+  resolvesTick: number;
+}
+
+export interface Operation {
+  id: string;
+  kind: OperationKind;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** A terror plot that slipped past intelligence and will strike unless stopped. */
+export interface Plot {
+  id: string;
+  /** Fictional group name. */
+  group: string;
+  region: RegionId;
+  strikeTick: number;
+  /** 0–1 share of the plot's chance of success removed by surveillance, raids and border sealing. */
+  mitigation: number;
+}
+
+export interface SecurityState {
+  /** Unrest per region, 0 (calm) – 100 (uprising). */
+  unrest: Record<RegionId, number>;
+  /** National terror threat, 0–100. */
+  terrorThreat: number;
+  /** Tension with neighbours, 0–100. Phase 5 diplomacy takes this over. */
+  borderTension: number;
+  /** Loyalty of the armed forces to the President, 0–100. Phase 4 takes this over. */
+  militaryLoyalty: number;
+  /** True while coup risk is above the warning level, so the warning is raised once. */
+  coupAlert: boolean;
+  /** Consecutive monthly settlements with debt above the bankruptcy threshold. */
+  bankruptMonths: number;
+  investigations: Investigation[];
+  operations: Operation[];
+  plots: Plot[];
+  plotsFoiled: number;
+  attacksSuffered: number;
 }
 
 export interface GameState {
@@ -177,6 +262,8 @@ export interface GameState {
   cabinet: CabinetState;
   politics: PoliticsState;
   modifiers: Modifier[];
+  security: SecurityState;
+  events: EventsState;
   history: MonthlySnapshot[];
   log: LogEntry[];
   /** Monotonic counter for generating stable ids. */

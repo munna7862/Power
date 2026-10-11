@@ -3,7 +3,7 @@ import { advanceDays, HISTORY_LIMIT, LOG_LIMIT, tick, type GameState } from '../
 import type { System } from '../../src/sim/engine/system';
 import { appendLog } from '../../src/sim/state/log';
 import { SYSTEMS } from '../../src/sim/systems';
-import { deepFreeze, newGame } from '../helpers';
+import { calm, deepFreeze, newGame } from '../helpers';
 
 const recorder = (calls: string[]): System[] =>
   (['daily', 'monthly', 'yearly'] as const).map((cadence) => ({
@@ -62,7 +62,7 @@ describe('engine.tick', () => {
   });
 
   it('caps history at HISTORY_LIMIT months', () => {
-    const state = advanceDays(newGame(), 366 * 11);
+    const state = calm(newGame(), 366 * 11);
     expect(state.history).toHaveLength(HISTORY_LIMIT);
   });
 
@@ -119,7 +119,13 @@ describe('engine.tick', () => {
       'economy',
       'fiscal',
       'society',
+      'unrest',
+      'terror',
+      'plots',
+      'leadership',
+      'investigations',
       'cabinet',
+      'events',
       'approval',
       'history',
       'annual-report',

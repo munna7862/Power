@@ -2,6 +2,7 @@ import type { ViewId } from '../store';
 
 const PATHS: Record<ViewId, string> = {
   dashboard: 'M4 4h7v7H4zM13 4h7v4h-7zM13 10h7v10h-7zM4 13h7v7H4z',
+  inbox: 'M4 13l2-8h12l2 8v6H4zM4 13h5l1 2h4l1-2h5',
   economy: 'M4 20h16M7 16v-5M12 16V7M17 16v-8',
   budget: 'M4 7h16v12H4zM4 7l2-3h12l2 3M14 13h3M9 4v3',
   cabinet:

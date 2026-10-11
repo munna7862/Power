@@ -39,5 +39,34 @@ export const APPROVAL_FACTORS = [
   'livingStandards',
   'taxes',
   'services',
+  'safety',
 ] as const;
 export type ApprovalFactor = (typeof APPROVAL_FACTORS)[number];
+
+export const REGION_LABELS: Record<RegionId, string> = {
+  north: 'North',
+  south: 'South',
+  east: 'East',
+  west: 'West',
+  central: 'Central',
+  northEast: 'North-East',
+};
+
+/** What an event is about, for inbox filters. Unrest and terror are never framed by religion or caste. */
+export const EVENT_CATEGORIES = [
+  'economy',
+  'personal',
+  'disaster',
+  'corruption',
+  'unrest',
+  'security',
+  'terror',
+] as const;
+export type EventCategory = (typeof EVENT_CATEGORIES)[number];
+
+export const LOG_CATEGORIES = ['general', ...EVENT_CATEGORIES] as const;
+export type LogCategory = (typeof LOG_CATEGORIES)[number];
+
+/** Counter-terror operations the President can order. */
+export const OPERATION_KINDS = ['raid', 'surveillance', 'borderSeal'] as const;
+export type OperationKind = (typeof OPERATION_KINDS)[number];

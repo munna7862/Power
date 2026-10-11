@@ -1,15 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import {
-  advanceDays,
-  dispatch,
-  MINISTRIES,
-  ministryEfficiency,
-  RESHUFFLE_APPROVAL,
-  type GameState,
-} from '../../src/sim';
+import { dispatch, MINISTRIES, ministryEfficiency, RESHUFFLE_APPROVAL, type GameState } from '../../src/sim';
 import { Rng } from '../../src/sim/engine/rng';
 import { refreshCandidates } from '../../src/sim/cabinet/generate';
-import { deepFreeze, newGame } from '../helpers';
+import { calm, deepFreeze, newGame } from '../helpers';
 
 describe('cabinet commands', () => {
   it('appoints a candidate, removes them from the pool and charges a reshuffle cost', () => {
@@ -62,9 +55,9 @@ describe('cabinet commands', () => {
 describe('cabinet over time', () => {
   it('posts a quarterly report and refreshes candidates every 1 January', () => {
     const start = newGame();
-    const april = advanceDays(start, 31 + 28 + 31);
+    const april = calm(start, 31 + 28 + 31);
     expect(april.log.some((e) => e.title === 'Quarterly cabinet report')).toBe(true);
-    const nextYear = advanceDays(start, 365);
+    const nextYear = calm(start, 365);
     expect(nextYear.log.some((e) => e.title === 'New cabinet candidates')).toBe(true);
     expect(nextYear.cabinet.candidates.finance[0]!.id).not.toBe(start.cabinet.candidates.finance[0]!.id);
   });
@@ -74,7 +67,7 @@ describe('cabinet over time', () => {
     const ministers = Object.fromEntries(
       MINISTRIES.map((m) => [m, { ...start.cabinet.ministers[m]!, corruption: 100 }]),
     ) as GameState['cabinet']['ministers'];
-    const later = advanceDays({ ...start, cabinet: { ...start.cabinet, ministers } }, 365);
+    const later = calm({ ...start, cabinet: { ...start.cabinet, ministers } }, 365);
     expect(later.log.some((e) => e.title.startsWith('Scandal in'))).toBe(true);
     expect(later.modifiers.some((m) => m.source === 'scandal' && m.value < 0)).toBe(true);
   });
@@ -84,7 +77,7 @@ describe('cabinet over time', () => {
     const ministers = Object.fromEntries(
       MINISTRIES.map((m) => [m, { ...start.cabinet.ministers[m]!, ideology: 'socialism' as const, loyalty: 40 }]),
     ) as GameState['cabinet']['ministers'];
-    const later = advanceDays({ ...start, cabinet: { ...start.cabinet, ministers } }, 365 * 2);
+    const later = calm({ ...start, cabinet: { ...start.cabinet, ministers } }, 365 * 2);
     const average = MINISTRIES.reduce((s, m) => s + later.cabinet.ministers[m]!.loyalty, 0) / MINISTRIES.length;
     expect(average).toBeGreaterThan(55);
   });

@@ -38,7 +38,9 @@ describe('golden save fixtures', () => {
     expect(state.clock).toEqual(raw.state.clock);
     expect(state.nation).toMatchObject({ treasury: raw.state.nation.treasury, approval: raw.state.nation.approval });
     expect(state.history).toHaveLength(raw.state.history.length);
-    expect(state.log.slice(0, raw.state.log.length)).toEqual(raw.state.log);
+    expect(state.log.slice(0, raw.state.log.length)).toEqual(
+      raw.state.log.map((e: object) => ({ ...e, category: 'general', pendingId: null })),
+    );
     expect(state.log.at(-1)?.title).toBe('Save upgraded');
     expect(state.cabinet.ministers.finance).not.toBeNull();
     expect(state.modifiers.every((m) => m.target !== ('economy.monthlyRevenue' as never))).toBe(true);

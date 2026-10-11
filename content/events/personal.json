@@ -1,0 +1,402 @@
+[
+  {
+    "id": "health-checkup",
+    "category": "personal",
+    "severity": "info",
+    "title": "Doctors advise rest",
+    "body": "A routine check-up shows signs of overwork. Your physician urges you to slow down for a few days.",
+    "weight": 0.28,
+    "cooldownDays": 540,
+    "choices": [
+      {
+        "id": "rest",
+        "label": "Take a short rest",
+        "description": "Fewer public appearances for a week.",
+        "outcome": "You rest. The press notes your absence, but you return refreshed.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 20
+          }
+        ]
+      },
+      {
+        "id": "carry-on",
+        "label": "Carry on regardless",
+        "description": "No pause; a stumble in public follows.",
+        "outcome": "You push on and stumble through a long speech. Photographs circulate.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-address",
+    "category": "personal",
+    "severity": "info",
+    "title": "Chance to address the nation",
+    "body": "Broadcasters offer prime time for a national address. What will you talk about?",
+    "weight": 0.56,
+    "cooldownDays": 150,
+    "choices": [
+      {
+        "id": "economy",
+        "label": "Speak on jobs and prices",
+        "description": "Reassure households.",
+        "outcome": "Your calm, detailed speech reassures many households.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "unity",
+        "label": "Speak on unity and order",
+        "description": "Calm the regions.",
+        "outcome": "Your appeal for calm is well received in restless regions.",
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "skip",
+        "label": "Decline the slot",
+        "description": "Nothing changes.",
+        "outcome": "You decline and the slot goes to the opposition.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "interview-gaffe",
+    "category": "personal",
+    "severity": "warning",
+    "title": "Gaffe in a live interview",
+    "body": "An off-the-cuff remark in a live interview has gone viral for the wrong reasons.",
+    "weight": 0.4,
+    "cooldownDays": 270,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1.5,
+        "days": 45,
+        "label": "Interview gaffe"
+      }
+    ]
+  },
+  {
+    "id": "press-freedom-debate",
+    "category": "personal",
+    "severity": "info",
+    "title": "Press freedom row",
+    "body": "Editors are protesting over a law that would let officials block critical reports. Where do you stand?",
+    "weight": 0.32,
+    "cooldownDays": 450,
+    "choices": [
+      {
+        "id": "defend-press",
+        "label": "Side with the press",
+        "description": "Popular, but ministers dislike scrutiny.",
+        "outcome": "You back a free press. Voters approve; some ministers sulk.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90
+          },
+          {
+            "type": "loyalty",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "restrict",
+        "label": "Back the new powers",
+        "description": "Ministers are pleased; critics are loud.",
+        "outcome": "You back the new powers. Ministers are pleased, and the press is furious.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 90
+          },
+          {
+            "type": "loyalty",
+            "delta": 3
+          }
+        ]
+      },
+      {
+        "id": "silent",
+        "label": "Stay out of it",
+        "description": "Neither side is happy.",
+        "outcome": "You say nothing. The row fades.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "foreign-trip-invite",
+    "category": "personal",
+    "severity": "info",
+    "title": "Invitation for a state visit",
+    "body": "A friendly government invites you for a state visit and a round of trade talks.",
+    "weight": 0.4,
+    "cooldownDays": 270,
+    "choices": [
+      {
+        "id": "go",
+        "label": "Make the visit",
+        "description": "Costs ₹800 cr; opens doors for exporters.",
+        "outcome": "The visit goes well. Trade talks yield modest gains.",
+        "cost": 800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.006,
+            "days": 120,
+            "label": "Trade talks"
+          }
+        ]
+      },
+      {
+        "id": "decline",
+        "label": "Decline",
+        "description": "Stay home.",
+        "outcome": "You decline and stay home.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "advisor-resigns",
+    "category": "personal",
+    "severity": "warning",
+    "title": "Senior adviser resigns",
+    "body": "A trusted adviser has resigned, citing differences over direction. Leaks about infighting follow.",
+    "weight": 0.28,
+    "cooldownDays": 450,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "days": 45,
+        "label": "Adviser resigns"
+      },
+      {
+        "type": "loyalty",
+        "delta": -2
+      }
+    ]
+  },
+  {
+    "id": "opposition-motion",
+    "category": "personal",
+    "severity": "warning",
+    "title": "Opposition motion in Parliament",
+    "body": "The opposition has tabled a no-confidence style motion in the House and wants a vote this month.",
+    "conditions": [
+      {
+        "stat": "approval",
+        "op": "<",
+        "value": 50
+      }
+    ],
+    "weight": 0.8,
+    "cooldownDays": 270,
+    "choices": [
+      {
+        "id": "concede",
+        "label": "Concede some demands",
+        "description": "Defuses the vote at a price.",
+        "outcome": "You concede a few demands. The motion lapses.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          },
+          {
+            "type": "loyalty",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "defend",
+        "label": "Fight it out",
+        "description": "Win the vote, but look defensive.",
+        "outcome": "You win the vote, but the debate leaves you looking defensive.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "national-honour",
+    "category": "personal",
+    "severity": "good",
+    "title": "National honour for the nation",
+    "body": "Athletes and scientists bring home medals and a landmark mission success. The country celebrates, and the mood rubs off on you.",
+    "weight": 0.36,
+    "cooldownDays": 270,
+    "effects": [
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1.5,
+        "days": 45,
+        "label": "National pride"
+      }
+    ]
+  },
+  {
+    "id": "cabinet-rumours",
+    "category": "personal",
+    "severity": "warning",
+    "title": "Rumours of cabinet discontent",
+    "body": "Ministers are grumbling about the direction of the government, and anonymous briefings are reaching the press.",
+    "conditions": [
+      {
+        "stat": "minLoyalty",
+        "op": "<",
+        "value": 45
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 180,
+    "choices": [
+      {
+        "id": "dinner",
+        "label": "Host a cabinet retreat",
+        "description": "Costs ₹300 cr; rebuilds loyalty.",
+        "outcome": "The retreat clears the air. Ministers leave in better spirits.",
+        "cost": 300,
+        "effects": [
+          {
+            "type": "loyalty",
+            "delta": 5
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore the chatter",
+        "description": "No cost; loyalty slips further.",
+        "outcome": "You ignore the chatter. It does not stop.",
+        "default": true,
+        "effects": [
+          {
+            "type": "loyalty",
+            "delta": -3
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "youth-townhall",
+    "category": "personal",
+    "severity": "info",
+    "title": "Youth town hall",
+    "body": "Student groups invite you to a televised town hall on jobs, climate and the future.",
+    "weight": 0.36,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "attend",
+        "label": "Attend and take questions",
+        "description": "A risky, honest hour.",
+        "outcome": "You take tough questions in good humour. Young voters warm to you.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 90
+          },
+          {
+            "type": "unrest",
+            "delta": -1,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "send-minister",
+        "label": "Send a minister",
+        "description": "Safe, but flat.",
+        "outcome": "The minister does a competent job. Few notice.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  }
+]

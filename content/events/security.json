@@ -1,0 +1,881 @@
+[
+  {
+    "id": "border-standoff",
+    "category": "security",
+    "severity": "warning",
+    "title": "Standoff on the border",
+    "body": "Patrols from both sides have been eyeball to eyeball for days along a disputed stretch of the frontier. Tempers are high.",
+    "conditions": [
+      {
+        "stat": "borderTension",
+        "op": ">",
+        "value": 33
+      }
+    ],
+    "weight": 0.84,
+    "cooldownDays": 150,
+    "choices": [
+      {
+        "id": "talks",
+        "label": "Open a back channel",
+        "description": "Costs ₹200 cr; lowers tension quietly.",
+        "outcome": "Quiet talks de-escalate the standoff. Both sides pull back.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": -8
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "show-force",
+        "label": "Reinforce the border",
+        "description": "Costs ₹2,000 cr; the army is pleased, tension rises.",
+        "outcome": "Reinforcements arrive and the army is delighted. The other side does the same.",
+        "cost": 2000,
+        "effects": [
+          {
+            "type": "militaryLoyalty",
+            "delta": 3
+          },
+          {
+            "type": "borderTension",
+            "delta": 5
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Let local commanders handle it",
+        "description": "No cost.",
+        "outcome": "Local commanders manage, but the standoff lingers.",
+        "default": true,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": 4
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "cyber-attack-grid",
+    "category": "security",
+    "severity": "critical",
+    "title": "Cyber attack on the power grid",
+    "body": "Hackers have knocked out control systems at several power utilities. Blackouts are rolling across cities.",
+    "weight": 0.32,
+    "cooldownDays": 300,
+    "deadlineDays": 7,
+    "choices": [
+      {
+        "id": "response",
+        "label": "Mobilise a cyber response team",
+        "description": "Costs ₹1,800 cr; intelligence quality matters.",
+        "outcome": "Cyber teams restore control and trace the intrusion.",
+        "cost": 1800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.001,
+            "days": 20,
+            "label": "Cyber attack (contained)",
+            "scale": {
+              "ministry": "intelligence",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 20,
+            "label": "Cyber attack",
+            "scale": {
+              "ministry": "intelligence",
+              "mode": "mitigate"
+            }
+          }
+        ]
+      },
+      {
+        "id": "isolate",
+        "label": "Isolate the grid manually",
+        "description": "Costs ₹600 cr; slower.",
+        "outcome": "Operators isolate the grid by hand. Power returns after a patchy week.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.003,
+            "days": 30,
+            "label": "Grid outage"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Wait for utilities to fix it",
+        "description": "No cost.",
+        "outcome": "Utilities struggle for days. Industry loses a week of output.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.growth",
+            "kind": "add",
+            "value": -0.006,
+            "days": 45,
+            "label": "Grid outage",
+            "scale": {
+              "ministry": "intelligence",
+              "mode": "mitigate"
+            }
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 45,
+            "label": "Grid outage"
+          },
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "espionage-case",
+    "category": "security",
+    "severity": "warning",
+    "title": "Spy ring uncovered",
+    "body": "Counter-intelligence has uncovered a network passing defence secrets to a foreign power. Several officials are involved.",
+    "weight": 0.28,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "expel",
+        "label": "Prosecute and expel diplomats",
+        "description": "Costs ₹150 cr; tension with the sponsor.",
+        "outcome": "The ring is rolled up and diplomats are expelled. Relations cool.",
+        "cost": 150,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": 4
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          },
+          {
+            "type": "terror",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "quiet",
+        "label": "Handle it quietly",
+        "description": "No cost.",
+        "outcome": "You handle it quietly. The secrets stay out of the news.",
+        "default": true,
+        "effects": [
+          {
+            "type": "loyalty",
+            "delta": -1,
+            "ministry": "intelligence"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "smuggling-network",
+    "category": "security",
+    "severity": "warning",
+    "title": "Smuggling network along the border",
+    "body": "Gold, arms and drugs are flowing across a porous stretch of the frontier, with local officials turning a blind eye.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 36
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "patrols",
+        "label": "Surge border patrols",
+        "description": "Costs ₹1,100 cr.",
+        "outcome": "More patrols and scanners choke the smuggling routes.",
+        "cost": 1100,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -3
+          },
+          {
+            "type": "corruption",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Leave it to local police",
+        "description": "No cost.",
+        "outcome": "Smuggling continues, and so does the bribery that enables it.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 2
+          },
+          {
+            "type": "corruption",
+            "delta": 1.5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "arms-haul",
+    "category": "security",
+    "severity": "good",
+    "title": "Large arms haul seized",
+    "body": "Police and customs have seized a huge cache of weapons and explosives bound for criminal networks.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 25
+      }
+    ],
+    "weight": 0.49,
+    "cooldownDays": 200,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -4
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 45,
+        "label": "Arms haul seized"
+      }
+    ]
+  },
+  {
+    "id": "custodial-death",
+    "category": "security",
+    "severity": "warning",
+    "title": "Death in police custody",
+    "body": "A man died in a police lock-up. Protests have begun and videos are circulating widely.",
+    "conditions": [
+      {
+        "stat": "efficiency.home",
+        "op": "<",
+        "value": 1.1
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "judicial",
+        "label": "Order a judicial inquiry",
+        "description": "Costs ₹400 cr; credible.",
+        "outcome": "A judicial inquiry is ordered and the officers are suspended. The mood settles.",
+        "cost": 400,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 45
+          },
+          {
+            "type": "unrest",
+            "delta": -2,
+            "where": "all"
+          }
+        ]
+      },
+      {
+        "id": "defend",
+        "label": "Defend the police",
+        "description": "No cost; trust drops.",
+        "outcome": "You defend the police. Protests grow.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Custodial death"
+          },
+          {
+            "type": "unrest",
+            "delta": 4,
+            "where": "all"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "intelligence-leak",
+    "category": "security",
+    "severity": "warning",
+    "title": "Classified files leaked",
+    "body": "A trove of classified files has surfaced online, exposing sources and embarrassing the intelligence services.",
+    "weight": 0.28,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "purge",
+        "label": "Purge and tighten security",
+        "description": "Costs ₹900 cr; ministers feel watched.",
+        "outcome": "The leak is traced and the services are cleaned out.",
+        "cost": 900,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": -1
+          },
+          {
+            "type": "loyalty",
+            "delta": -2,
+            "ministry": "intelligence"
+          }
+        ]
+      },
+      {
+        "id": "review",
+        "label": "Order a review",
+        "description": "No cost.",
+        "outcome": "A review is ordered. Sources go quiet in the meantime.",
+        "default": true,
+        "effects": [
+          {
+            "type": "terror",
+            "delta": 3
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "barracks-murmurs",
+    "category": "security",
+    "severity": "critical",
+    "title": "Murmurs in the barracks",
+    "body": "Senior officers are grumbling about pay, promotions and the government's direction. Some talk of \"restoring order\".",
+    "conditions": [
+      {
+        "stat": "coupRisk",
+        "op": ">",
+        "value": 42
+      }
+    ],
+    "weight": 2.45,
+    "cooldownDays": 100,
+    "deadlineDays": 15,
+    "choices": [
+      {
+        "id": "meet",
+        "label": "Meet the service chiefs",
+        "description": "Costs ₹200 cr; reassures the generals.",
+        "outcome": "A frank meeting with the chiefs steadies the army.",
+        "cost": 200,
+        "effects": [
+          {
+            "type": "militaryLoyalty",
+            "delta": 6
+          },
+          {
+            "type": "loyalty",
+            "delta": 4,
+            "ministry": "defence"
+          }
+        ]
+      },
+      {
+        "id": "pay",
+        "label": "Announce a pay and pensions hike",
+        "description": "Costs ₹5,000 cr; buys loyalty.",
+        "outcome": "A pay and pensions package wins the barracks over.",
+        "cost": 5000,
+        "effects": [
+          {
+            "type": "militaryLoyalty",
+            "delta": 9
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore the chatter",
+        "description": "No cost; risky.",
+        "outcome": "You ignore the chatter. Resentment hardens.",
+        "default": true,
+        "effects": [
+          {
+            "type": "militaryLoyalty",
+            "delta": -4
+          },
+          {
+            "type": "loyalty",
+            "delta": -3,
+            "ministry": "defence"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "defence-minister-rift",
+    "category": "security",
+    "severity": "warning",
+    "title": "Rift with the defence minister",
+    "body": "The defence minister is openly at odds with you over strategy and spending.",
+    "conditions": [
+      {
+        "stat": "efficiency.defence",
+        "op": ">",
+        "value": 0
+      },
+      {
+        "stat": "minLoyalty",
+        "op": "<",
+        "value": 50
+      }
+    ],
+    "weight": 0.63,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "reaffirm",
+        "label": "Reaffirm your confidence",
+        "description": "Costs a concession.",
+        "outcome": "You publicly back the minister and promise more say. The rift closes.",
+        "effects": [
+          {
+            "type": "loyalty",
+            "delta": 8,
+            "ministry": "defence"
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Let it fester",
+        "description": "No cost.",
+        "outcome": "The rift festers and leaks to the press.",
+        "default": true,
+        "effects": [
+          {
+            "type": "loyalty",
+            "delta": -5,
+            "ministry": "defence"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "threat-letter",
+    "category": "security",
+    "severity": "info",
+    "title": "Threat letter to the President",
+    "body": "A letter threatening your life has reached the presidential office. Security services take it seriously.",
+    "conditions": [
+      {
+        "stat": "terrorThreat",
+        "op": ">",
+        "value": 38
+      }
+    ],
+    "weight": 0.56,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "publicise",
+        "label": "Make it public",
+        "description": "Rallies sympathy but alarms the public.",
+        "outcome": "You release the letter. Sympathy and unease in equal measure.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 30
+          },
+          {
+            "type": "terror",
+            "delta": 1
+          }
+        ]
+      },
+      {
+        "id": "quiet",
+        "label": "Keep it quiet",
+        "description": "No change.",
+        "outcome": "Security quietly reviews your movements.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "maritime-incident",
+    "category": "security",
+    "severity": "warning",
+    "title": "Maritime incident",
+    "body": "A fishing boat has been seized in disputed waters and the crew are being held. Coastal communities are demanding action.",
+    "weight": 0.42,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "diplomacy",
+        "label": "Pursue diplomatic release",
+        "description": "Costs ₹100 cr.",
+        "outcome": "Diplomats secure the crew's release after a tense week.",
+        "cost": 100,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          },
+          {
+            "type": "borderTension",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "patrol",
+        "label": "Send naval patrols",
+        "description": "Costs ₹1,000 cr; raises tension.",
+        "outcome": "Naval patrols escort the fleet. The other side protests.",
+        "cost": 1000,
+        "effects": [
+          {
+            "type": "borderTension",
+            "delta": 4
+          },
+          {
+            "type": "militaryLoyalty",
+            "delta": 2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Wait for the other side",
+        "description": "No cost.",
+        "outcome": "The crew stay detained for months. Families protest.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          },
+          {
+            "type": "unrest",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "disinformation-campaign",
+    "category": "security",
+    "severity": "warning",
+    "title": "Disinformation campaign",
+    "body": "A flood of fake videos and forwarded messages is stoking panic and distrust online.",
+    "weight": 0.49,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "factcheck",
+        "label": "Fund a fact-checking and media-literacy unit",
+        "description": "Costs ₹400 cr.",
+        "outcome": "Fact-checkers get ahead of the rumours. The panic subsides.",
+        "cost": 400,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -2,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 30
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Ignore it",
+        "description": "No cost.",
+        "outcome": "The rumours spread and anger builds.",
+        "default": true,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": 3,
+            "where": "all"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "refugee-influx",
+    "category": "security",
+    "severity": "warning",
+    "title": "Refugees arrive at the border",
+    "body": "Thousands of people fleeing violence in a neighbouring country are gathering at the border and asking for shelter.",
+    "weight": 0.28,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "shelter",
+        "label": "Open temporary camps",
+        "description": "Costs ₹1,200 cr; humane, but a strain.",
+        "outcome": "Temporary camps give shelter. Costs mount.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          },
+          {
+            "type": "unrest",
+            "delta": 2
+          }
+        ]
+      },
+      {
+        "id": "close",
+        "label": "Close the border",
+        "description": "No cost; harsh pictures.",
+        "outcome": "The border is closed. Harsh pictures circulate abroad.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          },
+          {
+            "type": "borderTension",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "drone-sighting",
+    "category": "security",
+    "severity": "warning",
+    "title": "Unidentified drones over a base",
+    "body": "Unidentified drones have been spotted over a military base near the border. Radar picked them up too late.",
+    "weight": 0.42,
+    "cooldownDays": 200,
+    "effects": [
+      {
+        "type": "borderTension",
+        "delta": 3
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -0.5,
+        "days": 30
+      }
+    ]
+  },
+  {
+    "id": "police-modernisation-offer",
+    "category": "security",
+    "severity": "info",
+    "title": "Police modernisation plan",
+    "body": "The Home ministry proposes a plan to upgrade police radios, forensics and patrol vehicles nationwide.",
+    "conditions": [
+      {
+        "stat": "efficiency.home",
+        "op": "<",
+        "value": 1.05
+      }
+    ],
+    "weight": 0.42,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "fund",
+        "label": "Fund the plan",
+        "description": "Costs ₹2,500 cr.",
+        "outcome": "New radios and forensic labs reach police stations. Response times improve.",
+        "cost": 2500,
+        "effects": [
+          {
+            "type": "unrest",
+            "delta": -3,
+            "where": "all"
+          },
+          {
+            "type": "terror",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "defer",
+        "label": "Defer it",
+        "description": "No cost.",
+        "outcome": "You defer the plan.",
+        "default": true,
+        "effects": []
+      }
+    ]
+  },
+  {
+    "id": "security-conference",
+    "category": "security",
+    "severity": "good",
+    "title": "Internal security conference",
+    "body": "State police chiefs and intelligence heads agree on a joint action plan at a national conference.",
+    "conditions": [
+      {
+        "stat": "efficiency.home",
+        "op": ">",
+        "value": 1
+      }
+    ],
+    "weight": 0.28,
+    "cooldownDays": 300,
+    "effects": [
+      {
+        "type": "terror",
+        "delta": -2
+      },
+      {
+        "type": "unrest",
+        "delta": -1,
+        "where": "all"
+      }
+    ]
+  }
+]

@@ -5,13 +5,14 @@ import type { GameState } from '../state/types';
 
 /** How much each factor weighs in the approval target. Sums to 1. */
 export const APPROVAL_WEIGHTS: Record<ApprovalFactor, number> = {
-  jobs: 0.22,
-  prices: 0.2,
-  growth: 0.15,
-  corruption: 0.12,
-  livingStandards: 0.1,
-  taxes: 0.11,
-  services: 0.1,
+  jobs: 0.2,
+  prices: 0.18,
+  growth: 0.13,
+  corruption: 0.11,
+  livingStandards: 0.09,
+  taxes: 0.1,
+  services: 0.09,
+  safety: 0.1,
 };
 
 export const APPROVAL_FACTOR_LABELS: Record<ApprovalFactor, string> = {
@@ -22,6 +23,7 @@ export const APPROVAL_FACTOR_LABELS: Record<ApprovalFactor, string> = {
   livingStandards: 'Living standards',
   taxes: 'Tax burden',
   services: 'Public services',
+  safety: 'Safety and order',
 };
 
 /** Ministries whose efficiency voters feel directly as "public services". */
@@ -42,10 +44,11 @@ const clamp = (v: number) => Math.max(0, Math.min(100, v));
 
 /** Voter satisfaction (0–100) with each factor, given the current state and ministry efficiencies. */
 export function computeSatisfaction(
-  state: Pick<GameState, 'economy' | 'budget'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'security'>,
   efficiency: Record<MinistryId, number>,
 ): Record<ApprovalFactor, number> {
-  const { economy, budget } = state;
+  const { economy, budget, security } = state;
+  const meanUnrest = Object.values(security.unrest).reduce((a, b) => a + b, 0) / Object.values(security.unrest).length;
   const t = budget.taxRates;
   const d = DEFAULT_TAX_RATES;
   const services =
@@ -64,6 +67,7 @@ export function computeSatisfaction(
         30 * (t.customs - d.customs),
     ),
     services: clamp(50 + 60 * (services - 1)),
+    safety: clamp(100 - 0.8 * meanUnrest - 0.6 * security.terrorThreat),
   };
 }
 

@@ -2,7 +2,7 @@ import { allEfficiencies } from '../economy/model';
 import { formatDate } from '../engine/calendar';
 import type { System } from '../engine/system';
 import { approvalTarget, computeSatisfaction, IMPEACHMENT_MONTHS, IMPEACHMENT_THRESHOLD } from '../politics/approval';
-import { appendLog } from '../state/log';
+import { endGame } from '../state/gameOver';
 
 /** Fraction of the gap to the target closed each month. */
 const DRIFT_RATE = 0.15;
@@ -30,9 +30,6 @@ export const approvalSystem: System = {
     if (lowApprovalMonths < IMPEACHMENT_MONTHS) return next;
 
     const summary = `With approval at ${approval.toFixed(1)}% for ${IMPEACHMENT_MONTHS} months, Parliament voted to impeach ${state.meta.presidentName} on ${formatDate(state.clock.date)}.`;
-    return appendLog(
-      { ...next, status: { kind: 'over', cause: 'impeachment', date: state.clock.date, title: 'Impeached', summary } },
-      { severity: 'critical', title: 'Impeached', body: summary },
-    );
+    return endGame(next, 'impeachment', 'Impeached', summary);
   },
 };

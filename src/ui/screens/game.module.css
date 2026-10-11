@@ -364,3 +364,32 @@
     padding: var(--space-4);
   }
 }
+
+.navBadge {
+  margin-left: auto;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--saffron);
+  color: #1a0e00;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.alertBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius);
+  background: var(--warning-soft);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .navBadge {
+    display: none;
+  }
+}

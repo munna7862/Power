@@ -1,5 +1,15 @@
 import { z } from 'zod';
-import { APPROVAL_FACTORS, IDEOLOGIES, MINISTRIES, REGIONS, SECTORS, STRATEGIES, TAXES } from '../content/ids';
+import {
+  APPROVAL_FACTORS,
+  IDEOLOGIES,
+  LOG_CATEGORIES,
+  MINISTRIES,
+  OPERATION_KINDS,
+  REGIONS,
+  SECTORS,
+  STRATEGIES,
+  TAXES,
+} from '../content/ids';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
 import { DIFFICULTIES, GAME_OVER_CAUSES, REVENUE_LINES, SCHEMA_VERSION } from '../state/types';
 
@@ -109,6 +119,57 @@ export const gameStateSchema = z.object({
       expiresAtTick: z.number().int().nullable(),
     }),
   ),
+  security: z.object({
+    unrest: z.record(z.enum(REGIONS), score),
+    terrorThreat: score,
+    borderTension: score,
+    militaryLoyalty: score,
+    coupAlert: z.boolean(),
+    bankruptMonths: z.number().int().min(0),
+    investigations: z.array(
+      z.object({
+        id: z.string(),
+        ministry: z.enum(MINISTRIES),
+        startedTick: z.number().int(),
+        resolvesTick: z.number().int(),
+      }),
+    ),
+    operations: z.array(
+      z.object({
+        id: z.string(),
+        kind: z.enum(OPERATION_KINDS),
+        startedTick: z.number().int(),
+        endsTick: z.number().int(),
+      }),
+    ),
+    plots: z.array(
+      z.object({
+        id: z.string(),
+        group: z.string(),
+        region: z.enum(REGIONS),
+        strikeTick: z.number().int(),
+        mitigation: z.number().min(0).max(1),
+      }),
+    ),
+    plotsFoiled: z.number().int().min(0),
+    attacksSuffered: z.number().int().min(0),
+  }),
+  events: z.object({
+    pending: z.array(
+      z.object({
+        id: z.string(),
+        eventId: z.string(),
+        region: z.enum(REGIONS).nullable(),
+        ref: z.string().nullable(),
+        raisedTick: z.number().int(),
+        expiresTick: z.number().int(),
+      }),
+    ),
+    scheduled: z.array(
+      z.object({ eventId: z.string(), dueTick: z.number().int(), region: z.enum(REGIONS).nullable() }),
+    ),
+    cooldowns: z.record(z.string(), z.number().int()),
+  }),
   history: z.array(
     z.object({
       month: date,
@@ -132,6 +193,8 @@ export const gameStateSchema = z.object({
       tick: z.number().int(),
       date,
       severity: z.enum(['info', 'good', 'warning', 'critical']),
+      category: z.enum(LOG_CATEGORIES),
+      pendingId: z.string().nullable(),
       title: z.string(),
       body: z.string(),
       read: z.boolean(),

@@ -72,6 +72,8 @@ test.describe('economy and governance (Phase 2)', () => {
   });
 
   test('Reports summarises each year in office', async ({ page }) => {
+    // Start popular so a hands-off President is not impeached by the crises of the first 13 months.
+    await patchGame(page, { nation: { approval: 95 } });
     await advanceDays(page, 400);
     await openView(page, 'Reports');
     await expect(page.getByRole('row', { name: new RegExp(`^${year}\\b`) })).toBeVisible();

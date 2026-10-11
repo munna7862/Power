@@ -3,11 +3,15 @@ import { gameStore, useGame, type ViewId } from '../../store';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { ViewIcon } from '../icons';
 import { GameMenuModal } from '../modals/GameMenuModal';
+import { DecisionModal } from '../modals/DecisionModal';
+import { Button } from '../design/primitives';
 import { GameOverModal } from '../modals/GameOverModal';
 import { BudgetView } from '../views/BudgetView';
 import { CabinetView } from '../views/CabinetView';
 import { ComingSoonView } from '../views/ComingSoonView';
 import { DashboardView } from '../views/DashboardView';
+import { InboxView } from '../views/InboxView';
+import { SecurityView } from '../views/SecurityView';
 import { EconomyView } from '../views/EconomyView';
 import { ReportsView } from '../views/ReportsView';
 import { VIEW_LABELS, VIEWS } from '../views/viewLabels';
@@ -24,6 +28,10 @@ function ActiveView({ view }: { view: ViewId }) {
       return <BudgetView />;
     case 'cabinet':
       return <CabinetView />;
+    case 'inbox':
+      return <InboxView />;
+    case 'security':
+      return <SecurityView />;
     case 'reports':
       return <ReportsView />;
     default:
@@ -33,6 +41,8 @@ function ActiveView({ view }: { view: ViewId }) {
 
 export function GameScreen() {
   const view = useGame((s) => s.view);
+  const unread = useGame((s) => s.game?.log.filter((e) => !e.read).length ?? 0);
+  const waiting = useGame((s) => s.game?.events.pending ?? []);
   const [menuOpen, setMenuOpen] = useState(false);
   useGameLoop();
 
@@ -69,15 +79,37 @@ export function GameScreen() {
           >
             <ViewIcon view={v} className={styles.navIcon} />
             {VIEW_LABELS[v]}
+            {v === 'inbox' && unread > 0 && (
+              <span className={styles.navBadge} aria-hidden="true">
+                {unread}
+              </span>
+            )}
           </button>
         ))}
       </nav>
 
       <main className={styles.main}>
+        {waiting.length > 0 && (
+          <div className={styles.alertBar} role="region" aria-label="Pending decisions">
+            <span>
+              {waiting.length} decision{waiting.length === 1 ? '' : 's'} awaiting the President
+            </span>
+            <Button
+              variant="primary"
+              onClick={() => {
+                gameStore.getState().setView('inbox');
+                gameStore.getState().openDecision(waiting[0]?.id ?? null);
+              }}
+            >
+              Review
+            </Button>
+          </div>
+        )}
         <ActiveView view={view} />
       </main>
 
       {menuOpen && <GameMenuModal onClose={() => setMenuOpen(false)} />}
+      <DecisionModal />
       <GameOverModal />
     </div>
   );

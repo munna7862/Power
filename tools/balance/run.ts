@@ -57,8 +57,16 @@ const finalRows = BOTS.map((bot) => {
   const runs = results.filter((r) => r.bot === bot.id);
   const finals = runs.map((r) => r.years.at(-1)!);
   const avg = (f: (y: (typeof finals)[number]) => number) => finals.reduce((s, y) => s + f(y), 0) / finals.length;
-  const impeached = runs.filter((r) => r.endedInYear !== null).length;
-  return `| ${bot.id} | ${bot.description} | ${impeached}/${runs.length} | ${avg((y) => y.approval).toFixed(1)}% | ${pct(avg((y) => y.realGrowth))}% | ${pct(avg((y) => y.inflation))}% | ${pct(avg((y) => y.unemployment))}% | ${pct(avg((y) => y.debtToGdp))}% |`;
+  const ended = runs.filter((r) => r.endedInYear !== null).length;
+  const causes = Object.entries(
+    runs.reduce<Record<string, number>>(
+      (acc, r) => (r.cause ? { ...acc, [r.cause]: (acc[r.cause] ?? 0) + 1 } : acc),
+      {},
+    ),
+  )
+    .map(([cause, n]) => `${cause} ${n}`)
+    .join(', ');
+  return `| ${bot.id} | ${bot.description} | ${ended}/${runs.length}${causes ? ` (${causes})` : ''} | ${avg((y) => y.approval).toFixed(1)}% | ${pct(avg((y) => y.realGrowth))}% | ${pct(avg((y) => y.inflation))}% | ${pct(avg((y) => y.unemployment))}% | ${pct(avg((y) => y.debtToGdp))}% |`;
 });
 
 const summary = [
@@ -74,7 +82,7 @@ const summary = [
   '',
   `## Final year averages`,
   '',
-  '| Bot | Behaviour | Impeached | Approval | Growth | Inflation | Unemployment | Debt/GDP |',
+  '| Bot | Behaviour | Game over | Approval | Growth | Inflation | Unemployment | Debt/GDP |',
   '|---|---|---|---|---|---|---|---|',
   ...finalRows,
   '',

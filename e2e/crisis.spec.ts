@@ -1,0 +1,79 @@
+import { expect, test } from '@playwright/test';
+import { advanceDays, openFresh, openView, patchGame, raiseEvent, startGame } from './support';
+
+test.describe('crises and security (Phase 3)', () => {
+  test.beforeEach(async ({ page }) => {
+    await openFresh(page);
+    await startGame(page);
+  });
+
+  test('a flood hits the East, the banner appears and a relief response is chosen', async ({ page }) => {
+    await raiseEvent(page, 'flood-river', 'east');
+    const banner = page.getByRole('region', { name: 'Pending decisions' });
+    await expect(banner).toContainText('1 decision awaiting the President');
+
+    await banner.getByRole('button', { name: 'Review' }).click();
+    const dialog = page.getByRole('dialog', { name: 'River floods in the East' });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByRole('list', { name: 'Effects of Announce a large relief package' })).toContainText(
+      'Costs',
+    );
+    await dialog.getByRole('button', { name: 'Choose: Announce a large relief package' }).click();
+
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page.getByRole('region', { name: 'Pending decisions' })).toHaveCount(0);
+    await expect(page.getByRole('list', { name: 'Inbox messages' })).toContainText(
+      'A generous relief package is announced',
+    );
+  });
+
+  test('the inbox filters by category and decisions', async ({ page }) => {
+    await raiseEvent(page, 'minister-scandal');
+    await raiseEvent(page, 'bumper-harvest');
+    await openView(page, 'Inbox');
+    const list = page.getByRole('list', { name: 'Inbox messages' });
+    const filters = page.getByRole('group', { name: 'Inbox filters' });
+    await filters.getByRole('button', { name: 'Corruption' }).click();
+    await expect(list).toContainText('Allegations against a minister');
+    await expect(list).not.toContainText('Bumper harvest');
+    await filters.getByRole('button', { name: /^Decisions/ }).click();
+    await expect(list).toContainText('Allegations against a minister');
+    await filters.getByRole('button', { name: 'Economy' }).click();
+    await expect(list).toContainText('Bumper harvest');
+  });
+
+  test('the Security screen shows unrest by region and runs an operation and an inquiry', async ({ page }) => {
+    await patchGame(page, {
+      security: { unrest: { east: 80, north: 20, south: 20, west: 20, central: 20, northEast: 20 } },
+    });
+    await openView(page, 'Security');
+    await expect(page.getByRole('img', { name: /Unrest by region/ })).toBeVisible();
+    await expect(page.getByRole('row', { name: /East 80/ })).toContainText('80');
+
+    await page.getByRole('button', { name: 'Why East?' }).hover();
+    await expect(page.getByRole('tooltip').first()).toContainText('Policing and order');
+
+    await page.getByRole('button', { name: 'Expand surveillance' }).click();
+    await expect(page.getByText(/Active: \d+ days/)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Investigate Home Affairs' }).click();
+    await expect(page.getByText(/Reports in \d+ days/)).toBeVisible();
+    await expect(page.getByRole('list', { name: 'Threats to your presidency' })).toContainText('Coup');
+  });
+
+  test('the clock pauses itself when a critical event arrives', async ({ page }) => {
+    await page.getByRole('button', { name: 'Speed 4×' }).click();
+    await patchGame(page, { security: { terrorThreat: 100 } });
+    // A decision or a critical report will arrive within a few in-game months; the clock must stop on its own.
+    await expect(page.getByRole('button', { name: 'Pause' })).toHaveAttribute('aria-pressed', 'true', {
+      timeout: 60_000,
+    });
+  });
+
+  test('a collapse in army loyalty ends in a coup', async ({ page }) => {
+    await patchGame(page, { nation: { approval: 10 }, security: { militaryLoyalty: 0 } });
+    await advanceDays(page, 700);
+    const dialog = page.getByRole('dialog', { name: /Overthrown in a coup|Impeached/ });
+    await expect(dialog).toBeVisible();
+  });
+});

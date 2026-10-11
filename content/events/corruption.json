@@ -1,0 +1,822 @@
+[
+  {
+    "id": "minister-scandal",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Allegations against a minister",
+    "body": "Newspapers allege that a minister has steered contracts to friends and relatives. The opposition wants answers.",
+    "conditions": [
+      {
+        "stat": "maxMinisterCorruption",
+        "op": ">",
+        "value": 45
+      }
+    ],
+    "weight": 0.96,
+    "cooldownDays": 120,
+    "choices": [
+      {
+        "id": "resign",
+        "label": "Demand a resignation",
+        "description": "A corrupt minister goes, and you take a short-term hit.",
+        "outcome": "The minister resigns under pressure. You are praised for acting, though the story lingers.",
+        "effects": [
+          {
+            "type": "scandal",
+            "ministry": "random"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45,
+            "label": "Quick action on scandal"
+          }
+        ]
+      },
+      {
+        "id": "inquiry",
+        "label": "Commission an inquiry",
+        "description": "Costs ₹600 cr; the report lands in six weeks.",
+        "outcome": "An independent inquiry is announced. The opposition calls it a delay.",
+        "cost": 600,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ],
+        "followUp": {
+          "eventId": "inquiry-report",
+          "delayDays": 45
+        }
+      },
+      {
+        "id": "defend",
+        "label": "Stand by the minister",
+        "description": "No cost; the damage grows.",
+        "outcome": "You defend the minister. Public anger grows and corruption feels entrenched.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 120,
+            "label": "Defending a minister"
+          },
+          {
+            "type": "corruption",
+            "delta": 2
+          },
+          {
+            "type": "loyalty",
+            "delta": 2
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "inquiry-report",
+    "category": "corruption",
+    "severity": "info",
+    "title": "Inquiry report delivered",
+    "body": "The independent inquiry has delivered its findings. They are damning: funds were misused and a minister must go.",
+    "weight": 0,
+    "effects": [
+      {
+        "type": "scandal",
+        "ministry": "random"
+      },
+      {
+        "type": "corruption",
+        "delta": -1
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1,
+        "days": 60,
+        "label": "Inquiry accepted"
+      }
+    ]
+  },
+  {
+    "id": "procurement-scam",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Procurement scam exposed",
+    "body": "A leaked audit shows inflated prices on a large defence-supply and infrastructure contract. Bidders cry foul.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 33
+      }
+    ],
+    "weight": 0.54,
+    "cooldownDays": 270,
+    "choices": [
+      {
+        "id": "cancel",
+        "label": "Cancel and re-tender",
+        "description": "Costs ₹1,500 cr in penalties; shows resolve.",
+        "outcome": "The contract is cancelled and re-tendered. The public approves.",
+        "cost": 1500,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "corruption",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "cover",
+        "label": "Let the contract stand",
+        "description": "No cost; rumours of a cover-up.",
+        "outcome": "The contract stands. Whispers of a cover-up follow you.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Procurement scam"
+          },
+          {
+            "type": "corruption",
+            "delta": 3
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "tax-evasion-expose",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Tax evasion exposé",
+    "body": "Investigative reporters reveal that large firms and wealthy families have been hiding income abroad. The Finance ministry is under fire.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 38
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "crackdown",
+        "label": "Order a national crackdown",
+        "description": "Costs ₹1,200 cr; brings in revenue.",
+        "outcome": "Raids and settlements bring billions into the treasury.",
+        "cost": 1200,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.012,
+            "days": 180,
+            "label": "Tax crackdown"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "quiet",
+        "label": "Offer a quiet settlement",
+        "description": "No cost; limited recovery.",
+        "outcome": "A quiet settlement recovers a little. Critics call it an amnesty.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.003,
+            "days": 90,
+            "label": "Settlements"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "whistleblower",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Whistleblower comes forward",
+    "body": "A senior civil servant has gone public with documents about bribe-taking in a ministry and is asking for protection.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 36
+      }
+    ],
+    "weight": 0.42,
+    "cooldownDays": 240,
+    "choices": [
+      {
+        "id": "protect",
+        "label": "Protect the whistleblower and act",
+        "description": "Exposes a minister; allies are unhappy.",
+        "outcome": "The whistleblower is protected and a minister falls. Not everyone in the cabinet is pleased.",
+        "effects": [
+          {
+            "type": "scandal",
+            "ministry": "random"
+          },
+          {
+            "type": "corruption",
+            "delta": -2
+          },
+          {
+            "type": "loyalty",
+            "delta": -3
+          }
+        ]
+      },
+      {
+        "id": "discredit",
+        "label": "Discredit the allegations",
+        "description": "No cost; trust takes a knock.",
+        "outcome": "The allegations are dismissed. The leak becomes its own scandal.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 90
+          },
+          {
+            "type": "corruption",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "anti-corruption-bill",
+    "category": "corruption",
+    "severity": "info",
+    "title": "Anti-corruption bill",
+    "body": "A cross-party group offers a bill to give the anti-corruption agency stronger powers and tougher penalties.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 30
+      }
+    ],
+    "weight": 0.3,
+    "cooldownDays": 600,
+    "choices": [
+      {
+        "id": "pass",
+        "label": "Back the bill",
+        "description": "Costs ₹800 cr; lasting drop in corruption, but ministers resent it.",
+        "outcome": "The bill passes. Officials grumble, and over time bribery gets harder.",
+        "cost": 800,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": -3,
+            "days": null,
+            "label": "Anti-corruption law"
+          },
+          {
+            "type": "loyalty",
+            "delta": -3
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "shelve",
+        "label": "Shelve it for now",
+        "description": "No cost.",
+        "outcome": "You shelve the bill. Campaigners are disappointed.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "land-allotment-scam",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Land allotment scandal",
+    "body": "Prime public land was allotted to well-connected developers at a fraction of its value, say auditors.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 40
+      }
+    ],
+    "weight": 0.42,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "revoke",
+        "label": "Revoke the allotments",
+        "description": "Costs ₹700 cr in legal fees; recovers land.",
+        "outcome": "The allotments are revoked and the land goes back to the public.",
+        "cost": 700,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 60
+          },
+          {
+            "type": "corruption",
+            "delta": -1
+          },
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.004,
+            "days": 180,
+            "label": "Land recovered"
+          }
+        ]
+      },
+      {
+        "id": "review",
+        "label": "Appoint a review committee",
+        "description": "Slow; the story drags on.",
+        "outcome": "A committee is formed. The story drags on for months.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          },
+          {
+            "type": "corruption",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bribery-sting",
+    "category": "corruption",
+    "severity": "good",
+    "title": "Bribery sting succeeds",
+    "body": "Agents posing as contractors caught several senior officials taking bribes on camera. The arrests are front-page news.",
+    "conditions": [
+      {
+        "stat": "efficiency.antiCorruption",
+        "op": ">",
+        "value": 1.05
+      }
+    ],
+    "weight": 0.48,
+    "cooldownDays": 270,
+    "effects": [
+      {
+        "type": "corruption",
+        "delta": -2
+      },
+      {
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": 1.5,
+        "days": 60,
+        "label": "Bribery sting"
+      }
+    ]
+  },
+  {
+    "id": "audit-report",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Audit report finds leakage",
+    "body": "The national audit office reports that a sizeable slice of scheme money never reached its targets.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 35
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "reform",
+        "label": "Digitise payments and tighten checks",
+        "description": "Costs ₹2,000 cr; plugs the leaks over time.",
+        "outcome": "Direct digital payments plug many leaks. The savings take time to show.",
+        "cost": 2000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": -2,
+            "days": 365,
+            "label": "Payment reforms"
+          },
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.006,
+            "days": 270,
+            "label": "Fewer leaks"
+          }
+        ]
+      },
+      {
+        "id": "accept",
+        "label": "Accept the findings and move on",
+        "description": "No cost.",
+        "outcome": "The report is tabled and forgotten.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "agency-overreach",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Anti-corruption agency accused of bias",
+    "body": "Opposition leaders claim the anti-corruption agency is targeting only rivals of the government.",
+    "conditions": [
+      {
+        "stat": "efficiency.antiCorruption",
+        "op": ">",
+        "value": 1.2
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "independence",
+        "label": "Reaffirm its independence",
+        "description": "Credible, but critics stay loud.",
+        "outcome": "You back the agency. Trust in its work holds up.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 60
+          },
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": -1,
+            "days": 180,
+            "label": "Agency credibility"
+          }
+        ]
+      },
+      {
+        "id": "rein-in",
+        "label": "Rein the agency in",
+        "description": "Calms the critics, weakens the fight.",
+        "outcome": "You rein the agency in. Cases slow down and bribery creeps back.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": 2,
+            "days": 180,
+            "label": "Weakened agency"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 45
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ghost-beneficiaries",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Ghost beneficiaries in welfare schemes",
+    "body": "An audit finds millions of rupees paid out every month to people who do not exist.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 35
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "biometric",
+        "label": "Link payments to biometric checks",
+        "description": "Costs ₹2,000 cr; saves money after.",
+        "outcome": "Biometric checks purge the rolls. Savings start to show after a few months.",
+        "cost": 2000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.revenue",
+            "kind": "mult",
+            "value": 0.008,
+            "days": 270,
+            "label": "Welfare savings"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "ignore",
+        "label": "Leave the schemes unchanged",
+        "description": "No cost.",
+        "outcome": "Nothing changes, and the money keeps leaking.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": 1.5,
+            "days": 180,
+            "label": "Scheme leakage"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "lobbying-controversy",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Lobbying controversy",
+    "body": "Emails show a big industry group drafting policy that a ministry then adopted nearly word for word.",
+    "conditions": [
+      {
+        "stat": "maxMinisterCorruption",
+        "op": ">",
+        "value": 40
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 300,
+    "choices": [
+      {
+        "id": "disclosure",
+        "label": "Make lobbying meetings public",
+        "description": "Costs ₹150 cr; cleans up the process.",
+        "outcome": "New disclosure rules shed light on who meets whom.",
+        "cost": 150,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": -1.5,
+            "days": 365,
+            "label": "Lobbying disclosure"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 0.5,
+            "days": 45
+          }
+        ]
+      },
+      {
+        "id": "deny",
+        "label": "Dismiss it as routine consultation",
+        "description": "No cost; a lingering stain.",
+        "outcome": "You call it routine. The stain lingers.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 60
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bridge-collapse",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Bridge collapse in the {region}",
+    "body": "A newly built bridge in the {region} collapsed within a year of opening. Locals allege that cement and steel were skimped on.",
+    "scope": "region",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 38
+      }
+    ],
+    "weight": 0.36,
+    "cooldownDays": 200,
+    "choices": [
+      {
+        "id": "blacklist",
+        "label": "Blacklist the contractor and rebuild",
+        "description": "Costs ₹1,000 cr; accountability.",
+        "outcome": "The contractor is blacklisted and the bridge is rebuilt properly.",
+        "cost": 1000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "unrest",
+            "delta": -3
+          },
+          {
+            "type": "corruption",
+            "delta": -1
+          }
+        ]
+      },
+      {
+        "id": "inquire",
+        "label": "Order an inquiry",
+        "description": "No cost; anger remains.",
+        "outcome": "An inquiry is ordered. Locals do not expect much.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 60,
+            "label": "Bridge collapse"
+          },
+          {
+            "type": "unrest",
+            "delta": 5
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "campaign-finance-expose",
+    "category": "corruption",
+    "severity": "warning",
+    "title": "Secret donations exposed",
+    "body": "Records show anonymous donations to ruling-circle groups just before key policy decisions.",
+    "conditions": [
+      {
+        "stat": "corruption",
+        "op": ">",
+        "value": 42
+      }
+    ],
+    "weight": 0.3,
+    "cooldownDays": 360,
+    "choices": [
+      {
+        "id": "transparency",
+        "label": "Introduce donation transparency",
+        "description": "Cleans up politics at some political cost.",
+        "outcome": "New rules force parties to disclose donors. Backers are unhappy.",
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.corruption",
+            "kind": "add",
+            "value": -2,
+            "days": 365,
+            "label": "Donation transparency"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 60
+          },
+          {
+            "type": "loyalty",
+            "delta": -2
+          }
+        ]
+      },
+      {
+        "id": "stonewall",
+        "label": "Stonewall",
+        "description": "No cost.",
+        "outcome": "You stonewall the questions. The press keeps digging.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -2,
+            "days": 75
+          },
+          {
+            "type": "corruption",
+            "delta": 1
+          }
+        ]
+      }
+    ]
+  }
+]

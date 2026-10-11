@@ -3,10 +3,15 @@ import { annualReportSystem } from './annualReport';
 import { approvalSystem } from './approval';
 import { cabinetSystem, candidateRefreshSystem } from './cabinet';
 import { economySystem } from './economy';
+import { eventsSystem } from './events';
 import { fiscalSystem } from './fiscal';
 import { historySystem } from './history';
+import { investigationSystem } from './investigations';
+import { leadershipSystem } from './leadership';
 import { modifierExpirySystem } from './modifierExpiry';
 import { societySystem } from './society';
+import { plotSystem, terrorSystem } from './terror';
+import { unrestSystem } from './unrest';
 
 /**
  * Fixed execution order. Changing it changes outcomes for a given seed,
@@ -18,7 +23,13 @@ export const SYSTEMS: readonly System[] = [
   economySystem,
   fiscalSystem,
   societySystem,
+  unrestSystem,
+  terrorSystem,
+  plotSystem,
+  leadershipSystem,
+  investigationSystem,
   cabinetSystem,
+  eventsSystem,
   approvalSystem,
   historySystem,
   annualReportSystem,
