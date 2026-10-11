@@ -40,11 +40,49 @@ select {
   box-shadow: var(--focus-ring);
 }
 
+/* Reduced motion: follows the OS ("system", the default) unless the player forces it on or off in Settings. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  :root:not([data-motion='full']) *,
+  :root:not([data-motion='full']) *::before,
+  :root:not([data-motion='full']) *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* The control the tutorial is pointing at. */
+[data-tutorial='true'] {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 2px var(--saffron);
+  animation: tutorial-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tutorial-pulse {
+  50% {
+    box-shadow: 0 0 0 5px var(--saffron-soft);
+  }
+}
+
+/* Keyboard shortcut hints, e.g. "F1" or "Space". */
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 var(--space-1);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font: 600 12px/1.6 var(--font-sans);
+  text-align: center;
+  color: var(--text);
+  background: var(--surface);
 }

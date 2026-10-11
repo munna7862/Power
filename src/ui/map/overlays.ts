@@ -6,6 +6,7 @@ import {
   type CountryContent,
   type DiplomacyState,
 } from '../../sim';
+import { t } from '../i18n';
 
 /** The slice of the game the map reads, so it only redraws when this changes. */
 export interface MapWorld {
@@ -16,15 +17,27 @@ export interface MapWorld {
 export const OVERLAYS = ['relation', 'power', 'trade', 'war'] as const;
 export type OverlayId = (typeof OVERLAYS)[number];
 
-export const OVERLAY_LABELS: Record<OverlayId, string> = {
-  relation: 'Relation',
-  power: 'Power',
-  trade: 'Trade',
-  war: 'War',
-};
+export type LegendId =
+  | 'hostile'
+  | 'cool'
+  | 'neutral'
+  | 'friendly'
+  | 'closeFriend'
+  | 'small'
+  | 'middle'
+  | 'great'
+  | 'contract'
+  | 'embassy'
+  | 'sanctioned'
+  | 'noTies'
+  | 'atWar'
+  | 'crisis'
+  | 'sanctionsIndia'
+  | 'calm';
 
+/** A legend entry: its text is world.legend.<id> in i18n. */
 export interface LegendItem {
-  label: string;
+  id: LegendId;
   colour: string;
 }
 
@@ -36,29 +49,29 @@ const mix = (colour: string, amount: number) =>
 
 export const OVERLAY_LEGENDS: Record<OverlayId, LegendItem[]> = {
   relation: [
-    { label: 'Hostile', colour: mix('--danger', 80) },
-    { label: 'Cool', colour: mix('--danger', 35) },
-    { label: 'Neutral', colour: NEUTRAL },
-    { label: 'Friendly', colour: mix('--green', 40) },
-    { label: 'Close friend', colour: mix('--green', 80) },
+    { id: 'hostile', colour: mix('--danger', 80) },
+    { id: 'cool', colour: mix('--danger', 35) },
+    { id: 'neutral', colour: NEUTRAL },
+    { id: 'friendly', colour: mix('--green', 40) },
+    { id: 'closeFriend', colour: mix('--green', 80) },
   ],
   power: [
-    { label: 'Small', colour: mix('--chakra', 15) },
-    { label: 'Middle', colour: mix('--chakra', 45) },
-    { label: 'Great power', colour: mix('--chakra', 85) },
+    { id: 'small', colour: mix('--chakra', 15) },
+    { id: 'middle', colour: mix('--chakra', 45) },
+    { id: 'great', colour: mix('--chakra', 85) },
   ],
   trade: [
-    { label: 'Trade contract', colour: mix('--green', 75) },
-    { label: 'Embassy', colour: mix('--chakra', 45) },
-    { label: 'Sanctioned', colour: mix('--danger', 70) },
-    { label: 'No ties', colour: NEUTRAL },
+    { id: 'contract', colour: mix('--green', 75) },
+    { id: 'embassy', colour: mix('--chakra', 45) },
+    { id: 'sanctioned', colour: mix('--danger', 70) },
+    { id: 'noTies', colour: NEUTRAL },
   ],
   war: [
-    { label: 'At war with India', colour: mix('--danger', 85) },
-    { label: 'Crisis between states', colour: mix('--warning', 70) },
-    { label: 'Sanctions India', colour: mix('--saffron', 55) },
-    { label: 'Hostile', colour: mix('--danger', 28) },
-    { label: 'Calm', colour: NEUTRAL },
+    { id: 'atWar', colour: mix('--danger', 85) },
+    { id: 'crisis', colour: mix('--warning', 70) },
+    { id: 'sanctionsIndia', colour: mix('--saffron', 55) },
+    { id: 'hostile', colour: mix('--danger', 28) },
+    { id: 'calm', colour: NEUTRAL },
   ],
 };
 
@@ -106,20 +119,16 @@ export function overlayValue(state: MapWorld, c: CountryContent, overlay: Overla
   const cs = state.diplomacy.countries[c.id];
   switch (overlay) {
     case 'relation':
-      return `Relation ${Math.round(cs?.relation ?? 0)}`;
+      return t('world.tip.relation', { value: Math.round(cs?.relation ?? 0) });
     case 'power':
-      return `Power ${Math.round(c.power)}`;
+      return t('world.tip.power', { value: Math.round(c.power) });
     case 'trade': {
-      const n = state.diplomacy.treaties.filter((t) => t.type === 'trade' && t.parties.includes(c.id)).length;
-      return cs?.sanctioned
-        ? 'Sanctioned by India'
-        : n > 0
-          ? `${n} trade contract${n === 1 ? '' : 's'}`
-          : 'No trade contract';
+      const n = state.diplomacy.treaties.filter((x) => x.type === 'trade' && x.parties.includes(c.id)).length;
+      return cs?.sanctioned ? t('world.tip.sanctioned') : t('world.tip.contracts', { count: n });
     }
     case 'war':
-      if (state.military.wars.some((w) => w.rival === c.id)) return 'At war with India';
-      if (countriesInConflict(state).has(c.id)) return 'In a regional crisis';
-      return sanctionsIndia(state, c.id) ? 'Sanctions India' : 'No conflict';
+      if (state.military.wars.some((w) => w.rival === c.id)) return t('world.legend.atWar');
+      if (countriesInConflict(state).has(c.id)) return t('world.tip.crisis');
+      return sanctionsIndia(state, c.id) ? t('world.legend.sanctionsIndia') : t('world.tip.noConflict');
   }
 }

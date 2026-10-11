@@ -452,6 +452,11 @@
   align-items: start;
 }
 
+/* Let the table column shrink and scroll instead of spilling into the next panel at large UI sizes. */
+.unrestLayout > * {
+  min-width: 0;
+}
+
 .mapFigure {
   margin: 0;
 }
@@ -675,4 +680,20 @@
     grid-template-columns: 1fr;
     gap: 4px;
   }
+}
+
+.victory,
+.defeat {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.victory {
+  color: var(--green);
+}
+
+.defeat {
+  color: var(--danger);
 }

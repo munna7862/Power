@@ -1,12 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RIVAL_CONTENT } from '../../sim';
 import { gameStore, useGame, type ViewId } from '../../store';
 import { useGameLoop } from '../hooks/useGameLoop';
+import { HandbookModal } from '../handbook/HandbookModal';
 import { ViewIcon } from '../icons';
 import { GameMenuModal } from '../modals/GameMenuModal';
 import { DecisionModal } from '../modals/DecisionModal';
 import { Button } from '../design/primitives';
 import { GameOverModal } from '../modals/GameOverModal';
+import { useShortcuts, VIEW_KEYS } from '../shortcuts';
+import { TutorialCoach } from '../tutorial/TutorialCoach';
+import { useTutorialTarget } from '../tutorial/tutorialStore';
 import { BudgetView } from '../views/BudgetView';
 import { CabinetView } from '../views/CabinetView';
 import { DashboardView } from '../views/DashboardView';
@@ -17,7 +22,7 @@ import { SecurityView } from '../views/SecurityView';
 import { WorldView } from '../views/WorldView';
 import { EconomyView } from '../views/EconomyView';
 import { ReportsView } from '../views/ReportsView';
-import { VIEW_LABELS, VIEWS } from '../views/viewLabels';
+import { VIEWS } from '../views/viewLabels';
 import styles from './game.module.css';
 import { TopBar } from './TopBar';
 
@@ -47,47 +52,44 @@ function ActiveView({ view }: { view: ViewId }) {
 }
 
 export function GameScreen() {
+  const { t } = useTranslation();
   const view = useGame((s) => s.view);
   const unread = useGame((s) => s.game?.log.filter((e) => !e.read).length ?? 0);
   const waiting = useGame((s) => s.game?.events.pending ?? []);
   const wars = useGame((s) => s.game?.military.wars ?? []);
   const offers = useGame((s) => s.game?.diplomacy.offers.length ?? 0);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const target = useTutorialTarget();
+  const [modal, setModal] = useState<'menu' | 'handbook' | null>(null);
   useGameLoop();
 
-  // Space toggles pause, unless the player is typing or a dialog is open.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.code !== 'Space' || menuOpen) return;
-      const target = e.target as HTMLElement | null;
-      if (target?.closest('input, textarea, select, button, [role="dialog"]')) return;
-      e.preventDefault();
-      gameStore.getState().togglePause();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [menuOpen]);
-
-  const openMenu = () => {
+  const openMenu = useCallback(() => {
     gameStore.getState().setSpeed(0);
-    setMenuOpen(true);
-  };
+    setModal('menu');
+  }, []);
+  const openHandbook = useCallback(() => {
+    gameStore.getState().setSpeed(0);
+    setModal('handbook');
+  }, []);
+  useShortcuts({ openMenu, openHandbook, blocked: modal !== null });
 
   return (
     <div className={styles.shell}>
-      <TopBar onOpenMenu={openMenu} />
+      <TopBar onOpenMenu={openMenu} onOpenHandbook={openHandbook} />
 
-      <nav className={styles.nav} aria-label="Sections" data-testid="nav">
+      <nav className={styles.nav} aria-label={t('nav.label')} data-testid="nav">
         {VIEWS.map((v) => (
           <button
             key={v}
             type="button"
             className={styles.navItem}
             aria-current={view === v ? 'page' : undefined}
+            aria-keyshortcuts={VIEW_KEYS[v]}
+            title={t('nav.shortcut', { key: VIEW_KEYS[v] })}
+            data-tutorial={target === v || undefined}
             onClick={() => gameStore.getState().setView(v)}
           >
             <ViewIcon view={v} className={styles.navIcon} />
-            {VIEW_LABELS[v]}
+            {t(`nav.views.${v}`)}
             {v === 'inbox' && unread > 0 && (
               <span className={styles.navBadge} aria-hidden="true">
                 {unread}
@@ -99,10 +101,13 @@ export function GameScreen() {
 
       <main className={styles.main}>
         {waiting.length > 0 && (
-          <div className={styles.alertBar} role="region" aria-label="Pending decisions">
-            <span>
-              {waiting.length} decision{waiting.length === 1 ? '' : 's'} awaiting the President
-            </span>
+          <div
+            className={styles.alertBar}
+            role="region"
+            aria-label={t('alerts.decisionsLabel')}
+            data-tutorial={target === 'decisions' || undefined}
+          >
+            <span>{t('alerts.decisions', { count: waiting.length })}</span>
             <Button
               variant="primary"
               onClick={() => {
@@ -110,34 +115,36 @@ export function GameScreen() {
                 gameStore.getState().openDecision(waiting[0]?.id ?? null);
               }}
             >
-              Review
+              {t('alerts.review')}
             </Button>
           </div>
         )}
         {offers > 0 && view !== 'diplomacy' && (
-          <div className={styles.alertBar} role="region" aria-label="Diplomatic offers">
-            <span>
-              {offers} diplomatic offer{offers === 1 ? '' : 's'} awaiting an answer
-            </span>
+          <div className={styles.alertBar} role="region" aria-label={t('alerts.offersLabel')}>
+            <span>{t('alerts.offers', { count: offers })}</span>
             <Button variant="primary" onClick={() => gameStore.getState().setView('diplomacy')}>
-              Diplomacy
+              {t('nav.views.diplomacy')}
             </Button>
           </div>
         )}
         {wars.length > 0 && view !== 'military' && (
-          <div className={styles.alertBar} role="region" aria-label="War">
-            <span>At war with {wars.map((w) => RIVAL_CONTENT[w.rival].name).join(' and ')}</span>
+          <div className={styles.alertBar} role="region" aria-label={t('alerts.warLabel')}>
+            <span>
+              {t('alerts.war', { countries: wars.map((w) => RIVAL_CONTENT[w.rival].name).join(t('common.and')) })}
+            </span>
             <Button variant="primary" onClick={() => gameStore.getState().setView('military')}>
-              War room
+              {t('alerts.warRoom')}
             </Button>
           </div>
         )}
         <ActiveView view={view} />
       </main>
 
-      {menuOpen && <GameMenuModal onClose={() => setMenuOpen(false)} />}
+      {modal === 'menu' && <GameMenuModal onClose={() => setModal(null)} />}
+      {modal === 'handbook' && <HandbookModal onClose={() => setModal(null)} />}
       <DecisionModal />
       <GameOverModal />
+      <TutorialCoach />
     </div>
   );
 }

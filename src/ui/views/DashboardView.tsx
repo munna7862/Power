@@ -1,14 +1,17 @@
 import { Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  APPROVAL_FACTOR_LABELS,
   APPROVAL_FACTORS,
   APPROVAL_WEIGHTS,
   approvalTarget,
   debtToGdp,
+  electionYear,
   formatDate,
   formatMonth,
+  reelectionApproval,
   TERM_YEARS,
   topIssues,
+  voterFatigue,
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
 import { LineChart } from '../charts/LineChart';
@@ -22,6 +25,7 @@ const TERM_DAYS = Math.round(TERM_YEARS * 365.25);
 const satisfactionColour = (v: number) => (v >= 60 ? 'var(--green)' : v >= 40 ? 'var(--warning)' : 'var(--danger)');
 
 export function DashboardView() {
+  const { t } = useTranslation();
   const game = useGame((s) => s.game);
   if (!game) return null;
 
@@ -34,53 +38,66 @@ export function DashboardView() {
   const termYear = Math.min(TERM_YEARS, Math.floor(clock.tick / 365.25) + 1);
   const { dispatch } = gameStore.getState();
   const recent = history.slice(-24);
+  const needed = reelectionApproval(game);
+  const fatigue = voterFatigue(game);
+  const tiles = [
+    { id: 'growth', value: pct(economy.realGrowth) },
+    { id: 'inflation', value: pct(economy.inflation) },
+    { id: 'unemployment', value: pct(economy.unemployment) },
+    { id: 'debt', value: pct(debtToGdp(economy), 0) },
+  ] as const;
 
   return (
     <>
       <div className={styles.viewHeader}>
         <div>
-          <h1 className={styles.viewTitle}>Dashboard</h1>
-          <p className={styles.viewSubtitle}>President {meta.presidentName}</p>
+          <h1 className={styles.viewTitle}>{t('nav.views.dashboard')}</h1>
+          <p className={styles.viewSubtitle}>{t('dashboard.subtitle', { name: meta.presidentName })}</p>
         </div>
       </div>
 
       <div className={styles.grid}>
         <Panel
-          title="Public approval"
+          title={t('dashboard.approval')}
           className={styles.span4}
           actions={
-            <Tooltip label="Why?">
+            <Tooltip label={t('common.why')}>
               <span className={styles.breakdown}>
-                <span className={styles.breakdownHeading}>Voters score (weight)</span>
+                <span className={styles.breakdownHeading}>{t('dashboard.votersScore')}</span>
                 {APPROVAL_FACTORS.map((f) => (
                   <Fragment key={f}>
                     <span>
-                      {APPROVAL_FACTOR_LABELS[f]} ({Math.round(APPROVAL_WEIGHTS[f] * 100)}%)
+                      {t('dashboard.factorWeight', {
+                        factor: t(`dashboard.factors.${f}`),
+                        weight: Math.round(APPROVAL_WEIGHTS[f] * 100),
+                      })}
                     </span>
                     <span className={styles.breakdownValue}>{Math.round(politics.satisfaction[f])}</span>
                   </Fragment>
                 ))}
-                {target.breakdown.length > 0 && <span className={styles.breakdownHeading}>Adjustments</span>}
+                {target.breakdown.length > 0 && (
+                  <span className={styles.breakdownHeading}>{t('dashboard.adjustments')}</span>
+                )}
                 {target.breakdown.map((line, i) => (
                   <Fragment key={`${line.source}-${i}`}>
                     <span>{line.label}</span>
                     <span className={styles.breakdownValue}>{signed(line.value)}</span>
                   </Fragment>
                 ))}
-                <span>Approval is heading to</span>
+                <span>{t('dashboard.heading')}</span>
                 <span className={styles.breakdownValue}>{target.total.toFixed(1)}%</span>
               </span>
             </Tooltip>
           }
         >
-          <Gauge value={nation.approval} label="Approval of the President" />
+          <Gauge value={nation.approval} label={t('dashboard.approvalGauge')} />
         </Panel>
 
-        <Panel title="Top issues" className={styles.span4}>
-          <ul className={viewStyles.issues} aria-label="Top issues">
+        <Panel title={t('dashboard.topIssues')} className={styles.span4}>
+          <ul className={viewStyles.issues} aria-label={t('dashboard.topIssues')}>
             {issues.map((f) => (
               <li key={f} className={viewStyles.issue}>
-                <span>{APPROVAL_FACTOR_LABELS[f]}</span>
+                <span>{t(`dashboard.factors.${f}`)}</span>
                 <span className={viewStyles.muted}>{Math.round(politics.satisfaction[f])}/100</span>
                 <span className={viewStyles.meter} aria-hidden="true">
                   <span
@@ -94,68 +111,77 @@ export function DashboardView() {
               </li>
             ))}
           </ul>
-          <p className={viewStyles.note}>The three things voters are least happy with.</p>
+          <p className={viewStyles.note}>{t('dashboard.topIssuesNote')}</p>
         </Panel>
 
-        <Panel title="Term" className={styles.span4}>
-          <Stat label={`Year ${termYear} of ${TERM_YEARS}`} value={`${Math.round(termProgress * 100)}%`} />
-          <div
-            className={styles.progress}
-            role="progressbar"
-            aria-label="Term progress"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={Math.round(termProgress * 100)}
-          >
-            <div className={styles.progressFill} style={{ width: `${termProgress * 100}%` }} />
-          </div>
-          <p className={styles.muted}>Took office {formatDate(meta.startDate)}</p>
+        <Panel title={t('dashboard.term')} className={styles.span4}>
+          {meta.endless ? (
+            <Stat label={t('dashboard.endless')} value={t('dashboard.secondTerm')} />
+          ) : (
+            <>
+              <Stat
+                label={t('dashboard.year', { year: termYear, total: TERM_YEARS })}
+                value={`${Math.round(termProgress * 100)}%`}
+              />
+              <div
+                className={styles.progress}
+                role="progressbar"
+                aria-label={t('dashboard.termProgress')}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(termProgress * 100)}
+              >
+                <div className={styles.progressFill} style={{ width: `${termProgress * 100}%` }} />
+              </div>
+            </>
+          )}
+          <p className={styles.muted} data-testid="election-note">
+            {meta.endless
+              ? t('dashboard.endlessNote')
+              : t('dashboard.election', { year: electionYear(game), approval: needed })}
+          </p>
+          {fatigue < 0 && <p className={styles.muted}>{t('dashboard.fatigue', { points: -fatigue })}</p>}
+          <p className={styles.muted}>{t('dashboard.tookOffice', { date: formatDate(meta.startDate) })}</p>
         </Panel>
 
         <div className={`${styles.span12} ${viewStyles.tiles}`}>
-          {[
-            { label: 'Real growth', value: pct(economy.realGrowth) },
-            { label: 'Inflation', value: pct(economy.inflation) },
-            { label: 'Unemployment', value: pct(economy.unemployment) },
-            { label: 'Debt (% of GDP)', value: pct(debtToGdp(economy), 0) },
-          ].map((t) => (
-            <div key={t.label} className={viewStyles.tile}>
-              <span className={viewStyles.tileLabel}>{t.label}</span>
-              <span className={viewStyles.tileValue}>{t.value}</span>
+          {tiles.map((tile) => (
+            <div key={tile.id} className={viewStyles.tile}>
+              <span className={viewStyles.tileLabel}>{t(`gameOver.stats.${tile.id}`)}</span>
+              <span className={viewStyles.tileValue}>{tile.value}</span>
             </div>
           ))}
         </div>
 
-        <Panel title="Treasury" className={styles.span4}>
+        <Panel title={t('topbar.treasury')} className={styles.span4}>
           <Stat
-            label="Cash balance"
+            label={t('dashboard.cash')}
             value={formatCrore(nation.treasury)}
             testId="dashboard-treasury"
             {...(lastMonth && {
-              delta: `${formatCroreDelta(lastMonth.balance)} in ${formatMonth(lastMonth.month)}`,
+              delta: t('dashboard.monthDelta', {
+                delta: formatCroreDelta(lastMonth.balance),
+                month: formatMonth(lastMonth.month),
+              }),
               deltaTone: lastMonth.balance >= 0 ? 'positive' : 'negative',
             })}
           />
-          {!lastMonth && <p className={styles.muted}>The first monthly settlement arrives on the 1st of next month.</p>}
+          {!lastMonth && <p className={styles.muted}>{t('dashboard.firstSettlement')}</p>}
           {lastMonth && (
-            <p className={styles.muted}>
-              {lastMonth.balance < 0
-                ? 'Deficits are covered by borrowing.'
-                : 'Surplus cash above the reserve repays debt.'}
-            </p>
+            <p className={styles.muted}>{lastMonth.balance < 0 ? t('dashboard.deficit') : t('dashboard.surplus')}</p>
           )}
         </Panel>
 
-        <Panel title="Trends (last 2 years)" className={styles.span8}>
+        <Panel title={t('dashboard.trends')} className={styles.span8}>
           <div className={viewStyles.charts}>
             <LineChart
-              title="Real GDP growth"
+              title={t('dashboard.growthChart')}
               data={recent.map((h) => ({ label: formatMonth(h.month), value: h.realGrowth }))}
               format={(v) => pct(v)}
               height={110}
             />
             <LineChart
-              title="Monthly budget balance"
+              title={t('dashboard.balanceChart')}
               data={recent.map((h) => ({ label: formatMonth(h.month), value: h.balance }))}
               format={formatCrore}
               height={110}
@@ -164,16 +190,16 @@ export function DashboardView() {
         </Panel>
 
         <Panel
-          title="Presidential inbox"
+          title={t('dashboard.inbox')}
           className={styles.span12}
           actions={
             unread > 0 && (
               <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <span className={styles.unreadBadge} aria-label={`${unread} unread`}>
+                <span className={styles.unreadBadge} aria-label={t('dashboard.unread', { count: unread })}>
                   {unread}
                 </span>
                 <Button variant="ghost" onClick={() => dispatch({ type: 'MARK_ALL_LOG_READ' })}>
-                  Mark all read
+                  {t('inbox.markAll')}
                 </Button>
               </span>
             )

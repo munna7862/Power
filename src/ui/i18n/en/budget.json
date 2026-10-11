@@ -1,0 +1,33 @@
+{
+  "budget": {
+    "subtitle": "One budget a month. Taxes move at most {{step}} points per budget.",
+    "taxes": "Taxes",
+    "legal": "legal {{min}}–{{max}}",
+    "projected": "Projected month",
+    "item": "Item",
+    "now": "Now",
+    "proposed": "Proposed",
+    "rows": {
+      "income": "Income tax",
+      "corporate": "Corporate tax",
+      "gst": "GST",
+      "customs": "Customs duty",
+      "nonTax": "Non-tax revenue",
+      "totalRevenue": "Total revenue",
+      "ministries": "Ministries",
+      "establishment": "Pensions & salaries",
+      "interest": "Interest on debt",
+      "totalSpending": "Total spending",
+      "balance": "Monthly balance"
+    },
+    "deficit": "Deficit (% of GDP)",
+    "approval": "Approval: {{now}} now from the announcement, {{later}} in the long run.",
+    "funding": "Ministry funding (% of the standard allocation)",
+    "fundingOf": "{{ministry}} funding",
+    "perYear": "{{value}}/yr",
+    "spendingPerYear": "Spending per year",
+    "nextDate": "Next budget can be enacted on {{date}}.",
+    "reset": "Reset",
+    "enact": "Enact budget"
+  }
+}

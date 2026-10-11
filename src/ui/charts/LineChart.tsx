@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState, type PointerEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './charts.module.css';
 
 export interface Point {
@@ -33,6 +34,7 @@ function niceTicks(min: number, max: number, count = 3): number[] {
  * grid, 2px line, and a crosshair that snaps to the nearest month with a tooltip.
  */
 export function LineChart({ title, data, format, height = 140, zeroBased = false }: LineChartProps) {
+  const { t } = useTranslation();
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(320);
   const [hover, setHover] = useState<number | null>(null);
@@ -58,7 +60,7 @@ export function LineChart({ title, data, format, height = 140, zeroBased = false
       <figure className={styles.chart} aria-label={title}>
         {header}
         <div ref={ref} className={styles.plot} style={{ height }}>
-          <div className={styles.empty}>Charts fill in as months pass</div>
+          <div className={styles.empty}>{t('charts.empty')}</div>
         </div>
       </figure>
     );
@@ -91,7 +93,10 @@ export function LineChart({ title, data, format, height = 140, zeroBased = false
   const tooltipLeft = hover === null ? 0 : Math.min(Math.max(x(hover) - 60, 0), width - 130);
 
   return (
-    <figure className={styles.chart} aria-label={`${title}, latest ${latest ? format(latest.value) : ''}`}>
+    <figure
+      className={styles.chart}
+      aria-label={t('charts.latest', { title, value: latest ? format(latest.value) : '' })}
+    >
       {header}
       <div ref={ref} className={styles.plot} style={{ height }}>
         <svg width={width} height={height} onPointerMove={onMove} onPointerLeave={() => setHover(null)} role="img">

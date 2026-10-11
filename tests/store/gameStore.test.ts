@@ -9,6 +9,8 @@ let clock = 0;
 const testShell: Shell = {
   canQuit: false,
   quit: () => undefined,
+  canFullscreen: false,
+  toggleFullscreen: () => undefined,
   nowIso: () => new Date(Date.UTC(2026, 9, 11, 0, 0, clock++)).toISOString(),
   currentYear: () => 2026,
 };

@@ -1,4 +1,5 @@
 import { groupIndian } from '../sim';
+import { t } from './i18n';
 
 const LAKH_CRORE = 100_000;
 
@@ -6,9 +7,9 @@ const LAKH_CRORE = 100_000;
 export function formatCrore(value: number): string {
   const sign = value < 0 ? '−' : '';
   const abs = Math.abs(value);
-  if (abs >= 100 * LAKH_CRORE) return `${sign}₹${(abs / LAKH_CRORE).toFixed(0)} lakh cr`;
-  if (abs >= LAKH_CRORE) return `${sign}₹${(abs / LAKH_CRORE).toFixed(2)} lakh cr`;
-  return `${sign}₹${groupIndian(abs)} cr`;
+  if (abs >= 100 * LAKH_CRORE) return t('units.lakhCrore', { sign, value: (abs / LAKH_CRORE).toFixed(0) });
+  if (abs >= LAKH_CRORE) return t('units.lakhCrore', { sign, value: (abs / LAKH_CRORE).toFixed(2) });
+  return t('units.crore', { sign, value: groupIndian(abs) });
 }
 
 /** Signed change, e.g. "+₹4,812 cr" or "−₹1.20 lakh cr". */
@@ -29,7 +30,7 @@ export function pct(fraction: number, digits = 1): string {
 /** A change in a rate as signed percentage points: 0.003 → "+0.3 pts". */
 export function pts(fraction: number, digits = 1): string {
   const value = (fraction * 100).toFixed(digits);
-  return `${fraction >= 0 ? '+' : '−'}${value.replace('-', '')} pts`;
+  return t('units.points', { sign: fraction >= 0 ? '+' : '−', value: value.replace('-', '') });
 }
 
 /** Signed whole number, for approval points: 2 → "+2", −1.5 → "−1.5". */
@@ -40,5 +41,5 @@ export function signed(value: number, digits = 1): string {
 
 export function formatSavedAt(iso: string): string {
   const date = new Date(iso);
-  return Number.isNaN(date.getTime()) ? 'Unknown time' : date.toLocaleString();
+  return Number.isNaN(date.getTime()) ? t('common.unknownTime') : date.toLocaleString();
 }

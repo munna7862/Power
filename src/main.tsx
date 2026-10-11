@@ -1,6 +1,7 @@
 import '@fontsource-variable/inter';
 import './ui/design/tokens.css';
 import './ui/design/global.css';
+import './ui/i18n';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { raiseEvent, startWar, type RegionId, type RivalId } from './sim';

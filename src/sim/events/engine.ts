@@ -26,6 +26,9 @@ export const MAX_PENDING = 6;
 export const MAX_REPEATS = 2;
 export const REPEAT_WINDOW_DAYS = Math.round(TERM_YEARS * 365.25);
 
+/** In a tutorial game no random event fires in the first week, so the practice decision arrives undisturbed. */
+export const TUTORIAL_QUIET_DAYS = 7;
+
 /** Random fires of an event within the repeat window ending today. */
 export function recentFires(state: Pick<GameState, 'events' | 'clock'>, eventId: string): number[] {
   const since = state.clock.tick - REPEAT_WINDOW_DAYS;
@@ -205,7 +208,8 @@ function regionCandidates(state: GameState, def: EventContent): { region: Region
  */
 export function rollDailyEvent(state: GameState, rng: Rng): GameState {
   const frequency = EVENT_DIFFICULTY[state.meta.difficulty].frequency;
-  const open = state.events.pending.length < MAX_PENDING;
+  const quiet = state.meta.options.tutorial && state.clock.tick < TUTORIAL_QUIET_DAYS;
+  const open = state.events.pending.length < MAX_PENDING && !quiet;
   let fired = false;
   let next = state;
   for (const def of EVENT_LIST) {

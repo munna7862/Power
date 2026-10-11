@@ -1,0 +1,65 @@
+{
+  "tutorial": {
+    "label": "Tutorial",
+    "progress": "Tutorial · step {{step}} of {{total}}",
+    "next": "Next",
+    "skip": "Skip tutorial",
+    "finish": "Take office",
+    "steps": {
+      "welcome": {
+        "title": "Welcome, {{name}}",
+        "body": "You have five years. The clock is paused while you look around. This short tour covers your first month: the budget, the cabinet, decisions and the world map."
+      },
+      "approval": {
+        "title": "Approval is everything",
+        "body": "The gauge shows how the public rates you. Hover “Why?” to see what voters score and every modifier pushing it up or down. Fall too low for too long and Parliament impeaches you."
+      },
+      "budget": {
+        "title": "Open the budget",
+        "body": "Money drives everything else. Taxes fill the treasury; ministries spend it.",
+        "hint": "Click Budget in the side menu (or press F4)."
+      },
+      "budgetExplain": {
+        "title": "Taxes and allocations",
+        "body": "Move the sliders and the forecast updates before you commit. Higher taxes raise revenue but cost approval and growth; underfunded ministries work badly. A new budget can be enacted at most once every 30 days."
+      },
+      "cabinet": {
+        "title": "Meet your cabinet",
+        "body": "Ministers run the ministries for you.",
+        "hint": "Click Cabinet in the side menu (or press F5)."
+      },
+      "cabinetExplain": {
+        "title": "Competence, loyalty, corruption",
+        "body": "Competent ministers make every rupee go further. Loyal ones protect you from coups. Corrupt ones leak money and cause scandals. New candidates arrive every January."
+      },
+      "clock": {
+        "title": "Start the clock",
+        "body": "Time moves one day per second at 1×. The clock pauses by itself when something needs you.",
+        "hint": "Press Space, or click 1× in the top bar."
+      },
+      "decisionWait": {
+        "title": "Your first briefing",
+        "body": "Within a few days your advisers will bring you a decision. Watch the top bar: the date is moving.",
+        "hint": "Let the clock run until the briefing arrives."
+      },
+      "decisionMake": {
+        "title": "Make the call",
+        "body": "Each choice lists exactly what it will do. If you let the deadline pass, the default choice is applied and crises cost you approval for looking indecisive.",
+        "hint": "Click Review on the banner and choose."
+      },
+      "world": {
+        "title": "The world stage",
+        "body": "Other nations watch India. Trade contracts, pacts and embassies are made on the World and Diplomacy screens.",
+        "hint": "Click World in the side menu (or press F8)."
+      },
+      "handbook": {
+        "title": "The Constitution",
+        "body": "Every number in the game is explained in the handbook. Open it any time with the ? button or by pressing H."
+      },
+      "done": {
+        "title": "The nation is yours",
+        "body": "On 1 January {{year}} the voters decide: you need {{approval}}% approval to win a second term, and voter fatigue grows each year. Good luck, President."
+      }
+    }
+  }
+}

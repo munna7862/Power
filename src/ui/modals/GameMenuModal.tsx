@@ -1,30 +1,37 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gameStore } from '../../store';
 import { Button, Modal } from '../design/primitives';
+import { HandbookModal } from '../handbook/HandbookModal';
 import styles from '../screens/screens.module.css';
 import { SaveLoadModal } from './SaveLoadModal';
 import { SettingsModal } from './SettingsModal';
 
 export function GameMenuModal({ onClose }: { onClose: () => void }) {
-  const [sub, setSub] = useState<'save' | 'load' | 'settings' | null>(null);
+  const { t } = useTranslation();
+  const [sub, setSub] = useState<'save' | 'load' | 'settings' | 'handbook' | null>(null);
 
   if (sub === 'save' || sub === 'load') return <SaveLoadModal mode={sub} onClose={onClose} />;
   if (sub === 'settings') return <SettingsModal onClose={onClose} />;
+  if (sub === 'handbook') return <HandbookModal onClose={onClose} />;
 
   return (
-    <Modal title="Game menu" onClose={onClose}>
+    <Modal title={t('gameMenu.title')} onClose={onClose}>
       <div className={styles.menuButtons}>
         <Button block onClick={() => setSub('save')}>
-          Save game
+          {t('gameMenu.save')}
         </Button>
         <Button block onClick={() => setSub('load')}>
-          Load game
+          {t('gameMenu.load')}
+        </Button>
+        <Button block onClick={() => setSub('handbook')}>
+          {t('gameMenu.handbook')}
         </Button>
         <Button block onClick={() => setSub('settings')}>
-          Settings
+          {t('gameMenu.settings')}
         </Button>
         <Button block onClick={() => gameStore.getState().quitToMenu()}>
-          Quit to main menu
+          {t('gameMenu.quit')}
         </Button>
       </div>
     </Modal>

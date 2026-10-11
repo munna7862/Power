@@ -19,7 +19,10 @@ import { DIFFICULTIES, INDIA, type Difficulty, type GameState } from '../state/t
 
 /** How often events happen and how hard their harm lands, by difficulty (see state/difficulty.ts). */
 export const EVENT_DIFFICULTY: Record<Difficulty, { frequency: number; severity: number }> = Object.fromEntries(
-  DIFFICULTIES.map((d) => [d, { frequency: DIFFICULTY_RULES[d].eventFrequency, severity: DIFFICULTY_RULES[d].eventSeverity }]),
+  DIFFICULTIES.map((d) => [
+    d,
+    { frequency: DIFFICULTY_RULES[d].eventFrequency, severity: DIFFICULTY_RULES[d].eventSeverity },
+  ]),
 ) as Record<Difficulty, { frequency: number; severity: number }>;
 
 /** +1 when a larger value is good for the President, −1 when it is bad, 0 when it can go either way. */

@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import mapJson from '../../../content/world/map.json';
 import styles from './world.module.css';
 
@@ -40,6 +41,7 @@ export interface WorldMapProps {
 
 /** Interactive SVG world map: drag to pan, wheel or buttons to zoom, hover for details, click to select. */
 export function WorldMap({ fills, selected, onSelect, nameOf, valueOf }: WorldMapProps) {
+  const { t } = useTranslation();
   const [view, setView] = useState<View>(HOME);
   const [hover, setHover] = useState<{ id: string; x: number; y: number } | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -135,7 +137,7 @@ export function WorldMap({ fills, selected, onSelect, nameOf, valueOf }: WorldMa
       ref={frameRef}
       className={styles.frame}
       role="group"
-      aria-label="World map. Drag to pan, scroll or use the zoom buttons to zoom. Arrow keys pan, plus and minus zoom."
+      aria-label={t('world.map.frame')}
       tabIndex={0}
       onKeyDown={onKeyDown}
       data-testid="world-map"
@@ -149,7 +151,7 @@ export function WorldMap({ fills, selected, onSelect, nameOf, valueOf }: WorldMa
         onPointerUp={onPointerUp}
         onPointerLeave={() => setHover(null)}
         role="img"
-        aria-label="Map of the world coloured by the chosen overlay"
+        aria-label={t('world.map.image')}
       >
         <rect width={MAP.width} height={MAP.height} className={styles.sea} />
         <g transform={transform} data-testid="map-layer" data-zoom={view.k.toFixed(2)}>
@@ -162,7 +164,7 @@ export function WorldMap({ fills, selected, onSelect, nameOf, valueOf }: WorldMa
       <div className={styles.zoom}>
         <button
           type="button"
-          aria-label="Zoom in"
+          aria-label={t('world.map.zoomIn')}
           onClick={() => zoomAt(1.5, MAP.width / 2, MAP.height / 2)}
           disabled={view.k >= MAX_ZOOM}
         >
@@ -170,13 +172,13 @@ export function WorldMap({ fills, selected, onSelect, nameOf, valueOf }: WorldMa
         </button>
         <button
           type="button"
-          aria-label="Zoom out"
+          aria-label={t('world.map.zoomOut')}
           onClick={() => zoomAt(1 / 1.5, MAP.width / 2, MAP.height / 2)}
           disabled={view.k <= 1}
         >
           −
         </button>
-        <button type="button" aria-label="Reset the map view" onClick={() => setView(HOME)} disabled={view.k === 1}>
+        <button type="button" aria-label={t('world.map.reset')} onClick={() => setView(HOME)} disabled={view.k === 1}>
           ⌂
         </button>
       </div>

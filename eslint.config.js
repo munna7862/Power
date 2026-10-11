@@ -3,6 +3,7 @@ import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
+import apex from './eslint-rules/index.js';
 
 export default tseslint.config(
   { ignores: ['dist', 'reports', 'coverage', 'node_modules'] },
@@ -16,6 +17,13 @@ export default tseslint.config(
     extends: [reactHooks.configs.flat.recommended],
     plugins: { 'react-refresh': reactRefresh },
     rules: { 'react-refresh/only-export-components': ['warn', { allowConstantExport: true }] },
+  },
+  {
+    // i18n guard (Sprint 6.2): every word the player reads comes from src/ui/i18n.
+    files: ['src/ui/**/*.{ts,tsx}'],
+    ignores: ['src/ui/i18n/**'],
+    plugins: { apex },
+    rules: { 'apex/no-ui-literals': 'error' },
   },
   {
     // Architecture guard: the simulation must stay pure, portable and deterministic.

@@ -18,6 +18,7 @@ import {
   rulesFor,
   TUTORIAL_EVENT,
   TUTORIAL_EVENT_DAY,
+  TUTORIAL_QUIET_DAYS,
   unrestTrigger,
   type GameState,
 } from '../../src/sim';
@@ -185,6 +186,17 @@ describe('New Game options', () => {
     const arrived = advanceDays(tutorial, TUTORIAL_EVENT_DAY);
     expect(arrived.events.pending.some((p) => p.eventId === TUTORIAL_EVENT)).toBe(true);
     expect(arrived.meta.options).toEqual({ noWars: false, noRiots: false, tutorial: true });
+  });
+
+  it('"tutorial": keeps the first week free of random events, whatever the dice say', () => {
+    const certain = (s: GameState) =>
+      ({ next: () => 0, range: () => 0, int: () => 0, chance: () => true, state: s.rng }) as unknown as Rng;
+    const tutorial = newGame({ options: { tutorial: true } });
+    expect(rollDailyEvent(tutorial, certain(tutorial)).events.pending).toHaveLength(0);
+    const later = { ...tutorial, clock: { ...tutorial.clock, tick: TUTORIAL_QUIET_DAYS } };
+    expect(rollDailyEvent(later, certain(later)).log.length).toBeGreaterThan(later.log.length);
+    const plain = newGame();
+    expect(rollDailyEvent(plain, certain(plain)).log.length).toBeGreaterThan(plain.log.length);
   });
 });
 

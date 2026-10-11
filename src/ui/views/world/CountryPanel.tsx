@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AID,
   atWarWith,
@@ -12,17 +13,15 @@ import {
   RIVAL_CONTENT,
   RIVALS,
   SANCTIONS,
-  SECTOR_LABELS,
   SECTORS,
   strengthView,
   tradeAcceptance,
   tradeCap,
   tradeSizesFor,
-  TRADE_SIZES,
   TRADE_YEARS,
   relationDrivers,
+  relationLevel,
   relationOf,
-  relationWord,
   treatiesWith,
   validateAid,
   validateEmbassy,
@@ -33,47 +32,61 @@ import {
   allEfficiencies,
   type AidSize,
   type GameState,
-  type RelationLine,
   type RivalId,
   type SectorId,
+  type Treaty,
   type TradeSize,
 } from '../../../sim';
 import { gameStore } from '../../../store';
 import { Button, Panel, Tooltip } from '../../design/primitives';
 import { formatCrore, signed } from '../../format';
+import { t as translate } from '../../i18n';
 import gameStyles from '../../screens/game.module.css';
 import { Bar } from '../military/parts';
 import views from '../views.module.css';
 import styles from '../../map/world.module.css';
 
-const DRIVER_LABELS: Record<RelationLine['driver'], string> = {
-  base: 'Starting attitude',
-  ideology: 'Ideology match',
-  trade: 'Trade contracts',
-  embassy: 'Embassy',
-  pact: 'Non-aggression pact',
-  sanctions: 'Sanctions',
-  reputation: 'India’s reputation',
-  incidents: 'Recent incidents',
-  war: 'At war',
-  tension: 'World tension',
-};
+const gdpText = (usdBn: number) =>
+  usdBn >= 1000
+    ? translate('country.trillion', { value: (usdBn / 1000).toFixed(1) })
+    : translate('country.billion', { value: Math.round(usdBn) });
+const popText = (m: number) =>
+  translate('country.million', { value: m >= 100 ? Math.round(m) : m.toFixed(m < 10 ? 1 : 0) });
 
-const gdpText = (usdBn: number) => (usdBn >= 1000 ? `$${(usdBn / 1000).toFixed(1)} tn` : `$${Math.round(usdBn)} bn`);
-const popText = (m: number) => (m >= 100 ? `${Math.round(m)} m` : `${m.toFixed(m < 10 ? 1 : 0)} m`);
-
+/** A rival's army as the fog of war lets India see it. */
 const strengthText = (view: ReturnType<typeof strengthView>): string => {
   switch (view.kind) {
     case 'unknown':
-      return 'unknown until a recon operation reveals it';
+      return translate('country.strength.unknown');
     case 'estimate':
-      return view.high === 0 ? 'annexed' : 'about ' + view.low + '–' + view.high + ' (rough estimate)';
+      return view.high === 0
+        ? translate('country.strength.annexed')
+        : translate('country.strength.estimate', { low: view.low, high: view.high });
     case 'sighted':
-      return view.low + '–' + view.high + ' (recon ' + view.ageDays + ' days old)';
+      return translate('country.strength.sighted', { low: view.low, high: view.high, count: view.ageDays });
   }
 };
 
+function treatyText(treaty: Treaty, now: number): string {
+  const base =
+    treaty.type === 'trade'
+      ? translate('country.treaty.trade', {
+          sector: translate(`economy.sectorNames.${treaty.terms.sector ?? 'services'}`),
+          value: formatCrore(treaty.terms.value ?? 0),
+        })
+      : treaty.type === 'sanctions'
+        ? translate(treaty.parties[0] === 'IND' ? 'country.treaty.indiaSanctions' : 'country.treaty.sanctionsOnIndia')
+        : translate(`country.treaty.${treaty.type}`);
+  return treaty.endTick === null
+    ? base
+    : translate('country.treaty.left', { base, count: Math.max(0, Math.ceil((treaty.endTick - now) / 30)) });
+}
+
+const temperament = (aggression: number) =>
+  aggression >= 45 ? 'assertive' : aggression >= 25 ? 'measured' : 'peaceable';
+
 export function CountryPanel({ game, id }: { game: GameState; id: string }) {
+  const { t } = useTranslation();
   const content = COUNTRY_CONTENT[id];
   const [sector, setSector] = useState<SectorId>('tech');
   const [size, setSize] = useState<TradeSize>('small');
@@ -97,9 +110,7 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
   const sizes = tradeSizesFor(game, id);
   const chosen = sizes.find((s) => s.size === size) ?? sizes[0];
   const odds = chosen ? tradeAcceptance(game, id, sector, chosen.value) : null;
-  const tradeProblem = chosen
-    ? validateTrade(game, id, sector, chosen.size, years)
-    : 'Too small an economy for a contract.';
+  const tradeProblem = chosen ? validateTrade(game, id, sector, chosen.size, years) : t('country.tooSmall');
   const pactProblem = validatePact(game, id);
   const pact = pactAcceptance(game, id);
   const embassyProblem = validateEmbassy(game, id);
@@ -111,97 +122,88 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
     <Panel title={content.name} className={gameStyles.span12}>
       <div className={styles.stack} data-testid="country-panel" data-country={id}>
         <p className={views.muted}>
-          {content.subregion}, {content.continent}
-          {content.neighbour ? ' · Neighbour' : ''}
-          {content.focus ? ' · Major actor' : ''}
+          {t('country.where', { subregion: content.subregion, continent: content.continent })}
+          {content.neighbour ? t('country.neighbour') : ''}
+          {content.focus ? t('country.major') : ''}
         </p>
 
         <dl className={styles.facts}>
           <div>
-            <dt>Economy</dt>
+            <dt>{t('country.facts.economy')}</dt>
             <dd>{gdpText(content.gdp)}</dd>
           </div>
           <div>
-            <dt>Population</dt>
+            <dt>{t('country.facts.population')}</dt>
             <dd>{popText(content.population)}</dd>
           </div>
           <div>
-            <dt>Power</dt>
+            <dt>{t('country.facts.power')}</dt>
             <dd>
-              {Math.round(content.power)} <span className={views.muted}>(India {Math.round(power)})</span>
+              {Math.round(content.power)}{' '}
+              <span className={views.muted}>{t('country.indiaPower', { value: Math.round(power) })}</span>
             </dd>
           </div>
           <div>
-            <dt>Outlook</dt>
+            <dt>{t('country.facts.outlook')}</dt>
             <dd style={{ textTransform: 'capitalize' }}>{content.outlook}</dd>
           </div>
           <div>
-            <dt>Temperament</dt>
-            <dd>{content.aggression >= 45 ? 'Assertive' : content.aggression >= 25 ? 'Measured' : 'Peaceable'}</dd>
+            <dt>{t('country.facts.temperament')}</dt>
+            <dd>{t(`country.temperament.${temperament(content.aggression)}`)}</dd>
           </div>
           <div>
-            <dt>Strong in</dt>
-            <dd>{content.strengths.map((s) => SECTOR_LABELS[s]).join(', ')}</dd>
+            <dt>{t('country.facts.strengths')}</dt>
+            <dd>{content.strengths.map((s) => t(`economy.sectorNames.${s}`)).join(', ')}</dd>
           </div>
         </dl>
 
         <div>
           <div className={styles.relationRow}>
             <span>
-              Relation with India: <strong data-testid="country-relation">{Math.round(relation)}</strong> ·{' '}
-              {relationWord(relation)}
+              {t('country.relation')} <strong data-testid="country-relation">{Math.round(relation)}</strong> ·{' '}
+              {t(`world.relationLevels.${relationLevel(relation)}`)}
             </span>
-            <Tooltip label="Why?">
+            <Tooltip label={t('common.why')}>
               <span className={gameStyles.breakdown}>
-                <span className={gameStyles.breakdownHeading}>Where this relation is heading</span>
+                <span className={gameStyles.breakdownHeading}>{t('country.relationHeading')}</span>
                 {relationDrivers(game, id)
                   .filter((l) => Math.abs(l.value) >= 0.05 || l.driver === 'base')
                   .map((l) => (
                     <Fragment key={l.driver}>
-                      <span>{DRIVER_LABELS[l.driver]}</span>
+                      <span>{t(`country.drivers.${l.driver}`)}</span>
                       <span className={gameStyles.breakdownValue}>{signed(l.value, 1)}</span>
                     </Fragment>
                   ))}
               </span>
             </Tooltip>
           </div>
-          <Bar value={(relation + 100) / 2} label={`Relation with ${content.name}`} />
+          <Bar value={(relation + 100) / 2} label={t('country.relationWith', { name: content.name })} />
         </div>
 
         {rival && (
           <p className={views.note}>
-            {RIVAL_CONTENT[rival].summary} Army strength:{' '}
-            <strong>{strengthText(strengthView(game, rival, eff.intelligence))}</strong> · Hostility{' '}
-            {Math.round(hostility(game, rival))}.{' '}
-            {atWarWith(game, rival)
-              ? 'At war: see the Military screen.'
-              : 'Recon and war are run from the Military screen.'}
+            {RIVAL_CONTENT[rival].summary} {t('country.army')}{' '}
+            <strong>{strengthText(strengthView(game, rival, eff.intelligence))}</strong> ·{' '}
+            {t('country.hostility', { value: Math.round(hostility(game, rival)) })}{' '}
+            {atWarWith(game, rival) ? t('country.atWar') : t('country.militaryScreen')}
           </p>
         )}
 
         <div>
-          <h3 className={views.personName}>Treaties and measures</h3>
+          <h3 className={views.personName}>{t('country.treaties')}</h3>
           {treaties.length === 0 ? (
-            <p className={views.muted}>None.</p>
+            <p className={views.muted}>{t('common.none')}</p>
           ) : (
-            <ul className={styles.list} aria-label="Treaties with this country">
-              {treaties.map((t) => (
-                <li key={t.id}>
-                  <span>
-                    {t.type === 'trade' &&
-                      `Trade: ${SECTOR_LABELS[t.terms.sector ?? 'services']}, ${formatCrore(t.terms.value ?? 0)} a year`}
-                    {t.type === 'nonAggression' && 'Non-aggression pact'}
-                    {t.type === 'embassy' && 'Embassy'}
-                    {t.type === 'sanctions' && (t.parties[0] === 'IND' ? 'India’s sanctions' : 'Sanctions on India')}
-                    {t.endTick !== null &&
-                      ` · ${Math.max(0, Math.ceil((t.endTick - game.clock.tick) / 30))} months left`}
-                  </span>
-                  {t.parties[0] === 'IND' && t.type !== 'sanctions' && partnerOf(t) === id && (
+            <ul className={styles.list} aria-label={t('country.treatiesLabel')}>
+              {treaties.map((tr) => (
+                <li key={tr.id}>
+                  <span>{treatyText(tr, game.clock.tick)}</span>
+                  {tr.parties[0] === 'IND' && tr.type !== 'sanctions' && partnerOf(tr) === id && (
                     <Button
-                      onClick={() => act({ type: 'BREAK_TREATY', treatyId: t.id })}
-                      aria-label={`End ${t.type} with ${content.name}`}
+                      onClick={() => act({ type: 'BREAK_TREATY', treatyId: tr.id })}
+                      aria-label={t('country.endLabel', { type: tr.type, name: content.name })}
                     >
-                      End
+                      {t('country.end')}
                     </Button>
                   )}
                 </li>
@@ -211,42 +213,46 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
         </div>
 
         <div>
-          <h3 className={views.personName}>Trade contract</h3>
+          <h3 className={views.personName}>{t('country.tradeContract')}</h3>
           <div className={styles.form}>
             <label>
-              Sector
+              {t('economy.sector')}
               <select
                 value={sector}
                 onChange={(e) => setSector(e.target.value as SectorId)}
-                aria-label="Contract sector"
+                aria-label={t('country.contractSector')}
               >
                 {SECTORS.map((s) => (
                   <option key={s} value={s}>
-                    {SECTOR_LABELS[s]}
+                    {t(`economy.sectorNames.${s}`)}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Size
+              {t('country.size')}
               <select
                 value={chosen?.size ?? size}
                 onChange={(e) => setSize(e.target.value as TradeSize)}
-                aria-label="Contract size"
+                aria-label={t('country.contractSize')}
               >
                 {sizes.map((s) => (
                   <option key={s.size} value={s.size}>
-                    {TRADE_SIZES[s.size].label} · {formatCrore(s.value)}
+                    {t('country.sizeOption', { size: t(`country.sizes.${s.size}`), value: formatCrore(s.value) })}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              Term
-              <select value={years} onChange={(e) => setYears(Number(e.target.value))} aria-label="Contract term">
+              {t('country.term')}
+              <select
+                value={years}
+                onChange={(e) => setYears(Number(e.target.value))}
+                aria-label={t('country.contractTerm')}
+              >
                 {TRADE_YEARS.map((y) => (
                   <option key={y} value={y}>
-                    {y} year{y === 1 ? '' : 's'}
+                    {t('common.years', { count: y })}
                   </option>
                 ))}
               </select>
@@ -258,10 +264,10 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
               disabled={tradeProblem !== null}
               onClick={() => chosen && act({ type: 'PROPOSE_TRADE', country: id, sector, size: chosen.size, years })}
             >
-              Propose contract{odds ? ` (${Math.round(odds.chance * 100)}%)` : ''}
+              {odds ? t('country.proposeOdds', { chance: Math.round(odds.chance * 100) }) : t('country.propose')}
             </Button>
             {odds && (
-              <Tooltip label="Odds">
+              <Tooltip label={t('country.odds')}>
                 <span className={gameStyles.breakdown}>
                   {odds.lines.map((l) => (
                     <Fragment key={l.label}>
@@ -269,11 +275,11 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
                       <span className={gameStyles.breakdownValue}>{signed(l.value * 100, 0)}%</span>
                     </Fragment>
                   ))}
-                  <span>Largest deal this economy can take</span>
+                  <span>{t('country.largestDeal')}</span>
                   <span className={gameStyles.breakdownValue}>{formatCrore(tradeCap(id))}</span>
-                  <span>Contracts held</span>
+                  <span>{t('country.contractsHeld')}</span>
                   <span className={gameStyles.breakdownValue}>
-                    {game.diplomacy.treaties.filter((t) => t.type === 'trade').length}/{MAX_TRADE_TREATIES}
+                    {game.diplomacy.treaties.filter((x) => x.type === 'trade').length}/{MAX_TRADE_TREATIES}
                   </span>
                 </span>
               </Tooltip>
@@ -283,26 +289,29 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
         </div>
 
         <div>
-          <h3 className={views.personName}>Diplomacy</h3>
+          <h3 className={views.personName}>{t('nav.views.diplomacy')}</h3>
           <div className={styles.actions}>
             <Button disabled={pactProblem !== null} onClick={() => act({ type: 'PROPOSE_PACT', country: id })}>
-              Propose non-aggression pact ({Math.round(pact.chance * 100)}%)
+              {t('country.proposePact', { chance: Math.round(pact.chance * 100) })}
             </Button>
             <Button disabled={embassyProblem !== null} onClick={() => act({ type: 'OPEN_EMBASSY', country: id })}>
-              Open embassy ({formatCrore(EMBASSY.cost)})
+              {t('country.openEmbassy', { cost: formatCrore(EMBASSY.cost) })}
             </Button>
           </div>
           {(pactProblem ?? embassyProblem) && <p className={styles.blocked}>{pactProblem ?? embassyProblem}</p>}
 
-          <div className={styles.actions} style={{ marginTop: 8 }} role="group" aria-label="Send aid">
+          <div className={styles.actions} style={{ marginTop: 8 }} role="group" aria-label={t('country.sendAid')}>
             {(Object.keys(AID) as AidSize[]).map((s) => (
               <Button
                 key={s}
                 disabled={validateAid(game, id, s) !== null}
-                title={validateAid(game, id, s) ?? `Relation +${AID[s].relation}, reputation +${AID[s].reputation}`}
+                title={
+                  validateAid(game, id, s) ??
+                  t('country.aidEffect', { relation: AID[s].relation, reputation: AID[s].reputation })
+                }
                 onClick={() => act({ type: 'SEND_AID', country: id, size: s })}
               >
-                Aid: {AID[s].label.split(' ')[0]} ({formatCrore(AID[s].cost)})
+                {t('country.aid', { size: t(`country.sizes.${s}`), cost: formatCrore(AID[s].cost) })}
               </Button>
             ))}
           </div>
@@ -313,27 +322,28 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
                 disabled={validateLift(game, id) !== null}
                 onClick={() => act({ type: 'LIFT_SANCTIONS', country: id })}
               >
-                Lift sanctions
+                {t('country.lift')}
               </Button>
             ) : confirm === 'sanctions' ? (
               <>
                 <Button variant="primary" onClick={() => act({ type: 'IMPOSE_SANCTIONS', country: id })}>
-                  Confirm sanctions on {content.name}
+                  {t('country.confirmSanctions', { name: content.name })}
                 </Button>
                 <Button variant="ghost" onClick={() => setConfirm(null)}>
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </>
             ) : (
               <Button disabled={validateSanctions(game, id) !== null} onClick={() => setConfirm('sanctions')}>
-                Impose sanctions
+                {t('country.impose')}
               </Button>
             )}
           </div>
           {confirm === 'sanctions' && (
             <p className={styles.blocked}>
-              Ends trade contracts, relation {SANCTIONS.relation}, and costs customs revenue
-              {relation > SANCTIONS.provokedBelow ? ' and some reputation, as the move looks unprovoked' : ''}.
+              {relation > SANCTIONS.provokedBelow
+                ? t('country.sanctionsWarningUnprovoked', { relation: SANCTIONS.relation })
+                : t('country.sanctionsWarning', { relation: SANCTIONS.relation })}
             </p>
           )}
         </div>

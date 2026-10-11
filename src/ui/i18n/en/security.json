@@ -1,0 +1,75 @@
+{
+  "security": {
+    "subtitle": "Unrest, terror, corruption and threats to your presidency",
+    "mapLabel": "Unrest by region (schematic map)",
+    "mapValue": "{{value}} · {{level}}",
+    "levels": { "calm": "Calm", "tense": "Tense", "riots": "Riots" },
+    "mapCaption": "Schematic map: regions are not to scale and no borders are drawn. Unrest here is caused by jobs, prices, corruption, approval and policing: never by religion or caste.",
+    "terror": "Terror threat",
+    "headingTo": "Heading to {{value}}",
+    "border": "Border tension",
+    "borderNote": "Set by the most hostile neighbour",
+    "armyLoyalty": "Army loyalty",
+    "plotsFoiled": "Plots foiled: {{count}}",
+    "attacks": "Attacks suffered",
+    "livePlots_one": "{{count}} plot live",
+    "livePlots_other": "{{count}} plots live",
+    "unrest": "Regional unrest",
+    "region": "Region",
+    "unrestColumn": "Unrest",
+    "headingColumn": "Heading to",
+    "whyRegion": "Why {{region}}?",
+    "safety": "Presidential safety",
+    "safetyNote": "Rises with police and intelligence funding and loyal Home, Defence and Intelligence ministers; falls with the terror threat.",
+    "threats": "Threats to your presidency",
+    "risks": {
+      "impeachment": "Impeachment",
+      "approvalValue": "Approval {{value}}%",
+      "impeachmentNote": "Parliament acts after {{months}} months below {{threshold}}% ({{count}} so far)",
+      "coup": "Coup",
+      "riskValue": "Risk {{value}}/100",
+      "coupNote": "Generals become restless above {{threshold}}. Keep the defence minister loyal and approval high.",
+      "assassination": "Assassination",
+      "safetyValue": "Safety {{value}}/100",
+      "assassinationNote": "Attempts follow the terror threat; funding and loyal guards decide whether they succeed.",
+      "bankruptcy": "Bankruptcy",
+      "debtValue": "Debt {{value}} of GDP",
+      "bankruptcyNote": "Default if debt stays above {{ratio}}% for {{months}} months ({{count}} so far)"
+    },
+    "operations": "Counter-terror operations",
+    "plotsLabel": "Live plots",
+    "strikesIn_one": "Expected to strike in about {{count}} day",
+    "strikesIn_other": "Expected to strike in about {{count}} days",
+    "ops": {
+      "raid": {
+        "label": "Launch a raid",
+        "summary": "Strike suspected cells now. Cuts the terror threat and may stop a live plot, but a botched raid costs approval and stirs unrest."
+      },
+      "surveillance": {
+        "label": "Expand surveillance",
+        "summary": "Slow and quiet: for four months the threat falls, intelligence catches more plots and live plots are harder to carry out."
+      },
+      "borderSeal": {
+        "label": "Seal the border",
+        "summary": "Shut crossings for two months. Sharply cuts the threat and blunts live plots, but trade and growth suffer."
+      }
+    },
+    "recovering_one": "Recovering: {{count}} day",
+    "recovering_other": "Recovering: {{count}} days",
+    "active_one": "Active: {{count}} day",
+    "active_other": "Active: {{count}} days",
+    "agencies": "Agencies",
+    "agencyEfficiency": "{{value}}% efficiency",
+    "agencyFunding": "{{share}}% of GDP · {{minister}}",
+    "adjustBudget": "Adjust in Budget",
+    "inquiries": "Anti-corruption inquiries",
+    "inquiriesNote": "National corruption index {{corruption}}/100. An inquiry costs {{cost}}, takes about {{days}} days and may expose a minister; the agency runs up to {{max}} at a time. A better-funded Anti-corruption ministry finds more.",
+    "ministry": "Ministry",
+    "minister": "Minister",
+    "inquiry": "Inquiry",
+    "reportsIn_one": "Reports in {{count}} day",
+    "reportsIn_other": "Reports in {{count}} days",
+    "investigateName": "Investigate {{ministry}}",
+    "investigate": "Investigate"
+  }
+}

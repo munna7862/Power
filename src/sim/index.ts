@@ -26,7 +26,7 @@ export {
   type NewGameOptions,
 } from './state/initialState';
 export { DIFFICULTY_RULES, rulesFor, type DifficultyRules } from './state/difficulty';
-export { electionYear, reelectionApproval } from './systems/term';
+export { electionYear, ELECTION_SWING, FATIGUE_MAX_YEARS, reelectionApproval, voterFatigue } from './systems/term';
 export {
   dispatch,
   policyCooldownDays,
@@ -89,7 +89,14 @@ export {
 } from './content/events';
 export { describeEffect, choiceUtility, pendingView, type EffectLine, type PendingView } from './events/describe';
 export { statValue, STAT_IDS, type StatId } from './events/stats';
-export { MAX_PENDING, MAX_REPEATS, raiseEvent, recentFires, REPEAT_WINDOW_DAYS } from './events/engine';
+export {
+  MAX_PENDING,
+  MAX_REPEATS,
+  raiseEvent,
+  recentFires,
+  REPEAT_WINDOW_DAYS,
+  TUTORIAL_QUIET_DAYS,
+} from './events/engine';
 export {
   BANKRUPTCY_DEBT_RATIO,
   BANKRUPTCY_MONTHS,
@@ -200,6 +207,9 @@ export {
   relationOf,
   relationTarget,
   relationWord,
+  relationLevel,
+  RELATION_LEVELS,
+  type RelationLevel,
   sanctionsIndia,
   treatiesWith,
   type RelationLine,
