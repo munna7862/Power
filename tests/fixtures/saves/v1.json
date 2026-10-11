@@ -1,0 +1,209 @@
+{
+  "format": "india-apex-sovereign/save",
+  "schemaVersion": 1,
+  "savedAt": "2026-10-11T00:00:00.000Z",
+  "checksum": "629fbb66",
+  "summary": {
+    "presidentName": "Golden Fixture",
+    "difficulty": "normal",
+    "gameDate": "5 Feb 2027",
+    "tick": 400
+  },
+  "state": {
+    "schemaVersion": 1,
+    "meta": {
+      "seed": 2026,
+      "difficulty": "normal",
+      "presidentName": "Golden Fixture",
+      "startDate": {
+        "year": 2026,
+        "month": 1,
+        "day": 1
+      }
+    },
+    "clock": {
+      "tick": 400,
+      "date": {
+        "year": 2027,
+        "month": 2,
+        "day": 5
+      }
+    },
+    "rng": [
+      1869700386,
+      1425184896,
+      799094326,
+      917415669
+    ],
+    "nation": {
+      "name": "India",
+      "treasury": 273860,
+      "approval": 52.9,
+      "baseMonthlyRevenue": 350000,
+      "baseMonthlyExpenditure": 345000,
+      "lastMonthBalance": 701
+    },
+    "modifiers": [],
+    "history": [
+      {
+        "month": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 205939,
+        "approval": 55.9,
+        "balance": 5939
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 2,
+          "day": 1
+        },
+        "treasury": 209417,
+        "approval": 56.8,
+        "balance": 3478
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 3,
+          "day": 1
+        },
+        "treasury": 211072,
+        "approval": 56.7,
+        "balance": 1655
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 4,
+          "day": 1
+        },
+        "treasury": 212266,
+        "approval": 57.6,
+        "balance": 1194
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 5,
+          "day": 1
+        },
+        "treasury": 222967,
+        "approval": 56,
+        "balance": 10701
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 6,
+          "day": 1
+        },
+        "treasury": 231116,
+        "approval": 55.6,
+        "balance": 8149
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 7,
+          "day": 1
+        },
+        "treasury": 244232,
+        "approval": 55.3,
+        "balance": 13116
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 8,
+          "day": 1
+        },
+        "treasury": 247873,
+        "approval": 54.5,
+        "balance": 3641
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 9,
+          "day": 1
+        },
+        "treasury": 253033,
+        "approval": 54.3,
+        "balance": 5160
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 10,
+          "day": 1
+        },
+        "treasury": 259750,
+        "approval": 53.8,
+        "balance": 6717
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 11,
+          "day": 1
+        },
+        "treasury": 270586,
+        "approval": 53.1,
+        "balance": 10836
+      },
+      {
+        "month": {
+          "year": 2026,
+          "month": 12,
+          "day": 1
+        },
+        "treasury": 273159,
+        "approval": 52.1,
+        "balance": 2573
+      },
+      {
+        "month": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "treasury": 273860,
+        "approval": 52.9,
+        "balance": 701
+      }
+    ],
+    "log": [
+      {
+        "severity": "info",
+        "title": "Sworn in as President",
+        "body": "Golden Fixture takes the oath of office. The nation is watching your first decisions.",
+        "id": "log-0",
+        "tick": 0,
+        "date": {
+          "year": 2026,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      },
+      {
+        "severity": "good",
+        "title": "Annual report 2026",
+        "body": "The government closed 2026 with a surplus of ₹73,159 crore. Approval stands at 52.1%.",
+        "id": "log-1",
+        "tick": 365,
+        "date": {
+          "year": 2027,
+          "month": 1,
+          "day": 1
+        },
+        "read": false
+      }
+    ],
+    "nextId": 2
+  }
+}
