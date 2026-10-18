@@ -58,8 +58,8 @@ export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
     eventFrequency: 1,
     eventSeverity: 1,
     warChance: 1,
-    reelectionApproval: 55,
-    voterFatigue: 5,
+    reelectionApproval: 58,
+    voterFatigue: 6,
     impeachmentThreshold: 15,
   },
   hard: {
@@ -86,8 +86,8 @@ export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
     eventFrequency: 1.25,
     eventSeverity: 1.2,
     warChance: 1.5,
-    reelectionApproval: 55,
-    voterFatigue: 5,
+    reelectionApproval: 58,
+    voterFatigue: 6,
     impeachmentThreshold: 18,
   },
 };

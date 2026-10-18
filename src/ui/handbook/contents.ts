@@ -12,6 +12,10 @@ export const HANDBOOK = [
   { id: 'society', entries: ['corruption', 'hdi', 'sectors'] },
   { id: 'government', entries: ['ministries', 'services', 'ideology', 'strategy', 'events'] },
   {
+    id: 'governing',
+    entries: ['construction', 'policing', 'grid', 'industry', 'tradeMarket', 'finance', 'loans', 'advisor'],
+  },
+  {
     id: 'security',
     entries: ['unrest', 'terror', 'operations', 'investigations', 'borderTension', 'coup', 'safety'],
   },

@@ -212,7 +212,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 - [x] A missed repayment costs reputation and the lender's goodwill; automatic borrowing stays, at a worse rate, as the last resort
 - [x] The advisor ranks warnings from the existing "Why?" drivers (the worst-scoring approval factor, an unfunded department, a power shortfall, a stock running out); text lives in i18n
 
-### Sprint 8.9: Fresh start, balance and polish (6 SP)
+### Sprint 8.9: Fresh start, balance and polish (6 SP) ✅
 
 | ID     | Story                                                                                                   | SP  |
 | ------ | ------------------------------------------------------------------------------------------------------- | --- |
@@ -223,12 +223,28 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 **Tasks**
 
 - [x] **Fresh start (decision 5, done in Sprint 8.1):** `SCHEMA_VERSION` 7 starts a new save line; `parseSave` recognises v1–v6 files and returns a clear "saved in the previous edition" message instead of loading them. The v1–v6 golden fixtures stay, as tests of that message
-- [ ] Update AGENTS.md: the "old saves must keep loading" rule now applies from v7 onwards, with this phase noted as the one deliberate break
-- [ ] Bots: the passive bot builds nothing; the greedy bot over-taxes and under-builds; the balanced bot builds to coverage targets, keeps the grid positive, runs profitable industry, trades surplus and repays loans
-- [ ] New KPI bands: coverage, power balance, trade balance, industry profit, police per capita, loan burden; re-tune Easy, Normal and Hard in `difficulty.ts`
-- [ ] Determinism golden hashes (Windows and Linux) refreshed deliberately
-- [ ] Playwright: one spec per new screen (build a school, add a solar park, open a steel plant, sell all surplus, buy tanks, recruit police, take and repay a loan)
-- [ ] Update the master plan (§5.3 governance no longer has ministers)
+- [x] Update AGENTS.md: the "old saves must keep loading" rule now applies from v7 onwards, with this phase noted as the one deliberate break
+- [x] Bots: the passive bot builds nothing; the greedy bot over-taxes and under-builds; the balanced bot builds to coverage targets, keeps the grid positive, runs profitable industry, trades surplus and repays loans
+- [x] New KPI bands: coverage, power balance, trade balance, industry profit, police per capita, loan burden; re-tune Easy, Normal and Hard in `difficulty.ts`
+- [x] Determinism golden hashes (Windows and Linux) refreshed deliberately
+- [x] Playwright: one spec per new screen (build a school, add a solar park, open a steel plant, sell all surplus, buy tanks, recruit police, take and repay a loan)
+- [x] Update the master plan (§5.3 governance no longer has ministers)
+
+**Balance at the end of the phase.** Hands-on play made the game easier: the balanced bot, now running industry,
+trade and loans as well, won re-election on Normal in 100% of seeds, above the 50–90% band. Rather than move the
+band, Normal and Hard were re-tuned in `difficulty.ts`: voter fatigue 5 → 6 points a year and the re-election bar
+55% → 58% (Easy unchanged). The new bands below cover the balanced bot's completed terms on Normal (50 seeds × 5 years).
+
+| KPI                 | Band                                                                                     | Result at merge                   |
+| ------------------- | ---------------------------------------------------------------------------------------- | --------------------------------- |
+| `coverage-grows`    | Mean coverage ends at least 1 point above the opening network, and above the passive bot | ✅ 68.7% vs 67.0% (passive 65.8%) |
+| `grid-positive`     | No balanced term ends with a power shortfall                                             | ✅ 0 runs; margin 5.4%            |
+| `trade-balance`     | The goods import bill ends no larger a share of GDP than at the start                    | ✅ 2.9% vs 4.5%                   |
+| `industry-profit`   | State plants' monthly profit ends at or above the opening                                | ✅ ₹51,347 vs ₹25,978 crore       |
+| `police-per-capita` | Every region keeps ≥ 95% of the opening police per head in ≥ 90% of terms                | ✅ 100%                           |
+| `loan-burden`       | Terms end owing ≤ 1% of GDP in loans, with no missed repayment                           | ✅ 0 runs, 0 missed               |
+
+All earlier bands still hold. Balanced re-election: Easy 100%, Normal 76%, Hard 36%.
 
 ---
 

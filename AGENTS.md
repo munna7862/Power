@@ -92,7 +92,7 @@ Rules for every human and AI contributor. The full design lives in the [master p
 
 ## Balance
 
-- `npm run balance` plays 50 seeds × 5 years × 3 bots on every difficulty (`tools/balance`), plus a war probe and the option probes, and checks the KPI bands in `planning/Phases/phase_6_polish_release.md` (which add to the Phase 3–5 bands). It is a **blocking** CI check. Run it after any formula change and update the bands deliberately, never to make a failure pass.
+- `npm run balance` plays 50 seeds × 5 years × 3 bots on every difficulty (`tools/balance`), plus a war probe and the option probes, and checks the KPI bands in `planning/Phases/phase_6_polish_release.md` (which add to the Phase 3–5 bands) and the hands-on governance bands in `planning/Phases/phase_8_hands_on_governance.md` (`tools/balance/governance.ts`). It is a **blocking** CI check. Run it after any formula change and update the bands deliberately, never to make a failure pass.
 - Bots act only through `dispatch()`, like a player.
 
 ## Save compatibility

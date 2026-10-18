@@ -50,6 +50,7 @@ import {
   REGIONS,
   validateBuild,
   type CoverageArea,
+  type GoodId,
   type FacilityId,
   officersForRatio,
   POLICE_UNIT_CONTENT,
@@ -62,6 +63,18 @@ import {
   PLANT_CONTENT,
   plantsForMargin,
   validatePlant,
+  GOODS,
+  INDUSTRIES,
+  INDUSTRY_CONTENT,
+  plantProfit,
+  validateIndustry,
+  validateLicence,
+  validateSellAll,
+  INTL_LENDER,
+  loanCeiling,
+  outstanding,
+  validateLoan,
+  validateRepay,
 } from '../../src/sim';
 
 /**
@@ -196,7 +209,7 @@ function managePolice(state: GameState): GameState {
 
 /** Reserve margin the balanced bot keeps on the grid, and the most it spends on solar in a month. */
 const GRID_MARGIN = 0.06;
-const POWER_BUDGET = 12_000;
+const POWER_BUDGET = 20_000;
 
 /**
  * Keeps the grid ahead of demand with solar parks (quick to build and clean, so the air stays as it was), placed
@@ -211,6 +224,60 @@ function manageEnergy(state: GameState): GameState {
   );
   if (quantity < 1 || validatePlant(state, 'solar', 'west', quantity)) return state;
   return apply(state, { type: 'BUILD_PLANT', plant: 'solar', region: 'west', quantity });
+}
+
+/**
+ * Runs industry the way a sensible President would: licenses an investor's plant whenever one would be profitable
+ * (the fee goes to the treasury), and builds a state plant for a good in short supply or, failing that, for the
+ * biggest import bill. One licence and one project a month at most, while debt and the treasury allow.
+ */
+function manageIndustry(state: GameState): GameState {
+  let next = state;
+  if (debtToGdp(next.economy) > 0.75) return next;
+  const region = REGIONS[next.clock.tick % REGIONS.length] ?? 'north';
+  const licence = [...INDUSTRIES]
+    .filter((i) => !validateLicence(next, i, region))
+    .sort((a, b) => plantProfit(next, b) - plantProfit(next, a))[0];
+  if (licence) next = apply(next, { type: 'LICENSE_PLANT', industry: licence, region });
+
+  // Then one state plant a month: for a good in short supply first, else for the biggest import bill.
+  if (next.nation.treasury < 100_000) return next;
+  const bill = (g: GoodId) =>
+    (next.industry.last.shortage[g] > 0 ? 1e9 : 0) + next.industry.last.imports[g] * next.market.prices[g];
+  const wanted = [...GOODS].filter((g) => bill(g) > 0).sort((a, b) => bill(b) - bill(a));
+  for (const good of wanted) {
+    const maker = INDUSTRIES.filter((i) => good in INDUSTRY_CONTENT[i].outputs && plantProfit(next, i) > 0).sort(
+      (a, b) => plantProfit(next, b) / INDUSTRY_CONTENT[b].cost - plantProfit(next, a) / INDUSTRY_CONTENT[a].cost,
+    )[0];
+    if (maker && !validateIndustry(next, maker, region, 1)) {
+      return apply(next, { type: 'BUILD_INDUSTRY', industry: maker, region, quantity: 1 });
+    }
+  }
+  return next;
+}
+
+/** Sells whatever surplus partners will take each month. */
+const manageTrade = (state: GameState): GameState =>
+  validateSellAll(state) ? state : apply(state, { type: 'SELL_ALL_SURPLUS' });
+
+/**
+ * Borrows from the international lender, which undercuts the market, when the treasury runs low, and repays early
+ * once it is comfortably flush, so nothing is ever left to fall due unpaid.
+ */
+function manageLoans(state: GameState): GameState {
+  let next = state;
+  for (const loan of next.economy.loans) {
+    if (next.nation.treasury > loan.principal + 150_000 && !validateRepay(next, loan.id)) {
+      next = apply(next, { type: 'REPAY_LOAN', loanId: loan.id });
+    }
+  }
+  if (next.nation.treasury < 120_000 && next.economy.loans.length === 0 && debtToGdp(next.economy) < 0.8) {
+    const amount = Math.min(50_000, Math.floor((loanCeiling(next) - outstanding(next)) / 1000) * 1000);
+    if (!validateLoan(next, INTL_LENDER, amount, 2)) {
+      next = apply(next, { type: 'TAKE_LOAN', lender: INTL_LENDER, amount, years: 2 });
+    }
+  }
+  return next;
 }
 
 export const passiveBot: Bot = {
@@ -358,12 +425,16 @@ function manageDiplomacy(state: GameState): GameState {
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, keeps the police at strength as the population grows, keeps the grid ahead of demand with solar parks, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
+    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, keeps the police at strength as the population grows, keeps the grid ahead of demand with solar parks, licenses profitable plants and builds state plants for goods in short supply, sells surplus abroad, borrows cheaply when the treasury runs low and repays early, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
     let next = upgradeServices(state);
     next = buildPublicWorks(next);
     next = managePolice(next);
+    next = manageIndustry(next);
+    // After industry, so the grid keeps up with the plants it just ordered.
     next = manageEnergy(next);
+    next = manageTrade(next);
+    next = manageLoans(next);
 
     // Audit the biggest-spending department not already under audit when the country looks corrupt.
     if (next.economy.corruption > 42 && next.security.investigations.length < MAX_INVESTIGATIONS - 1) {

@@ -110,6 +110,35 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(pharma.getByTestId('plants-pharmaPlant')).not.toHaveText(before);
   });
 
+  test('a state steel mill is built from the treasury and starts producing when it opens', async ({ page }) => {
+    await openView(page, 'Industry');
+    await page.getByRole('group', { name: 'Region' }).getByRole('button', { name: 'East', exact: true }).click();
+    const mill = page.getByTestId('industry-steelMill');
+    const before = (await mill.getByTestId('plants-steelMill').textContent()) ?? '';
+    const treasury = await page.getByTestId('topbar-treasury').textContent();
+    await mill.getByRole('button', { name: /^Build 1 state Steel mill in the East for/ }).click();
+    await expect(page.getByTestId('industry-order')).toContainText('Steel mill');
+    await expect(page.getByTestId('topbar-treasury')).not.toHaveText(treasury ?? '');
+
+    await advanceDays(page, 181);
+    await expect(page.getByTestId('industry-order')).toHaveCount(0);
+    await expect(mill.getByTestId('plants-steelMill')).not.toHaveText(before);
+  });
+
+  test('goods bought into stock become surplus, and “Sell all surplus” sells them abroad', async ({ page }) => {
+    await openView(page, 'Trade Market');
+    const sellAll = page.getByRole('button', { name: /^Sell all surplus|^No surplus to sell/ });
+    await expect(sellAll).toHaveText('No surplus to sell');
+    const medicines = page.getByTestId('good-medicines');
+    await medicines.getByRole('spinbutton', { name: 'How many kt of medicines to trade' }).fill('50');
+    await medicines.getByRole('button', { name: /^Buy 50 kt of medicines from/ }).click();
+    await expect(medicines).toContainText('surplus 50');
+
+    await expect(sellAll).toHaveText(/^Sell all surplus · about ₹/);
+    await sellAll.click();
+    await expect(sellAll).toHaveText('No surplus to sell');
+  });
+
   test('the Trade Market sets a tariff and signs a supply contract', async ({ page }) => {
     await openView(page, 'Trade Market');
     const crude = page.getByTestId('good-crudeOil');

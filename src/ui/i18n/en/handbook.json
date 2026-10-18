@@ -9,6 +9,7 @@
       "nation": "The nation",
       "society": "Society",
       "government": "Government",
+      "governing": "Running the country",
       "security": "Domestic security",
       "military": "The armed forces",
       "world": "The world",
@@ -102,6 +103,38 @@
       "events": {
         "title": "Events and decisions",
         "body": "Disasters, scandals, protests, threats and diplomatic moments arrive at random. Decisions wait in the inbox with a deadline; each choice lists its exact effects. Letting a crisis lapse applies the default choice and costs approval. A random event happens at most {{repeats}} times in five years."
+      },
+      "construction": {
+        "title": "Public works",
+        "body": "The Construction screen builds schools, universities, clinics, hospitals, water works, housing and transport in each of the six regions. Coverage is the share of a region's people a kind of facility can serve; it falls as the population grows unless you keep building. Coverage lifts living standards (HDI), public services, growth and jobs and calms regional unrest, with diminishing returns near full coverage. Facilities cost money up front and upkeep every month, paid by their department."
+      },
+      "policing": {
+        "title": "Police and agencies",
+        "body": "The Police screen recruits officers by region, builds the stations that house them, raises special units and funds the agencies. More police lowers crime, unrest, terror and corruption and protects the President, but the benefit flattens while the civil-liberties cost grows faster: past the opening strength per head, voters notice. Keep the force growing with the population to stand still."
+      },
+      "grid": {
+        "title": "The power grid",
+        "body": "The Energy screen builds power plants. Solar and wind are quick to build and clean; coal and gas burn fuel from the goods market and pollute; hydro and nuclear take the longest to build. Demand grows with the economy, industry and population. When production falls short, power cuts slow growth and cost approval; dirty plants cost approval through air pollution. Surplus beyond a reserve margin is sold to neighbours."
+      },
+      "industry": {
+        "title": "Industry and goods",
+        "body": "Mines, farms, mills and factories turn goods into other goods: crude into fuel, ore and coal into steel. The Industry screen builds state plants (paid up front, profits to the treasury) and licenses private ones when an investor would make money (a fee now, corporate tax later). A plant short of its inputs or of power slows down. Shortages raise prices; plants add jobs and output to their sector."
+      },
+      "tradeMarket": {
+        "title": "The trade market",
+        "body": "The Trade Market buys and sells goods with partner countries. Each partner's price depends on the world price, your relation, distance and what it produces itself, and every trade moves the world price. Only surplus above what the private market needs can be sold; “Sell all surplus” finds the best buyers. Tariffs raise customs revenue and prices, quotas cap imports and bans stop a good entirely; supply contracts deliver every month at an agreed price."
+      },
+      "finance": {
+        "title": "Money by the day",
+        "body": "The top bar shows the treasury and how much it changes each day this month. The Finance screen breaks it down: each department's cost per day (its allocation plus the upkeep of what it runs), salaries and pensions, interest, and every source of revenue. The figures are this month's settlement divided by its days, so they always agree."
+      },
+      "loans": {
+        "title": "Loans",
+        "body": "When the treasury runs dry the government borrows automatically, at the market rate. A loan is cheaper: a friendly country lends if you have an embassy there and relations are warm, and the international lender looks at your reputation. Interest is paid every month; the whole sum is due on the date agreed, and you may repay early at no cost. A loan the treasury cannot repay on time becomes public debt and costs reputation and the lender's goodwill."
+      },
+      "advisor": {
+        "title": "The advisor",
+        "body": "The advisor on the Dashboard ranks the most urgent problems (an underfunded department, power cuts, a good running short, thin coverage or policing in a region, unrest, unpaid forces, a loan you cannot cover, heavy debt) and opens the screen that fixes each. It stays quiet when nothing needs you."
       },
       "unrest": {
         "title": "Unrest",
