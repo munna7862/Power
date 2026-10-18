@@ -71,6 +71,7 @@ export interface GameStoreState {
   setView(view: ViewId): void;
   /** Opens a country in the World screen. */
   openCountry(id: string | null): void;
+  /** Opens a pending decision in the decision dialog and pauses the clock; null closes the dialog. */
   openDecision(pendingId: string | null): void;
   startNewGame(input: NewGameInput): void;
   /**
@@ -109,7 +110,8 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       goTo: (screen) => set({ screen }),
       setView: (view) => set({ view }),
       openCountry: (country) => set(country ? { country, view: 'world' } : { country }),
-      openDecision: (decisionId) => set({ decisionId }),
+      // Time stops while a decision is on screen, so it cannot lapse (with an indecision penalty) mid-read.
+      openDecision: (decisionId) => set(decisionId ? { decisionId, speed: 0 } : { decisionId }),
 
       startNewGame: ({ presidentName, difficulty, seed, ideology, strategy, options }) => {
         const game = createInitialState({

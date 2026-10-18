@@ -112,7 +112,9 @@ export function GameScreen() {
               variant="primary"
               onClick={() => {
                 gameStore.getState().setView('inbox');
-                gameStore.getState().openDecision(waiting[0]?.id ?? null);
+                // The most urgent decision first: the one whose deadline comes soonest.
+                const urgent = [...waiting].sort((a, b) => a.expiresTick - b.expiresTick)[0];
+                gameStore.getState().openDecision(urgent?.id ?? null);
               }}
             >
               {t('alerts.review')}
