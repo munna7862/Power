@@ -1,5 +1,6 @@
 import { SECTORS, type CountryId, type SectorId, type TreatyType } from '../content/ids';
 import { COUNTRY_CONTENT } from '../content/world';
+import { DEFAULT_TAX_RATES, TAX_BASE_SHARE } from '../economy/constants';
 import { nominalGdp } from '../economy/model';
 import { groupIndian } from '../engine/numberFormat';
 import type { Rng } from '../engine/rng';
@@ -31,6 +32,7 @@ import {
 import {
   addIncident,
   adjustRelation,
+  annexedProblem,
   atWarWithCountry,
   countryState,
   hasTreaty,
@@ -82,10 +84,12 @@ export interface TradeEffect {
 export function tradeEffect(state: GameState, id: CountryId, sector: SectorId, value: number): TradeEffect {
   const share = value / nominalGdp(state.economy);
   const complement = COUNTRY_CONTENT[id]?.strengths.includes(sector) ? COMPLEMENT_BONUS : 1;
-  const customsBase = nominalGdp(state.economy) * 0.0727 * state.budget.taxRates.customs;
+  // Measured against customs at the default rate, never today's: the multiplier outlives any rate change,
+  // so a contract signed at a low rate must not turn into a huge bonus when the rate goes back up.
+  const customsBase = nominalGdp(state.economy) * TAX_BASE_SHARE.customs * DEFAULT_TAX_RATES.customs;
   return {
     growth: share * TRADE_GROWTH_PER_GDP * complement,
-    customs: (value * TRADE_CUSTOMS_YIELD) / Math.max(1, customsBase),
+    customs: (value * TRADE_CUSTOMS_YIELD) / customsBase,
   };
 }
 
@@ -149,10 +153,11 @@ export function pactAcceptance(state: GameState, id: CountryId): { chance: numbe
 
 // --- Validation -------------------------------------------------------------------------------------------
 
-const known = (id: CountryId): string | null => (COUNTRY_CONTENT[id] ? null : `Unknown country ${id}.`);
+const known = (state: GameState, id: CountryId): string | null =>
+  COUNTRY_CONTENT[id] ? annexedProblem(state, id) : `Unknown country ${id}.`;
 
 function validateProposal(state: GameState, id: CountryId): string | null {
-  const unknown = known(id);
+  const unknown = known(state, id);
   if (unknown) return unknown;
   const cs = countryState(state, id);
   if (atWarWithCountry(state, id)) return `You are at war with ${name(id)}.`;
@@ -195,7 +200,7 @@ export function validatePact(state: GameState, id: CountryId): string | null {
 }
 
 export function validateEmbassy(state: GameState, id: CountryId): string | null {
-  const unknown = known(id);
+  const unknown = known(state, id);
   if (unknown) return unknown;
   const cs = countryState(state, id);
   if (cs.embassy) return `You already have an embassy in ${name(id)}.`;
@@ -207,7 +212,7 @@ export function validateEmbassy(state: GameState, id: CountryId): string | null 
 }
 
 export function validateAid(state: GameState, id: CountryId, size: AidSize): string | null {
-  const unknown = known(id);
+  const unknown = known(state, id);
   if (unknown) return unknown;
   if (!(size in AID)) return `Unknown aid package ${size}.`;
   if (atWarWithCountry(state, id)) return `You are at war with ${name(id)}.`;
@@ -217,14 +222,14 @@ export function validateAid(state: GameState, id: CountryId, size: AidSize): str
 }
 
 export function validateSanctions(state: GameState, id: CountryId): string | null {
-  const unknown = known(id);
+  const unknown = known(state, id);
   if (unknown) return unknown;
   if (countryState(state, id).sanctioned) return `${name(id)} is already under sanctions.`;
   return null;
 }
 
 export function validateLift(state: GameState, id: CountryId): string | null {
-  const unknown = known(id);
+  const unknown = known(state, id);
   if (unknown) return unknown;
   return countryState(state, id).sanctioned ? null : `${name(id)} is not under sanctions.`;
 }
@@ -378,6 +383,23 @@ export function breakTreatiesForWar(state: GameState, id: CountryId): GameState 
   return next;
 }
 
+/**
+ * Ends India's ties with a country through no fault of India's: no reputation or goodwill penalty. Used when
+ * the country attacks India (its contracts, pact and embassy end; sanctions stay) and when India annexes it
+ * (everything ends). Its pending offers lapse either way.
+ */
+export function dissolveTies(state: GameState, id: CountryId, keepSanctions: boolean): GameState {
+  let next: GameState = {
+    ...state,
+    diplomacy: { ...state.diplomacy, offers: state.diplomacy.offers.filter((o) => o.from !== id) },
+  };
+  for (const t of treatiesWith(next, id)) {
+    if (keepSanctions && t.type === 'sanctions') continue;
+    next = endTreaty(next, t.id);
+  }
+  return next;
+}
+
 // --- Player actions -----------------------------------------------------------------------------------------
 
 export function proposeTrade(
@@ -459,8 +481,9 @@ export function sendAid(state: GameState, id: CountryId, size: AidSize): GameSta
 export function imposeSanctions(state: GameState, id: CountryId): GameState {
   const provoked = relationOf(state, id) < SANCTIONS.provokedBelow;
   let next = signTreaty(state, { type: 'sanctions', parties: [INDIA, id], years: null });
-  // Existing trade with the country ends; sanctions are not a half measure.
+  // Existing trade with the country ends, and so do its open offers; sanctions are not a half measure.
   for (const t of treatiesWith(next, id, 'trade')) next = endTreaty(next, t.id);
+  next = { ...next, diplomacy: { ...next.diplomacy, offers: next.diplomacy.offers.filter((o) => o.from !== id) } };
   next = adjustRelation(next, id, SANCTIONS.relation);
   next = addIncident(next, id, 20);
   if (!provoked) next = adjustReputation(next, SANCTIONS.reputation);
@@ -494,8 +517,20 @@ export function liftSanctions(state: GameState, id: CountryId): GameState {
 export function validateOffer(state: GameState, offerId: string): string | null {
   const offer = state.diplomacy.offers.find((o) => o.id === offerId);
   if (!offer) return 'That offer has lapsed.';
+  // The same rules as India's own proposals (one path for treaties), checked again now, not when it was made.
+  const id = offer.from;
+  const unknown = known(state, id);
+  if (unknown) return unknown;
+  if (atWarWithCountry(state, id)) return `You are at war with ${name(id)}.`;
+  if (countryState(state, id).sanctioned) return `You have sanctioned ${name(id)}; lift the sanctions first.`;
   if (offer.type === 'trade' && activeTrade(state).length >= MAX_TRADE_TREATIES) {
     return `You can hold at most ${MAX_TRADE_TREATIES} trade contracts.`;
+  }
+  if (
+    offer.type === 'trade' &&
+    activeTrade(state).some((t) => partnerOf(t) === id && t.terms.sector === offer.terms.sector)
+  ) {
+    return `You already have a ${offer.terms.sector} contract with ${name(id)}.`;
   }
   if (offer.type === 'nonAggression' && hasTreaty(state, offer.from, 'nonAggression')) {
     return 'You already have a pact with that country.';

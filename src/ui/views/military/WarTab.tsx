@@ -12,6 +12,7 @@ import {
   WAR,
   warScore,
   allEfficiencies,
+  enemyFrontPower,
   strengthView,
   type GameState,
   type RivalId,
@@ -27,7 +28,8 @@ import styles from '../views.module.css';
 import { Bar, BarRow, CentreBar } from './parts';
 import { daysLeft } from './progress';
 
-function odds(mine: number, enemy: number): string {
+function odds(mine: number, enemy: number | null): string {
+  if (enemy === null) return translate('war.odds.unknown');
   if (enemy <= 0) return translate('war.odds.undefended');
   const ratio = mine / enemy;
   return translate(ratio >= 1.5 ? 'war.odds.favour' : ratio >= 0.85 ? 'war.odds.even' : 'war.odds.against');
@@ -47,8 +49,17 @@ function WarCard({ game, war }: { game: GameState; war: War }) {
   const content = RIVAL_CONTENT[war.rival];
   const score = warScore(war);
   const fronts = frontOdds(game, war);
-  const rival = game.military.rivals[war.rival];
-  const left = rival.strength / war.enemyStartStrength;
+  // Fog of war: the enemy is judged only by what intelligence can see (strengthView), never its true strength.
+  const view = strengthView(game, war.rival, allEfficiencies(game).intelligence);
+  const sighted = game.military.rivals[war.rival].sighting;
+  const estimate =
+    view.kind === 'unknown'
+      ? null
+      : { strength: (view.low + view.high) / 2, readiness: sighted?.readiness ?? 70, annexed: false };
+  const enemyOn = (index: number): number | null => {
+    const front = content.fronts[war.fronts[index]?.index ?? -1];
+    return estimate && front ? enemyFrontPower(estimate, front) : null;
+  };
   const trend =
     war.status === 'terms' ? 'capitulated' : score > 15 ? 'advancing' : score < -15 ? 'fallingBack' : 'stalemate';
 
@@ -72,14 +83,14 @@ function WarCard({ game, war }: { game: GameState; war: War }) {
       </BarRow>
 
       <div className={styles.stack} role="list" aria-label={t('war.fronts')}>
-        {fronts.map((f) => (
+        {fronts.map((f, i) => (
           <div key={f.name} className={styles.frontRow} role="listitem">
             <span>
               <div className={styles.personName}>{f.name}</div>
               <div className={styles.muted}>{t(`war.terrain.${f.terrain}`)}</div>
             </span>
             <CentreBar value={f.progress} label={t('war.frontProgress', { front: f.name })} />
-            <span className={styles.muted}>{odds(f.mine, f.enemy)}</span>
+            <span className={styles.muted}>{odds(f.mine, enemyOn(i))}</span>
           </div>
         ))}
       </div>
@@ -91,9 +102,7 @@ function WarCard({ game, war }: { game: GameState; war: War }) {
           label={t('war.weariness')}
         />
       </BarRow>
-      <BarRow label={t('war.enemyLeft')} value={`${Math.round(left * 100)}%`}>
-        <Bar value={left * 100} tone="danger" label={t('war.enemyLeftLabel')} />
-      </BarRow>
+      <p className={styles.note}>{t('war.enemyArmy', { army: armyText(view) })}</p>
 
       <p className={styles.note}>
         {t('war.losses', {

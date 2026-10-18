@@ -13,6 +13,7 @@ import {
   type GameState,
   type Offer,
   type Treaty,
+  validateOffer,
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
 import { Button, Panel, Tooltip } from '../design/primitives';
@@ -154,7 +155,12 @@ export function DiplomacyView() {
                     </span>
                   </span>
                   <span className={mapStyles.actions}>
-                    <Button variant="primary" onClick={() => dispatch({ type: 'ACCEPT_OFFER', offerId: o.id })}>
+                    <Button
+                      variant="primary"
+                      disabled={validateOffer(game, o.id) !== null}
+                      title={validateOffer(game, o.id) ?? undefined}
+                      onClick={() => dispatch({ type: 'ACCEPT_OFFER', offerId: o.id })}
+                    >
                       {t('diplomacy.accept')}
                     </Button>
                     <Button onClick={() => dispatch({ type: 'DECLINE_OFFER', offerId: o.id })}>

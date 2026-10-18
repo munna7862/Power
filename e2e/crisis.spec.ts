@@ -27,6 +27,23 @@ test.describe('crises and security (Phase 3)', () => {
     );
   });
 
+  test('Review opens the most urgent decision and stops the clock while it is open (DEF-03)', async ({ page }) => {
+    // An older decision with a month to decide, then a flood with ten days.
+    await raiseEvent(page, 'procurement-scam');
+    await raiseEvent(page, 'flood-river', 'east');
+    await page.getByRole('button', { name: 'Speed 4×' }).click();
+    await expect(page.getByRole('button', { name: 'Speed 4×' })).toHaveAttribute('aria-pressed', 'true');
+
+    await page.getByRole('region', { name: 'Pending decisions' }).getByRole('button', { name: 'Review' }).click();
+    await expect(page.getByRole('dialog', { name: 'River floods in the East' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Pause', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    const date = await page.getByTestId('game-date').textContent();
+    // Deliberate wait: at 4× ten days would pass in 2.5 seconds if the clock were still running.
+    await page.waitForTimeout(3000);
+    await expect(page.getByTestId('game-date')).toHaveText(date ?? '');
+    await expect(page.getByRole('dialog', { name: 'River floods in the East' })).toBeVisible();
+  });
+
   test('the inbox filters by category and decisions', async ({ page }) => {
     await raiseEvent(page, 'minister-scandal');
     await raiseEvent(page, 'bumper-harvest');

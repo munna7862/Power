@@ -23,14 +23,37 @@ async function launch(): Promise<{ app: ElectronApplication; page: Page }> {
 }
 
 /**
- * Quits the app the way the game's own Quit button does (the main process exits). Playwright's app.close()
- * never returns on Linux CI, which leaves the worker hanging; app.exit() does not. A kill is the last resort.
+ * Quits the app the way the game's own Quit button does (app.quit()). Playwright's app.close()
+ * is awaited to ensure Playwright's worker teardown cleans up all handles cleanly.
  */
 async function close(app: ElectronApplication): Promise<void> {
   const exited = app.waitForEvent('close').then(() => 'closed' as const);
-  const timeout = new Promise<'timeout'>((resolve) => setTimeout(() => resolve('timeout'), 15_000));
-  await app.evaluate(({ app: electronApp }) => electronApp.exit(0)).catch(() => undefined);
-  if ((await Promise.race([exited, timeout])) === 'timeout') app.process().kill('SIGKILL');
+  let timer: NodeJS.Timeout | undefined;
+  const timeout = new Promise<'timeout'>((resolve) => {
+    timer = setTimeout(() => resolve('timeout'), 10_000);
+    timer.unref?.();
+  });
+  await app.evaluate(({ app: electronApp }) => electronApp.quit()).catch(() => undefined);
+  if ((await Promise.race([exited, timeout])) === 'timeout') {
+    const pid = app.process()?.pid;
+    if (pid) {
+      try {
+        if (process.platform === 'win32') {
+          app.process().kill('SIGKILL');
+        } else {
+          try {
+            process.kill(-pid, 'SIGKILL');
+          } catch {
+            process.kill(pid, 'SIGKILL');
+          }
+        }
+      } catch {
+        // already exited
+      }
+    }
+  }
+  if (timer) clearTimeout(timer);
+  await app.close().catch(() => undefined);
 }
 
 // Best-effort: Electron can hold the profile open for a moment after closing on Windows.
@@ -88,6 +111,7 @@ test('M6 demo: play the tutorial, save, quit, relaunch and continue', async () =
     .click()
     .catch(() => undefined);
   await closed;
+  await app.close().catch(() => undefined);
 
   ({ app, page } = await launch());
   await page.getByRole('button', { name: 'Continue' }).click();

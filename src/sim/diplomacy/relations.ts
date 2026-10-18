@@ -56,6 +56,14 @@ export const hasTreaty = (state: Pick<GameState, 'diplomacy'>, id: CountryId, ty
 export const sanctionsIndia = (state: Pick<GameState, 'diplomacy'>, id: CountryId): boolean =>
   state.diplomacy.treaties.some((t) => t.type === 'sanctions' && t.parties[0] === id && t.parties[1] === INDIA);
 
+/** True once India has annexed the country: it no longer exists as a separate state. */
+export const isAnnexed = (state: Pick<GameState, 'military'>, id: CountryId): boolean =>
+  (state.military.rivals as Record<string, { annexed: boolean } | undefined>)[id]?.annexed === true;
+
+/** Why a country cannot be dealt with at all, or null. */
+export const annexedProblem = (state: Pick<GameState, 'military'>, id: CountryId): string | null =>
+  isAnnexed(state, id) ? 'That country no longer exists as a separate state.' : null;
+
 export const atWarWithCountry = (state: Pick<GameState, 'military'>, id: CountryId): boolean =>
   state.military.wars.some((w) => w.rival === id);
 

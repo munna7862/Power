@@ -237,6 +237,7 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (!pending) return fail(state, 'That decision is no longer waiting.');
       const choice = EVENT_CONTENT[pending.eventId]?.choices.find((c) => c.id === command.choiceId);
       if (!choice) return fail(state, 'That is not one of the available choices.');
+      if (choice.cost > state.nation.treasury) return fail(state, 'The treasury cannot cover this choice.');
       return ok(withRng(state, (rng) => resolvePending(state, pending, choice, rng, false)));
     }
     case 'LAUNCH_INVESTIGATION': {

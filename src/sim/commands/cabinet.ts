@@ -1,5 +1,6 @@
 import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, type MinistryId } from '../content/ids';
+import { closeInquiries } from '../cabinet/scandal';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
 import type { GameState, Minister } from '../state/types';
@@ -20,7 +21,7 @@ function removeMinister(state: GameState, ministry: MinistryId): GameState {
     if (minister) ministers[m] = { ...minister, loyalty: Math.max(0, minister.loyalty + RESHUFFLE_LOYALTY) };
   }
   return addTimedModifier(
-    { ...state, cabinet: { ...state.cabinet, ministers } },
+    closeInquiries({ ...state, cabinet: { ...state.cabinet, ministers } }, ministry),
     {
       source: 'reshuffle',
       label: `Reshuffle: ${outgoing.name} removed`,

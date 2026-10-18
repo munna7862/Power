@@ -22,12 +22,33 @@ export function pickCorruptMinister(state: GameState, rng: Rng): MinistryId | nu
   return serving[serving.length - 1] as MinistryId;
 }
 
+/**
+ * Closes any anti-corruption inquiry into a ministry whose minister is leaving. An inquiry is about a person:
+ * it must never pass judgement on whoever is appointed next.
+ */
+export function closeInquiries(state: GameState, ministry: MinistryId): GameState {
+  const remaining = state.security.investigations.filter((i) => i.ministry !== ministry);
+  if (remaining.length === state.security.investigations.length) return state;
+  return appendLog(
+    { ...state, security: { ...state.security, investigations: remaining } },
+    {
+      severity: 'info',
+      category: 'corruption',
+      title: 'Inquiry closed',
+      body: `The ${MINISTRY_CONTENT[ministry].shortName} inquiry was closed because the minister has left office.`,
+    },
+  );
+}
+
 /** A minister is exposed and resigns. The post is left vacant for the President to fill. */
 export function exposeMinister(state: GameState, ministry: MinistryId, reason: string): GameState {
   const minister = state.cabinet.ministers[ministry];
   if (!minister) return state;
   const next = addTimedModifier(
-    { ...state, cabinet: { ...state.cabinet, ministers: { ...state.cabinet.ministers, [ministry]: null } } },
+    closeInquiries(
+      { ...state, cabinet: { ...state.cabinet, ministers: { ...state.cabinet.ministers, [ministry]: null } } },
+      ministry,
+    ),
     {
       source: 'scandal',
       label: `Scandal: ${minister.name} resigns`,

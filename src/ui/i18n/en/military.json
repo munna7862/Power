@@ -4,7 +4,12 @@
     "atWar": " · At war with {{countries}}",
     "strength": "Strength index",
     "domainTier": "{{domain}} (tier {{tier}}, ×{{power}})",
-    "domains": { "land": "Land", "air": "Air", "sea": "Sea", "strategic": "Strategic" },
+    "domains": {
+      "land": "Land",
+      "air": "Air",
+      "sea": "Sea",
+      "strategic": "Strategic"
+    },
     "readinessFactor": "Readiness factor",
     "moraleFactor": "Morale factor",
     "tiles": {
@@ -16,7 +21,12 @@
       "deterrenceNote": "Puts rivals off attacking"
     },
     "sections": "Military sections",
-    "tabs": { "forces": "Forces", "ops": "Drills & Intelligence", "war": "War", "nuclear": "Nuclear" }
+    "tabs": {
+      "forces": "Forces",
+      "ops": "Drills & Intelligence",
+      "war": "War",
+      "nuclear": "Nuclear"
+    }
   },
   "forces": {
     "byDomain": "Forces by domain",
@@ -139,7 +149,8 @@
       "undefended": "Undefended",
       "favour": "Odds favour India",
       "even": "Evenly matched",
-      "against": "Odds against India"
+      "against": "Odds against India",
+      "unknown": "Odds unknown: run recon"
     },
     "army": {
       "unknown": "Unknown: run recon",
@@ -168,8 +179,7 @@
     },
     "frontProgress": "{{front}} progress",
     "weariness": "War weariness",
-    "enemyLeft": "Enemy army left",
-    "enemyLeftLabel": "Share of the enemy army left",
+    "enemyArmy": "Enemy army (intelligence estimate): {{army}}",
     "losses": "Casualties so far: India {{india}}, enemy {{enemy}}. Equipment lost: {{equipment}} units. War costs about {{cost}} a day and weighs on approval and growth.",
     "dailyReport": "Daily report",
     "dailyReportHeading": "Daily report:",

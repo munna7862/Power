@@ -35,6 +35,17 @@ describe('game store', () => {
     expect(s.game?.clock.date).toEqual({ year: 2026, month: 1, day: 1 });
   });
 
+  it('pauses the clock while a decision is open, and closing it leaves the speed alone (DEF-03)', () => {
+    store.getState().startNewGame({ presidentName: 'Asha Rao', difficulty: 'normal', seed: 1 });
+    store.getState().setSpeed(4);
+    store.getState().openDecision('evt-1');
+    expect(store.getState()).toMatchObject({ decisionId: 'evt-1', speed: 0, lastSpeed: 4 });
+    store.getState().openDecision(null);
+    expect(store.getState()).toMatchObject({ decisionId: null, speed: 0 });
+    store.getState().togglePause();
+    expect(store.getState().speed).toBe(4);
+  });
+
   it('starts with the chosen ideology and strategy', () => {
     store.getState().startNewGame({
       presidentName: 'A',

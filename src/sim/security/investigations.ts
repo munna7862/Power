@@ -19,6 +19,7 @@ export function validateInvestigation(state: GameState, ministry: MinistryId): s
   if (state.security.investigations.length >= MAX_INVESTIGATIONS) {
     return `The agency can only run ${MAX_INVESTIGATIONS} inquiries at a time.`;
   }
+  if (state.nation.treasury < INVESTIGATION_COST) return 'The treasury cannot cover the cost of an inquiry.';
   return null;
 }
 
