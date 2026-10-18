@@ -5,8 +5,8 @@ import { allEfficiencies } from '../economy/model';
 import { groupIndian } from '../engine/numberFormat';
 import { appendLog } from '../state/log';
 import type { GameState, MilitaryState } from '../state/types';
-import { CANCEL_REFUND, FUND_CAP_MONTHS, MAX_ORDER_SIZE, MAX_QUEUE } from './constants';
-import { monthlyUpkeep, unitCost, unitGeneration } from './strength';
+import { CANCEL_REFUND, DELIVERY, MAX_ORDER_SIZE, MAX_QUEUE } from './constants';
+import { militaryStrength, monthlyUpkeep, unitCost, unitGeneration, unitUpkeep } from './strength';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
@@ -21,36 +21,79 @@ const crore = (v: number) => `₹${groupIndian(Math.round(v))} crore`;
 export const orderCost = (state: Pick<GameState, 'military'>, unit: UnitId, quantity: number): number =>
   unitCost(unit, state.military.tech[UNIT_CONTENT[unit].domain]) * quantity;
 
+const pay = (state: GameState, amount: number): GameState => ({
+  ...state,
+  nation: { ...state.nation, treasury: state.nation.treasury - amount },
+});
+
+/** Days until an order of `quantity` units is delivered. */
+export const deliveryDays = (unit: UnitId, quantity: number): number =>
+  Math.ceil(DELIVERY.base + UNIT_CONTENT[unit].buildDays / DELIVERY.buildDaysPerDay + quantity / DELIVERY.unitsPerDay);
+
 export function validateOrder(state: GameState, unit: UnitId, quantity: number): string | null {
   if (!UNITS.includes(unit)) return `Unknown unit ${unit}.`;
   if (!Number.isInteger(quantity) || quantity < 1) return 'Order at least one unit.';
   if (quantity > MAX_ORDER_SIZE) return `An order can be at most ${MAX_ORDER_SIZE} units.`;
-  if (state.military.queue.length >= MAX_QUEUE) return `The production queue is full (${MAX_QUEUE} orders).`;
+  if (state.military.queue.length >= MAX_QUEUE) return `The delivery queue is full (${MAX_QUEUE} orders).`;
   const cost = orderCost(state, unit, quantity);
-  if (cost > state.military.procurementFund) {
-    return `The procurement fund holds ${crore(state.military.procurementFund)}; this order costs ${crore(cost)}. Raise the Defence budget to build it up.`;
+  if (cost > state.nation.treasury) {
+    return `The treasury holds ${crore(state.nation.treasury)}; this order costs ${crore(cost)}.`;
   }
   return null;
 }
 
-/** Places an order and pays for it from the procurement fund. Equipment arrives after the unit’s build time. */
+/** Places an order and pays for it from the treasury. Equipment arrives after its delivery time. */
 export function placeOrder(state: GameState, unit: UnitId, quantity: number): GameState {
-  const cost = orderCost(state, unit, quantity);
-  const days = UNIT_CONTENT[unit].buildDays + Math.ceil(quantity / 4) * 10;
   const order = {
     id: `ord-${state.nextId}`,
     unit,
     quantity,
     startedTick: state.clock.tick,
-    endsTick: state.clock.tick + days,
+    endsTick: state.clock.tick + deliveryDays(unit, quantity),
   };
   return {
-    ...patchMilitary(state, {
-      procurementFund: state.military.procurementFund - cost,
-      queue: [...state.military.queue, order],
-    }),
+    ...pay(patchMilitary(state, { queue: [...state.military.queue, order] }), orderCost(state, unit, quantity)),
     nextId: state.nextId + 1,
   };
+}
+
+export interface ForcePreview {
+  strength: number;
+  upkeep: number;
+}
+
+/**
+ * India's strength and monthly upkeep if `change` units of a type joined (or, negative, left) the forces today,
+ * with today's readiness, morale and technology: the same `militaryStrength()` the simulation uses.
+ */
+export function previewForces(state: Pick<GameState, 'military'>, unit: UnitId, change: number): ForcePreview {
+  const m = state.military;
+  const forces = { ...m.forces, [unit]: Math.max(0, m.forces[unit] + change) };
+  return {
+    strength: militaryStrength({ ...m, forces }),
+    upkeep: monthlyUpkeep({ forces, tech: m.tech }),
+  };
+}
+
+export function validateDecommissionUnits(state: GameState, unit: UnitId, quantity: number): string | null {
+  if (!UNITS.includes(unit)) return `Unknown unit ${unit}.`;
+  if (!Number.isInteger(quantity) || quantity < 1) return 'Decommission at least one unit.';
+  if (quantity > state.military.forces[unit]) {
+    return `Only ${state.military.forces[unit]} ${UNIT_CONTENT[unit].name.toLowerCase()} units are in service.`;
+  }
+  if (state.military.wars.length > 0) return 'Units cannot be stood down during a war.';
+  return null;
+}
+
+/** Retires units from service. Nothing is refunded; the saving is their upkeep. */
+export function decommissionUnits(state: GameState, unit: UnitId, quantity: number): GameState {
+  const forces = { ...state.military.forces, [unit]: state.military.forces[unit] - quantity };
+  return appendLog(patchMilitary(state, { forces }), {
+    severity: 'info',
+    category: 'military',
+    title: 'Units decommissioned',
+    body: `${quantity} × ${UNIT_CONTENT[unit].name} have been stood down, saving ${crore(quantity * unitUpkeep(unit, state.military.tech[UNIT_CONTENT[unit].domain]))} a month in upkeep.`,
+  });
 }
 
 export function validateCancel(state: GameState, orderId: string): string | null {
@@ -62,20 +105,17 @@ export function cancelOrder(state: GameState, orderId: string): GameState {
   if (!order) return state;
   const tier = state.military.tech[UNIT_CONTENT[order.unit].domain];
   const refund = Math.round(unitCost(order.unit, tier) * order.quantity * CANCEL_REFUND);
-  return patchMilitary(state, {
-    procurementFund: state.military.procurementFund + refund,
-    queue: state.military.queue.filter((o) => o.id !== orderId),
-  });
+  return pay(patchMilitary(state, { queue: state.military.queue.filter((o) => o.id !== orderId) }), -refund);
 }
 
 export function validateResearch(state: GameState, domain: DomainId): string | null {
   if (!DOMAINS.includes(domain)) return `Unknown domain ${domain}.`;
-  const { research, tech, procurementFund } = state.military;
+  const { research, tech } = state.military;
   if (research) return 'A research project is already under way.';
   if (tech[domain] >= 3) return `${DOMAIN_LABELS[domain]} technology is already at its highest tier.`;
   const node = researchNode(domain, (tech[domain] + 1) as 2 | 3);
-  if (node.cost > procurementFund) {
-    return `The procurement fund holds ${crore(procurementFund)}; this research costs ${crore(node.cost)}.`;
+  if (node.cost > state.nation.treasury) {
+    return `The treasury holds ${crore(state.nation.treasury)}; this research costs ${crore(node.cost)}.`;
   }
   return null;
 }
@@ -83,10 +123,12 @@ export function validateResearch(state: GameState, domain: DomainId): string | n
 export function startResearch(state: GameState, domain: DomainId): GameState {
   const tier = (state.military.tech[domain] + 1) as 2 | 3;
   const node = researchNode(domain, tier);
-  return patchMilitary(state, {
-    procurementFund: state.military.procurementFund - node.cost,
-    research: { domain, tier, startedTick: state.clock.tick, endsTick: state.clock.tick + node.days },
-  });
+  return pay(
+    patchMilitary(state, {
+      research: { domain, tier, startedTick: state.clock.tick, endsTick: state.clock.tick + node.days },
+    }),
+    node.cost,
+  );
 }
 
 /** Daily: delivers finished orders and completes research. */
@@ -123,32 +165,17 @@ export function completeProduction(state: GameState): GameState {
 }
 
 export interface Funding {
-  /** Defence money available this month. */
+  /** Defence money spent this month: pay and upkeep. */
   spend: number;
   upkeep: number;
   /** Money for upkeep over upkeep due; below 1 the forces are underfunded. */
   ratio: number;
-  /** Left over for the procurement fund (never negative). */
-  surplus: number;
-  /** Drawn from the fund to cover a shortfall. */
-  drawn: number;
 }
 
-/** How a month of Defence spending covers upkeep. Shortfalls are covered from the fund while it lasts. */
-export function fundingFor(
-  military: Pick<MilitaryState, 'forces' | 'tech' | 'procurementFund'>,
-  spend: number,
-): Funding {
+/** How a month of Defence spending covers upkeep. Since Sprint 8.7 equipment is bought from the treasury. */
+export function fundingFor(military: Pick<MilitaryState, 'forces' | 'tech'>, spend: number): Funding {
   const upkeep = monthlyUpkeep(military);
-  const shortfall = Math.max(0, upkeep - spend);
-  const drawn = Math.min(shortfall, military.procurementFund);
-  return {
-    spend,
-    upkeep,
-    ratio: upkeep === 0 ? 1.3 : (spend + drawn) / upkeep,
-    surplus: Math.max(0, spend - upkeep),
-    drawn,
-  };
+  return { spend, upkeep, ratio: upkeep === 0 ? 1.3 : spend / upkeep };
 }
 
 /** Where readiness is heading: funding, the Defence ministry’s quality and whether the army has been fighting. */
@@ -169,7 +196,7 @@ export function moraleTarget(
   );
 }
 
-/** Monthly: pays upkeep, banks the surplus and lets readiness and morale drift toward what funding supports. */
+/** Monthly: pays upkeep and lets readiness and morale drift toward what funding supports. */
 export function settleForces(state: GameState): GameState {
   const spend = state.economy.lastMonth?.expenditure.defence ?? 0;
   const funding = fundingFor(state.military, spend);
@@ -178,7 +205,6 @@ export function settleForces(state: GameState): GameState {
   const weariness = Math.max(0, ...m.wars.map((w) => w.weariness));
   const loyalty = commandConfidence(state);
 
-  const fund = clamp(m.procurementFund - funding.drawn + funding.surplus, 0, Math.max(spend, 1) * FUND_CAP_MONTHS);
   const readiness = clamp(m.readiness + (readinessTarget(funding.ratio, eff) - m.readiness) * 0.12, 0, 100);
   const morale = clamp(
     m.morale + (moraleTarget(funding.ratio, state.nation.approval, loyalty, weariness) - m.morale) * 0.1,
@@ -186,7 +212,7 @@ export function settleForces(state: GameState): GameState {
     100,
   );
 
-  let next = patchMilitary(state, { procurementFund: fund, readiness, morale, fundingRatio: funding.ratio });
+  let next = patchMilitary(state, { readiness, morale, fundingRatio: funding.ratio });
   if (funding.ratio < 0.85 && m.fundingRatio >= 0.85) {
     next = appendLog(next, {
       severity: 'warning',

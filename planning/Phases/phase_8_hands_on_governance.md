@@ -181,7 +181,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 - [x] Goods-market inflation drivers (import dependence, shortages, tariffs), measured against the start; `fuel-shortage` and `food-shortage` events on the new `fuelShortage` and `foodShortage` stats
 - [x] Prices move after each trade, drift back to base monthly with some noise, and each partner has monthly capacity, so there's no buy-low, sell-high loop in one tick
 
-### Sprint 8.7: Armoury, one page to buy the military (5 SP)
+### Sprint 8.7: Armoury, one page to buy the military (5 SP) ✅
 
 | ID     | Story                                                                                                          | SP  |
 | ------ | -------------------------------------------------------------------------------------------------------------- | --- |
@@ -191,13 +191,13 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] Purchases come from the treasury; the procurement fund and its cap go away
-- [ ] Short delivery times (days to a few weeks) so wars still can't be won by buying on the day
-- [ ] Defence funding becomes pay and upkeep only; research and drills stay on the Military screen, paid from the treasury
-- [ ] The preview uses `militaryStrength()` on the hypothetical force, so the number shown is the number the sim uses
-- [ ] Generic class names only (AGENTS.md); no black-market tab
+- [x] Purchases come from the treasury; the procurement fund and its cap go away
+- [x] Short delivery times (days to a few weeks) so wars still can't be won by buying on the day
+- [x] Defence funding becomes pay and upkeep only; research and drills stay on the Military screen, paid from the treasury
+- [x] The preview uses `militaryStrength()` on the hypothetical force, so the number shown is the number the sim uses
+- [x] Generic class names only (AGENTS.md); no black-market tab
 
-### Sprint 8.8: Daily money, loans and the advisor (5 SP)
+### Sprint 8.8: Daily money, loans and the advisor (5 SP) ✅
 
 | ID     | Story                                                                                                                 | SP  |
 | ------ | --------------------------------------------------------------------------------------------------------------------- | --- |
@@ -207,10 +207,10 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] Daily figures are `projectMonth` ÷ days in the month, so the UI and the settlement agree
-- [ ] State: `loans: { id; lender: CountryId | 'intl'; principal; rate; dueTick }[]`; commands `TAKE_LOAN`, `REPAY_LOAN`; a lender's rate depends on relation, India's debt-to-GDP and reputation
-- [ ] A missed repayment costs reputation and the lender's goodwill; automatic borrowing stays, at a worse rate, as the last resort
-- [ ] The advisor ranks warnings from the existing "Why?" drivers (the worst-scoring approval factor, an unfunded department, a power shortfall, a stock running out); text lives in i18n
+- [x] Daily figures are `projectMonth` ÷ days in the month, so the UI and the settlement agree
+- [x] State: `loans: { id; lender: CountryId | 'intl'; principal; rate; dueTick }[]`; commands `TAKE_LOAN`, `REPAY_LOAN`; a lender's rate depends on relation, India's debt-to-GDP and reputation
+- [x] A missed repayment costs reputation and the lender's goodwill; automatic borrowing stays, at a worse rate, as the last resort
+- [x] The advisor ranks warnings from the existing "Why?" drivers (the worst-scoring approval factor, an unfunded department, a power shortfall, a stock running out); text lives in i18n
 
 ### Sprint 8.9: Fresh start, balance and polish (6 SP)
 

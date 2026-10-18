@@ -32,7 +32,7 @@ export interface DifficultyRules {
 
 export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
   easy: {
-    treasury: 300_000,
+    treasury: 320_000,
     approval: 62,
     modifiers: [
       {
@@ -52,7 +52,7 @@ export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
     impeachmentThreshold: 12,
   },
   normal: {
-    treasury: 200_000,
+    treasury: 220_000,
     approval: 55,
     modifiers: [],
     eventFrequency: 1,
@@ -63,7 +63,7 @@ export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
     impeachmentThreshold: 15,
   },
   hard: {
-    treasury: 120_000,
+    treasury: 140_000,
     approval: 48,
     modifiers: [
       {

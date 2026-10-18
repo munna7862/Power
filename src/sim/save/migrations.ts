@@ -41,6 +41,23 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   // v10 → v11 (Sprints 8.5 and 8.6): industry, goods and the trade market. A game in progress gets the opening
   // plants, stocks at target, the opening settlement and world prices at base.
   10: (state) => ({ ...(state as object), schemaVersion: 11, industry: openingIndustry(), market: openingMarket() }),
+  // v11 → v12 (Sprints 8.7 and 8.8): equipment is bought from the treasury, so the Defence procurement fund is paid
+  // into it; and loans arrive, of which a game in progress has none.
+  11: (state) => {
+    const v11 = state as {
+      nation: { treasury: number };
+      economy: object;
+      military: { procurementFund?: number } & Record<string, unknown>;
+    };
+    const { procurementFund = 0, ...military } = v11.military;
+    return {
+      ...v11,
+      schemaVersion: 12,
+      nation: { ...v11.nation, treasury: Math.round(v11.nation.treasury + procurementFund) },
+      economy: { ...v11.economy, loans: [] },
+      military,
+    };
+  },
 };
 
 export function migrate(

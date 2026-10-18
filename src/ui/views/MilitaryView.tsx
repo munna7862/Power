@@ -12,19 +12,19 @@ import {
 import { useGame } from '../../store';
 import { Tooltip } from '../design/primitives';
 import gameStyles from '../screens/game.module.css';
-import { ForcesTab } from './military/ForcesTab';
+import { ArmouryTab } from './military/ArmouryTab';
 import { NuclearTab } from './military/NuclearTab';
 import { OpsTab } from './military/OpsTab';
 import { WarTab } from './military/WarTab';
 import styles from './views.module.css';
 
-const TABS = ['forces', 'ops', 'war', 'nuclear'] as const;
+const TABS = ['armoury', 'ops', 'war', 'nuclear'] as const;
 type TabId = (typeof TABS)[number];
 
 export function MilitaryView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
-  const [tab, setTab] = useState<TabId>('forces');
+  const [tab, setTab] = useState<TabId>('armoury');
   if (!game) return null;
 
   const { military } = game;
@@ -107,7 +107,7 @@ export function MilitaryView() {
       </div>
 
       <div role="tabpanel" id="mil-panel" aria-labelledby={`mil-tab-${tab}`}>
-        {tab === 'forces' && <ForcesTab game={game} />}
+        {tab === 'armoury' && <ArmouryTab game={game} />}
         {tab === 'ops' && <OpsTab game={game} />}
         {tab === 'war' && <WarTab game={game} />}
         {tab === 'nuclear' && <NuclearTab game={game} />}

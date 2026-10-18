@@ -18,6 +18,7 @@ import { DepartmentsView } from '../views/DepartmentsView';
 import { DashboardView } from '../views/DashboardView';
 import { DiplomacyView } from '../views/DiplomacyView';
 import { EnergyView } from '../views/EnergyView';
+import { FinanceView } from '../views/FinanceView';
 import { InboxView } from '../views/InboxView';
 import { IndustryView } from '../views/IndustryView';
 import { MarketView } from '../views/MarketView';
@@ -39,6 +40,8 @@ function ActiveView({ view }: { view: ViewId }) {
       return <EconomyView />;
     case 'budget':
       return <BudgetView />;
+    case 'finance':
+      return <FinanceView />;
     case 'departments':
       return <DepartmentsView />;
     case 'construction':

@@ -18,6 +18,7 @@ import { LineChart } from '../charts/LineChart';
 import { Button, Gauge, Panel, Stat, Tooltip } from '../design/primitives';
 import { formatCrore, formatCroreDelta, pct, signed } from '../format';
 import styles from '../screens/game.module.css';
+import { AdvisorPanel } from './advisor/AdvisorPanel';
 import viewStyles from './views.module.css';
 
 const TERM_DAYS = Math.round(TERM_YEARS * 365.25);
@@ -152,6 +153,8 @@ export function DashboardView() {
             </div>
           ))}
         </div>
+
+        <AdvisorPanel game={game} />
 
         <Panel title={t('topbar.treasury')} className={styles.span4}>
           <Stat

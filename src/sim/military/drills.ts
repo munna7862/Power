@@ -9,14 +9,14 @@ const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(ma
 
 export function validateDrill(state: GameState, kind: DrillKind): string | null {
   if (!DRILL_KINDS.includes(kind)) return `Unknown drill ${kind}.`;
-  const { drills, procurementFund } = state.military;
+  const { drills } = state.military;
   if (drills.some((d) => d.kind === kind)) return 'That exercise is already under way.';
   if (drills.length >= MAX_DRILLS) return `At most ${MAX_DRILLS} exercises can run at once.`;
-  if (DRILLS[kind].cost > procurementFund) return 'The procurement fund cannot cover this exercise.';
+  if (DRILLS[kind].cost > state.nation.treasury) return 'The treasury cannot cover this exercise.';
   return null;
 }
 
-/** Starts a drill, paid for from the procurement fund. Results arrive when it ends. */
+/** Starts a drill, paid for from the treasury. Results arrive when it ends. */
 export function startDrill(state: GameState, kind: DrillKind): GameState {
   const spec = DRILLS[kind];
   const drill = {
@@ -26,10 +26,8 @@ export function startDrill(state: GameState, kind: DrillKind): GameState {
     endsTick: state.clock.tick + spec.days,
   };
   return {
-    ...patchMilitary(state, {
-      procurementFund: state.military.procurementFund - spec.cost,
-      drills: [...state.military.drills, drill],
-    }),
+    ...patchMilitary(state, { drills: [...state.military.drills, drill] }),
+    nation: { ...state.nation, treasury: state.nation.treasury - spec.cost },
     nextId: state.nextId + 1,
   };
 }

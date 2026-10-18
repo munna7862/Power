@@ -1,0 +1,48 @@
+{
+  "finance": {
+    "subtitle": "Money by the day: what each department costs, what comes in, and loans from friends abroad.",
+    "tiles": {
+      "treasury": "Treasury",
+      "treasuryNote": "Kept above half a month of spending by automatic borrowing.",
+      "perDay": "Change per day",
+      "perDayNote": "This month's balance over its {{days}} days, before borrowing.",
+      "loans": "Loans owed",
+      "loansNote": "All loans together are capped at {{ceiling}}.",
+      "market": "Market rate",
+      "marketNote": "What automatic borrowing costs. Average on the debt: {{average}}."
+    },
+    "expenses": "General expenses",
+    "expensesNote": "Each department's cost per day this month: its allocation plus the upkeep of what it runs.",
+    "columns": {
+      "line": "Line",
+      "perDay": "Per day",
+      "perMonth": "This month"
+    },
+    "lines": {
+      "establishment": "Pensions & salaries",
+      "interest": "Interest on debt and loans"
+    },
+    "underfunded": "Underfunded",
+    "totalSpending": "Total spending",
+    "balance": "Balance",
+    "loans": "Loans",
+    "loansNote": "Countries lend to India when there is an embassy and relations are warm; the international lender looks at India's reputation. Every lender undercuts the market rate that automatic borrowing pays. A loan is repaid in full when it falls due; a missed repayment rolls into debt and costs reputation and the lender's goodwill.",
+    "lender": "Lender",
+    "intl": "International lender",
+    "unavailable": "unavailable",
+    "amount": "Amount, ₹ crore",
+    "years": "Term",
+    "yearsOption_one": "{{count}} year",
+    "yearsOption_other": "{{count}} years",
+    "terms": "Rate {{rate}} a year: {{interest}} a month in interest. This lender lends up to {{cap}}.",
+    "borrow": "Borrow {{amount}}",
+    "borrowLabel": "Borrow {{amount}} from {{lender}}",
+    "owed": "Loans outstanding",
+    "noLoans": "India owes nothing beyond its public debt.",
+    "loanLine": "{{lender}}: {{principal}} at {{rate}}",
+    "dueIn_one": "Due in {{count}} day",
+    "dueIn_other": "Due in {{count}} days",
+    "repay": "Repay now",
+    "repayLabel": "Repay {{principal}} to {{lender}}"
+  }
+}

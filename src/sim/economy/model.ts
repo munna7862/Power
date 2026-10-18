@@ -94,6 +94,10 @@ export function interestRateFor(debtRatio: number, inflation: number, deficitRat
   return Math.min(rate, MAX_INTEREST_RATE);
 }
 
+/** Interest due this month on all loans, ₹ crore. */
+export const loanInterest = (economy: Pick<EconomyState, 'loans'>): number =>
+  economy.loans.reduce((s, l) => s + (l.principal * l.rate) / 12, 0);
+
 export interface FiscalProjection {
   revenue: Record<RevenueLine, number>;
   expenditure: Record<ExpenditureLine, number>;
@@ -152,7 +156,8 @@ export function projectMonth(
     );
   }
   expenditure.establishment = gdpMonth * ESTABLISHMENT_SHARE;
-  expenditure.interest = (economy.debt * economy.interestRate) / 12;
+  // Public debt at its average rate, and loans at the rates agreed with each lender.
+  expenditure.interest = (economy.debt * economy.interestRate) / 12 + loanInterest(economy);
 
   const totalRevenue = Object.values(revenue).reduce((a, b) => a + b, 0);
   const totalExpenditure = Object.values(expenditure).reduce((a, b) => a + b, 0);

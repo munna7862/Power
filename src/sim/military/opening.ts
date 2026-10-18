@@ -1,13 +1,7 @@
 import { RIVAL_CONTENT, UNIT_CONTENT } from '../content/military';
 import { DOMAINS, RIVALS, UNITS, type DomainId, type RivalId, type UnitId } from '../content/ids';
 import type { MilitaryState, RivalState } from '../state/types';
-import {
-  START_COUNTER_INTEL,
-  START_DETERRENCE,
-  START_MORALE,
-  START_PROCUREMENT_FUND,
-  START_READINESS,
-} from './constants';
+import { START_COUNTER_INTEL, START_DETERRENCE, START_MORALE, START_READINESS } from './constants';
 
 export const RIVAL_START_READINESS = 70;
 
@@ -30,7 +24,6 @@ export function openingMilitary(): MilitaryState {
     morale: START_MORALE,
     tech: Object.fromEntries(DOMAINS.map((d) => [d, 1])) as Record<DomainId, 1 | 2 | 3>,
     research: null,
-    procurementFund: START_PROCUREMENT_FUND,
     queue: [],
     drills: [],
     drillReports: [],

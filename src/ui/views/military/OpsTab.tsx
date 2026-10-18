@@ -57,7 +57,7 @@ export function OpsTab({ game }: { game: GameState }) {
           {DRILL_KINDS.map((kind: DrillKind) => {
             const spec = DRILLS[kind];
             const active = military.drills.find((d) => d.kind === kind);
-            const blocked = !!active || military.drills.length >= MAX_DRILLS || spec.cost > military.procurementFund;
+            const blocked = !!active || military.drills.length >= MAX_DRILLS || spec.cost > game.nation.treasury;
             const name = t(`ops.drillKinds.${kind}.label`);
             return (
               <div key={kind} className={styles.ministryCard}>

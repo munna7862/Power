@@ -1,0 +1,21 @@
+{
+  "advisor": {
+    "title": "Advisor",
+    "quiet": "Nothing urgent. The advisor speaks up when a department is underfunded, the grid falls short, goods run out, services or policing thin out, the forces go unpaid or a loan falls due.",
+    "open": "Open {{screen}}",
+    "openLabel": "Open {{screen}}: {{advice}}",
+    "topics": {
+      "approval": "Voters are unhappy about {{factor}} ({{value}}/100), the worst of the approval factors.",
+      "department": "{{department}} is underfunded: {{value}} of its default allocation. Months of this cost it a service star.",
+      "power": "Power cuts: the grid meets only {{value}} of demand. Industry and approval suffer.",
+      "shortage": "{{good}} is running short: {{value}} of demand goes unmet.",
+      "coverage": "{{region}}: {{area}} reach only {{value}} of the people.",
+      "police": "{{region}}: the police are stretched, at {{value}} of the opening strength per head.",
+      "unrest": "{{region}}: unrest is high ({{value}}/100).",
+      "forces": "The armed forces are underfunded: the Defence budget covers {{value}} of their upkeep.",
+      "loan_one": "A loan from {{lender}} falls due in {{count}} day, and the treasury cannot cover it yet.",
+      "loan_other": "A loan from {{lender}} falls due in {{count}} days, and the treasury cannot cover it yet.",
+      "debt": "Public debt has reached {{value}} of GDP; interest is eating the budget."
+    }
+  }
+}

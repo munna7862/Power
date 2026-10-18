@@ -120,6 +120,31 @@ export {
   validateWorldSale,
 } from './market/trade';
 export {
+  COUNTRY_LOAN_CAP,
+  INTL_LENDER,
+  INTL_LOAN_CAP,
+  LENDER_RELATION,
+  lenderCap,
+  lenderName,
+  lenderProblem,
+  LENDERS,
+  LOAN_CEILING_SHARE,
+  loanCeiling,
+  loanRate,
+  marketRate,
+  MAX_LOAN_YEARS,
+  MAX_LOANS,
+  MIN_LOAN,
+  MISSED_RELATION,
+  MISSED_REPUTATION,
+  outstanding,
+  validateLoan,
+  validateRepay,
+  type RateLine,
+} from './finance/loans';
+export { dailyFinance, type DailyFinance } from './finance/daily';
+export { ADVICE, advise, type Advice, type AdviceTopic } from './advisor/advisor';
+export {
   DEMAND_SHARES,
   EXPORT_MARGIN,
   EXPORT_PRICE,
@@ -310,13 +335,13 @@ export {
 } from './security/leadership';
 export { exposureChance, validateInvestigation } from './security/investigations';
 export { operationBlocked } from './security/operations';
-export { nationalLeakageFactor } from './economy/model';
+export { loanInterest, nationalLeakageFactor } from './economy/model';
 export { advanceUntilAttention } from './engine/tick';
 export { UNIT_CONTENT, RESEARCH_LIST, RIVAL_CONTENT, researchNode } from './content/military';
 export type { UnitContent, ResearchContent, RivalContent, FrontContent } from './content/military';
 export {
+  DELIVERY,
   DRILLS,
-  FUND_CAP_MONTHS,
   INTEL_OPS,
   MAX_DRILLS,
   MAX_INTEL_OPS,
@@ -347,7 +372,18 @@ export {
   unitUpkeep,
   type StrengthView,
 } from './military/strength';
-export { fundingFor, moraleTarget, orderCost, readinessTarget, type Funding } from './military/forces';
+export {
+  deliveryDays,
+  fundingFor,
+  moraleTarget,
+  orderCost,
+  previewForces,
+  readinessTarget,
+  validateDecommissionUnits,
+  validateOrder,
+  type ForcePreview,
+  type Funding,
+} from './military/forces';
 export { deterrenceTarget } from './military/deterrence';
 export { directorCompetence, exposureOnFailure, opSuccessChance } from './military/intel';
 export { atWarWith, declarationChance, hostility, tensionTarget } from './military/rivals';
