@@ -46,6 +46,7 @@ export function DecisionModal() {
             <Button
               variant={choice.default ? 'secondary' : 'primary'}
               aria-label={t('decision.chooseLabel', { choice: choice.label })}
+              disabled={choice.cost > game.nation.treasury}
               onClick={() => choose(choice.id)}
             >
               {t('decision.choose')}

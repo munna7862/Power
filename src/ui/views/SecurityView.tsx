@@ -22,6 +22,7 @@ import {
   terrorTarget,
   unrestTarget,
   validateInvestigation,
+  operationBlocked,
   type GameState,
   type RegionId,
 } from '../../sim';
@@ -289,7 +290,12 @@ export function SecurityView() {
                         })}
                       </span>
                     ) : (
-                      <Button variant="primary" onClick={() => dispatch({ type: 'LAUNCH_OPERATION', kind })}>
+                      <Button
+                        variant="primary"
+                        disabled={operationBlocked(game, kind) !== null}
+                        title={operationBlocked(game, kind) ?? undefined}
+                        onClick={() => dispatch({ type: 'LAUNCH_OPERATION', kind })}
+                      >
                         {t(`security.ops.${kind}.label`)}
                       </Button>
                     )}

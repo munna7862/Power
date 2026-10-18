@@ -12,6 +12,7 @@ export function operationBlocked(state: GameState, kind: OperationKind): string 
   if (state.security.operations.some((o) => o.kind === kind)) {
     return kind === 'raid' ? 'Forces are still recovering from the last raid.' : 'That operation is already running.';
   }
+  if (state.nation.treasury < OPERATIONS[kind].cost) return 'The treasury cannot cover this operation.';
   return null;
 }
 

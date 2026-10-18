@@ -6,6 +6,8 @@ import {
   coupChance,
   coupRisk,
   dispatch,
+  EVENT_CONTENT,
+  raiseEvent,
   intelligenceFoilChance,
   MAX_INVESTIGATIONS,
   MINISTRIES,
@@ -190,6 +192,26 @@ describe('investigations', () => {
     });
     expect(replaced.ok && replaced.state.security.investigations).toHaveLength(0);
     expect(exposeMinister(opened.state, 'finance', 'Test.').security.investigations).toHaveLength(0);
+  });
+
+  it('refuses operations, inquiries and costly choices the treasury cannot cover (DEF-08)', () => {
+    const game = newGame();
+    const broke = { ...game, nation: { ...game.nation, treasury: 700 } };
+    for (const command of [
+      { type: 'LAUNCH_OPERATION', kind: 'raid' },
+      { type: 'LAUNCH_OPERATION', kind: 'borderSeal' },
+      { type: 'LAUNCH_INVESTIGATION', ministry: 'health' },
+    ] as Parameters<typeof dispatch>[1][]) {
+      const result = dispatch(broke, command);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error).toContain('treasury');
+    }
+    expect(dispatch(broke, { type: 'LAUNCH_OPERATION', kind: 'surveillance' }).ok).toBe(true);
+    const raised = raiseEvent(broke, 'flood-river', 'east');
+    const pending = raised.events.pending[0]!;
+    const costly = EVENT_CONTENT['flood-river']!.choices.find((c) => c.cost > 700)!;
+    const refused = dispatch(raised, { type: 'RESOLVE_EVENT', pendingId: pending.id, choiceId: costly.id });
+    expect(refused.ok).toBe(false);
   });
 
   it('an exposed minister resigns and the post is vacant', () => {
