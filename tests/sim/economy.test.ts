@@ -16,7 +16,12 @@ import {
   type TaxId,
 } from '../../src/sim';
 import { expectedSectorGrowth } from '../../src/sim/economy/growth';
-import { interestRateFor, ministryEfficiencyFor, taxYieldFactor } from '../../src/sim/economy/model';
+import {
+  employmentTaxFactor,
+  interestRateFor,
+  ministryEfficiencyFor,
+  taxYieldFactor,
+} from '../../src/sim/economy/model';
 import { calm, newGame, withStars } from '../helpers';
 
 const withTaxes = (state: GameState, rate: (t: TaxId) => number): GameState => ({
@@ -51,6 +56,18 @@ describe('fiscal model', () => {
     const revenueAt = (r: number) => r * taxYieldFactor('income', r);
     expect(revenueAt(0.3)).toBeGreaterThan(revenueAt(0.2));
     expect(revenueAt(0.45)).toBeLessThan(revenueAt(0.38));
+  });
+
+  it('collects more income tax when more people are in work, and nothing changes at the start', () => {
+    const state = newGame();
+    expect(employmentTaxFactor(state.economy.unemployment)).toBe(1);
+    const base = projectMonth(state, state.budget);
+    const moreJobs = { ...state, economy: { ...state.economy, unemployment: state.economy.unemployment - 0.02 } };
+    const fewerJobs = { ...state, economy: { ...state.economy, unemployment: state.economy.unemployment + 0.02 } };
+    expect(projectMonth(moreJobs, moreJobs.budget).revenue.income).toBeCloseTo(base.revenue.income * 1.06);
+    expect(projectMonth(fewerJobs, fewerJobs.budget).revenue.income).toBeCloseTo(base.revenue.income * 0.94);
+    expect(projectMonth(moreJobs, moreJobs.budget).revenue.gst).toBeCloseTo(base.revenue.gst);
+    expect(employmentTaxFactor(0.4)).toBe(0.5);
   });
 
   it('collects more when a budget raises taxes and spends more when it raises allocations', () => {

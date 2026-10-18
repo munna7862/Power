@@ -7,6 +7,7 @@ import {
   MINISTRIES,
   MINISTRY_CONTENT,
   nominalGdp,
+  POPULATION_GROWTH,
   REVENUE_LINES,
   SECTORS,
   sectorShare,
@@ -51,10 +52,16 @@ export function EconomyView() {
   const last = economy.lastMonth;
 
   const tiles = [
+    { id: 'gdp', value: formatCrore(gdp), sub: t('economy.tiles.gdpNote') },
     {
-      id: 'gdp',
-      value: formatCrore(gdp),
-      sub: t('economy.tiles.gdpNote', { value: Math.round(perCapita).toLocaleString('en-IN') }),
+      id: 'perCapita',
+      value: t('economy.tiles.perCapitaValue', { value: Math.round(perCapita).toLocaleString('en-IN') }),
+      sub: t('economy.tiles.perCapitaNote'),
+    },
+    {
+      id: 'population',
+      value: t('economy.tiles.populationValue', { value: (game.nation.population / 1e7).toFixed(1) }),
+      sub: t('economy.tiles.populationNote', { rate: pct(POPULATION_GROWTH) }),
     },
     { id: 'growth', value: pct(economy.realGrowth), sub: t('economy.tiles.growthNote', { trend: pct(expected) }) },
     { id: 'inflation', value: pct(economy.inflation), sub: t('economy.tiles.inflationNote') },
@@ -92,7 +99,7 @@ export function EconomyView() {
       </div>
 
       <div className={gameStyles.grid}>
-        <div className={`${gameStyles.span12} ${styles.tiles}`}>
+        <div className={`${gameStyles.span12} ${styles.tiles} ${styles.tilesFive}`}>
           {tiles.map((tile) => (
             <div key={tile.id} className={styles.tile}>
               <span className={styles.tileLabel}>{t(`economy.tiles.${tile.id}`)}</span>

@@ -72,6 +72,14 @@ export const TAX_AVOIDANCE_CEILING: Record<TaxId, number> = {
   customs: 0.7,
 };
 
+/**
+ * Income tax is paid mostly by salaried workers in formal jobs, whose numbers swing harder than total
+ * employment: each point of unemployment below the opening rate widens the income-tax base by this many points.
+ */
+export const INCOME_TAX_JOBS_ELASTICITY = 3;
+/** The income-tax base never shrinks below this share of its opening size, however bad unemployment gets. */
+export const MIN_INCOME_TAX_BASE = 0.5;
+
 /** Dividends, fees and other non-tax receipts, as a share of GDP. */
 export const NON_TAX_REVENUE_SHARE = 0.015;
 /** Pensions, salaries and other committed spending, as a share of GDP. */

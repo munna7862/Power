@@ -6,6 +6,11 @@
   gap: var(--space-3);
 }
 
+/* The Economy screen has ten tiles: two rows of five. */
+.tilesFive {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
 .tile {
   display: flex;
   flex-direction: column;
@@ -372,7 +377,8 @@
 }
 
 @media (max-width: 900px) {
-  .tiles {
+  .tiles,
+  .tilesFive {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
