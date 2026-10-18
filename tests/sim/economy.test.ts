@@ -66,7 +66,8 @@ describe('fiscal model', () => {
     const fewerJobs = { ...state, economy: { ...state.economy, unemployment: state.economy.unemployment + 0.02 } };
     expect(projectMonth(moreJobs, moreJobs.budget).revenue.income).toBeCloseTo(base.revenue.income * 1.06);
     expect(projectMonth(fewerJobs, fewerJobs.budget).revenue.income).toBeCloseTo(base.revenue.income * 0.94);
-    expect(projectMonth(moreJobs, moreJobs.budget).revenue.gst).toBeCloseTo(base.revenue.gst);
+    // GST follows jobs too, at a third of the elasticity.
+    expect(projectMonth(moreJobs, moreJobs.budget).revenue.gst).toBeCloseTo(base.revenue.gst * 1.02);
     expect(employmentTaxFactor(0.4)).toBe(0.5);
   });
 

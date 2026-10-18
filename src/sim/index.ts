@@ -256,14 +256,17 @@ export {
 export {
   allEfficiencies,
   debtToGdp,
-  employmentTaxFactor,
   lastDeficitRatio,
   ministryEfficiency,
   nominalGdp,
   projectMonth,
   realGdp,
   sectorShare,
+  taxBreakdown,
   type FiscalProjection,
+  type TaxAdditionId,
+  type TaxBreakdown,
+  type TaxFactorId,
 } from './economy/model';
 export { explainGrowth, GROWTH_DRIVER_LABELS, type GrowthDriver } from './economy/growth';
 export {

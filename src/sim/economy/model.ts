@@ -1,22 +1,35 @@
 import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId } from '../content/ids';
-import { departmentQuality } from '../departments/quality';
+import { departmentQuality, serviceStars, starQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
 import { exportRevenue, plantUpkeep } from '../energy/grid';
-import { goodsCustomsDelta, privateProfitDelta, stateProfitDelta } from '../industry/flows';
+import {
+  climateBeyondTax,
+  goodsCustomsDelta,
+  OPENING_SHORTAGE_SHARE,
+  privateProfitDelta,
+  shortageShareOf,
+  stateProfitDelta,
+} from '../industry/flows';
 import { facilityUpkeep } from '../infrastructure/coverage';
 import { policeUpkeep } from '../police/strength';
 import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
 import {
+  COMPLIANCE_PER_CORRUPTION,
+  CORPORATE_CLIMATE_ELASTICITY,
   DEFAULT_TAX_RATES,
   ESTABLISHMENT_SHARE,
+  GST_JOBS_ELASTICITY,
+  GST_SHORTAGE_WEIGHT,
   INCOME_TAX_JOBS_ELASTICITY,
-  MIN_INCOME_TAX_BASE,
+  MIN_TAX_FACTOR,
   NON_TAX_REVENUE_SHARE,
+  SECTOR_START_SHARE,
   START_CORRUPTION,
   START_UNEMPLOYMENT,
   TAX_AVOIDANCE_CEILING,
   TAX_BASE_SHARE,
+  TAX_SECTOR_WEIGHTS,
 } from './constants';
 
 /**
@@ -78,15 +91,105 @@ export function allEfficiencies(
   return Object.fromEntries(MINISTRIES.map((m) => [m, ministryEfficiency(state, m)])) as Record<MinistryId, number>;
 }
 
-/** Tax compliance: better with an effective Finance ministry, worse with corruption. 1 at game start. */
-export function complianceFactor(financeEfficiency: number, corruption: number): number {
-  const raw = (0.92 + 0.08 * Math.min(financeEfficiency, 1.6)) * (1 - corruption * 0.001);
-  return raw / (1 - START_CORRUPTION * 0.001);
+/**
+ * How well tax is collected: the Finance department's efficiency, with the Tax administration service's stars in
+ * place of the department's average (the same at the start, when every service has the same rating).
+ */
+export function taxAdministration(
+  state: Pick<GameState, 'departments' | 'modifiers' | 'economy'>,
+  financeAllocation: number,
+): number {
+  const finance = ministryEfficiencyFor(financeAllocation, state, 'finance');
+  return (
+    (finance * starQuality(serviceStars(state, 'finance', 'taxAdministration'))) / departmentQuality(state, 'finance')
+  );
 }
 
-/** Income-tax base from jobs: more people in work means more people paying income tax. 1 at game start. */
-export function employmentTaxFactor(unemployment: number): number {
-  return Math.max(MIN_INCOME_TAX_BASE, 1 + INCOME_TAX_JOBS_ELASTICITY * (START_UNEMPLOYMENT - unemployment));
+/** Tax compliance: better with good tax administration, worse with corruption (against the opening corruption). */
+export function complianceFactor(administration: number, corruption: number): number {
+  const raw = (0.92 + 0.08 * Math.min(administration, 1.6)) * (1 - corruption * COMPLIANCE_PER_CORRUPTION);
+  return raw / (1 - START_CORRUPTION * COMPLIANCE_PER_CORRUPTION);
+}
+
+/** A tax base from jobs: more people in work means more people paying (income tax by default). 1 at game start. */
+export function employmentTaxFactor(unemployment: number, elasticity = INCOME_TAX_JOBS_ELASTICITY): number {
+  return Math.max(MIN_TAX_FACTOR, 1 + elasticity * (START_UNEMPLOYMENT - unemployment));
+}
+
+const weightedMix = (shares: Record<SectorId, number>, weights: Record<SectorId, number>): number =>
+  SECTORS.reduce((sum, s) => sum + shares[s] * weights[s], 0);
+
+/** A tax base from the sector mix: how much more (or less) taxable today's economy is than the opening one. */
+export function sectorMixFactor(economy: EconomyState, tax: Exclude<TaxId, 'customs'>): number {
+  const total = realGdp(economy);
+  const shares = Object.fromEntries(SECTORS.map((s) => [s, economy.sectors[s].output / total])) as Record<
+    SectorId,
+    number
+  >;
+  return weightedMix(shares, TAX_SECTOR_WEIGHTS[tax]) / weightedMix(SECTOR_START_SHARE, TAX_SECTOR_WEIGHTS[tax]);
+}
+
+/** Multipliers on a tax's base, each 1 at the start; the Budget screen's "Why?" names them. */
+export type TaxFactorId =
+  'avoidance' | 'compliance' | 'modifiers' | 'sectorMix' | 'jobs' | 'climate' | 'shortages' | 'trade';
+/** Amounts added to a tax, each 0 at the start. */
+export type TaxAdditionId = 'privatePlants' | 'importedGoods';
+
+export interface TaxBreakdown {
+  /** Monthly GDP × base share × rate: what the tax would raise with every factor at 1. */
+  base: number;
+  factors: { id: TaxFactorId; value: number }[];
+  additions: { id: TaxAdditionId; value: number }[];
+  /** base × every factor + every addition, never below zero. */
+  total: number;
+}
+
+/**
+ * One month of one tax, with its causes: the single formula behind the fiscal settlement, the budget preview,
+ * the daily figures and the Budget screen's "Why?" tooltip.
+ */
+export function taxBreakdown(
+  state: GameState,
+  budget: Pick<BudgetState, 'taxRates' | 'allocations'>,
+  tax: TaxId,
+): TaxBreakdown {
+  const { economy, modifiers } = state;
+  const rate = budget.taxRates[tax];
+  const base = (nominalGdp(economy) / 12) * TAX_BASE_SHARE[tax] * rate;
+  const factors: TaxBreakdown['factors'] = [
+    { id: 'avoidance', value: taxYieldFactor(tax, rate) },
+    {
+      id: 'compliance',
+      value: complianceFactor(taxAdministration(state, budget.allocations.finance), economy.corruption),
+    },
+    { id: 'modifiers', value: multiplierFor(modifiers, 'economy.revenue') },
+  ];
+  const additions: TaxBreakdown['additions'] = [];
+  if (tax !== 'customs') factors.push({ id: 'sectorMix', value: sectorMixFactor(economy, tax) });
+  if (tax === 'income') factors.push({ id: 'jobs', value: employmentTaxFactor(economy.unemployment) });
+  if (tax === 'corporate') {
+    const climate = 1 + CORPORATE_CLIMATE_ELASTICITY * (climateBeyondTax(state) - 1);
+    factors.push({ id: 'climate', value: Math.max(MIN_TAX_FACTOR, climate) });
+    // Since Phase 8: corporate tax on private plants' profits, against the opening settlement.
+    additions.push({ id: 'privatePlants', value: rate * privateProfitDelta(state) });
+  }
+  if (tax === 'gst') {
+    factors.push({ id: 'jobs', value: employmentTaxFactor(economy.unemployment, GST_JOBS_ELASTICITY) });
+    const unmet = shortageShareOf(state.industry.last) - OPENING_SHORTAGE_SHARE;
+    factors.push({ id: 'shortages', value: Math.max(MIN_TAX_FACTOR, 1 - GST_SHORTAGE_WEIGHT * unmet) });
+  }
+  if (tax === 'customs') {
+    const external = ministryEfficiencyFor(budget.allocations.external, state, 'external');
+    // Sanctions on many partners can push the multiplier below zero; customs then raises nothing, never less.
+    const trade = (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
+    factors.push({ id: 'trade', value: trade });
+    // Since Phase 8: tariffs on imported goods, against the opening settlement.
+    additions.push({ id: 'importedGoods', value: goodsCustomsDelta(state) });
+  }
+  const total =
+    base * factors.reduce((product, f) => product * f.value, 1) + additions.reduce((sum, a) => sum + a.value, 0);
+  // Each line is floored at zero (DEF-10).
+  return { base, factors, additions, total: Math.max(0, total) };
 }
 
 /** Ceiling on the market rate; beyond it a government defaults (bankruptcy ending arrives in Phase 3). */
@@ -126,26 +229,12 @@ export function projectMonth(
 ): FiscalProjection {
   const { economy, modifiers } = state;
   const gdpMonth = nominalGdp(economy) / 12;
-  const finance = ministryEfficiencyFor(budget.allocations.finance, state, 'finance');
-  const external = ministryEfficiencyFor(budget.allocations.external, state, 'external');
-  const compliance = complianceFactor(finance, economy.corruption);
   const revenueMultiplier = multiplierFor(modifiers, 'economy.revenue');
 
   const revenue = {} as Record<RevenueLine, number>;
-  for (const tax of TAXES) {
-    const rate = budget.taxRates[tax];
-    let amount = gdpMonth * TAX_BASE_SHARE[tax] * rate * taxYieldFactor(tax, rate) * compliance * revenueMultiplier;
-    if (tax === 'customs')
-      // Sanctions on many partners can push the multiplier below zero; customs then raises nothing, never less.
-      amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
-    if (tax === 'income') amount *= employmentTaxFactor(economy.unemployment);
-    revenue[tax] = amount;
-  }
-  // Since Phase 8, against the opening settlement: tariffs on imported goods, corporate tax on private plants'
-  // profits, and state plants' profits with fees and dividends. Each line is floored at zero (DEF-10).
-  revenue.customs = Math.max(0, revenue.customs + goodsCustomsDelta(state));
-  revenue.corporate = Math.max(0, revenue.corporate + budget.taxRates.corporate * privateProfitDelta(state));
-  // Fees, dividends, state plants' profits and power sold to neighbours.
+  for (const tax of TAXES) revenue[tax] = taxBreakdown(state, budget, tax).total;
+  // Fees, dividends, state plants' profits (against the opening settlement, since Phase 8) and power sold to
+  // neighbours, floored at zero (DEF-10).
   revenue.nonTax = Math.max(
     0,
     gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier + exportRevenue(state) + stateProfitDelta(state),

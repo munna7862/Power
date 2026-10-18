@@ -77,8 +77,28 @@ export const TAX_AVOIDANCE_CEILING: Record<TaxId, number> = {
  * employment: each point of unemployment below the opening rate widens the income-tax base by this many points.
  */
 export const INCOME_TAX_JOBS_ELASTICITY = 3;
-/** The income-tax base never shrinks below this share of its opening size, however bad unemployment gets. */
-export const MIN_INCOME_TAX_BASE = 0.5;
+
+/**
+ * How heavily each sector's output is taxed, against the economy as a whole. Farm incomes are largely exempt from
+ * income tax and food from GST; salaried tech and services jobs pay the most income tax; plants, mines and power
+ * companies pay the most corporate tax. Each tax base follows the sector mix, measured against the opening mix, so
+ * a new game starts unchanged and an economy that shifts toward tech and industry raises more per rupee of GDP.
+ */
+export const TAX_SECTOR_WEIGHTS: Record<Exclude<TaxId, 'customs'>, Record<SectorId, number>> = {
+  income: { agriculture: 0.2, industry: 1, services: 1.1, energy: 1, tech: 1.8 },
+  corporate: { agriculture: 0.3, industry: 1.2, services: 0.9, energy: 1.4, tech: 1.3 },
+  gst: { agriculture: 0.5, industry: 1.2, services: 1, energy: 0.8, tech: 1 },
+};
+/** People in work buy more: each point of unemployment below the opening rate widens the GST base by this many points. */
+export const GST_JOBS_ELASTICITY = 1;
+/** GST lost per unit of goods demand left unmet (beyond the opening shortages): what is not sold is not taxed. */
+export const GST_SHORTAGE_WEIGHT = 0.3;
+/** Corporate tax follows the business climate (without its tax driver): profits move this much per unit of climate. */
+export const CORPORATE_CLIMATE_ELASTICITY = 0.5;
+/** Tax evaded per point of the corruption index (as a share of what is owed), against the opening corruption. */
+export const COMPLIANCE_PER_CORRUPTION = 0.003;
+/** No behavioural factor (jobs, climate, shortages) shrinks a tax base below this share of its opening size. */
+export const MIN_TAX_FACTOR = 0.5;
 
 /** Dividends, fees and other non-tax receipts, as a share of GDP. */
 export const NON_TAX_REVENUE_SHARE = 0.015;
