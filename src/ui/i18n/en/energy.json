@@ -40,16 +40,11 @@
     "region": "Region",
     "plantLine": "{{inRegion}} here · {{total}} nationwide · {{output}} GW each on average",
     "plantCosts": "Price {{cost}} · {{days}} · upkeep {{upkeep}} / month",
-    "plantFuel": "Fuel ({{fuel}}) {{cost}} / month",
+    "plantFuel": "Burns {{quantity}} {{unit}} of {{fuel}} a month from stock",
     "clean": "No emissions",
     "emissions": "Emissions {{value}} per GW",
     "days_one": "{{count}} day",
     "days_other": "{{count}} days",
-    "fuels": {
-      "coal": "coal",
-      "gas": "gas",
-      "uranium": "uranium"
-    },
     "quantityLabel": "How many {{name}} to build or close",
     "toMargin": "Fill the gap",
     "toMarginLabel": "Set the number of {{name}} that restores the reserve margin",

@@ -137,14 +137,14 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 - [x] `content/power.json` (zod-validated in `src/sim/content/power.ts`): six plant types (solar, wind, coal, gas, hydro, nuclear) with cost, build time (solar 3 weeks to nuclear a year), capacity and capacity factor, upkeep, fuel and fuel cost, emissions and the opening fleet per region (about 183 GW on average, 69% coal)
 - [x] State: `energy: { plants: Record<RegionId, Record<PlantId, number>>; queue: PlantOrder[] }`; derived `production`, `consumption` (homes, industry, services, public facilities, each following its driver) and `powerBalance` in `src/sim/energy/grid.ts`. `SCHEMA_VERSION` 10 with a v9 → v10 migration and golden fixture `v10.json`
 - [x] Commands `BUILD_PLANT` (treasury-checked), `CANCEL_PLANT` (50% refund), `DECOMMISSION_PLANT`; plants connect in the daily `energy-daily` system; running and fuel costs beyond the opening fleet are charged to Industry & Infrastructure in `projectMonth`
-- [ ] Thermal and gas plants burn fuel from stock (Sprint 8.5), so energy and trade connect. Until stocks exist, fuel is a monthly running cost in the content (`fuelCost`), ready to be drawn from stock instead
+- [x] Thermal and gas plants burn fuel from stock (done in Sprint 8.5): `fuelUse` in `content/power.json` is drawn from the coal, gas and uranium stocks each month, and a station short of fuel generates less
 - [x] A shortfall (share of demand unmet) costs every sector growth (a "Power cuts" growth driver) and approval; production beyond demand and a 5% reserve is exported, earning non-tax revenue
 - [x] Emissions against the opening grid add an "Air pollution" line to the approval target (a cleaner grid earns approval back) and make disaster events likelier. Implemented as an approval-target line rather than a new approval factor, so the satisfaction weights and saves stay unchanged
 - [x] The grid opens with a 5% reserve margin, so tick 0 is unchanged; demand grows about 5.6 GW a year and a hands-off grid is short in its second year
 - [x] Energy screen (nav after Construction): production, demand, balance and emissions; demand by source with "Why?", production by plant type, what the grid does now, power projects and a build panel per region
 - [x] Balance: the balanced bot keeps a 6% margin with solar parks. All bands pass unchanged: balanced re-election 96% Easy, 78% Normal, 38% Hard
 
-### Sprint 8.5: Industry and production (8 SP)
+### Sprint 8.5: Industry and production (8 SP) ✅
 
 | ID     | Story                                                                                                                                 | SP  |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------- | --- |
@@ -155,14 +155,14 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] `content/goods.json` (about 15 goods: base world price, unit) and `content/industries.json` (about 20 plant types: inputs and outputs per month, power need, jobs, cost, build time, upkeep, sector); aim past 30 plant types with energy included
-- [ ] State: `industry: { plants: Record<RegionId, Record<IndustryId, { state: number; private: number }>>; stocks: Record<GoodId, number>; queue: BuildOrder[] }`
-- [ ] A monthly production system after economy and before fiscal: plants draw inputs and power and produce goods; state plants' profit goes to the treasury, private plants pay corporate tax; shortages throttle output, explained in "Why?"
-- [ ] `LICENSE_PLANT { industry, region }`: a fee to the treasury, a private plant after a short build
-- [ ] Private investment rate depends on corporate tax, power balance, corruption and regional unrest
-- [ ] Sector growth gains an "industry" driver in `growth.ts`; the old trend formulas remain the part of the economy plants don't model
+- [x] `content/goods.json` (15 goods: base world price, unit, sector, world market size, opening imports) and `content/industries.json` (18 plant types: inputs and outputs per month, power need, jobs, cost, build time, upkeep, sector, licence fee and opening state and private plants per region), 24 plant types with energy; production runs in content order, which the loader checks
+- [x] State: `industry: { plants; stocks; queue; last; applied }` (`last` is the last monthly settlement, `applied` the value added already folded into sector output); `SCHEMA_VERSION` 11 with a v10 → v11 migration and golden fixture `v11.json` (one version for 8.5 and 8.6)
+- [x] A monthly `industry-monthly` system after economy and before fiscal settles `computeFlows()`: plants draw inputs and power and produce goods, power stations burn fuel, the country buys what it needs and the private market imports what stocks lack. State plants' profit goes to the treasury (non-tax revenue) and private plants pay corporate tax, both against the opening settlement; a shortage of inputs or power throttles output, shown per plant as "running at N%"
+- [x] `LICENSE_PLANT { industry, region }`: a fee to the treasury, a private plant after 45 days; an investor must want it (a profitable plant, a climate of at least 95%) and at most two are built at once. State plants: `BUILD_INDUSTRY`, `CANCEL_INDUSTRY`, `CLOSE_INDUSTRY`
+- [x] Private investment follows the business climate (corporate tax, power cuts, corruption, unrest; 1 at the start, with a "Why?"): investors open plants above 105% and close them below 95%, drawing two random numbers per industry each month
+- [x] Sector growth gains a "Factories, mines and farms" driver in `growth.ts`: a change in plants' real value added shifts the sector's output once; the old trend formulas remain the part of the economy plants don't model. New plants' jobs cut unemployment and their power need adds to grid demand
 
-### Sprint 8.6: Trade market, exports and imports (8 SP)
+### Sprint 8.6: Trade market, exports and imports (8 SP) ✅
 
 | ID     | Story                                                                                                           | SP  |
 | ------ | --------------------------------------------------------------------------------------------------------------- | --- |
@@ -173,13 +173,13 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] State: `market: { prices: Record<GoodId, number>; controls: Record<GoodId, { tariff: number; quota: number | null; ban: 'export' | 'import' | null }> }`
-- [ ] Partner price = world price × (1 ± a spread from relation, distance band, partner strengths and India's reputation), from one formula shared by the UI and the trade
-- [ ] Commands: `SELL_GOODS { good, partner, quantity }`, `BUY_GOODS`, `SELL_ALL_SURPLUS` (each good to its best buyer), `SELL_ON_WORLD_MARKET` (any quantity, at a worse price), `SET_TRADE_CONTROL`
-- [ ] Standing contracts reuse `signTreaty()` (type `trade`, terms: good, monthly quantity, price), shown as a table: good, amount, profit, period, partner
-- [ ] Tariffs replace the flat customs rate: customs revenue = Σ imports × tariff; the customs slider leaves the Budget screen
-- [ ] Shortages raise domestic prices: an "import dependence" inflation driver, and fuel or food shortage events
-- [ ] Prices move after each trade and each partner has monthly capacity, so there's no buy-low, sell-high loop in one tick
+- [x] State: `market: { prices; controls; volumes }` as planned, plus each partner's traded volume this month
+- [x] Partner price = world price × (1 ± a spread from relation, distance, partner strengths and India's reputation), from `market/pricing.ts`, shared by the trades, the "Why?" and the bots. The focus nations trade; a partner needs relations above −20, no sanctions or war, and an embassy or relations of 20
+- [x] Commands: `SELL_GOODS { good, partner, quantity }`, `BUY_GOODS`, `SELL_ALL_SURPLUS` (each good to its best buyers), `SELL_ON_WORLD_MARKET` (any quantity, at 85% of the world price), `SET_TRADE_CONTROL`. Only the surplus (stock above the private market's target) can be sold, or selling would just make the market import it again
+- [x] Standing contracts (`SIGN_SUPPLY_CONTRACT`) reuse `signTreaty()` (type `trade`, terms: good, side, monthly quantity, price) and deliver monthly; shown as a table on the Trade Market screen and described on the Diplomacy and Country screens. They do not count toward the sector-contract limit
+- [x] Tariffs per good (10% at the start): customs revenue gains Σ imports × price × tariff against the opening settlement; the customs slider leaves the Budget screen (the general rate stays at its default for goods the model does not cover)
+- [x] Goods-market inflation drivers (import dependence, shortages, tariffs), measured against the start; `fuel-shortage` and `food-shortage` events on the new `fuelShortage` and `foodShortage` stats
+- [x] Prices move after each trade, drift back to base monthly with some noise, and each partner has monthly capacity, so there's no buy-low, sell-high loop in one tick
 
 ### Sprint 8.7: Armoury, one page to buy the military (5 SP)
 

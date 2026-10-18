@@ -96,6 +96,35 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(page.getByTestId('grid-effects')).toContainText('Power exported');
   });
 
+  test('a private plant is licensed for a fee and opens after a short build', async ({ page }) => {
+    await openView(page, 'Industry');
+    await expect(page.getByTestId('goods-table')).toContainText('Crude oil');
+    await page.getByRole('group', { name: 'Region' }).getByRole('button', { name: 'South' }).click();
+    const pharma = page.getByTestId('industry-pharmaPlant');
+    const before = (await pharma.getByTestId('plants-pharmaPlant').textContent()) ?? '';
+    await pharma.getByRole('button', { name: /^License a private pharmaceutical plant in the South/ }).click();
+    await expect(page.getByTestId('industry-order')).toContainText('private');
+
+    await advanceDays(page, 46);
+    await expect(page.getByTestId('industry-order')).toHaveCount(0);
+    await expect(pharma.getByTestId('plants-pharmaPlant')).not.toHaveText(before);
+  });
+
+  test('the Trade Market sets a tariff and signs a supply contract', async ({ page }) => {
+    await openView(page, 'Trade Market');
+    const crude = page.getByTestId('good-crudeOil');
+    await expect(crude).toContainText(/Best seller: .+ at ₹/);
+    await crude.getByText(/^Trade rules/).click();
+    await crude.getByRole('spinbutton').first().fill('20');
+    await crude.getByRole('button', { name: 'Apply the trade rules for crude oil' }).click();
+    await expect(crude).toContainText('Now: tariff 20%');
+
+    await page.getByRole('combobox', { name: 'Good' }).selectOption({ label: 'Steel' });
+    await page.getByRole('combobox', { name: 'Partner' }).selectOption({ label: 'Japan' });
+    await page.getByRole('button', { name: /^Sign at ₹/ }).click();
+    await expect(page.getByTestId('supply-contracts')).toContainText('India sells 1 Mt of steel a month');
+  });
+
   test('ideology can be changed once a year', async ({ page }) => {
     await openView(page, 'Departments');
     await page.getByRole('combobox', { name: 'Ideology' }).selectOption({ label: 'Socialism' });

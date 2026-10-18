@@ -1,6 +1,7 @@
 import { PLANT_CONTENT } from '../content/power';
 import { MINISTRIES, PLANTS, REGIONS, type MinistryId, type PlantId, type RegionId } from '../content/ids';
 import { SECTOR_START_SHARE, START_GDP, START_POPULATION } from '../economy/constants';
+import { extraPlantPower } from '../industry/opening';
 import { coverageIndex, openingInfrastructure } from '../infrastructure/coverage';
 import type { EnergyState, GameState } from '../state/types';
 import {
@@ -57,12 +58,20 @@ const OPENING_EMISSIONS = emissionsOf(OPENING.plants);
 /** Demand at the start, GW: the opening fleet less its reserve margin. */
 const OPENING_DEMAND = OPENING_PRODUCTION / (1 + OPENING_MARGIN);
 
-/** Average output of the whole grid, GW. */
-export const production = (state: Pick<GameState, 'energy'>): number => productionOf(state.energy.plants);
+type WithFleet = Pick<GameState, 'energy' | 'industry'>;
 
-/** Average output by plant type, GW. */
-export const productionBy = (state: Pick<GameState, 'energy'>, plant: PlantId): number =>
-  fleet(state.energy.plants, plant) * plantOutput(plant);
+/** Share of a plant type's fuel that was available last month (1 for plants that burn none). */
+const fuelShare = (state: Pick<GameState, 'industry'>, plant: PlantId): number => {
+  const fuel = PLANT_CONTENT[plant].fuel;
+  return fuel ? state.industry.last.fuelSupply[fuel] : 1;
+};
+
+/** Average output by plant type, GW: thermal and nuclear plants generate only as much as their fuel allows. */
+export const productionBy = (state: WithFleet, plant: PlantId): number =>
+  fleet(state.energy.plants, plant) * plantOutput(plant) * fuelShare(state, plant);
+
+/** Average output of the whole grid, GW. */
+export const production = (state: WithFleet): number => PLANTS.reduce((s, p) => s + productionBy(state, p), 0);
 
 export const plantsOf = (state: Pick<GameState, 'energy'>, plant: PlantId): number => fleet(state.energy.plants, plant);
 
@@ -77,7 +86,7 @@ const OPENING_PUBLIC_INDEX = coverageIndex(
   'services',
 );
 
-type DemandInputs = Pick<GameState, 'economy' | 'nation' | 'infrastructure'>;
+type DemandInputs = Pick<GameState, 'economy' | 'nation' | 'infrastructure' | 'industry'>;
 
 /** Demand by source, GW. Each source starts at its share of opening demand and follows its driver. */
 export function demand(state: DemandInputs): Record<DemandSource, number> {
@@ -90,7 +99,10 @@ export function demand(state: DemandInputs): Record<DemandSource, number> {
   return {
     homes:
       OPENING_DEMAND * DEMAND_SHARES.homes * (population / START_POPULATION) * income ** DEMAND_ELASTICITY.homesIncome,
-    industry: OPENING_DEMAND * DEMAND_SHARES.industry * industry ** DEMAND_ELASTICITY.industry,
+    // Plants built beyond the opening ones draw their own power on top.
+    industry:
+      OPENING_DEMAND * DEMAND_SHARES.industry * industry ** DEMAND_ELASTICITY.industry +
+      extraPlantPower(state.industry.plants),
     services: OPENING_DEMAND * DEMAND_SHARES.services * services ** DEMAND_ELASTICITY.services,
     public: OPENING_DEMAND * DEMAND_SHARES.public * (coverageIndex(state, 'services') / OPENING_PUBLIC_INDEX),
   };
@@ -98,7 +110,7 @@ export function demand(state: DemandInputs): Record<DemandSource, number> {
 
 export const consumption = (state: DemandInputs): number => Object.values(demand(state)).reduce((a, b) => a + b, 0);
 
-type GridInputs = DemandInputs & Pick<GameState, 'energy'>;
+type GridInputs = DemandInputs & WithFleet;
 
 /** Production − demand, GW (negative = shortfall). */
 export const powerBalance = (state: GridInputs): number => production(state) - consumption(state);
@@ -119,8 +131,8 @@ export function exportedPower(state: GridInputs): number {
 export const exportRevenue = (state: GridInputs): number => exportedPower(state) * EXPORT_PRICE;
 
 /** Emissions against the opening grid (1 = the same as at the start). */
-export const emissionsIndex = (state: Pick<GameState, 'energy'>): number =>
-  emissionsOf(state.energy.plants) / OPENING_EMISSIONS;
+export const emissionsIndex = (state: WithFleet): number =>
+  PLANTS.reduce((s, p) => s + productionBy(state, p) * PLANT_CONTENT[p].emissions, 0) / OPENING_EMISSIONS;
 
 /** Growth lost in every sector to power cuts (annual rate; 0 without a shortfall). */
 export const shortfallGrowth = (state: GridInputs): number => SHORTFALL_GROWTH * shortfall(state);
@@ -134,19 +146,20 @@ export function gridApprovalLines(state: GridInputs): { label: string; value: nu
 }
 
 /** How much likelier disaster events are than at the start, from emissions above the opening grid (1 = unchanged). */
-export const disasterFactor = (state: Pick<GameState, 'energy'>): number =>
+export const disasterFactor = (state: WithFleet): number =>
   1 + POLLUTION_DISASTERS * Math.max(0, emissionsIndex(state) - 1);
 
 /**
- * Monthly running and fuel costs of plants beyond the opening fleet, ₹ crore, charged to Industry & Infrastructure.
- * The opening fleet's costs are part of that department's allocation; decommissioning below it saves money.
+ * Monthly running costs of plants beyond the opening fleet, ₹ crore, charged to Industry & Infrastructure. The
+ * opening fleet's costs are part of that department's allocation; decommissioning below it saves money. Fuel comes
+ * from stock (Sprint 8.5), so it is not a running cost.
  */
 export function plantUpkeep(state: Pick<GameState, 'energy'>): Record<MinistryId, number> {
   const upkeep = Object.fromEntries(MINISTRIES.map((m) => [m, 0])) as Record<MinistryId, number>;
   for (const r of REGIONS) {
     for (const p of PLANTS) {
       const c = PLANT_CONTENT[p];
-      upkeep.industry += (state.energy.plants[r][p] - OPENING.plants[r][p]) * (c.upkeep + c.fuelCost);
+      upkeep.industry += (state.energy.plants[r][p] - OPENING.plants[r][p]) * c.upkeep;
     }
   }
   return upkeep;

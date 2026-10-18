@@ -7,6 +7,8 @@ import economy from './economy.json';
 import energy from './energy.json';
 import handbook from './handbook.json';
 import inbox from './inbox.json';
+import industry from './industry.json';
+import market from './market.json';
 import police from './police.json';
 import military from './military.json';
 import reports from './reports.json';
@@ -27,6 +29,8 @@ export const en = {
   ...departments,
   ...construction,
   ...energy,
+  ...industry,
+  ...market,
   ...security,
   ...police,
   ...military,

@@ -1,4 +1,5 @@
 import { openingEnergy } from '../energy/grid';
+import { openingIndustry, openingMarket } from '../industry/flows';
 import { openingInfrastructure } from '../infrastructure/coverage';
 import { START_CRIME } from '../police/constants';
 import { openingPolice } from '../police/strength';
@@ -37,6 +38,9 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   },
   // v9 → v10 (Sprint 8.4): the power grid. A game in progress gets the opening fleet of power plants.
   9: (state) => ({ ...(state as object), schemaVersion: 10, energy: openingEnergy() }),
+  // v10 → v11 (Sprints 8.5 and 8.6): industry, goods and the trade market. A game in progress gets the opening
+  // plants, stocks at target, the opening settlement and world prices at base.
+  10: (state) => ({ ...(state as object), schemaVersion: 11, industry: openingIndustry(), market: openingMarket() }),
 };
 
 export function migrate(

@@ -1,0 +1,152 @@
+[
+  {
+    "id": "coal",
+    "name": "Coal",
+    "summary": "Mined for power stations and steel mills.",
+    "unit": "Mt",
+    "price": 500,
+    "sector": "energy",
+    "market": 600,
+    "openingImports": 20
+  },
+  {
+    "id": "ironOre",
+    "name": "Iron ore",
+    "summary": "Smelted into steel.",
+    "unit": "Mt",
+    "price": 600,
+    "sector": "industry",
+    "market": 200,
+    "openingImports": 0
+  },
+  {
+    "id": "crudeOil",
+    "name": "Crude oil",
+    "summary": "Refined into fuel and chemicals.",
+    "unit": "Mt",
+    "price": 4500,
+    "sector": "energy",
+    "market": 360,
+    "openingImports": 19.5
+  },
+  {
+    "id": "gas",
+    "name": "Natural gas",
+    "summary": "Burned in gas power stations and made into chemicals.",
+    "unit": "bcm",
+    "price": 2500,
+    "sector": "energy",
+    "market": 340,
+    "openingImports": 2.5
+  },
+  {
+    "id": "uranium",
+    "name": "Uranium",
+    "summary": "Fuels nuclear power stations.",
+    "unit": "t",
+    "price": 15,
+    "sector": "energy",
+    "market": 5000,
+    "openingImports": 0
+  },
+  {
+    "id": "grain",
+    "name": "Grain",
+    "summary": "Feeds the country and the food industry.",
+    "unit": "Mt",
+    "price": 2500,
+    "sector": "agriculture",
+    "market": 230,
+    "openingImports": 0
+  },
+  {
+    "id": "cotton",
+    "name": "Cotton",
+    "summary": "Spun and woven by textile mills.",
+    "unit": "Mt",
+    "price": 15000,
+    "sector": "agriculture",
+    "market": 2,
+    "openingImports": 0
+  },
+  {
+    "id": "steel",
+    "name": "Steel",
+    "summary": "Builds roads, homes and vehicles.",
+    "unit": "Mt",
+    "price": 5000,
+    "sector": "industry",
+    "market": 160,
+    "openingImports": 0
+  },
+  {
+    "id": "textiles",
+    "name": "Textiles",
+    "summary": "Clothing and cloth for home and abroad.",
+    "unit": "Mt",
+    "price": 30000,
+    "sector": "industry",
+    "market": 8,
+    "openingImports": 0
+  },
+  {
+    "id": "chemicals",
+    "name": "Chemicals",
+    "summary": "Feedstock for medicines, electronics and synthetic fibre.",
+    "unit": "Mt",
+    "price": 8000,
+    "sector": "industry",
+    "market": 50,
+    "openingImports": 0.5
+  },
+  {
+    "id": "medicines",
+    "name": "Medicines",
+    "summary": "Generic medicines for clinics at home and abroad.",
+    "unit": "kt",
+    "price": 100,
+    "sector": "industry",
+    "market": 2000,
+    "openingImports": 0
+  },
+  {
+    "id": "electronics",
+    "name": "Electronics",
+    "summary": "Phones, computers and components.",
+    "unit": "Mn devices",
+    "price": 1500,
+    "sector": "tech",
+    "market": 400,
+    "openingImports": 10
+  },
+  {
+    "id": "vehicles",
+    "name": "Vehicles",
+    "summary": "Cars, trucks and two-wheelers.",
+    "unit": "k vehicles",
+    "price": 70,
+    "sector": "industry",
+    "market": 8000,
+    "openingImports": 0
+  },
+  {
+    "id": "fuel",
+    "name": "Refined fuel",
+    "summary": "Petrol and diesel for transport and farms.",
+    "unit": "Mt",
+    "price": 6000,
+    "sector": "energy",
+    "market": 350,
+    "openingImports": 0
+  },
+  {
+    "id": "food",
+    "name": "Processed food",
+    "summary": "Packaged and processed food.",
+    "unit": "Mt",
+    "price": 6000,
+    "sector": "agriculture",
+    "market": 90,
+    "openingImports": 0
+  }
+]

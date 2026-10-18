@@ -7,6 +7,7 @@ import {
   emissionsIndex,
   exportedPower,
   exportRevenue,
+  GOOD_CONTENT,
   gridApprovalLines,
   groupIndian,
   MAX_PLANT_ORDER,
@@ -258,7 +259,13 @@ function PlantCard({ game, region, plant }: { game: GameState; region: RegionId;
             })}
           </span>
           {c.fuel && (
-            <span>{t('energy.plantFuel', { fuel: t(`energy.fuels.${c.fuel}`), cost: formatCrore(c.fuelCost) })}</span>
+            <span>
+              {t('energy.plantFuel', {
+                fuel: GOOD_CONTENT[c.fuel].name.toLowerCase(),
+                quantity: c.fuelUse,
+                unit: GOOD_CONTENT[c.fuel].unit,
+              })}
+            </span>
           )}
           <span>{c.emissions > 0 ? t('energy.emissions', { value: c.emissions }) : t('energy.clean')}</span>
         </div>

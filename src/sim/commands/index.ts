@@ -7,6 +7,8 @@ import {
   type DomainId,
   type DrillKind,
   type FacilityId,
+  type GoodId,
+  type IndustryId,
   type AgencyId,
   type IdeologyId,
   type IntelKind,
@@ -80,7 +82,7 @@ import { startInvestigation, validateInvestigation } from '../security/investiga
 import { launchOperation, operationBlocked } from '../security/operations';
 import { normalisePresidentName, PRESIDENT_NAME_MAX } from '../state/initialState';
 import { appendLog } from '../state/log';
-import type { GameState, NuclearDoctrine } from '../state/types';
+import type { GameState, NuclearDoctrine, TradeControl } from '../state/types';
 import { enactBudget, validateBudget, type BudgetProposal } from './budget';
 import { startUpgrade, validateUpgrade } from '../departments/services';
 import {
@@ -99,6 +101,31 @@ import {
   validateDecommission,
   validatePlant,
 } from '../energy/build';
+import {
+  cancelIndustry,
+  closeIndustry,
+  licencePlant,
+  startIndustry,
+  validateCancelIndustry,
+  validateCloseIndustry,
+  validateIndustry,
+  validateLicence,
+} from '../industry/build';
+import {
+  buyGoods,
+  sellAllSurplus,
+  sellGoods,
+  sellOnWorldMarket,
+  setControl,
+  signContract,
+  validateBuy,
+  validateContract,
+  validateControl,
+  validateSell,
+  validateSellAll,
+  validateWorldSale,
+} from '../market/trade';
+import type { TradeSide } from '../market/pricing';
 import {
   buildStations,
   changeUnits,
@@ -125,6 +152,16 @@ export type Command =
   | { type: 'BUILD_PLANT'; plant: PlantId; region: RegionId; quantity: number }
   | { type: 'CANCEL_PLANT'; orderId: string }
   | { type: 'DECOMMISSION_PLANT'; plant: PlantId; region: RegionId; quantity: number }
+  | { type: 'BUILD_INDUSTRY'; industry: IndustryId; region: RegionId; quantity: number }
+  | { type: 'LICENSE_PLANT'; industry: IndustryId; region: RegionId }
+  | { type: 'CANCEL_INDUSTRY'; orderId: string }
+  | { type: 'CLOSE_INDUSTRY'; industry: IndustryId; region: RegionId; quantity: number }
+  | { type: 'SELL_GOODS'; good: GoodId; partner: CountryId; quantity: number }
+  | { type: 'BUY_GOODS'; good: GoodId; partner: CountryId; quantity: number }
+  | { type: 'SELL_ALL_SURPLUS' }
+  | { type: 'SELL_ON_WORLD_MARKET'; good: GoodId; quantity: number }
+  | { type: 'SET_TRADE_CONTROL'; good: GoodId; control: TradeControl }
+  | { type: 'SIGN_SUPPLY_CONTRACT'; good: GoodId; partner: CountryId; side: TradeSide; quantity: number; years: number }
   /** Positive recruits, negative dismisses. */
   | { type: 'RECRUIT_POLICE'; region: RegionId; officers: number }
   | { type: 'BUILD_STATION'; region: RegionId; quantity: number }
@@ -299,6 +336,61 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateDecommission(state, command.plant, command.region, command.quantity);
       return problem ? fail(state, problem) : ok(decommission(state, command.plant, command.region, command.quantity));
+    }
+    case 'BUILD_INDUSTRY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateIndustry(state, command.industry, command.region, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(startIndustry(state, command.industry, command.region, command.quantity));
+    }
+    case 'LICENSE_PLANT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateLicence(state, command.industry, command.region);
+      return problem ? fail(state, problem) : ok(licencePlant(state, command.industry, command.region));
+    }
+    case 'CANCEL_INDUSTRY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateCancelIndustry(state, command.orderId);
+      return problem ? fail(state, problem) : ok(cancelIndustry(state, command.orderId));
+    }
+    case 'CLOSE_INDUSTRY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateCloseIndustry(state, command.industry, command.region, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(closeIndustry(state, command.industry, command.region, command.quantity));
+    }
+    case 'SELL_GOODS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateSell(state, command.good, command.partner, command.quantity);
+      return problem ? fail(state, problem) : ok(sellGoods(state, command.good, command.partner, command.quantity));
+    }
+    case 'BUY_GOODS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateBuy(state, command.good, command.partner, command.quantity);
+      return problem ? fail(state, problem) : ok(buyGoods(state, command.good, command.partner, command.quantity));
+    }
+    case 'SELL_ALL_SURPLUS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateSellAll(state);
+      return problem ? fail(state, problem) : ok(sellAllSurplus(state));
+    }
+    case 'SELL_ON_WORLD_MARKET': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateWorldSale(state, command.good, command.quantity);
+      return problem ? fail(state, problem) : ok(sellOnWorldMarket(state, command.good, command.quantity));
+    }
+    case 'SET_TRADE_CONTROL': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateControl(command.good, command.control);
+      return problem ? fail(state, problem) : ok(setControl(state, command.good, command.control));
+    }
+    case 'SIGN_SUPPLY_CONTRACT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const { good, partner, side, quantity, years } = command;
+      const problem = validateContract(state, good, partner, side, quantity, years);
+      return problem ? fail(state, problem) : ok(signContract(state, good, partner, side, quantity, years));
     }
     case 'RECRUIT_POLICE': {
       if (gameOver) return fail(state, 'The game is over.');

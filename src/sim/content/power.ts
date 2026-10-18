@@ -22,8 +22,8 @@ const plantSchema = z.strictObject({
   /** ₹ crore per month to run one, before fuel. */
   upkeep: z.number().positive(),
   fuel: z.enum(FUELS).nullable(),
-  /** ₹ crore of fuel one plant burns per month (paid as a running cost until stocks arrive in Sprint 8.5). */
-  fuelCost: z.number().min(0),
+  /** Units of its fuel good one plant burns per month, drawn from stock (Sprint 8.5). */
+  fuelUse: z.number().min(0),
   /** Nameplate capacity of one plant, GW. */
   capacity: z.number().positive(),
   /** Share of the time it generates at full capacity. */
@@ -46,8 +46,8 @@ export const PLANT_CONTENT: Record<PlantId, PlantContent> = (() => {
     throw new Error(`content/power.json: expected ids [${PLANTS.join(', ')}], found [${found.join(', ')}]`);
   }
   for (const p of parsed.data) {
-    if ((p.fuel === null) !== (p.fuelCost === 0)) {
-      throw new Error(`content/power.json: ${p.id} needs a fuel cost exactly when it burns fuel`);
+    if ((p.fuel === null) !== (p.fuelUse === 0)) {
+      throw new Error(`content/power.json: ${p.id} needs a fuel use exactly when it burns fuel`);
     }
   }
   return Object.fromEntries(parsed.data.map((p) => [p.id, p])) as Record<PlantId, PlantContent>;

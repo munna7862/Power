@@ -4,6 +4,9 @@ import type {
   DomainId,
   DrillKind,
   FacilityId,
+  FuelId,
+  GoodId,
+  IndustryId,
   IntelKind,
   CountryId,
   RivalId,
@@ -26,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 10;
+export const SCHEMA_VERSION = 11;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -199,6 +202,73 @@ export interface PlantOrder {
 export interface EnergyState {
   plants: Record<RegionId, Record<PlantId, number>>;
   queue: PlantOrder[];
+}
+
+export type PlantOwner = 'state' | 'private';
+
+/** A state plant being built, or a licensed private plant on its way. */
+export interface IndustryOrder {
+  id: string;
+  industry: IndustryId;
+  region: RegionId;
+  owner: PlantOwner;
+  quantity: number;
+  /** ₹ crore paid (state builds), for the partial refund on cancelling; 0 for licences. */
+  cost: number;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** The goods market as last settled: what moved, what was missing and what it earned. Units a month. */
+export interface SettledFlows {
+  production: Record<GoodId, number>;
+  use: Record<GoodId, number>;
+  demand: Record<GoodId, number>;
+  imports: Record<GoodId, number>;
+  /** Demand that could not be met because imports were banned or over quota. */
+  shortage: Record<GoodId, number>;
+  /** Production that did not fit in storage. */
+  waste: Record<GoodId, number>;
+  /** Share of full output each industry ran at (inputs, power), 0–1. */
+  throughput: Record<IndustryId, number>;
+  /** Share of power stations' fuel that was available, 0–1. */
+  fuelSupply: Record<FuelId, number>;
+  /** Real value added by sector at start-of-game prices, ₹ crore a year. */
+  valueAdded: Record<SectorId, number>;
+  /** Operating profit at today's prices, ₹ crore a month. */
+  stateProfit: number;
+  privateProfit: number;
+  /** Tariffs collected on imported goods, ₹ crore a month. */
+  customs: number;
+}
+
+/** Factories, mines, fields and farms, and the goods they make (Phase 8). */
+export interface IndustryState {
+  plants: Record<RegionId, Record<IndustryId, Record<PlantOwner, number>>>;
+  stocks: Record<GoodId, number>;
+  queue: IndustryOrder[];
+  last: SettledFlows;
+  /** Value added already folded into sector output; the gap to `last.valueAdded` is the industry growth driver. */
+  applied: Record<SectorId, number>;
+}
+
+export type TradeBan = 'export' | 'import';
+
+export interface TradeControl {
+  /** Tariff on imports, 0–1. */
+  tariff: number;
+  /** Most units the private market may import a month, or null for no limit. */
+  quota: number | null;
+  ban: TradeBan | null;
+}
+
+/** World prices and India's trade controls (Phase 8). */
+export interface MarketState {
+  /** World price of each good, ₹ crore per unit. */
+  prices: Record<GoodId, number>;
+  controls: Record<GoodId, TradeControl>;
+  /** Units traded with each partner this month, keyed "<country>:<good>". Reset monthly. */
+  volumes: Record<string, number>;
 }
 
 export type EquipmentTier = 1 | 2 | 3;
@@ -509,6 +579,11 @@ export interface TradeTerms {
   sector: SectorId;
   /** Annual value in ₹ crore. */
   value: number;
+  /** Goods contracts (Phase 8): the good, which way it goes, units a month and the agreed price per unit. */
+  good: GoodId;
+  side: 'sell' | 'buy';
+  quantity: number;
+  price: number;
 }
 
 /** A treaty or measure between two parties: [imposer or first party, other]; India is "IND". */
@@ -580,6 +655,8 @@ export interface GameState {
   infrastructure: InfrastructureState;
   police: PoliceState;
   energy: EnergyState;
+  industry: IndustryState;
+  market: MarketState;
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;

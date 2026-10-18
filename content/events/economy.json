@@ -962,6 +962,138 @@
     ]
   },
   {
+    "id": "fuel-shortage",
+    "category": "economy",
+    "severity": "critical",
+    "title": "Fuel queues at the pumps",
+    "body": "With fuel imports blocked or capped, stations are running dry. Lorries stand idle, buses run late and farmers cannot run their pumps.",
+    "weight": 2,
+    "cooldownDays": 180,
+    "conditions": [
+      {
+        "stat": "fuelShortage",
+        "op": ">=",
+        "value": 5
+      }
+    ],
+    "choices": [
+      {
+        "id": "release",
+        "label": "Release the strategic reserve and lift the limits",
+        "description": "Costs ₹8,000 cr; eases the queues for a while.",
+        "outcome": "Tankers roll out of the reserve depots. The queues shorten, but the cause is still there until imports flow again.",
+        "cost": 8000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.003,
+            "days": 120,
+            "label": "Fuel shortage (reserve released)"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "ration",
+        "label": "Ration fuel by district",
+        "description": "No cost; anger and higher prices.",
+        "outcome": "Rationing keeps essential services going, but drivers and farmers are furious.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.01,
+            "days": 180,
+            "label": "Fuel shortage"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "food-shortage",
+    "category": "economy",
+    "severity": "critical",
+    "title": "Empty shelves in the markets",
+    "body": "Grain and packaged food are running short. Prices in the markets are climbing by the day and ration shops have long queues.",
+    "weight": 2,
+    "cooldownDays": 180,
+    "conditions": [
+      {
+        "stat": "foodShortage",
+        "op": ">=",
+        "value": 5
+      }
+    ],
+    "choices": [
+      {
+        "id": "subsidise",
+        "label": "Open subsidised ration shops",
+        "description": "Costs ₹10,000 cr; keeps food affordable for the poorest.",
+        "outcome": "Subsidised grain reaches the ration shops. Families get by, though the shortage is not over until supplies improve.",
+        "cost": 10000,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.004,
+            "days": 120,
+            "label": "Food shortage (subsidised)"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 60
+          }
+        ]
+      },
+      {
+        "id": "wait",
+        "label": "Let the market sort it out",
+        "description": "No cost; prices soar and patience runs out.",
+        "outcome": "Prices soar. Protests break out outside the ration shops.",
+        "default": true,
+        "effects": [
+          {
+            "type": "modifier",
+            "target": "economy.inflation",
+            "kind": "add",
+            "value": 0.015,
+            "days": 180,
+            "label": "Food shortage"
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -4,
+            "days": 120
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": "tutorial-briefing",
     "category": "economy",
     "severity": "info",

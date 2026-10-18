@@ -38,6 +38,12 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Power plants are content (`content/power.json`, ids in `PLANTS`). Production, demand, shortfall, exports, emissions and their effects (the "Power cuts" growth driver, the power-cut and air-pollution approval lines, disaster odds) and plant upkeep come from `src/sim/energy/grid.ts`, shared by the systems, the Energy screen and the bots.
 - The grid is national. It opens with a 5% reserve margin over demand, so a new game starts unchanged; approval-target lines from public policy (civil liberties, power cuts, air pollution) are collected in `governanceLines()` and are all 0 at the start.
 
+## Industry and the trade market
+
+- Goods and plants are content (`content/goods.json`, `content/industries.json`, ids in `GOODS` and `INDUSTRIES`; production runs in `INDUSTRIES` order). One pure function, `computeFlows()` in `src/sim/industry/flows.ts`, settles a month of goods; the monthly system, `projectMonth`, the Industry and Trade Market screens and the bots all read it, and every effect (growth, jobs, profits, corporate tax, customs, inflation, shortages) is measured against `OPENING_SETTLEMENT`, so a new game starts unchanged.
+- Opening domestic demand is derived from content so the opening flows balance (`OPENING_DEMAND`); the content loader refuses a good whose opening demand would not be positive.
+- Partner prices come from `market/pricing.ts` (`partnerPrice`, `spreadOf`), shared by the trades and the UI. Only surplus stock (above the private market's target) can be sold. Goods contracts are `trade` treaties with a `good` in their terms, signed through `signTreaty()`; `activeTrade()` returns the sector contracts only.
+
 ## Events
 
 - Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.

@@ -1,0 +1,782 @@
+[
+  {
+    "id": "coalMine",
+    "name": "Coal mine",
+    "summary": "An open-cast coalfield.",
+    "sector": "industry",
+    "inputs": {},
+    "outputs": {
+      "coal": 2
+    },
+    "cost": 15000,
+    "buildDays": 90,
+    "upkeep": 775,
+    "power": 0.02,
+    "jobs": 4000,
+    "licenceFee": 750,
+    "opening": {
+      "north": {
+        "state": 2,
+        "private": 0
+      },
+      "south": {
+        "state": 4,
+        "private": 1
+      },
+      "east": {
+        "state": 17,
+        "private": 2
+      },
+      "west": {
+        "state": 4,
+        "private": 0
+      },
+      "central": {
+        "state": 11,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "ironMine",
+    "name": "Iron ore mine",
+    "summary": "A mine and crushing plant.",
+    "sector": "industry",
+    "inputs": {},
+    "outputs": {
+      "ironOre": 1.5
+    },
+    "cost": 13500,
+    "buildDays": 90,
+    "upkeep": 698,
+    "power": 0.02,
+    "jobs": 2500,
+    "licenceFee": 680,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 0
+      },
+      "south": {
+        "state": 2,
+        "private": 1
+      },
+      "east": {
+        "state": 5,
+        "private": 2
+      },
+      "west": {
+        "state": 1,
+        "private": 1
+      },
+      "central": {
+        "state": 2,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "oilField",
+    "name": "Oil field",
+    "summary": "Onshore and offshore wells.",
+    "sector": "energy",
+    "inputs": {},
+    "outputs": {
+      "crudeOil": 0.5
+    },
+    "cost": 33800,
+    "buildDays": 120,
+    "upkeep": 1743,
+    "power": 0.01,
+    "jobs": 1500,
+    "licenceFee": 1690,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 0
+      },
+      "south": {
+        "state": 0,
+        "private": 0
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 2,
+        "private": 1
+      },
+      "central": {
+        "state": 0,
+        "private": 0
+      },
+      "northEast": {
+        "state": 1,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "gasField",
+    "name": "Gas field",
+    "summary": "Wells and a gas-processing plant.",
+    "sector": "energy",
+    "inputs": {},
+    "outputs": {
+      "gas": 0.5
+    },
+    "cost": 18800,
+    "buildDays": 120,
+    "upkeep": 968,
+    "power": 0.01,
+    "jobs": 1200,
+    "licenceFee": 940,
+    "opening": {
+      "north": {
+        "state": 0,
+        "private": 0
+      },
+      "south": {
+        "state": 1,
+        "private": 0
+      },
+      "east": {
+        "state": 1,
+        "private": 0
+      },
+      "west": {
+        "state": 1,
+        "private": 1
+      },
+      "central": {
+        "state": 0,
+        "private": 0
+      },
+      "northEast": {
+        "state": 1,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "uraniumMine",
+    "name": "Uranium mine",
+    "summary": "A deep mine and mill for nuclear fuel.",
+    "sector": "energy",
+    "inputs": {},
+    "outputs": {
+      "uranium": 3
+    },
+    "cost": 700,
+    "buildDays": 180,
+    "upkeep": 34,
+    "power": 0.01,
+    "jobs": 800,
+    "licenceFee": 40,
+    "opening": {
+      "north": {
+        "state": 0,
+        "private": 0
+      },
+      "south": {
+        "state": 1,
+        "private": 0
+      },
+      "east": {
+        "state": 2,
+        "private": 0
+      },
+      "west": {
+        "state": 0,
+        "private": 0
+      },
+      "central": {
+        "state": 0,
+        "private": 0
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "grainFarm",
+    "name": "Grain farm project",
+    "summary": "Irrigated fields, silos and machinery for a farming district.",
+    "sector": "agriculture",
+    "inputs": {},
+    "outputs": {
+      "grain": 2
+    },
+    "cost": 75000,
+    "buildDays": 60,
+    "upkeep": 3875,
+    "power": 0.005,
+    "jobs": 30000,
+    "licenceFee": 3750,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 4
+      },
+      "south": {
+        "state": 0,
+        "private": 2
+      },
+      "east": {
+        "state": 1,
+        "private": 2
+      },
+      "west": {
+        "state": 0,
+        "private": 1
+      },
+      "central": {
+        "state": 0,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "cottonFarm",
+    "name": "Cotton farm project",
+    "summary": "Cotton fields with ginning mills.",
+    "sector": "agriculture",
+    "inputs": {},
+    "outputs": {
+      "cotton": 0.1
+    },
+    "cost": 22500,
+    "buildDays": 60,
+    "upkeep": 1162,
+    "power": 0.005,
+    "jobs": 20000,
+    "licenceFee": 1120,
+    "opening": {
+      "north": {
+        "state": 0,
+        "private": 0
+      },
+      "south": {
+        "state": 0,
+        "private": 1
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 1,
+        "private": 2
+      },
+      "central": {
+        "state": 0,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "steelMill",
+    "name": "Steel mill",
+    "summary": "A blast furnace and rolling mill.",
+    "sector": "industry",
+    "inputs": {
+      "ironOre": 0.65,
+      "coal": 0.2
+    },
+    "outputs": {
+      "steel": 0.4
+    },
+    "cost": 22600,
+    "buildDays": 180,
+    "upkeep": 1171,
+    "power": 0.4,
+    "jobs": 20000,
+    "licenceFee": 1130,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 2
+      },
+      "south": {
+        "state": 1,
+        "private": 3
+      },
+      "east": {
+        "state": 4,
+        "private": 9
+      },
+      "west": {
+        "state": 1,
+        "private": 3
+      },
+      "central": {
+        "state": 2,
+        "private": 4
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "textileMill",
+    "name": "Textile mill",
+    "summary": "Spinning, weaving and garment lines.",
+    "sector": "industry",
+    "inputs": {
+      "cotton": 0.02
+    },
+    "outputs": {
+      "textiles": 0.018
+    },
+    "cost": 3600,
+    "buildDays": 60,
+    "upkeep": 186,
+    "power": 0.02,
+    "jobs": 15000,
+    "licenceFee": 180,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 2
+      },
+      "south": {
+        "state": 1,
+        "private": 6
+      },
+      "east": {
+        "state": 0,
+        "private": 1
+      },
+      "west": {
+        "state": 1,
+        "private": 5
+      },
+      "central": {
+        "state": 1,
+        "private": 2
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "chemicalPlant",
+    "name": "Petrochemical plant",
+    "summary": "Cracks crude oil into chemicals.",
+    "sector": "industry",
+    "inputs": {
+      "crudeOil": 0.1
+    },
+    "outputs": {
+      "chemicals": 0.08
+    },
+    "cost": 2800,
+    "buildDays": 120,
+    "upkeep": 148,
+    "power": 0.05,
+    "jobs": 3000,
+    "licenceFee": 140,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 1
+      },
+      "south": {
+        "state": 1,
+        "private": 3
+      },
+      "east": {
+        "state": 1,
+        "private": 1
+      },
+      "west": {
+        "state": 4,
+        "private": 6
+      },
+      "central": {
+        "state": 1,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "gasChemicalPlant",
+    "name": "Gas chemical plant",
+    "summary": "Makes chemicals from natural gas.",
+    "sector": "industry",
+    "inputs": {
+      "gas": 0.05
+    },
+    "outputs": {
+      "chemicals": 0.04
+    },
+    "cost": 2900,
+    "buildDays": 120,
+    "upkeep": 152,
+    "power": 0.03,
+    "jobs": 1500,
+    "licenceFee": 140,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 1
+      },
+      "south": {
+        "state": 1,
+        "private": 1
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 2,
+        "private": 2
+      },
+      "central": {
+        "state": 0,
+        "private": 0
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "syntheticFibreMill",
+    "name": "Synthetic fibre mill",
+    "summary": "Spins polyester and nylon from chemicals.",
+    "sector": "industry",
+    "inputs": {
+      "chemicals": 0.03
+    },
+    "outputs": {
+      "textiles": 0.02
+    },
+    "cost": 5400,
+    "buildDays": 90,
+    "upkeep": 279,
+    "power": 0.02,
+    "jobs": 4000,
+    "licenceFee": 270,
+    "opening": {
+      "north": {
+        "state": 0,
+        "private": 1
+      },
+      "south": {
+        "state": 1,
+        "private": 2
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 1,
+        "private": 4
+      },
+      "central": {
+        "state": 0,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "pharmaPlant",
+    "name": "Pharmaceutical plant",
+    "summary": "Makes generic medicines.",
+    "sector": "industry",
+    "inputs": {
+      "chemicals": 0.005
+    },
+    "outputs": {
+      "medicines": 2
+    },
+    "cost": 2400,
+    "buildDays": 90,
+    "upkeep": 124,
+    "power": 0.01,
+    "jobs": 3000,
+    "licenceFee": 120,
+    "opening": {
+      "north": {
+        "state": 0,
+        "private": 4
+      },
+      "south": {
+        "state": 1,
+        "private": 9
+      },
+      "east": {
+        "state": 0,
+        "private": 1
+      },
+      "west": {
+        "state": 1,
+        "private": 7
+      },
+      "central": {
+        "state": 0,
+        "private": 2
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "electronicsPlant",
+    "name": "Electronics plant",
+    "summary": "Assembles phones, computers and components.",
+    "sector": "tech",
+    "inputs": {
+      "chemicals": 0.002
+    },
+    "outputs": {
+      "electronics": 1
+    },
+    "cost": 22300,
+    "buildDays": 60,
+    "upkeep": 1150,
+    "power": 0.02,
+    "jobs": 8000,
+    "licenceFee": 1120,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 5
+      },
+      "south": {
+        "state": 1,
+        "private": 7
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 0,
+        "private": 4
+      },
+      "central": {
+        "state": 0,
+        "private": 2
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "vehiclePlant",
+    "name": "Vehicle plant",
+    "summary": "Builds cars, trucks and two-wheelers.",
+    "sector": "industry",
+    "inputs": {
+      "steel": 0.03,
+      "electronics": 0.05
+    },
+    "outputs": {
+      "vehicles": 20
+    },
+    "cost": 17600,
+    "buildDays": 120,
+    "upkeep": 911,
+    "power": 0.03,
+    "jobs": 12000,
+    "licenceFee": 880,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 6
+      },
+      "south": {
+        "state": 1,
+        "private": 5
+      },
+      "east": {
+        "state": 0,
+        "private": 0
+      },
+      "west": {
+        "state": 0,
+        "private": 5
+      },
+      "central": {
+        "state": 0,
+        "private": 2
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "refinery",
+    "name": "Oil refinery",
+    "summary": "Refines crude oil into petrol and diesel.",
+    "sector": "energy",
+    "inputs": {
+      "crudeOil": 1.2
+    },
+    "outputs": {
+      "fuel": 1.15
+    },
+    "cost": 22500,
+    "buildDays": 180,
+    "upkeep": 1162,
+    "power": 0.05,
+    "jobs": 2500,
+    "licenceFee": 1120,
+    "opening": {
+      "north": {
+        "state": 2,
+        "private": 1
+      },
+      "south": {
+        "state": 2,
+        "private": 1
+      },
+      "east": {
+        "state": 2,
+        "private": 1
+      },
+      "west": {
+        "state": 4,
+        "private": 3
+      },
+      "central": {
+        "state": 0,
+        "private": 0
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "foodPlant",
+    "name": "Food processing plant",
+    "summary": "Mills, packs and preserves food.",
+    "sector": "industry",
+    "inputs": {
+      "grain": 0.3
+    },
+    "outputs": {
+      "food": 0.25
+    },
+    "cost": 11200,
+    "buildDays": 45,
+    "upkeep": 582,
+    "power": 0.01,
+    "jobs": 5000,
+    "licenceFee": 560,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 4
+      },
+      "south": {
+        "state": 1,
+        "private": 3
+      },
+      "east": {
+        "state": 1,
+        "private": 2
+      },
+      "west": {
+        "state": 0,
+        "private": 2
+      },
+      "central": {
+        "state": 0,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  },
+  {
+    "id": "fertiliserPlant",
+    "name": "Fertiliser plant",
+    "summary": "Turns natural gas into fertiliser for the farms.",
+    "sector": "agriculture",
+    "inputs": {
+      "gas": 0.03
+    },
+    "outputs": {
+      "grain": 0.15
+    },
+    "cost": 4500,
+    "buildDays": 90,
+    "upkeep": 232,
+    "power": 0.02,
+    "jobs": 1500,
+    "licenceFee": 220,
+    "opening": {
+      "north": {
+        "state": 1,
+        "private": 1
+      },
+      "south": {
+        "state": 1,
+        "private": 1
+      },
+      "east": {
+        "state": 1,
+        "private": 1
+      },
+      "west": {
+        "state": 1,
+        "private": 1
+      },
+      "central": {
+        "state": 1,
+        "private": 1
+      },
+      "northEast": {
+        "state": 0,
+        "private": 0
+      }
+    }
+  }
+]

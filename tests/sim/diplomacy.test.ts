@@ -38,6 +38,7 @@ import { fireEvent } from '../../src/sim/events/engine';
 import { patchCountry } from '../../src/sim/diplomacy/relations';
 import { Rng } from '../../src/sim/engine/rng';
 import { declarationChance } from '../../src/sim/military/rivals';
+import { SYSTEMS } from '../../src/sim/systems';
 import { calm, deepFreeze, newGame } from '../helpers';
 
 const run = (state: GameState, command: Command): GameState => {
@@ -201,7 +202,12 @@ describe('trade contracts', () => {
 
 describe('pacts, embassies, aid and sanctions', () => {
   it('a pact stops a rival from declaring war, and breaking it by attacking costs standing', () => {
-    let s = advanceDays(newGame(), 400);
+    // Without the approval and leadership systems, so a hands-off game is still running after 400 days.
+    let s = advanceDays(
+      newGame(),
+      400,
+      SYSTEMS.filter((x) => x.id !== 'approval' && x.id !== 'leadership'),
+    );
     s = patchCountry(s, 'PAK', { relation: -15 });
     s = { ...s, military: { ...s.military, deterrence: 10 } };
     expect(declarationChance(s, 'PAK')).toBeGreaterThan(0);

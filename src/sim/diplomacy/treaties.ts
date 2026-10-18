@@ -56,7 +56,9 @@ export const adjustReputation = (state: GameState, delta: number): GameState => 
 /** The country on the other side of a treaty with India. */
 export const partnerOf = (t: Treaty): CountryId => (t.parties[0] === INDIA ? t.parties[1] : t.parties[0]);
 
-export const activeTrade = (state: GameState): Treaty[] => state.diplomacy.treaties.filter((t) => t.type === 'trade');
+/** Sector trade contracts (the Diplomacy screen's); goods supply contracts (the Trade Market's) carry a good instead. */
+export const activeTrade = (state: GameState): Treaty[] =>
+  state.diplomacy.treaties.filter((t) => t.type === 'trade' && t.terms.good === undefined);
 
 // --- Trade contracts -------------------------------------------------------------------------------------
 
@@ -298,6 +300,9 @@ export function signTreaty(state: GameState, spec: NewTreaty): GameState {
       },
       days,
     );
+    next = adjustRelation(next, partner, SIGN_RELATION.trade);
+  } else if (spec.type === 'trade' && spec.terms?.good) {
+    // A goods supply contract: no sector growth or customs bonus, but the goodwill of any trade deal.
     next = adjustRelation(next, partner, SIGN_RELATION.trade);
   } else if (spec.type === 'nonAggression') {
     next = adjustRelation(next, partner, SIGN_RELATION.nonAggression);

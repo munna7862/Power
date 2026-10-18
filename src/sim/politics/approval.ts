@@ -84,7 +84,7 @@ export function computeSatisfaction(
  * of a game: over-policing (civil liberties), power cuts and air pollution.
  */
 export function governanceLines(
-  state: Pick<GameState, 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure'>,
+  state: Pick<GameState, 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure' | 'industry'>,
 ): BreakdownLine[] {
   return [
     { label: 'Civil liberties (over-policing)', source: 'police', value: -civilLibertiesCost(state) },
@@ -96,7 +96,7 @@ export function governanceLines(
 
 /** Weighted satisfaction plus modifiers (ideology, difficulty, scandals…) and the governance lines above. */
 export function approvalTarget(
-  state: Pick<GameState, 'modifiers' | 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure'>,
+  state: Pick<GameState, 'modifiers' | 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure' | 'industry'>,
   satisfaction: Record<ApprovalFactor, number>,
 ): Resolution {
   const base = APPROVAL_FACTORS.reduce((sum, f) => sum + APPROVAL_WEIGHTS[f] * satisfaction[f], 0);

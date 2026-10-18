@@ -101,6 +101,52 @@ export type PlantId = (typeof PLANTS)[number];
 export const FUELS = ['coal', 'gas', 'uranium'] as const;
 export type FuelId = (typeof FUELS)[number];
 
+/** Goods produced, stocked and traded (content/goods.json). */
+export const GOODS = [
+  'coal',
+  'ironOre',
+  'crudeOil',
+  'gas',
+  'uranium',
+  'grain',
+  'cotton',
+  'steel',
+  'textiles',
+  'chemicals',
+  'medicines',
+  'electronics',
+  'vehicles',
+  'fuel',
+  'food',
+] as const;
+export type GoodId = (typeof GOODS)[number];
+
+/**
+ * Factories, mines, fields and farms (content/industries.json), in production order: a plant's inputs are made
+ * by plants earlier in the list (or imported).
+ */
+export const INDUSTRIES = [
+  'coalMine',
+  'ironMine',
+  'oilField',
+  'gasField',
+  'uraniumMine',
+  'grainFarm',
+  'cottonFarm',
+  'steelMill',
+  'textileMill',
+  'chemicalPlant',
+  'gasChemicalPlant',
+  'syntheticFibreMill',
+  'pharmaPlant',
+  'electronicsPlant',
+  'vehiclePlant',
+  'refinery',
+  'foodPlant',
+  'fertiliserPlant',
+] as const;
+export type IndustryId = (typeof INDUSTRIES)[number];
+
 /** Things voters judge the President on. Each is scored 0–100 every month. */
 export const APPROVAL_FACTORS = [
   'jobs',

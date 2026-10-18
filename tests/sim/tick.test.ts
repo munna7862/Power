@@ -117,6 +117,8 @@ describe('engine.tick', () => {
     expect(SYSTEMS.map((s) => s.id)).toEqual([
       'modifier-expiry',
       'economy',
+      'industry-monthly',
+      'market-monthly',
       'fiscal',
       'society',
       'crime',
@@ -129,6 +131,7 @@ describe('engine.tick', () => {
       'departments-daily',
       'infrastructure-daily',
       'energy-daily',
+      'industry-daily',
       'military-monthly',
       'military-daily',
       'diplomacy-monthly',
