@@ -21,6 +21,26 @@ export const MINISTRIES = [
 ] as const;
 export type MinistryId = (typeof MINISTRIES)[number];
 
+/**
+ * The services each department runs. Each is rated 1–5 stars; investing in a service raises its rating, and the
+ * department's average rating sets how well it is run (Phase 8 replaced ministers with this).
+ */
+export const DEPARTMENT_SERVICES = {
+  finance: ['taxAdministration', 'treasuryManagement', 'statistics'],
+  home: ['presidentialProtection', 'borderManagement', 'prisons', 'emergencyLine'],
+  defence: ['armyCommand', 'logistics', 'militaryAcademies', 'veteransWelfare'],
+  external: ['consularService', 'tradeDelegations', 'policyPlanning'],
+  health: ['primaryCare', 'hospitalNetwork', 'diseaseControl', 'drugRegulation'],
+  education: ['schoolSystem', 'higherEducation', 'vocationalTraining', 'research'],
+  agriculture: ['irrigation', 'seedsAndFertiliser', 'cropInsurance', 'extensionService'],
+  industry: ['industrialParks', 'standardsBureau', 'exportPromotion', 'smallBusiness'],
+  disaster: ['searchAndRescue', 'engineeringUnits', 'hazardousMaterials', 'fireService'],
+  intelligence: ['humanIntelligence', 'signalsIntelligence', 'analysis', 'counterIntelligence'],
+  antiCorruption: ['audits', 'investigations', 'whistleblowerProtection'],
+} as const satisfies Record<MinistryId, readonly string[]>;
+export type ServiceId<M extends MinistryId = MinistryId> = (typeof DEPARTMENT_SERVICES)[M][number];
+export const SERVICE_IDS = Object.values(DEPARTMENT_SERVICES).flat() as ServiceId[];
+
 export const IDEOLOGIES = ['liberalism', 'socialism', 'conservatism', 'nationalism', 'technocracy'] as const;
 export type IdeologyId = (typeof IDEOLOGIES)[number];
 

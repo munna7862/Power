@@ -45,21 +45,21 @@ test.describe('crises and security (Phase 3)', () => {
   });
 
   test('the inbox filters by category and decisions', async ({ page }) => {
-    await raiseEvent(page, 'minister-scandal');
+    await raiseEvent(page, 'officials-scandal');
     await raiseEvent(page, 'bumper-harvest');
     await openView(page, 'Inbox');
     const list = page.getByRole('list', { name: 'Inbox messages' });
     const filters = page.getByRole('group', { name: 'Inbox filters' });
     await filters.getByRole('button', { name: 'Corruption' }).click();
-    await expect(list).toContainText('Allegations against a minister');
+    await expect(list).toContainText('Allegations against officials');
     await expect(list).not.toContainText('Bumper harvest');
     await filters.getByRole('button', { name: /^Decisions/ }).click();
-    await expect(list).toContainText('Allegations against a minister');
+    await expect(list).toContainText('Allegations against officials');
     await filters.getByRole('button', { name: 'Economy' }).click();
     await expect(list).toContainText('Bumper harvest');
   });
 
-  test('the Security screen shows unrest by region and runs an operation and an inquiry', async ({ page }) => {
+  test('the Security screen shows unrest by region and runs an operation and an audit', async ({ page }) => {
     await patchGame(page, {
       security: { unrest: { east: 80, north: 20, south: 20, west: 20, central: 20, northEast: 20 } },
     });
@@ -73,7 +73,7 @@ test.describe('crises and security (Phase 3)', () => {
     await page.getByRole('button', { name: 'Expand surveillance' }).click();
     await expect(page.getByText(/Active: \d+ days/)).toBeVisible();
 
-    await page.getByRole('button', { name: 'Investigate Home Affairs' }).click();
+    await page.getByRole('button', { name: 'Audit Home Affairs' }).click();
     await expect(page.getByText(/Reports in \d+ days/)).toBeVisible();
     await expect(page.getByRole('list', { name: 'Threats to your presidency' })).toContainText('Coup');
   });

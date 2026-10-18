@@ -20,8 +20,8 @@ export const TUTORIAL_STEP_IDS = [
   'approval',
   'budget',
   'budgetExplain',
-  'cabinet',
-  'cabinetExplain',
+  'departments',
+  'departmentsExplain',
   'clock',
   'decisionWait',
   'decisionMake',
@@ -32,7 +32,7 @@ export const TUTORIAL_STEP_IDS = [
 export type TutorialStepId = (typeof TUTORIAL_STEP_IDS)[number];
 
 /** Steps that wait for the player to act; only these have a "hint" line in i18n. */
-export type WaitingStepId = 'budget' | 'cabinet' | 'clock' | 'decisionWait' | 'decisionMake' | 'world';
+export type WaitingStepId = 'budget' | 'departments' | 'clock' | 'decisionWait' | 'decisionMake' | 'world';
 
 export interface TutorialStep {
   id: TutorialStepId;
@@ -45,8 +45,8 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   { id: 'approval', target: 'dashboard', advance: { kind: 'next' } },
   { id: 'budget', target: 'budget', advance: { kind: 'view', view: 'budget' } },
   { id: 'budgetExplain', target: null, advance: { kind: 'next' } },
-  { id: 'cabinet', target: 'cabinet', advance: { kind: 'view', view: 'cabinet' } },
-  { id: 'cabinetExplain', target: null, advance: { kind: 'next' } },
+  { id: 'departments', target: 'departments', advance: { kind: 'view', view: 'departments' } },
+  { id: 'departmentsExplain', target: null, advance: { kind: 'next' } },
   { id: 'clock', target: 'speed', advance: { kind: 'clockRunning' } },
   { id: 'decisionWait', target: 'speed', advance: { kind: 'decisionArrived' } },
   { id: 'decisionMake', target: 'decisions', advance: { kind: 'decisionMade' } },

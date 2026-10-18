@@ -1,5 +1,6 @@
 import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId } from '../content/ids';
+import { departmentQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
 import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
 import {
@@ -9,7 +10,6 @@ import {
   START_CORRUPTION,
   TAX_AVOIDANCE_CEILING,
   TAX_BASE_SHARE,
-  VACANT_COMPETENCE,
 } from './constants';
 
 /**
@@ -46,9 +46,9 @@ export function nationalLeakageFactor(corruption: number): number {
   return (1 - 0.12 * (corruption / 100)) / (1 - 0.12 * (START_CORRUPTION / 100));
 }
 
-/** Efficiency of a ministry: 1 = adequately funded and competently run. Roughly 0–1.8. */
+/** Efficiency of a department: 1 = adequately funded and well run. Funding × service stars × national corruption; roughly 0–2. */
 export function ministryEfficiency(
-  state: Pick<GameState, 'budget' | 'cabinet' | 'modifiers' | 'economy'>,
+  state: Pick<GameState, 'budget' | 'departments' | 'modifiers' | 'economy'>,
   ministry: MinistryId,
 ): number {
   return ministryEfficiencyFor(state.budget.allocations[ministry], state, ministry);
@@ -56,21 +56,17 @@ export function ministryEfficiency(
 
 export function ministryEfficiencyFor(
   allocation: number,
-  state: Pick<GameState, 'cabinet' | 'modifiers' | 'economy'>,
+  state: Pick<GameState, 'departments' | 'modifiers' | 'economy'>,
   ministry: MinistryId,
 ): number {
   const funding = allocation / MINISTRY_CONTENT[ministry].defaultAllocation;
-  const minister = state.cabinet.ministers[ministry];
-  const competence = minister?.competence ?? VACANT_COMPETENCE;
-  const leakage = ((minister?.corruption ?? 0) / 100) * 0.25;
   const spendingMultiplier = multiplierFor(state.modifiers, 'economy.expenditure');
   const fundingFactor = Math.sqrt(Math.max(0, Math.min(funding * spendingMultiplier, 3)));
-  const competenceFactor = 0.7 + (0.6 * competence) / 100;
-  return fundingFactor * competenceFactor * (1 - leakage) * nationalLeakageFactor(state.economy.corruption);
+  return fundingFactor * departmentQuality(state, ministry) * nationalLeakageFactor(state.economy.corruption);
 }
 
 export function allEfficiencies(
-  state: Pick<GameState, 'budget' | 'cabinet' | 'modifiers' | 'economy'>,
+  state: Pick<GameState, 'budget' | 'departments' | 'modifiers' | 'economy'>,
 ): Record<MinistryId, number> {
   return Object.fromEntries(MINISTRIES.map((m) => [m, ministryEfficiency(state, m)])) as Record<MinistryId, number>;
 }

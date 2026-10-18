@@ -5,8 +5,7 @@ const PATHS: Record<ViewId, string> = {
   inbox: 'M4 13l2-8h12l2 8v6H4zM4 13h5l1 2h4l1-2h5',
   economy: 'M4 20h16M7 16v-5M12 16V7M17 16v-8',
   budget: 'M4 7h16v12H4zM4 7l2-3h12l2 3M14 13h3M9 4v3',
-  cabinet:
-    'M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5.5a3 3 0 0 1 0 5.5M18 14.5c1.8.9 3 2.9 3 5.5',
+  departments: 'M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6z',
   security: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z',
   military: 'M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z',
   world:

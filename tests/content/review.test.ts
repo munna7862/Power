@@ -76,7 +76,7 @@ describe('content sensitivity and legal review (automated)', () => {
     expect(text).not.toMatch(POLITICIANS);
   });
 
-  it.each(files.filter((f) => !f.endsWith('names.json')).map((f) => [rel(f), f]))(
+  it.each(files.map((f) => [rel(f), f]))(
     '%s: no trademarked weapon names and no reference-game identity',
     (_, path) => {
       const text = textOf(path);
@@ -84,8 +84,4 @@ describe('content sensitivity and legal review (automated)', () => {
       expect(text).not.toMatch(REFERENCE);
     },
   );
-
-  it('keeps the minister name pool free of real politicians', () => {
-    expect(textOf(join(root, 'content/names.json'))).not.toMatch(POLITICIANS);
-  });
 });

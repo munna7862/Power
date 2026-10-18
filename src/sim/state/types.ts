@@ -12,6 +12,7 @@ import type {
   MinistryId,
   OperationKind,
   RegionId,
+  ServiceId,
   SectorId,
   StrategyId,
   TaxId,
@@ -21,7 +22,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 6;
+export const SCHEMA_VERSION = 7;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -144,30 +145,20 @@ export interface BudgetState {
   lastEnactedTick: number | null;
 }
 
-export type Gender = 'female' | 'male';
-
-export interface Minister {
+/** A service upgrade under way: the service gains a star when it completes. */
+export interface ServiceUpgrade {
   id: string;
-  name: string;
-  gender: Gender;
-  region: RegionId;
-  /** 0–100: how well the ministry is run. */
-  competence: number;
-  /** 0–100: loyalty to the President. Feeds coup risk from Phase 3. */
-  loyalty: number;
-  /** 0–100: share of the budget that goes missing, and scandal risk. */
-  corruption: number;
-  ideology: IdeologyId;
-  /** Seed for the procedural portrait. */
-  avatarSeed: number;
-  appointedTick: number | null;
+  department: MinistryId;
+  service: ServiceId;
+  endsTick: number;
 }
 
-export interface CabinetState {
-  /** The serving minister for each ministry, or null when vacant (run by a civil servant). */
-  ministers: Record<MinistryId, Minister | null>;
-  /** Candidates available for appointment, refreshed every 1 January. */
-  candidates: Record<MinistryId, Minister[]>;
+/** How well each department is run: its services' star ratings (1–5), set by investment (Phase 8). */
+export interface DepartmentsState {
+  stars: Record<MinistryId, Partial<Record<ServiceId, number>>>;
+  /** Consecutive monthly settlements a department has been badly underfunded; at the limit a star is lost. */
+  underfundedMonths: Record<MinistryId, number>;
+  upgrades: ServiceUpgrade[];
 }
 
 export interface PoliticsState {
@@ -243,9 +234,10 @@ export interface EventsState {
   fired: Record<string, number[]>;
 }
 
+/** An audit of one department by the anti-corruption bureau. */
 export interface Investigation {
   id: string;
-  ministry: MinistryId;
+  department: MinistryId;
   startedTick: number;
   resolvesTick: number;
 }
@@ -530,7 +522,7 @@ export interface GameState {
   nation: NationState;
   economy: EconomyState;
   budget: BudgetState;
-  cabinet: CabinetState;
+  departments: DepartmentsState;
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;

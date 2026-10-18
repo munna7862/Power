@@ -13,7 +13,35 @@ export { groupIndian } from './engine/numberFormat';
 export { tick, advanceDays } from './engine/tick';
 export * from './state/types';
 export * from './content/ids';
-export { MINISTRY_CONTENT, IDEOLOGY_CONTENT, STRATEGY_CONTENT, type PolicyContent } from './content';
+export {
+  DEPARTMENT_CONTENT,
+  MINISTRY_CONTENT,
+  IDEOLOGY_CONTENT,
+  STRATEGY_CONTENT,
+  type PolicyContent,
+  type ServiceContent,
+} from './content';
+export {
+  MAX_STARS,
+  MAX_UPGRADES,
+  OPENING_STARS,
+  QUALITY_BASE,
+  QUALITY_PER_STAR,
+  UNDERFUNDED_BELOW,
+  UNDERFUNDED_MONTHS,
+  UPGRADE_DAYS,
+} from './departments/constants';
+export {
+  commandConfidence,
+  departmentFunding,
+  departmentQuality,
+  departmentStars,
+  intelligenceSkill,
+  leakagePressure,
+  protectionScore,
+  serviceStars,
+} from './departments/quality';
+export { upgradeCost, validateUpgrade } from './departments/services';
 export {
   createInitialState,
   normalisePresidentName,
@@ -36,7 +64,6 @@ export {
   type BudgetProposal,
 } from './commands';
 export { nextBudgetDate, allocationBounds, announcementEffect, validateBudget } from './commands/budget';
-export { RESHUFFLE_APPROVAL } from './commands/cabinet';
 export {
   ALLOCATION_LIMITS,
   BUDGET_COOLDOWN_DAYS,

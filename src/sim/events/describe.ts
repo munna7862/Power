@@ -1,5 +1,4 @@
 import { EVENT_CONTENT, type EventChoice, type EventContent, type EventEffect } from '../content/events';
-import { MINISTRY_CONTENT } from '../content';
 import { COUNTRY_CONTENT } from '../content/world';
 import { REGION_LABELS, type RegionId } from '../content/ids';
 import type { ModifierTarget } from '../engine/modifiers';
@@ -139,22 +138,6 @@ export function describeEffect(
         text: `Corruption ${signed(effect.delta * severity, 0)} points`,
         tone: effect.delta > 0 ? 'bad' : 'good',
       };
-    case 'loyalty':
-      return {
-        text: `${effect.ministry ? `${MINISTRY_CONTENT[effect.ministry].shortName} minister's` : "Ministers'"} loyalty ${signed(
-          effect.delta * severity,
-          0,
-        )}`,
-        tone: effect.delta > 0 ? 'good' : 'bad',
-      };
-    case 'scandal':
-      return {
-        text:
-          effect.ministry === 'random'
-            ? 'A minister is exposed and resigns'
-            : `The ${MINISTRY_CONTENT[effect.ministry].shortName} minister is exposed and resigns`,
-        tone: 'bad',
-      };
     case 'operation':
       return { text: `${OPERATIONS[effect.kind].label} (operation)`, tone: 'good' };
   }
@@ -199,10 +182,6 @@ export function effectUtility(state: GameState, effect: EventEffect): number {
       return 2;
     case 'corruption':
       return -effect.delta * 0.5;
-    case 'loyalty':
-      return effect.delta * 0.1;
-    case 'scandal':
-      return -3;
     case 'operation':
       return effect.kind === 'raid' ? 3 : 2;
   }

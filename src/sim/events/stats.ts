@@ -32,9 +32,6 @@ export const BASE_STATS = [
   'month',
   /** Year of the term, 1-based. */
   'yearInOffice',
-  'minLoyalty',
-  'maxMinisterCorruption',
-  'vacancies',
   'livePlots',
   'activeOperations',
   /** Armed forces, 0-100. */
@@ -76,7 +73,7 @@ export const STAT_IDS: readonly StatId[] = [...BASE_STATS, ...EFFICIENCY_STATS];
 
 /** Value of a stat. `region` is the event's region; only `regionUnrest` needs it. */
 export function statValue(state: GameState, stat: StatId, region: RegionId | null): number {
-  const { economy, security, nation, cabinet } = state;
+  const { economy, security, nation } = state;
   switch (stat) {
     case 'approval':
       return nation.approval;
@@ -114,12 +111,6 @@ export function statValue(state: GameState, stat: StatId, region: RegionId | nul
       return state.clock.date.month;
     case 'yearInOffice':
       return Math.floor(state.clock.tick / 365.25) + 1;
-    case 'minLoyalty':
-      return Math.min(...MINISTRIES.map((m) => cabinet.ministers[m]?.loyalty ?? 100));
-    case 'maxMinisterCorruption':
-      return Math.max(...MINISTRIES.map((m) => cabinet.ministers[m]?.corruption ?? 0));
-    case 'vacancies':
-      return MINISTRIES.filter((m) => cabinet.ministers[m] === null).length;
     case 'livePlots':
       return security.plots.length;
     case 'activeOperations':

@@ -88,10 +88,6 @@ const effectSchema = z.discriminatedUnion('type', [
   }),
   /** Immediate nudge to the national corruption index. */
   z.strictObject({ type: z.literal('corruption'), delta: z.number() }),
-  /** Loyalty of one minister, or of the whole cabinet. */
-  z.strictObject({ type: z.literal('loyalty'), delta: z.number(), ministry: z.enum(MINISTRIES).optional() }),
-  /** Exposes a minister: they resign and the government takes an approval hit. `random` favours the corrupt. */
-  z.strictObject({ type: z.literal('scandal'), ministry: z.union([z.enum(MINISTRIES), z.literal('random')]) }),
   /** Orders a counter-terror operation (see security/operations.ts). */
   z.strictObject({ type: z.literal('operation'), kind: z.enum(OPERATION_KINDS) }),
 ]);

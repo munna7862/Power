@@ -1,13 +1,13 @@
 [
   {
-    "id": "minister-scandal",
+    "id": "officials-scandal",
     "category": "corruption",
     "severity": "warning",
-    "title": "Allegations against a minister",
-    "body": "Newspapers allege that a minister has steered contracts to friends and relatives. The opposition wants answers.",
+    "title": "Allegations against officials",
+    "body": "Newspapers allege that senior officials in a department have steered contracts to friends and relatives. The opposition wants answers.",
     "conditions": [
       {
-        "stat": "maxMinisterCorruption",
+        "stat": "corruption",
         "op": ">",
         "value": 45
       }
@@ -17,13 +17,21 @@
     "choices": [
       {
         "id": "resign",
-        "label": "Demand a resignation",
-        "description": "A corrupt minister goes, and you take a short-term hit.",
-        "outcome": "The minister resigns under pressure. You are praised for acting, though the story lingers.",
+        "label": "Demand resignations",
+        "description": "The officials go, and you take a short-term hit.",
+        "outcome": "The officials resign under pressure. You are praised for acting, though the story lingers.",
         "effects": [
           {
-            "type": "scandal",
-            "ministry": "random"
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Officials exposed"
+          },
+          {
+            "type": "corruption",
+            "delta": -2
           },
           {
             "type": "modifier",
@@ -57,9 +65,9 @@
       },
       {
         "id": "defend",
-        "label": "Stand by the minister",
+        "label": "Stand by the department",
         "description": "No cost; the damage grows.",
-        "outcome": "You defend the minister. Public anger grows and corruption feels entrenched.",
+        "outcome": "You defend the department. Public anger grows and corruption feels entrenched.",
         "default": true,
         "effects": [
           {
@@ -68,15 +76,19 @@
             "kind": "add",
             "value": -3,
             "days": 120,
-            "label": "Defending a minister"
+            "label": "Defending accused officials"
           },
           {
             "type": "corruption",
             "delta": 2
           },
           {
-            "type": "loyalty",
-            "delta": 2
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 120,
+            "label": "Establishment goodwill"
           }
         ]
       }
@@ -87,12 +99,20 @@
     "category": "corruption",
     "severity": "info",
     "title": "Inquiry report delivered",
-    "body": "The independent inquiry has delivered its findings. They are damning: funds were misused and a minister must go.",
+    "body": "The independent inquiry has delivered its findings. They are damning: funds were misused and senior officials must go.",
     "weight": 0,
     "effects": [
       {
-        "type": "scandal",
-        "ministry": "random"
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -3,
+        "days": 90,
+        "label": "Officials exposed"
+      },
+      {
+        "type": "corruption",
+        "delta": -2
       },
       {
         "type": "corruption",
@@ -252,20 +272,32 @@
       {
         "id": "protect",
         "label": "Protect the whistleblower and act",
-        "description": "Exposes a minister; allies are unhappy.",
-        "outcome": "The whistleblower is protected and a minister falls. Not everyone in the cabinet is pleased.",
+        "description": "Exposes senior officials; parts of the establishment are unhappy.",
+        "outcome": "The whistleblower is protected and senior officials fall. Not everyone in government is pleased.",
         "effects": [
           {
-            "type": "scandal",
-            "ministry": "random"
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -3,
+            "days": 90,
+            "label": "Officials exposed"
           },
           {
             "type": "corruption",
             "delta": -2
           },
           {
-            "type": "loyalty",
-            "delta": -3
+            "type": "corruption",
+            "delta": -2
+          },
+          {
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       },
@@ -310,7 +342,7 @@
       {
         "id": "pass",
         "label": "Back the bill",
-        "description": "Costs ₹800 cr; lasting drop in corruption, but ministers resent it.",
+        "description": "Costs ₹800 cr; lasting drop in corruption, but senior officials resent it.",
         "outcome": "The bill passes. Officials grumble, and over time bribery gets harder.",
         "cost": 800,
         "effects": [
@@ -323,8 +355,12 @@
             "label": "Anti-corruption law"
           },
           {
-            "type": "loyalty",
-            "delta": -3
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120,
+            "label": "Establishment unease"
           },
           {
             "type": "modifier",
@@ -640,9 +676,9 @@
     "body": "Emails show a big industry group drafting policy that a ministry then adopted nearly word for word.",
     "conditions": [
       {
-        "stat": "maxMinisterCorruption",
+        "stat": "corruption",
         "op": ">",
-        "value": 40
+        "value": 42
       }
     ],
     "weight": 0.36,
@@ -792,8 +828,12 @@
             "days": 60
           },
           {
-            "type": "loyalty",
-            "delta": -2
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       },

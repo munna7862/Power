@@ -3,7 +3,11 @@
     "subtitle": "Unrest, terror, corruption and threats to your presidency",
     "mapLabel": "Unrest by region (schematic map)",
     "mapValue": "{{value}} · {{level}}",
-    "levels": { "calm": "Calm", "tense": "Tense", "riots": "Riots" },
+    "levels": {
+      "calm": "Calm",
+      "tense": "Tense",
+      "riots": "Riots"
+    },
     "mapCaption": "Schematic map: regions are not to scale and no borders are drawn. Unrest here is caused by jobs, prices, corruption, approval and policing: never by religion or caste.",
     "terror": "Terror threat",
     "headingTo": "Heading to {{value}}",
@@ -20,7 +24,7 @@
     "headingColumn": "Heading to",
     "whyRegion": "Why {{region}}?",
     "safety": "Presidential safety",
-    "safetyNote": "Rises with police and intelligence funding and loyal Home, Defence and Intelligence ministers; falls with the terror threat.",
+    "safetyNote": "Rises with police and intelligence funding and a strong presidential protection service; falls with the terror threat.",
     "threats": "Threats to your presidency",
     "risks": {
       "impeachment": "Impeachment",
@@ -60,16 +64,17 @@
     "active_other": "Active: {{count}} days",
     "agencies": "Agencies",
     "agencyEfficiency": "{{value}}% efficiency",
-    "agencyFunding": "{{share}}% of GDP · {{minister}}",
+    "agencyFunding": "{{share}}% of GDP · {{stars}} stars",
     "adjustBudget": "Adjust in Budget",
-    "inquiries": "Anti-corruption inquiries",
-    "inquiriesNote": "National corruption index {{corruption}}/100. An inquiry costs {{cost}}, takes about {{days}} days and may expose a minister; the agency runs up to {{max}} at a time. A better-funded Anti-corruption ministry finds more.",
-    "ministry": "Ministry",
-    "minister": "Minister",
-    "inquiry": "Inquiry",
+    "inquiries": "Anti-corruption audits",
+    "inquiriesNote": "National corruption index {{corruption}}/100. An audit costs {{cost}}, takes about {{days}} days and may expose misuse in a department; the bureau runs up to {{max}} at a time. A better-funded Anti-corruption department finds more.",
+    "ministry": "Department",
+    "inquiry": "Audit",
     "reportsIn_one": "Reports in {{count}} day",
     "reportsIn_other": "Reports in {{count}} days",
-    "investigateName": "Investigate {{ministry}}",
-    "investigate": "Investigate"
+    "investigateName": "Audit {{ministry}}",
+    "investigate": "Audit",
+    "coupNote": "Generals become restless above {{threshold}}. Keep the army command strong, the forces funded and approval high.",
+    "efficiency": "Efficiency"
   }
 }

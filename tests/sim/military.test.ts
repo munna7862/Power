@@ -25,7 +25,7 @@ import { completeDrills } from '../../src/sim/military/drills';
 import { militaryLoyaltyTarget } from '../../src/sim/security/leadership';
 import { resolveIntelOps } from '../../src/sim/military/intel';
 import { frontRound, startWar, stepWars } from '../../src/sim/military/war';
-import { calm, deepFreeze, endless, newGame } from '../helpers';
+import { calm, deepFreeze, endless, newGame, withStars } from '../helpers';
 
 const run = (state: GameState, command: Command): GameState => {
   const result = dispatch(state, command);
@@ -281,16 +281,7 @@ describe('intelligence and the fog of war', () => {
     const state = newGame();
     expect(opSuccessChance(state, 'recon', 'LKA')).toBeGreaterThan(opSuccessChance(state, 'recon', 'CHN'));
     expect(opSuccessChance(state, 'recon', 'CHN')).toBeGreaterThan(opSuccessChance(state, 'sabotage', 'CHN'));
-    const dud = {
-      ...state,
-      cabinet: {
-        ...state.cabinet,
-        ministers: {
-          ...state.cabinet.ministers,
-          intelligence: { ...state.cabinet.ministers.intelligence!, competence: 5 },
-        },
-      },
-    };
+    const dud = withStars(state, 'intelligence', 1);
     expect(opSuccessChance(dud, 'recon', 'PAK')).toBeLessThan(opSuccessChance(state, 'recon', 'PAK'));
   });
 

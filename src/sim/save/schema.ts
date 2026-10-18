@@ -10,6 +10,8 @@ import {
   OPERATION_KINDS,
   REGIONS,
   RIVALS,
+  SERVICE_IDS,
+  type ServiceId,
   SECTORS,
   STRATEGIES,
   TAXES,
@@ -35,19 +37,6 @@ const date = z.object({
 const uint32 = z.number().int().min(0).max(0xffffffff);
 const finite = z.number().finite();
 const score = z.number().min(0).max(100);
-
-const minister = z.object({
-  id: z.string(),
-  name: z.string().min(1),
-  gender: z.enum(['female', 'male']),
-  region: z.enum(REGIONS),
-  competence: score,
-  loyalty: score,
-  corruption: score,
-  ideology: z.enum(IDEOLOGIES),
-  avatarSeed: z.number().int(),
-  appointedTick: z.number().int().nullable(),
-});
 
 const expenditureLines = z.object({
   ...Object.fromEntries(MINISTRIES.map((m) => [m, finite])),
@@ -271,9 +260,20 @@ export const gameStateSchema = z.object({
     allocations: z.record(z.enum(MINISTRIES), z.number().min(0)),
     lastEnactedTick: z.number().int().nullable(),
   }),
-  cabinet: z.object({
-    ministers: z.record(z.enum(MINISTRIES), minister.nullable()),
-    candidates: z.record(z.enum(MINISTRIES), z.array(minister)),
+  departments: z.object({
+    stars: z.record(
+      z.enum(MINISTRIES),
+      z.partialRecord(z.enum(SERVICE_IDS as [ServiceId, ...ServiceId[]]), z.number().int().min(1).max(5)),
+    ),
+    underfundedMonths: z.record(z.enum(MINISTRIES), z.number().int().min(0)),
+    upgrades: z.array(
+      z.object({
+        id: z.string(),
+        department: z.enum(MINISTRIES),
+        service: z.enum(SERVICE_IDS as [ServiceId, ...ServiceId[]]),
+        endsTick: z.number().int(),
+      }),
+    ),
   }),
   politics: z.object({
     ideology: z.enum(IDEOLOGIES),
@@ -304,7 +304,7 @@ export const gameStateSchema = z.object({
     investigations: z.array(
       z.object({
         id: z.string(),
-        ministry: z.enum(MINISTRIES),
+        department: z.enum(MINISTRIES),
         startedTick: z.number().int(),
         resolvesTick: z.number().int(),
       }),

@@ -22,8 +22,7 @@ import {
 } from '../../src/sim';
 import { Rng, seedRng } from '../../src/sim/engine/rng';
 import { launchOperation } from '../../src/sim/security/operations';
-import { exposeMinister } from '../../src/sim/cabinet/scandal';
-import { deepFreeze, newGame } from '../helpers';
+import { deepFreeze, newGame, withStars } from '../helpers';
 import { SYSTEMS } from '../../src/sim/systems';
 
 /** Only the named systems, for isolating one mechanism. */
@@ -124,74 +123,45 @@ describe('terror', () => {
   });
 });
 
-describe('investigations', () => {
-  it('cost money, take time and may expose a minister', () => {
+describe('audits', () => {
+  it('cost money, take time and may expose misuse, more often where corruption is widespread', () => {
     const state = newGame();
-    const corrupt = {
-      ...state,
-      cabinet: {
-        ...state.cabinet,
-        ministers: { ...state.cabinet.ministers, home: { ...state.cabinet.ministers.home!, corruption: 100 } },
-      },
-    };
-    const started = dispatch(corrupt, { type: 'LAUNCH_INVESTIGATION', ministry: 'home' });
+    const started = dispatch(state, { type: 'LAUNCH_INVESTIGATION', department: 'home' });
     if (!started.ok) throw new Error(started.error);
     expect(started.state.security.investigations).toHaveLength(1);
-    expect(started.state.nation.treasury).toBeLessThan(corrupt.nation.treasury);
-    expect(dispatch(started.state, { type: 'LAUNCH_INVESTIGATION', ministry: 'home' }).ok).toBe(false);
+    expect(started.state.nation.treasury).toBeLessThan(state.nation.treasury);
+    expect(dispatch(started.state, { type: 'LAUNCH_INVESTIGATION', department: 'home' }).ok).toBe(false);
 
-    let exposed = 0;
-    for (let seed = 1; seed <= 30; seed++) {
-      const s = { ...started.state, rng: [seed, 5, 6, 7] as GameState['rng'] };
-      const after = run(s, 61, 'investigations');
-      expect(after.security.investigations).toHaveLength(0);
-      if (after.cabinet.ministers.home === null) exposed++;
-    }
-    expect(exposed).toBeGreaterThan(5);
-  });
-
-  it('rejects vacant posts and more than the agency can run', () => {
-    const state = newGame();
-    const vacant = { ...state, cabinet: { ...state.cabinet, ministers: { ...state.cabinet.ministers, home: null } } };
-    expect(dispatch(vacant, { type: 'LAUNCH_INVESTIGATION', ministry: 'home' }).ok).toBe(false);
-    let s = state;
-    for (const m of MINISTRIES.slice(0, MAX_INVESTIGATIONS)) {
-      const r = dispatch(s, { type: 'LAUNCH_INVESTIGATION', ministry: m });
-      if (!r.ok) throw new Error(r.error);
-      s = r.state;
-    }
-    expect(dispatch(s, { type: 'LAUNCH_INVESTIGATION', ministry: MINISTRIES[MAX_INVESTIGATIONS]! }).ok).toBe(false);
-    expect(dispatch(s, { type: 'LAUNCH_INVESTIGATION', ministry: 'nope' as never }).ok).toBe(false);
-  });
-
-  it('closes the inquiry when the minister leaves, so a successor is never judged by it (DEF-04)', () => {
-    let s = newGame();
-    const step = (cmd: Parameters<typeof dispatch>[1]) => {
-      const r = dispatch(s, cmd);
-      if (!r.ok) throw new Error(r.error);
-      s = r.state;
+    const findings = (from: GameState) => {
+      let found = 0;
+      for (let seed = 1; seed <= 40; seed++) {
+        const after = run({ ...from, rng: seedRng(seed) }, 61, 'investigations');
+        expect(after.security.investigations).toHaveLength(0);
+        if (after.log.some((e) => e.title.startsWith('Audit exposes misuse'))) found++;
+      }
+      return found;
     };
-    step({ type: 'LAUNCH_INVESTIGATION', ministry: 'health' });
-    step({ type: 'DISMISS_MINISTER', ministry: 'health' });
-    expect(s.security.investigations).toHaveLength(0);
-    expect(s.log.some((e) => e.title === 'Inquiry closed')).toBe(true);
-    const successor = s.cabinet.candidates.health[0]!;
-    step({ type: 'APPOINT_MINISTER', ministry: 'health', candidateId: successor.id });
-    const later = run(s, 61, 'investigations');
-    expect(later.cabinet.ministers.health?.id).toBe(successor.id);
-    expect(later.cabinet.ministers.health?.loyalty).toBe(s.cabinet.ministers.health?.loyalty);
+    const rotten = { ...started.state, economy: { ...started.state.economy, corruption: 90 } };
+    const clean = {
+      ...withStars(started.state, 'antiCorruption', 5),
+      economy: { ...started.state.economy, corruption: 5 },
+    };
+    expect(findings(rotten)).toBeGreaterThan(findings(clean));
+    const exposed = run({ ...rotten, rng: seedRng(3) }, 61, 'investigations');
+    if (exposed.log.some((e) => e.title.startsWith('Audit exposes misuse'))) {
+      expect(exposed.modifiers.some((m) => m.source === 'audit' && m.target === 'politics.corruption')).toBe(true);
+    }
+  });
 
-    // Replacing a minister directly, or a scandal forcing a resignation, closes it too.
-    const opened = dispatch(newGame(), { type: 'LAUNCH_INVESTIGATION', ministry: 'finance' });
-    if (!opened.ok) throw new Error(opened.error);
-    const candidate = opened.state.cabinet.candidates.finance[0]!;
-    const replaced = dispatch(opened.state, {
-      type: 'APPOINT_MINISTER',
-      ministry: 'finance',
-      candidateId: candidate.id,
-    });
-    expect(replaced.ok && replaced.state.security.investigations).toHaveLength(0);
-    expect(exposeMinister(opened.state, 'finance', 'Test.').security.investigations).toHaveLength(0);
+  it('rejects unknown departments and more than the bureau can run', () => {
+    let s = newGame();
+    for (const m of MINISTRIES.slice(0, MAX_INVESTIGATIONS)) {
+      const r = dispatch(s, { type: 'LAUNCH_INVESTIGATION', department: m });
+      if (!r.ok) throw new Error(r.error);
+      s = r.state;
+    }
+    expect(dispatch(s, { type: 'LAUNCH_INVESTIGATION', department: MINISTRIES[MAX_INVESTIGATIONS]! }).ok).toBe(false);
+    expect(dispatch(s, { type: 'LAUNCH_INVESTIGATION', department: 'nope' as never }).ok).toBe(false);
   });
 
   it('refuses operations, inquiries and costly choices the treasury cannot cover (DEF-08)', () => {
@@ -200,7 +170,7 @@ describe('investigations', () => {
     for (const command of [
       { type: 'LAUNCH_OPERATION', kind: 'raid' },
       { type: 'LAUNCH_OPERATION', kind: 'borderSeal' },
-      { type: 'LAUNCH_INVESTIGATION', ministry: 'health' },
+      { type: 'LAUNCH_INVESTIGATION', department: 'health' },
     ] as Parameters<typeof dispatch>[1][]) {
       const result = dispatch(broke, command);
       expect(result.ok).toBe(false);
@@ -213,30 +183,15 @@ describe('investigations', () => {
     const refused = dispatch(raised, { type: 'RESOLVE_EVENT', pendingId: pending.id, choiceId: costly.id });
     expect(refused.ok).toBe(false);
   });
-
-  it('an exposed minister resigns and the post is vacant', () => {
-    const state = newGame();
-    const after = exposeMinister(state, 'finance', 'Test.');
-    expect(after.cabinet.ministers.finance).toBeNull();
-    expect(after.modifiers.some((m) => m.source === 'scandal')).toBe(true);
-    expect(exposeMinister(after, 'finance', 'Again.')).toBe(after);
-  });
 });
 
 describe('game over states', () => {
   const cause = (state: GameState) => (state.status.kind === 'over' ? state.status.cause : null);
 
-  it('ends in a coup when the army and defence minister have turned', () => {
+  it('ends in a coup when the army and its command have turned', () => {
     const state = newGame();
     const angry = withSecurity(
-      {
-        ...state,
-        nation: { ...state.nation, approval: 20 },
-        cabinet: {
-          ...state.cabinet,
-          ministers: { ...state.cabinet.ministers, defence: { ...state.cabinet.ministers.defence!, loyalty: 5 } },
-        },
-      },
+      { ...withStars(state, 'defence', 1), nation: { ...state.nation, approval: 20 } },
       { militaryLoyalty: 5 },
     );
     expect(coupRisk(angry)).toBeGreaterThan(80);
@@ -307,7 +262,7 @@ describe('game over states', () => {
   it('stops all commands and time once the game is over', () => {
     const over = run(withSecurity({ ...newGame(), nation: { ...newGame().nation, approval: 1 } }, {}), 400, 'approval');
     for (const command of [
-      { type: 'LAUNCH_INVESTIGATION', ministry: 'home' },
+      { type: 'LAUNCH_INVESTIGATION', department: 'home' },
       { type: 'LAUNCH_OPERATION', kind: 'raid' },
     ] as const) {
       expect(

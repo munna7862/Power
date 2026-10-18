@@ -44,26 +44,21 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(page.getByText('Budget enacted')).toBeVisible();
   });
 
-  test('a minister can be replaced from the candidate pool', async ({ page }) => {
-    await openView(page, 'Cabinet');
+  test('a department service can be upgraded to the next star', async ({ page }) => {
+    await openView(page, 'Departments');
     await expect(page.getByRole('article')).toHaveCount(11);
+    const health = page.getByRole('article', { name: 'Health' });
+    const primaryCare = health.getByTestId('service-primaryCare');
+    await expect(primaryCare.getByRole('img', { name: '2 of 5 stars' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'Choose minister for Finance' }).click();
-    const dialog = page.getByRole('dialog', { name: /Appoint: Ministry of Finance/ });
-    await expect(dialog).toContainText('costs -2 approval');
-    const appoint = dialog.getByRole('button', { name: /^Appoint / }).first();
-    const name = (await appoint.getAttribute('aria-label'))!.replace('Appoint ', '');
-    await appoint.click();
-
-    await expect(page.getByRole('dialog')).toHaveCount(0);
-    await expect(page.getByRole('article', { name: 'Finance' })).toContainText(name);
-
-    await page.getByRole('button', { name: `Dismiss ${name}` }).click();
-    await expect(page.getByRole('article', { name: 'Finance' })).toContainText('Vacant');
+    await primaryCare.getByRole('button', { name: /^Upgrade Primary care to 3 stars/ }).click();
+    await expect(primaryCare).toContainText(/Upgrading: \d+ days left/);
+    await advanceDays(page, 31);
+    await expect(primaryCare.getByRole('img', { name: '3 of 5 stars' })).toBeVisible();
   });
 
   test('ideology can be changed once a year', async ({ page }) => {
-    await openView(page, 'Cabinet');
+    await openView(page, 'Departments');
     await page.getByRole('combobox', { name: 'Ideology' }).selectOption({ label: 'Socialism' });
     await expect(page.getByText(/A strong state that protects workers/)).toBeVisible();
     await page.getByRole('button', { name: 'Adopt Socialism' }).click();

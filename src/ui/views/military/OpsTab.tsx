@@ -47,7 +47,6 @@ export function OpsTab({ game }: { game: GameState }) {
   const { military, clock } = game;
   const { dispatch } = gameStore.getState();
   const eff = allEfficiencies(game);
-  const director = game.cabinet.ministers.intelligence;
   const counterActive = military.intelOps.find((o) => o.kind === 'counterIntel');
 
   return (
@@ -129,9 +128,7 @@ export function OpsTab({ game }: { game: GameState }) {
         <p className={styles.note}>
           {t('ops.rivalsNote', {
             efficiency: Math.round(eff.intelligence * 100),
-            director: director
-              ? t('ops.director', { name: director.name, competence: Math.round(director.competence) })
-              : t('ops.directorVacant'),
+            director: t('ops.director', { skill: Math.round(directorCompetence(game)) }),
             max: MAX_INTEL_OPS,
           })}
         </p>

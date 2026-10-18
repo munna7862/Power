@@ -35,8 +35,11 @@ import {
   type BudgetProposal,
   type GameState,
   type MinistryId,
-  type Minister,
+  type ServiceId,
   type TaxId,
+  DEPARTMENT_SERVICES,
+  serviceStars,
+  validateUpgrade,
 } from '../../src/sim';
 
 /**
@@ -61,11 +64,28 @@ function enact(state: GameState, change: (p: BudgetProposal) => BudgetProposal):
 const step = (state: GameState, tax: TaxId, delta: number) =>
   Math.min(TAX_LIMITS[tax].max, Math.max(TAX_LIMITS[tax].min, state.budget.taxRates[tax] + delta));
 
-/** Ministries whose loyalty matters for the President's survival. */
-const GUARDIANS: readonly MinistryId[] = ['home', 'defence', 'intelligence'];
+/** Services the balanced bot raises first: the ones that protect the presidency, then the economy's engines. */
+const UPGRADE_PRIORITY: readonly [MinistryId, ServiceId][] = [
+  ['defence', 'armyCommand'],
+  ['home', 'presidentialProtection'],
+  ...(
+    ['finance', 'industry', 'education', 'health', 'agriculture', 'home', 'antiCorruption', 'intelligence'] as const
+  ).flatMap((m) => DEPARTMENT_SERVICES[m].map((s): [MinistryId, ServiceId] => [m, s])),
+];
 
-const score = (m: Minister, ministry: MinistryId) =>
-  m.competence - 0.6 * m.corruption + (GUARDIANS.includes(ministry) ? 0.4 * m.loyalty : 0);
+/** Upgrades the weakest priority service, at most two a month, while debt stays manageable. */
+function upgradeServices(state: GameState): GameState {
+  let next = state;
+  for (let i = 0; i < 2; i++) {
+    if (debtToGdp(next.economy) > 0.7) break;
+    const target = UPGRADE_PRIORITY.filter(([m, s]) => !validateUpgrade(next, m, s)).sort(
+      ([am, as], [bm, bs]) => serviceStars(next, am, as) - serviceStars(next, bm, bs),
+    )[0];
+    if (!target || serviceStars(next, target[0], target[1]) >= 4) break;
+    next = apply(next, { type: 'UPGRADE_SERVICE', department: target[0], service: target[1] });
+  }
+  return next;
+}
 
 export const passiveBot: Bot = {
   id: 'passive',
@@ -212,33 +232,17 @@ function manageDiplomacy(state: GameState): GameState {
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Hires the best candidates each January, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, investigates corruption, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
+    'Upgrades the services that keep it safe and the economy growing, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
-    let next = state;
-    if (state.clock.date.month === 1) {
-      for (const m of MINISTRIES) {
-        const best = [...next.cabinet.candidates[m]].sort((a, b) => score(b, m) - score(a, m))[0];
-        const current = next.cabinet.ministers[m];
-        if (best && (!current || score(best, m) > score(current, m) + 15)) {
-          next = apply(next, { type: 'APPOINT_MINISTER', ministry: m, candidateId: best.id });
-        }
-      }
-    }
+    let next = upgradeServices(state);
 
-    // Fill any vacancy left by a scandal.
-    for (const m of MINISTRIES) {
-      if (next.cabinet.ministers[m]) continue;
-      const best = [...next.cabinet.candidates[m]].sort((a, b) => score(b, m) - score(a, m))[0];
-      if (best) next = apply(next, { type: 'APPOINT_MINISTER', ministry: m, candidateId: best.id });
-    }
-
-    // Open inquiries into the most suspect minister when the country looks corrupt.
+    // Audit the biggest-spending department not already under audit when the country looks corrupt.
     if (next.economy.corruption > 42 && next.security.investigations.length < MAX_INVESTIGATIONS - 1) {
-      const suspect = [...MINISTRIES]
-        .filter((m) => next.cabinet.ministers[m] && (next.cabinet.ministers[m]?.corruption ?? 0) > 50)
-        .sort((a, b) => (next.cabinet.ministers[b]?.corruption ?? 0) - (next.cabinet.ministers[a]?.corruption ?? 0))[0];
-      if (suspect && next.nation.treasury > INVESTIGATION_COST) {
-        next = apply(next, { type: 'LAUNCH_INVESTIGATION', ministry: suspect });
+      const target = [...MINISTRIES]
+        .filter((m) => !next.security.investigations.some((i) => i.department === m))
+        .sort((a, b) => next.budget.allocations[b] - next.budget.allocations[a])[0];
+      if (target && next.nation.treasury > INVESTIGATION_COST) {
+        next = apply(next, { type: 'LAUNCH_INVESTIGATION', department: target });
       }
     }
 

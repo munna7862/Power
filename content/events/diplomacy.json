@@ -759,9 +759,9 @@
       },
       {
         "id": "envoy",
-        "label": "Send the foreign minister",
+        "label": "Send the foreign secretary",
         "description": "A polite compromise.",
-        "outcome": "The foreign minister attends in the President’s place. The host is satisfied.",
+        "outcome": "The foreign secretary attends in the President’s place. The host is satisfied.",
         "default": true,
         "effects": [
           {

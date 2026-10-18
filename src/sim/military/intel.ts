@@ -1,7 +1,7 @@
 import { RIVAL_CONTENT } from '../content/military';
 import { INTEL_KINDS, RIVALS, type IntelKind, type RivalId } from '../content/ids';
 import { EVENT_CONTENT } from '../content/events';
-import { VACANT_COMPETENCE } from '../economy/constants';
+import { intelligenceSkill } from '../departments/quality';
 import { allEfficiencies } from '../economy/model';
 import type { Rng } from '../engine/rng';
 import { fireEvent } from '../events/engine';
@@ -21,12 +21,11 @@ import { adjustRelation, patchRival } from './rivals';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
-/** The Intelligence Director’s competence (a vacant post counts as a weak one). */
-export const directorCompetence = (state: Pick<GameState, 'cabinet'>): number =>
-  state.cabinet.ministers.intelligence?.competence ?? VACANT_COMPETENCE;
+/** The intelligence service's skill, 0–100, from its services' star ratings (48 at the start). */
+export const directorCompetence = (state: Pick<GameState, 'departments'>): number => intelligenceSkill(state);
 
 /**
- * Chance an operation succeeds: intelligence funding and the Director’s competence help;
+ * Chance an operation succeeds: intelligence funding and the service's skill help;
  * the target’s counter-intelligence and the operation’s own difficulty hurt.
  */
 export function opSuccessChance(state: GameState, kind: IntelKind, target: RivalId): number {

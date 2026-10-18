@@ -1,0 +1,30 @@
+{
+  "regions": {
+    "north": "North",
+    "south": "South",
+    "east": "East",
+    "west": "West",
+    "central": "Central",
+    "northEast": "North-East"
+  },
+  "departments": {
+    "subtitle": "Invest in each department's services to run the country better. Stars are bought once, but every department needs its budget to keep them.",
+    "efficiency": "Efficiency",
+    "efficiencyWhy": "Efficiency = funding × service quality × national corruption. 100% is a department doing its job well.",
+    "quality": "Service quality {{value}}%",
+    "funding": "Funding {{value}}% of normal",
+    "underfunded_one": "Underfunded for {{count}} month: after {{limit}} the best service loses a star.",
+    "underfunded_other": "Underfunded for {{count}} months: after {{limit}} the best service loses a star.",
+    "stars": "{{count}} of {{max}} stars",
+    "upgrade": "Upgrade · {{cost}}",
+    "upgradeLabel": "Upgrade {{service}} to {{stars}} stars for {{cost}}",
+    "upgrading_one": "Upgrading: {{count}} day left",
+    "upgrading_other": "Upgrading: {{count}} days left",
+    "maxed": "Top rating",
+    "current": "{{name}} (current)",
+    "policyWait_one": "Can change again in {{count}} day",
+    "policyWait_other": "Can change again in {{count}} days",
+    "policyCost": "Changing costs {{cost}} approval for {{months}} months",
+    "adopt": "Adopt {{name}}"
+  }
+}

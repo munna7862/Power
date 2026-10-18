@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import names from '../../content/names.json';
 import {
+  DEPARTMENT_CONTENT,
+  DEPARTMENT_SERVICES,
   IDEOLOGIES,
   IDEOLOGY_CONTENT,
   MINISTRIES,
@@ -9,55 +10,7 @@ import {
   STRATEGY_CONTENT,
 } from '../../src/sim';
 
-/**
- * Content guardrails (master plan §1.3): ministers are fictional. Name parts that
- * would make well-known real politicians likely are kept out of the name lists.
- */
-const BLOCKED_FIRST_NAMES = [
-  'Narendra',
-  'Rahul',
-  'Sonia',
-  'Priyanka',
-  'Amit',
-  'Mamata',
-  'Arvind',
-  'Akhilesh',
-  'Mayawati',
-  'Nitish',
-  'Lalu',
-  'Rajnath',
-  'Nirmala',
-  'Smriti',
-  'Yogi',
-  'Uddhav',
-  'Sharad',
-  'Pinarayi',
-  'Shashi',
-  'Manmohan',
-  'Atal',
-];
-const BLOCKED_SURNAMES = [
-  'Gandhi',
-  'Modi',
-  'Nehru',
-  'Shah',
-  'Yadav',
-  'Thackeray',
-  'Banerjee',
-  'Kejriwal',
-  'Pawar',
-  'Scindia',
-  'Badal',
-  'Abdullah',
-  'Mufti',
-  'Owaisi',
-  'Naidu',
-  'Gogoi',
-  'Vajpayee',
-  'Tharoor',
-  'Sitharaman',
-];
-
+/** Content guardrails: every content file is complete and consistent with the ids in src/sim/content/ids.ts. */
 describe('content files', () => {
   it('define every ministry, ideology and strategy exactly once', () => {
     expect(Object.keys(MINISTRY_CONTENT)).toEqual([...MINISTRIES]);
@@ -78,10 +31,11 @@ describe('content files', () => {
     }
   });
 
-  it('keep well-known politicians’ names out of the minister name lists', () => {
-    for (const region of Object.values(names)) {
-      for (const first of [...region.female, ...region.male]) expect(BLOCKED_FIRST_NAMES).not.toContain(first);
-      for (const surname of region.surnames) expect(BLOCKED_SURNAMES).not.toContain(surname);
+  it('give every department its services, each with a name and a summary', () => {
+    for (const m of MINISTRIES) {
+      const services = DEPARTMENT_CONTENT[m].services;
+      expect(services.map((x) => x.id)).toEqual([...DEPARTMENT_SERVICES[m]]);
+      for (const x of services) expect(x.summary.length).toBeGreaterThan(10);
     }
   });
 });

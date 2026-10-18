@@ -1,0 +1,174 @@
+[
+  {
+    "id": "finance",
+    "services": [
+      {
+        "id": "taxAdministration",
+        "name": "Tax administration",
+        "summary": "Assessors and collection offices that keep revenue flowing."
+      },
+      {
+        "id": "treasuryManagement",
+        "name": "Treasury management",
+        "summary": "Cash, borrowing and payments for every department."
+      },
+      {
+        "id": "statistics",
+        "name": "National statistics",
+        "summary": "The surveys and data the rest of government plans with."
+      }
+    ]
+  },
+  {
+    "id": "home",
+    "services": [
+      {
+        "id": "presidentialProtection",
+        "name": "Presidential protection",
+        "summary": "The close-protection service around the President."
+      },
+      {
+        "id": "borderManagement",
+        "name": "Border management",
+        "summary": "Checkpoints, fencing and patrols along land borders."
+      },
+      { "id": "prisons", "name": "Prisons", "summary": "Secure, humane custody that keeps offenders off the streets." },
+      { "id": "emergencyLine", "name": "Emergency line", "summary": "The single number citizens call for help." }
+    ]
+  },
+  {
+    "id": "defence",
+    "services": [
+      {
+        "id": "armyCommand",
+        "name": "Army command",
+        "summary": "The service chiefs and staff whose confidence keeps the forces loyal."
+      },
+      { "id": "logistics", "name": "Logistics", "summary": "Fuel, spares and transport that keep units in the field." },
+      { "id": "militaryAcademies", "name": "Military academies", "summary": "Officer training and doctrine." },
+      {
+        "id": "veteransWelfare",
+        "name": "Veterans' welfare",
+        "summary": "Pensions, care and jobs for those who have served."
+      }
+    ]
+  },
+  {
+    "id": "external",
+    "services": [
+      {
+        "id": "consularService",
+        "name": "Consular service",
+        "summary": "Passports, visas and help for citizens abroad."
+      },
+      {
+        "id": "tradeDelegations",
+        "name": "Trade delegations",
+        "summary": "Missions that open markets for Indian goods."
+      },
+      {
+        "id": "policyPlanning",
+        "name": "Policy planning",
+        "summary": "Analysts who read the world and advise on strategy."
+      }
+    ]
+  },
+  {
+    "id": "health",
+    "services": [
+      { "id": "primaryCare", "name": "Primary care", "summary": "Village and neighbourhood health centres." },
+      { "id": "hospitalNetwork", "name": "Hospital network", "summary": "District and specialist hospitals." },
+      {
+        "id": "diseaseControl",
+        "name": "Disease control",
+        "summary": "Surveillance, vaccination and outbreak response."
+      },
+      { "id": "drugRegulation", "name": "Drug regulation", "summary": "Safe, affordable medicines." }
+    ]
+  },
+  {
+    "id": "education",
+    "services": [
+      {
+        "id": "schoolSystem",
+        "name": "School system",
+        "summary": "Teachers, curricula and inspections for primary and secondary schools."
+      },
+      { "id": "higherEducation", "name": "Higher education", "summary": "Universities and colleges." },
+      { "id": "vocationalTraining", "name": "Vocational training", "summary": "Skills for trades and industry." },
+      { "id": "research", "name": "Research", "summary": "Public laboratories and research grants." }
+    ]
+  },
+  {
+    "id": "agriculture",
+    "services": [
+      { "id": "irrigation", "name": "Irrigation", "summary": "Canals, wells and water management for farms." },
+      { "id": "seedsAndFertiliser", "name": "Seeds and fertiliser", "summary": "Quality inputs at fair prices." },
+      { "id": "cropInsurance", "name": "Crop insurance", "summary": "Protection for farmers against bad harvests." },
+      { "id": "extensionService", "name": "Extension service", "summary": "Advisers who bring new methods to farmers." }
+    ]
+  },
+  {
+    "id": "industry",
+    "services": [
+      {
+        "id": "industrialParks",
+        "name": "Industrial parks",
+        "summary": "Serviced land, roads and power for factories."
+      },
+      {
+        "id": "standardsBureau",
+        "name": "Standards bureau",
+        "summary": "Quality standards that let goods sell abroad."
+      },
+      { "id": "exportPromotion", "name": "Export promotion", "summary": "Trade fairs, credit and help for exporters." },
+      { "id": "smallBusiness", "name": "Small business support", "summary": "Loans and advice for small firms." }
+    ]
+  },
+  {
+    "id": "disaster",
+    "services": [
+      {
+        "id": "searchAndRescue",
+        "name": "Search and rescue",
+        "summary": "Teams that reach people trapped by floods, quakes and collapses."
+      },
+      { "id": "engineeringUnits", "name": "Engineering units", "summary": "Bridging, clearing and emergency repairs." },
+      {
+        "id": "hazardousMaterials",
+        "name": "Hazardous materials",
+        "summary": "Response to chemical spills and industrial accidents."
+      },
+      { "id": "fireService", "name": "Fire service", "summary": "Fire stations and crews." }
+    ]
+  },
+  {
+    "id": "intelligence",
+    "services": [
+      { "id": "humanIntelligence", "name": "Human intelligence", "summary": "Agents and sources at home and abroad." },
+      { "id": "signalsIntelligence", "name": "Signals intelligence", "summary": "Intercepts and cyber monitoring." },
+      {
+        "id": "analysis",
+        "name": "Analysis",
+        "summary": "Turning raw reports into warnings the President can act on."
+      },
+      { "id": "counterIntelligence", "name": "Counter-intelligence", "summary": "Catching foreign spies." }
+    ]
+  },
+  {
+    "id": "antiCorruption",
+    "services": [
+      { "id": "audits", "name": "Audits", "summary": "Auditors who follow public money through every department." },
+      {
+        "id": "investigations",
+        "name": "Investigations",
+        "summary": "Investigators who build cases against corrupt officials."
+      },
+      {
+        "id": "whistleblowerProtection",
+        "name": "Whistleblower protection",
+        "summary": "Safe channels for officials who report wrongdoing."
+      }
+    ]
+  }
+]

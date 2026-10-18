@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEPARTMENT_SERVICES,
+  OPENING_STARS,
   DEFAULT_IDEOLOGY,
   DIFFICULTY_RULES,
   DEFAULT_PRESIDENT_NAME,
@@ -53,17 +55,13 @@ describe('createInitialState', () => {
     expect(economy.lastMonth).toBeNull();
   });
 
-  it('appoints a full, mediocre opening cabinet with three candidates per ministry', () => {
-    const { cabinet } = newGame();
+  it('opens every department with all its services at two stars and nothing upgrading', () => {
+    const { departments } = newGame();
     for (const m of MINISTRIES) {
-      const minister = cabinet.ministers[m];
-      expect(minister).not.toBeNull();
-      expect(minister?.competence).toBeGreaterThanOrEqual(35);
-      expect(minister?.competence).toBeLessThanOrEqual(60);
-      expect(cabinet.candidates[m]).toHaveLength(3);
+      for (const service of DEPARTMENT_SERVICES[m]) expect(departments.stars[m][service]).toBe(OPENING_STARS);
+      expect(departments.underfundedMonths[m]).toBe(0);
     }
-    const names = MINISTRIES.flatMap((m) => [cabinet.ministers[m]?.name, ...cabinet.candidates[m].map((c) => c.name)]);
-    expect(new Set(names).size).toBe(names.length);
+    expect(departments.upgrades).toEqual([]);
   });
 
   it('applies the chosen ideology and strategy as permanent modifiers', () => {

@@ -228,7 +228,7 @@
   color: var(--text-muted);
 }
 
-/* Cabinet */
+/* Departments */
 .programme {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -243,7 +243,7 @@
   background: var(--surface);
 }
 
-.cabinetGrid {
+.departmentGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--space-3);
@@ -263,6 +263,26 @@
   display: flex;
   gap: var(--space-3);
   align-items: center;
+}
+
+.serviceRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  align-items: center;
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border);
+}
+
+.stars {
+  color: var(--saffron);
+  letter-spacing: 2px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.starEmpty {
+  color: var(--border-strong);
 }
 
 .ministryName {
