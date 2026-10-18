@@ -6,6 +6,7 @@ import {
   announcementEffect,
   approvalTarget,
   computeSatisfaction,
+  employmentTaxFactor,
   formatDate,
   MAX_TAX_STEP,
   MINISTRIES,
@@ -22,7 +23,7 @@ import {
 import { gameStore, useGame } from '../../store';
 import { CompareBars } from '../charts/CompareBars';
 import { Button, Panel } from '../design/primitives';
-import { formatCrore, pct, signed } from '../format';
+import { formatCrore, formatPercent, pct, signed } from '../format';
 import gameStyles from '../screens/game.module.css';
 import styles from './views.module.css';
 
@@ -124,6 +125,12 @@ export function BudgetView() {
             })}
           </div>
           <p className={styles.note}>{t('budget.customsMoved')}</p>
+          <p className={styles.note} data-testid="income-tax-jobs">
+            {t('budget.incomeTaxJobs', {
+              change: formatPercent(employmentTaxFactor(game.economy.unemployment) - 1),
+              unemployment: pct(game.economy.unemployment),
+            })}
+          </p>
         </Panel>
 
         <Panel title={t('budget.projected')} className={gameStyles.span4}>

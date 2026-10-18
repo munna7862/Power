@@ -10,8 +10,11 @@ import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState
 import {
   DEFAULT_TAX_RATES,
   ESTABLISHMENT_SHARE,
+  INCOME_TAX_JOBS_ELASTICITY,
+  MIN_INCOME_TAX_BASE,
   NON_TAX_REVENUE_SHARE,
   START_CORRUPTION,
+  START_UNEMPLOYMENT,
   TAX_AVOIDANCE_CEILING,
   TAX_BASE_SHARE,
 } from './constants';
@@ -81,6 +84,11 @@ export function complianceFactor(financeEfficiency: number, corruption: number):
   return raw / (1 - START_CORRUPTION * 0.001);
 }
 
+/** Income-tax base from jobs: more people in work means more people paying income tax. 1 at game start. */
+export function employmentTaxFactor(unemployment: number): number {
+  return Math.max(MIN_INCOME_TAX_BASE, 1 + INCOME_TAX_JOBS_ELASTICITY * (START_UNEMPLOYMENT - unemployment));
+}
+
 /** Ceiling on the market rate; beyond it a government defaults (bankruptcy ending arrives in Phase 3). */
 export const MAX_INTEREST_RATE = 0.35;
 
@@ -130,6 +138,7 @@ export function projectMonth(
     if (tax === 'customs')
       // Sanctions on many partners can push the multiplier below zero; customs then raises nothing, never less.
       amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
+    if (tax === 'income') amount *= employmentTaxFactor(economy.unemployment);
     revenue[tax] = amount;
   }
   // Since Phase 8, against the opening settlement: tariffs on imported goods, corporate tax on private plants'

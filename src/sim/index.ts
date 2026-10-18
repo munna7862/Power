@@ -250,11 +250,13 @@ export {
   BUDGET_COOLDOWN_DAYS,
   DEFAULT_TAX_RATES,
   MAX_TAX_STEP,
+  POPULATION_GROWTH,
   TAX_LIMITS,
 } from './economy/constants';
 export {
   allEfficiencies,
   debtToGdp,
+  employmentTaxFactor,
   lastDeficitRatio,
   ministryEfficiency,
   nominalGdp,

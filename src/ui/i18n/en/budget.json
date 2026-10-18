@@ -29,6 +29,7 @@
     "nextDate": "Next budget can be enacted on {{date}}.",
     "reset": "Reset",
     "enact": "Enact budget",
-    "customsMoved": "Customs tariffs are set good by good on the Trade Market screen."
+    "customsMoved": "Customs tariffs are set good by good on the Trade Market screen.",
+    "incomeTaxJobs": "Income tax base from jobs: {{change}} against the start, with unemployment at {{unemployment}}. Every point of unemployment cut widens it by about 3%."
   }
 }
