@@ -83,7 +83,10 @@ test('M6 demo: play the tutorial, save, quit, relaunch and continue', async () =
   await page.getByRole('button', { name: 'Game menu' }).click();
   await page.getByRole('button', { name: 'Quit to main menu' }).click();
   const closed = app.waitForEvent('close');
-  await page.getByRole('button', { name: 'Quit' }).click();
+  await page
+    .getByRole('button', { name: 'Quit' })
+    .click()
+    .catch(() => undefined);
   await closed;
 
   ({ app, page } = await launch());
