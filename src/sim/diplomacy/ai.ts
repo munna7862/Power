@@ -16,9 +16,10 @@ import {
   countryState,
   hasTreaty,
   indiaPower,
+  isAnnexed,
   sanctionsIndia,
 } from './relations';
-import { activeTrade, signTreaty, tradeSizesFor, tradeValue } from './treaties';
+import { activeTrade, partnerOf, signTreaty, tradeSizesFor, tradeValue } from './treaties';
 
 export type Utilities = Record<AiAction, number>;
 /** Marks an action the nation cannot take right now. Finite, so it survives a save. */
@@ -140,6 +141,8 @@ export function performAction(state: GameState, id: CountryId, action: AiAction,
       const pick = sizes[Math.min(sizes.length - 1, 1)];
       if (!pick) return state;
       const sector = content.strengths[Math.floor(rng.next() * content.strengths.length)] as SectorId;
+      // No offer India could not accept: it already holds a contract with this country in that sector.
+      if (activeTrade(state).some((t) => partnerOf(t) === id && t.terms.sector === sector)) return state;
       return raiseOffer(state, id, 'trade', 3, { sector, value: tradeValue(state, pick.size) });
     }
     case 'seekPact':
@@ -222,6 +225,11 @@ export function runFocusAi(state: GameState, rng: Rng): GameState {
     const acts = rng.chance(AI.actionRate);
     const warRoll = rng.chance(declarationChance(next, id));
     const { utilities, inputs } = scoreActions(next, id, noise);
+    // An annexed state still draws its values (so no other nation's rolls shift) but no longer acts.
+    if (isAnnexed(next, id)) {
+      ai[id] = { tick: next.clock.tick, action: 'idle', acted: false, utilities, inputs };
+      continue;
+    }
     let action = bestAction({ ...utilities, declareWar: UNAVAILABLE });
     const wantsWar = warRoll && utilities.declareWar > UNAVAILABLE && utilities.declareWar >= utilities.idle;
     if (wantsWar) action = 'declareWar';

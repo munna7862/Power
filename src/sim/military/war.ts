@@ -1,7 +1,7 @@
 import { RIVAL_CONTENT } from '../content/military';
 import { RIVALS, SECTORS, UNITS, type RivalId, type TerrainId } from '../content/ids';
 import { addIncident } from '../diplomacy/relations';
-import { adjustReputation, breakTreatiesForWar } from '../diplomacy/treaties';
+import { adjustReputation, breakTreatiesForWar, dissolveTies } from '../diplomacy/treaties';
 import { nominalGdp } from '../economy/model';
 import { formatDate } from '../engine/calendar';
 import { groupIndian } from '../engine/numberFormat';
@@ -137,6 +137,7 @@ export function startWar(state: GameState, rival: RivalId, declaredBy: War['decl
     }
     // Tearing up pacts and contracts to attack a partner costs standing with everyone.
     next = breakTreatiesForWar(next, rival);
+    next = dissolveTies(next, rival, true);
     next = adjustReputation(next, -8);
     next = adjustRelation(next, rival, -30);
     next = addIncident(next, rival, 30);
@@ -163,6 +164,8 @@ export function startWar(state: GameState, rival: RivalId, declaredBy: War['decl
     90,
   );
   next = adjustRelation(next, rival, -25);
+  // The aggressor tore up its own agreements: they end, and India owes no penalty for it.
+  next = dissolveTies(next, rival, true);
   return appendLog(next, {
     severity: 'critical',
     category: 'military',
@@ -305,6 +308,7 @@ export function settleWar(state: GameState, warId: string, terms: PeaceTerms): G
       },
     };
     next = patchRival(next, war.rival, { annexed: true, strength: 0, readiness: 0 });
+    next = dissolveTies(next, war.rival, false);
     next = addTimedModifier(
       next,
       {

@@ -546,3 +546,89 @@ describe('what AI nations do to India', () => {
 function allAt(state: GameState, relation: number): GameState['diplomacy']['countries'] {
   return Object.fromEntries(Object.entries(state.diplomacy.countries).map(([id, c]) => [id, { ...c, relation }]));
 }
+
+describe('war, annexation and offers keep to the treaty rules', () => {
+  /** India beats Sri Lanka and annexes it, through the real commands. */
+  function annexSriLanka(): GameState {
+    let s = run(newGame(), { type: 'OPEN_EMBASSY', country: 'LKA' });
+    s = run(s, { type: 'DECLARE_WAR', rival: 'LKA' });
+    const war = s.military.wars[0]!;
+    s = {
+      ...s,
+      military: { ...s.military, wars: [{ ...war, status: 'terms', termsDeadlineTick: s.clock.tick + 30 }] },
+    };
+    return run(s, { type: 'SETTLE_WAR', warId: war.id, terms: 'annex' });
+  }
+
+  it('an annexed country is no longer a diplomatic partner (DEF-05)', () => {
+    const s = annexSriLanka();
+    expect(s.military.rivals.LKA.annexed).toBe(true);
+    expect(s.diplomacy.treaties.filter((t) => t.parties.includes('LKA'))).toEqual([]);
+    for (const command of [
+      { type: 'OPEN_EMBASSY', country: 'LKA' },
+      { type: 'SEND_AID', country: 'LKA', size: 'small' },
+      { type: 'PROPOSE_PACT', country: 'LKA' },
+      { type: 'IMPOSE_SANCTIONS', country: 'LKA' },
+    ] as Command[]) {
+      const result = dispatch(s, command);
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error).toContain('no longer exists');
+    }
+    const rng = new Rng(s.rng);
+    for (let i = 0; i < 500; i++) expect(pickCountry(s, 'any', rng)).not.toBe('LKA');
+    const later = runFocusAi(s, new Rng(s.rng));
+    expect(later.diplomacy.ai.LKA).toMatchObject({ action: 'idle', acted: false });
+  });
+
+  it('an invader’s contracts, embassy and offers end without costing India anything (DEF-06)', () => {
+    let s = run(newGame(), { type: 'OPEN_EMBASSY', country: 'BGD' });
+    s = signTrade(s, 'BGD', 'agriculture');
+    const reputation = s.diplomacy.reputation;
+    s = {
+      ...s,
+      diplomacy: {
+        ...s.diplomacy,
+        offers: [
+          { id: 'ofr-x', from: 'BGD', type: 'nonAggression', years: 5, terms: {}, raisedTick: 0, expiresTick: 90 },
+        ],
+      },
+    };
+    const atWar = startWar(s, 'BGD', 'rival');
+    expect(atWar.diplomacy.treaties.filter((t) => t.parties.includes('BGD'))).toEqual([]);
+    expect(atWar.modifiers.some((m) => m.label.includes('Bangladesh') && m.source.startsWith('treaty-'))).toBe(false);
+    expect(atWar.diplomacy.countries.BGD!.embassy).toBe(false);
+    expect(atWar.diplomacy.offers).toEqual([]);
+    expect(atWar.diplomacy.reputation).toBe(reputation);
+  });
+
+  it('an offer is refused when India could not have proposed the same deal (DEF-07)', () => {
+    const offer = (from: string, sector: 'tech' | 'agriculture' = 'tech') => ({
+      id: `ofr-${from}-${sector}`,
+      from,
+      type: 'trade' as const,
+      years: 3,
+      terms: { sector, value: 40_000 },
+      raisedTick: 0,
+      expiresTick: 90,
+    });
+    const withOffers = (state: GameState, ...offers: ReturnType<typeof offer>[]): GameState => ({
+      ...state,
+      diplomacy: { ...state.diplomacy, offers },
+    });
+    // Sanctions end the country's open offers, and an offer cannot be accepted while sanctions stand.
+    const sanctioned = run(withOffers(newGame(), offer('GBR')), { type: 'IMPOSE_SANCTIONS', country: 'GBR' });
+    expect(sanctioned.diplomacy.offers).toEqual([]);
+    const staged = withOffers(sanctioned, offer('GBR'));
+    const refused = dispatch(staged, { type: 'ACCEPT_OFFER', offerId: 'ofr-GBR-tech' });
+    expect(refused.ok).toBe(false);
+    // A second contract in the same sector is refused, as a proposal would be.
+    const trading = signTrade(newGame(), 'USA', 'tech');
+    const duplicate = dispatch(withOffers(trading, offer('USA')), { type: 'ACCEPT_OFFER', offerId: 'ofr-USA-tech' });
+    expect(duplicate.ok).toBe(false);
+    const other = dispatch(withOffers(trading, offer('USA', 'agriculture')), {
+      type: 'ACCEPT_OFFER',
+      offerId: 'ofr-USA-agriculture',
+    });
+    expect(other.ok).toBe(true);
+  });
+});

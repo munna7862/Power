@@ -5,7 +5,7 @@ import { clamp } from '../security/unrest';
 import { appendLog } from '../state/log';
 import type { Conflict, GameState } from '../state/types';
 import { WORLD } from './constants';
-import { atWarWithCountry, hasTreaty, relationOf } from './relations';
+import { atWarWithCountry, hasTreaty, isAnnexed, relationOf } from './relations';
 
 function eligible(state: GameState, c: CountryContent, kind: CountryPick): boolean {
   switch (kind) {
@@ -28,7 +28,7 @@ function eligible(state: GameState, c: CountryContent, kind: CountryPick): boole
 
 /** Picks a country for a diplomatic event, weighted toward the more important ones. Always draws once. */
 export function pickCountry(state: GameState, kind: CountryPick, rng: Rng): CountryId | null {
-  const pool = COUNTRY_LIST.filter((c) => eligible(state, c, kind));
+  const pool = COUNTRY_LIST.filter((c) => !isAnnexed(state, c.id) && eligible(state, c, kind));
   const roll = rng.next();
   if (pool.length === 0) return null;
   const weights = pool.map((c) => 5 + c.power);
