@@ -1,13 +1,25 @@
 import { useEffect } from 'react';
 import { appShell } from '../platform/shell';
 import { gameStore, SPEEDS, type ViewId } from '../store';
-import { VIEWS } from './views/viewLabels';
 
-/** F1–F10 open the screens in navigation order. */
-export const VIEW_KEYS: Record<ViewId, string> = Object.fromEntries(VIEWS.map((v, i) => [v, `F${i + 1}`])) as Record<
-  ViewId,
-  string
->;
+/**
+ * F1–F10 open the original ten screens. The keys stay put as Phase 8 adds screens (F11 is full screen on the
+ * desktop), so new screens are reached from the navigation bar.
+ */
+export const VIEW_KEYS: Partial<Record<ViewId, string>> = {
+  dashboard: 'F1',
+  inbox: 'F2',
+  economy: 'F3',
+  budget: 'F4',
+  departments: 'F5',
+  security: 'F6',
+  military: 'F7',
+  world: 'F8',
+  diplomacy: 'F9',
+  reports: 'F10',
+};
+
+const KEY_VIEWS = Object.fromEntries(Object.entries(VIEW_KEYS).map(([v, key]) => [key, v])) as Record<string, ViewId>;
 
 export type ShortcutId = 'pause' | 'speed' | 'screens' | 'handbook' | 'menu' | 'fullscreen';
 
@@ -45,7 +57,7 @@ export function useShortcuts({ openMenu, openHandbook, blocked }: ShortcutHandle
 
       const fn = /^F(\d{1,2})$/.exec(e.key);
       if (fn) {
-        const view = VIEWS[Number(fn[1]) - 1];
+        const view = KEY_VIEWS[e.key];
         if (view) {
           e.preventDefault();
           store.setView(view);

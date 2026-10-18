@@ -717,3 +717,80 @@
 .defeat {
   color: var(--danger);
 }
+
+/* Construction */
+.qtyInput {
+  width: 96px;
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  text-align: right;
+}
+
+.coverageCell[data-tone='warning'] {
+  color: var(--warning);
+}
+
+.coverageCell[data-tone='danger'] {
+  color: var(--danger);
+}
+
+.coverageCell[data-tone='good'] {
+  color: var(--green);
+}
+
+.selectedRow td {
+  background: var(--saffron-soft);
+}
+
+.areaHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-2);
+}
+
+.areaHead:first-of-type {
+  margin-top: 0;
+}
+
+.facilityList {
+  display: flex;
+  flex-direction: column;
+}
+
+.facilityCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.facilityStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-1);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.facilityStats strong {
+  color: var(--text);
+}
+
+@media (max-width: 720px) {
+  .facilityCard {
+    grid-template-columns: 1fr;
+  }
+
+  .facilityCard .actions {
+    justify-content: flex-start;
+  }
+}

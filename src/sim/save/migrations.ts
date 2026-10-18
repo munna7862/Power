@@ -1,3 +1,4 @@
+import { openingInfrastructure } from '../infrastructure/coverage';
 import { SCHEMA_VERSION } from '../state/types';
 
 /** Upgrades a raw state from version N to N + 1. */
@@ -17,7 +18,10 @@ export const PREVIOUS_EDITION_MESSAGE =
  * Registry keyed by the version being migrated FROM.
  * When SCHEMA_VERSION goes up, add a step here and a golden fixture for the old version.
  */
-export const MIGRATIONS: Readonly<Record<number, Migration>> = {};
+export const MIGRATIONS: Readonly<Record<number, Migration>> = {
+  // v7 → v8 (Sprint 8.2): public works arrive. A game in progress gets the opening network every game starts with.
+  7: (state) => ({ ...(state as object), schemaVersion: 8, infrastructure: openingInfrastructure() }),
+};
 
 export function migrate(
   state: unknown,

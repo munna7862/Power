@@ -1,6 +1,7 @@
 import { APPROVAL_FACTORS, type ApprovalFactor, type MinistryId } from '../content/ids';
 import { DEFAULT_TAX_RATES } from '../economy/constants';
 import { resolve, type Resolution } from '../engine/modifiers';
+import { coverageEffect } from '../infrastructure/coverage';
 import { rulesFor } from '../state/difficulty';
 import type { GameState } from '../state/types';
 
@@ -48,7 +49,7 @@ const clamp = (v: number) => Math.max(0, Math.min(100, v));
 
 /** Voter satisfaction (0–100) with each factor, given the current state and ministry efficiencies. */
 export function computeSatisfaction(
-  state: Pick<GameState, 'economy' | 'budget' | 'security'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'security' | 'infrastructure' | 'nation'>,
   efficiency: Record<MinistryId, number>,
 ): Record<ApprovalFactor, number> {
   const { economy, budget, security } = state;
@@ -70,7 +71,8 @@ export function computeSatisfaction(
         200 * (t.gst - d.gst) -
         30 * (t.customs - d.customs),
     ),
-    services: clamp(50 + 60 * (services - 1)),
+    // Ministries' efficiency and, since Phase 8, how much of the country its schools, clinics and roads reach.
+    services: clamp(50 + 60 * (services - 1) + coverageEffect(state, 'services')),
     safety: clamp(100 - 0.8 * meanUnrest - 0.6 * security.terrorThreat),
   };
 }

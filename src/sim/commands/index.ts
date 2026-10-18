@@ -6,10 +6,12 @@ import {
   STRATEGIES,
   type DomainId,
   type DrillKind,
+  type FacilityId,
   type IdeologyId,
   type IntelKind,
   type MinistryId,
   type OperationKind,
+  type RegionId,
   type CountryId,
   type RivalId,
   type ServiceId,
@@ -78,6 +80,14 @@ import { appendLog } from '../state/log';
 import type { GameState, NuclearDoctrine } from '../state/types';
 import { enactBudget, validateBudget, type BudgetProposal } from './budget';
 import { startUpgrade, validateUpgrade } from '../departments/services';
+import {
+  cancelBuild,
+  demolish,
+  startBuild,
+  validateBuild,
+  validateCancelBuild,
+  validateDemolish,
+} from '../infrastructure/build';
 
 /** Player actions. Every change a player makes to GameState goes through dispatch(). */
 export type Command =
@@ -86,6 +96,9 @@ export type Command =
   | { type: 'MARK_ALL_LOG_READ' }
   | { type: 'ENACT_BUDGET'; proposal: BudgetProposal }
   | { type: 'UPGRADE_SERVICE'; department: MinistryId; service: ServiceId }
+  | { type: 'BUILD_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
+  | { type: 'CANCEL_BUILD'; orderId: string }
+  | { type: 'DEMOLISH_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
   | { type: 'SET_IDEOLOGY'; ideology: IdeologyId }
   | { type: 'SET_STRATEGY'; strategy: StrategyId }
   | { type: 'RESOLVE_EVENT'; pendingId: string; choiceId: string }
@@ -223,6 +236,21 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateUpgrade(state, command.department, command.service);
       return problem ? fail(state, problem) : ok(startUpgrade(state, command.department, command.service));
+    }
+    case 'BUILD_FACILITY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateBuild(state, command.facility, command.region, command.quantity);
+      return problem ? fail(state, problem) : ok(startBuild(state, command.facility, command.region, command.quantity));
+    }
+    case 'CANCEL_BUILD': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateCancelBuild(state, command.orderId);
+      return problem ? fail(state, problem) : ok(cancelBuild(state, command.orderId));
+    }
+    case 'DEMOLISH_FACILITY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDemolish(state, command.facility, command.region, command.quantity);
+      return problem ? fail(state, problem) : ok(demolish(state, command.facility, command.region, command.quantity));
     }
     case 'RESOLVE_EVENT': {
       if (gameOver) return fail(state, 'The game is over.');

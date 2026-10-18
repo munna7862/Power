@@ -27,6 +27,7 @@ export type ViewId =
   | 'economy'
   | 'budget'
   | 'departments'
+  | 'construction'
   | 'security'
   | 'military'
   | 'world'

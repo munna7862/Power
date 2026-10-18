@@ -21,6 +21,12 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - There are no ministers. Each ministry is a **department** whose services are rated 1–5 stars (`content/departments.json`, ids in `DEPARTMENT_SERVICES`). Department quality, and the scores that replaced minister loyalty and competence (army command, presidential protection, intelligence skill, leakage pressure), all come from `src/sim/departments/quality.ts`; read them from there.
 - Stars are bought with `UPGRADE_SERVICE` and lost when a department stays underfunded (`settleDepartmentFunding`). Corruption inquiries are audits of a department.
 
+## Public works
+
+- Facilities are content (`content/facilities.json`, ids in `FACILITIES`, areas in `COVERAGE_AREAS`). Coverage, its effects (HDI, public services, regional unrest, growth, jobs) and facility upkeep all come from `src/sim/infrastructure/coverage.ts`, which the systems, the Construction screen and the bots share.
+- Every coverage effect is measured against the opening network (`openingCounts()`), so a new game starts exactly where it did before public works. Keep it that way when you add a facility or an area: give it an `opening` share per region and an `AREA_WEIGHTS` row entry.
+- Building is `BUILD_FACILITY` (treasury-checked), `CANCEL_BUILD` (partial refund) and `DEMOLISH_FACILITY`; projects open in the daily `infrastructure-daily` system.
+
 ## Events
 
 - Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.

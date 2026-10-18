@@ -25,6 +25,7 @@ import {
 import { allEfficiencies, interestRateFor } from '../economy/model';
 import { Rng, seedRng } from '../engine/rng';
 import { openingDepartments } from '../departments/services';
+import { openingInfrastructure } from '../infrastructure/coverage';
 import { openingDiplomacy } from '../diplomacy/opening';
 import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
@@ -167,6 +168,7 @@ export function createInitialState(options: NewGameOptions): GameState {
     economy: createStartingEconomy(options.difficulty),
     budget: { taxRates: { ...DEFAULT_TAX_RATES }, allocations: defaultAllocations(), lastEnactedTick: null },
     departments: openingDepartments(),
+    infrastructure: openingInfrastructure(),
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
     security: openingSecurity(),

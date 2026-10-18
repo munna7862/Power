@@ -3,6 +3,7 @@ import { POPULATION_GROWTH } from '../economy/constants';
 import { expectedSectorGrowth } from '../economy/growth';
 import { allEfficiencies, lastDeficitRatio, realGdp } from '../economy/model';
 import { sumAdd } from '../engine/modifiers';
+import { facilityJobsEffect } from '../infrastructure/coverage';
 import type { System } from '../engine/system';
 import type { SectorState } from '../state/types';
 
@@ -53,6 +54,7 @@ export const economySystem: System = {
         0.01 * (capped(eff.industry) - 1) -
         0.005 * (capped(eff.agriculture) - 1) +
         0.05 * (t.corporate - 0.25) +
+        facilityJobsEffect(state) +
         sumAdd(modifiers, 'economy.unemployment'),
       0.02,
       0.4,
