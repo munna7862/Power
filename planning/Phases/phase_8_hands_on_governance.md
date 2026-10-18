@@ -83,7 +83,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 ---
 
-### Sprint 8.2: Public works and construction (8 SP)
+### Sprint 8.2: Public works and construction (8 SP) ✅
 
 | ID     | Story                                                                                                               | SP  |
 | ------ | ------------------------------------------------------------------------------------------------------------------- | --- |
@@ -94,13 +94,15 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] `content/facilities.json` (zod-validated): `id`, `department`, `cost`, `buildDays`, `upkeep`, `capacity`, `jobs`, `effects`; at least 10 types (primary school, secondary school, university, clinic, district hospital, medical college, highway segment, rail link, water treatment, housing block)
-- [ ] **Fast builds:** small buildings take 2–4 weeks, large ones 1–3 months, in-game time
-- [ ] State: `infrastructure: { counts: Record<RegionId, Record<FacilityId, number>>; queue: BuildOrder[] }`
-- [ ] Commands: `BUILD_FACILITY { facility, region, quantity }` (treasury-checked), `CANCEL_BUILD` (partial refund), `DEMOLISH_FACILITY`
-- [ ] Upkeep is a per-department expenditure line in `projectMonth`
-- [ ] Opening counts are calibrated so the v1.0 starting HDI and services score are unchanged at tick 0
-- [ ] Regional coverage adds a "public services" driver to `unrestTarget`
+- [x] `content/facilities.json` (zod-validated in `src/sim/content/infrastructure.ts`): `id`, `department`, `area`, `cost`, `buildDays`, `upkeep`, `capacity`, `jobs` and each region's `opening` share; the 10 listed types across seven coverage areas (schools, universities, clinics, hospitals, water, housing, transport). What each area feeds (`effects`) lives in `AREA_WEIGHTS` (`infrastructure/constants.ts`), so one formula serves the sim and the "Why?" tooltips
+- [x] **Fast builds:** small buildings take 2–4 weeks, large ones 1–3 months, in-game time
+- [x] State: `infrastructure: { counts: Record<RegionId, Record<FacilityId, number>>; queue: BuildOrder[] }`; `SCHEMA_VERSION` 8 with a v7 → v8 migration (a game in progress gets the opening network) and golden fixture `v8.json`
+- [x] Commands: `BUILD_FACILITY { facility, region, quantity }` (treasury-checked), `CANCEL_BUILD` (50% refund), `DEMOLISH_FACILITY`
+- [x] Upkeep is a per-department expenditure line in `projectMonth`: each department pays the running costs of facilities built beyond the opening network (whose costs its allocation already covers); demolishing below it saves money
+- [x] Opening counts come from each region's opening coverage, and every coverage effect is measured against the opening network, so the v1.0 starting HDI, services score, unrest and growth are exactly unchanged at tick 0. After that the growing population wears coverage down unless the President builds
+- [x] Regional coverage adds a "Schools, clinics and housing" driver to `unrestTarget`; national coverage adds to the HDI target, the "public services" approval factor and a "Roads, rail and universities" growth driver; new facilities' staff cut unemployment
+- [x] Construction screen: coverage of every area in every region, a build panel per region with "Why?" per area, the project queue (cancel with refund) and the running costs added per department. F1–F10 keep their screens; new screens are reached from the navigation bar
+- [x] Balance: the balanced bot builds toward 95% coverage where it buys the most per rupee (pulled forward from 8.9). All bands pass unchanged: balanced re-election 98% Easy, 84% Normal, 38% Hard
 
 ### Sprint 8.3: Police and internal affairs (8 SP)
 

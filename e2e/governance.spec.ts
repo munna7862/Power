@@ -57,6 +57,27 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(primaryCare.getByRole('img', { name: '3 of 5 stars' })).toBeVisible();
   });
 
+  test('schools are built in a region, open after a few weeks and raise its coverage', async ({ page }) => {
+    await openView(page, 'Construction');
+    await page.getByRole('button', { name: 'Show East' }).click();
+    await expect(page.getByRole('heading', { name: 'Build in the East' })).toBeVisible();
+
+    const schools = page.getByTestId('area-schools');
+    const before = (await schools.getByRole('strong').first().textContent()) ?? '';
+    const row = schools.getByTestId('facility-primarySchool');
+    const count = Number(((await row.getByTestId('count-primarySchool').textContent()) ?? '').replace(/,/g, ''));
+    await row.getByRole('spinbutton').fill('20000');
+    await row.getByRole('button', { name: /^Build 20000 × Primary school in the East/ }).click();
+    await expect(page.getByTestId('build-order')).toHaveCount(1);
+    await expect(page.getByTestId('build-order')).toContainText(/Opens in \d+ days/);
+
+    await advanceDays(page, 22);
+    await expect(page.getByTestId('build-order')).toHaveCount(0);
+    await expect(row.getByTestId('count-primarySchool')).toHaveText((count + 20000).toLocaleString('en-IN'));
+    await expect(schools.getByRole('strong').first()).not.toHaveText(before);
+    await expect(page.getByTestId('running-costs')).toContainText('Education');
+  });
+
   test('ideology can be changed once a year', async ({ page }) => {
     await openView(page, 'Departments');
     await page.getByRole('combobox', { name: 'Ideology' }).selectOption({ label: 'Socialism' });

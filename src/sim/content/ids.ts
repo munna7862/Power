@@ -50,6 +50,36 @@ export type StrategyId = (typeof STRATEGIES)[number];
 export const REGIONS = ['north', 'south', 'east', 'west', 'central', 'northEast'] as const;
 export type RegionId = (typeof REGIONS)[number];
 
+/**
+ * What public works provide. A region's coverage of an area is the people its facilities can serve against the
+ * people who live there (Phase 8, Sprint 8.2).
+ */
+export const COVERAGE_AREAS = [
+  'schools',
+  'universities',
+  'clinics',
+  'hospitals',
+  'water',
+  'housing',
+  'transport',
+] as const;
+export type CoverageArea = (typeof COVERAGE_AREAS)[number];
+
+/** Public works the President can build in a region (content/facilities.json). */
+export const FACILITIES = [
+  'primarySchool',
+  'secondarySchool',
+  'university',
+  'clinic',
+  'districtHospital',
+  'medicalCollege',
+  'waterWorks',
+  'housingBlock',
+  'highway',
+  'railLink',
+] as const;
+export type FacilityId = (typeof FACILITIES)[number];
+
 /** Things voters judge the President on. Each is scored 0–100 every month. */
 export const APPROVAL_FACTORS = [
   'jobs',

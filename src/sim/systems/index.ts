@@ -7,6 +7,7 @@ import { economySystem } from './economy';
 import { eventsSystem } from './events';
 import { fiscalSystem } from './fiscal';
 import { historySystem } from './history';
+import { infrastructureDailySystem } from './infrastructure';
 import { investigationSystem } from './investigations';
 import { leadershipSystem } from './leadership';
 import { militaryDailySystem, militaryMonthlySystem } from './military';
@@ -33,6 +34,7 @@ export const SYSTEMS: readonly System[] = [
   investigationSystem,
   departmentsMonthlySystem,
   departmentsDailySystem,
+  infrastructureDailySystem,
   militaryMonthlySystem,
   militaryDailySystem,
   diplomacyMonthlySystem,

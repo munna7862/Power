@@ -2,6 +2,7 @@ import { leakagePressure } from '../departments/quality';
 import { START_GDP, START_HDI, START_POPULATION } from '../economy/constants';
 import { allEfficiencies, realGdp } from '../economy/model';
 import { sumAdd } from '../engine/modifiers';
+import { coverageEffect } from '../infrastructure/coverage';
 import type { System } from '../engine/system';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
@@ -31,6 +32,7 @@ export const societySystem: System = {
       0.1 * Math.log(perCapitaGain) +
       0.02 * (Math.min(eff.health, 1.8) - 1) +
       0.02 * (Math.min(eff.education, 1.8) - 1) +
+      coverageEffect(state, 'hdi') +
       sumAdd(modifiers, 'society.hdi');
     const hdi = clamp(economy.hdi + (hdiTarget - economy.hdi) * 0.03, 0.2, 0.99);
 

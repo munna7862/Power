@@ -1,0 +1,202 @@
+[
+  {
+    "id": "primarySchool",
+    "department": "education",
+    "area": "schools",
+    "name": "Primary school",
+    "summary": "Classrooms and teachers for children in the first years of school.",
+    "cost": 1,
+    "buildDays": 21,
+    "upkeep": 0.03,
+    "capacity": 1500,
+    "jobs": 10,
+    "opening": {
+      "north": 0.56,
+      "south": 0.64,
+      "east": 0.52,
+      "west": 0.62,
+      "central": 0.53,
+      "northEast": 0.55
+    }
+  },
+  {
+    "id": "secondarySchool",
+    "department": "education",
+    "area": "schools",
+    "name": "Secondary school",
+    "summary": "Laboratories, libraries and teachers for older pupils.",
+    "cost": 5,
+    "buildDays": 28,
+    "upkeep": 0.12,
+    "capacity": 6000,
+    "jobs": 35,
+    "opening": {
+      "north": 0.24,
+      "south": 0.28,
+      "east": 0.22,
+      "west": 0.26,
+      "central": 0.23,
+      "northEast": 0.23
+    }
+  },
+  {
+    "id": "university",
+    "department": "education",
+    "area": "universities",
+    "name": "University campus",
+    "summary": "Degrees, research and the skilled graduates a modern economy runs on.",
+    "cost": 350,
+    "buildDays": 75,
+    "upkeep": 6,
+    "capacity": 400000,
+    "jobs": 2500,
+    "opening": {
+      "north": 0.6,
+      "south": 0.8,
+      "east": 0.5,
+      "west": 0.75,
+      "central": 0.52,
+      "northEast": 0.48
+    }
+  },
+  {
+    "id": "clinic",
+    "department": "health",
+    "area": "clinics",
+    "name": "Health clinic",
+    "summary": "A nurse, a doctor and a pharmacy within reach of every village and ward.",
+    "cost": 1.5,
+    "buildDays": 14,
+    "upkeep": 0.05,
+    "capacity": 5000,
+    "jobs": 8,
+    "opening": {
+      "north": 0.7,
+      "south": 0.85,
+      "east": 0.62,
+      "west": 0.8,
+      "central": 0.64,
+      "northEast": 0.6
+    }
+  },
+  {
+    "id": "districtHospital",
+    "department": "health",
+    "area": "hospitals",
+    "name": "District hospital",
+    "summary": "Wards, surgery and emergency care for a whole district.",
+    "cost": 200,
+    "buildDays": 60,
+    "upkeep": 4,
+    "capacity": 600000,
+    "jobs": 1200,
+    "opening": {
+      "north": 0.47,
+      "south": 0.6,
+      "east": 0.41,
+      "west": 0.56,
+      "central": 0.42,
+      "northEast": 0.38
+    }
+  },
+  {
+    "id": "medicalCollege",
+    "department": "health",
+    "area": "hospitals",
+    "name": "Medical college",
+    "summary": "A teaching hospital that treats the hardest cases and trains new doctors.",
+    "cost": 800,
+    "buildDays": 90,
+    "upkeep": 15,
+    "capacity": 2500000,
+    "jobs": 4000,
+    "opening": {
+      "north": 0.15,
+      "south": 0.2,
+      "east": 0.14,
+      "west": 0.19,
+      "central": 0.14,
+      "northEast": 0.12
+    }
+  },
+  {
+    "id": "waterWorks",
+    "department": "health",
+    "area": "water",
+    "name": "Water treatment works",
+    "summary": "Clean piped water and sewage treatment for towns and villages.",
+    "cost": 60,
+    "buildDays": 30,
+    "upkeep": 1,
+    "capacity": 250000,
+    "jobs": 120,
+    "opening": {
+      "north": 0.72,
+      "south": 0.8,
+      "east": 0.64,
+      "west": 0.78,
+      "central": 0.66,
+      "northEast": 0.62
+    }
+  },
+  {
+    "id": "housingBlock",
+    "department": "industry",
+    "area": "housing",
+    "name": "Public housing block",
+    "summary": "Affordable flats for families on low incomes.",
+    "cost": 4,
+    "buildDays": 28,
+    "upkeep": 0.02,
+    "capacity": 2000,
+    "jobs": 6,
+    "opening": {
+      "north": 0.58,
+      "south": 0.66,
+      "east": 0.5,
+      "west": 0.64,
+      "central": 0.52,
+      "northEast": 0.55
+    }
+  },
+  {
+    "id": "highway",
+    "department": "industry",
+    "area": "transport",
+    "name": "Highway segment",
+    "summary": "A hundred kilometres of four-lane road linking towns to markets.",
+    "cost": 400,
+    "buildDays": 45,
+    "upkeep": 3,
+    "capacity": 1500000,
+    "jobs": 500,
+    "opening": {
+      "north": 0.42,
+      "south": 0.47,
+      "east": 0.35,
+      "west": 0.48,
+      "central": 0.37,
+      "northEast": 0.27
+    }
+  },
+  {
+    "id": "railLink",
+    "department": "industry",
+    "area": "transport",
+    "name": "Rail link",
+    "summary": "A new line or doubled track that moves freight and commuters.",
+    "cost": 1500,
+    "buildDays": 90,
+    "upkeep": 12,
+    "capacity": 4000000,
+    "jobs": 1500,
+    "opening": {
+      "north": 0.28,
+      "south": 0.31,
+      "east": 0.23,
+      "west": 0.32,
+      "central": 0.25,
+      "northEast": 0.18
+    }
+  }
+]

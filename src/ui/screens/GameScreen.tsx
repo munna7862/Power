@@ -13,6 +13,7 @@ import { useShortcuts, VIEW_KEYS } from '../shortcuts';
 import { TutorialCoach } from '../tutorial/TutorialCoach';
 import { useTutorialTarget } from '../tutorial/tutorialStore';
 import { BudgetView } from '../views/BudgetView';
+import { ConstructionView } from '../views/ConstructionView';
 import { DepartmentsView } from '../views/DepartmentsView';
 import { DashboardView } from '../views/DashboardView';
 import { DiplomacyView } from '../views/DiplomacyView';
@@ -36,6 +37,8 @@ function ActiveView({ view }: { view: ViewId }) {
       return <BudgetView />;
     case 'departments':
       return <DepartmentsView />;
+    case 'construction':
+      return <ConstructionView />;
     case 'inbox':
       return <InboxView />;
     case 'security':
@@ -84,7 +87,7 @@ export function GameScreen() {
             className={styles.navItem}
             aria-current={view === v ? 'page' : undefined}
             aria-keyshortcuts={VIEW_KEYS[v]}
-            title={t('nav.shortcut', { key: VIEW_KEYS[v] })}
+            title={VIEW_KEYS[v] ? t('nav.shortcut', { key: VIEW_KEYS[v] }) : undefined}
             data-tutorial={target === v || undefined}
             onClick={() => gameStore.getState().setView(v)}
           >

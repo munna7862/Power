@@ -12,6 +12,13 @@ export function formatCrore(value: number): string {
   return t('units.crore', { sign, value: groupIndian(abs) });
 }
 
+/** Like formatCrore, with up to two decimals for small sums (₹0.03 cr), for unit prices and upkeep. */
+export function formatCroreFine(value: number): string {
+  if (Math.abs(value) >= 100) return formatCrore(value);
+  const sign = value < 0 ? '−' : '';
+  return t('units.crore', { sign, value: String(Math.round(Math.abs(value) * 100) / 100) });
+}
+
 /** Signed change, e.g. "+₹4,812 cr" or "−₹1.20 lakh cr". */
 export function formatCroreDelta(value: number): string {
   return value >= 0 ? `+${formatCrore(value)}` : formatCrore(value);

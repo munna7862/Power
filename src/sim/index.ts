@@ -42,6 +42,30 @@ export {
   serviceStars,
 } from './departments/quality';
 export { upgradeCost, validateUpgrade } from './departments/services';
+export { FACILITY_CONTENT, type FacilityContent } from './content/infrastructure';
+export {
+  AREA_WEIGHTS,
+  CANCEL_REFUND,
+  COVERAGE_CEILING,
+  COVERAGE_IMPACT,
+  MAX_BUILD_QUANTITY,
+  MAX_BUILD_QUEUE,
+  REGION_POPULATION_SHARE,
+  type CoverageEffect,
+} from './infrastructure/constants';
+export {
+  coverage,
+  coverageEffect,
+  coverageIndex,
+  effectiveCoverage,
+  explainCoverage,
+  facilitiesForTarget,
+  facilitiesIn,
+  facilityUpkeep,
+  regionPopulation,
+  type CoverageLine,
+} from './infrastructure/coverage';
+export { buildCost, validateBuild, validateCancelBuild, validateDemolish } from './infrastructure/build';
 export {
   createInitialState,
   normalisePresidentName,

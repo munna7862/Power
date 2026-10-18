@@ -6,6 +6,7 @@ const PATHS: Record<ViewId, string> = {
   economy: 'M4 20h16M7 16v-5M12 16V7M17 16v-8',
   budget: 'M4 7h16v12H4zM4 7l2-3h12l2 3M14 13h3M9 4v3',
   departments: 'M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6z',
+  construction: 'M3 21h18M6 21V11h12v10M10 21v-5h4v5M4 11l8-7 8 7M16 6V3h2v4.5',
   security: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z',
   military: 'M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6-4.5-4.2 6.1-.7z',
   world:

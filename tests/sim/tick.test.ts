@@ -126,6 +126,7 @@ describe('engine.tick', () => {
       'investigations',
       'departments-monthly',
       'departments-daily',
+      'infrastructure-daily',
       'military-monthly',
       'military-daily',
       'diplomacy-monthly',

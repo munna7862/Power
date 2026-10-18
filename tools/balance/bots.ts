@@ -40,6 +40,17 @@ import {
   DEPARTMENT_SERVICES,
   serviceStars,
   validateUpgrade,
+  AREA_WEIGHTS,
+  COVERAGE_AREAS,
+  coverage,
+  FACILITY_CONTENT,
+  facilitiesForTarget,
+  facilitiesIn,
+  REGION_POPULATION_SHARE,
+  REGIONS,
+  validateBuild,
+  type CoverageArea,
+  type FacilityId,
 } from '../../src/sim';
 
 /**
@@ -83,6 +94,64 @@ function upgradeServices(state: GameState): GameState {
     )[0];
     if (!target || serviceStars(next, target[0], target[1]) >= 4) break;
     next = apply(next, { type: 'UPGRADE_SERVICE', department: target[0], service: target[1] });
+  }
+  return next;
+}
+
+/** The cheapest facility per person served in each area: what the balanced bot builds. */
+const BEST_BUY = Object.fromEntries(
+  COVERAGE_AREAS.map((a) => [
+    a,
+    [...facilitiesIn(a)].sort(
+      (x, y) =>
+        FACILITY_CONTENT[x].cost / FACILITY_CONTENT[x].capacity -
+        FACILITY_CONTENT[y].cost / FACILITY_CONTENT[y].capacity,
+    )[0],
+  ]),
+) as Record<CoverageArea, FacilityId>;
+
+/** How much coverage of an area is worth: its weight across HDI, services, unrest and growth. */
+const AREA_VALUE = Object.fromEntries(
+  COVERAGE_AREAS.map((a) => [
+    a,
+    AREA_WEIGHTS.hdi[a] + AREA_WEIGHTS.services[a] + AREA_WEIGHTS.unrest[a] + AREA_WEIGHTS.growth[a],
+  ]),
+) as Record<CoverageArea, number>;
+
+/** Coverage the balanced bot builds toward, and the most it spends on one project. */
+const COVERAGE_GOAL = 0.95;
+const PROJECT_BUDGET = 6_000;
+
+/**
+ * Builds toward the coverage goal where it buys the most per rupee: the area that counts most, in the region with
+ * the most people, at the lowest price per person served. Two projects a month at most, while debt is manageable.
+ */
+function buildPublicWorks(state: GameState): GameState {
+  let next = state;
+  for (let i = 0; i < 2; i++) {
+    if (debtToGdp(next.economy) > 0.7 || next.nation.treasury < 50_000) break;
+    const busy = new Set(next.infrastructure.queue.map((o) => `${o.region}/${FACILITY_CONTENT[o.facility].area}`));
+    const options = REGIONS.flatMap((region) =>
+      COVERAGE_AREAS.filter((a) => !busy.has(`${region}/${a}`) && coverage(next, region, a) < COVERAGE_GOAL).map(
+        (area) => {
+          const facility = BEST_BUY[area];
+          const c = FACILITY_CONTENT[facility];
+          return {
+            region,
+            facility,
+            value: (AREA_VALUE[area] * REGION_POPULATION_SHARE[region] * c.capacity) / c.cost,
+          };
+        },
+      ),
+    ).sort((a, b) => b.value - a.value);
+    const best = options[0];
+    if (!best) break;
+    const quantity = Math.min(
+      facilitiesForTarget(next, best.region, best.facility, COVERAGE_GOAL),
+      Math.floor(PROJECT_BUDGET / FACILITY_CONTENT[best.facility].cost),
+    );
+    if (quantity < 1 || validateBuild(next, best.facility, best.region, quantity)) break;
+    next = apply(next, { type: 'BUILD_FACILITY', facility: best.facility, region: best.region, quantity });
   }
   return next;
 }
@@ -232,9 +301,10 @@ function manageDiplomacy(state: GameState): GameState {
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Upgrades the services that keep it safe and the economy growing, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
+    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
     let next = upgradeServices(state);
+    next = buildPublicWorks(next);
 
     // Audit the biggest-spending department not already under audit when the country looks corrupt.
     if (next.economy.corruption > 42 && next.security.investigations.length < MAX_INVESTIGATIONS - 1) {

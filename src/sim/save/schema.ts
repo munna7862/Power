@@ -3,6 +3,7 @@ import {
   APPROVAL_FACTORS,
   DOMAINS,
   DRILL_KINDS,
+  FACILITIES,
   IDEOLOGIES,
   INTEL_KINDS,
   LOG_CATEGORIES,
@@ -272,6 +273,20 @@ export const gameStateSchema = z.object({
         department: z.enum(MINISTRIES),
         service: z.enum(SERVICE_IDS as [ServiceId, ...ServiceId[]]),
         endsTick: z.number().int(),
+      }),
+    ),
+  }),
+  infrastructure: z.object({
+    counts: z.record(z.enum(REGIONS), z.record(z.enum(FACILITIES), z.number().int().min(0))),
+    queue: z.array(
+      z.object({
+        id: z.string(),
+        facility: z.enum(FACILITIES),
+        region: z.enum(REGIONS),
+        quantity: z.number().int().positive(),
+        cost: z.number().min(0),
+        startedTick: tick,
+        endsTick: tick,
       }),
     ),
   }),

@@ -1,5 +1,6 @@
 import { SECTORS, type MinistryId, type SectorId } from '../content/ids';
 import { sumAdd } from '../engine/modifiers';
+import { coverageEffect } from '../infrastructure/coverage';
 import type { GameState } from '../state/types';
 import { averageUnrest } from '../security/terror';
 import { SECTOR_BASE_GROWTH, SECTOR_MINISTRY_LINKS } from './constants';
@@ -13,6 +14,7 @@ export type GrowthDriver =
   | 'trend'
   | 'policy'
   | 'ministries'
+  | 'infrastructure'
   | 'taxes'
   | 'debt'
   | 'corruption'
@@ -25,6 +27,7 @@ export const GROWTH_DRIVER_LABELS: Record<GrowthDriver, string> = {
   trend: 'Trend growth',
   policy: 'Ideology & strategy',
   ministries: 'Ministry performance',
+  infrastructure: 'Roads, rail and universities',
   taxes: 'Tax burden',
   debt: 'Debt overhang',
   corruption: 'Corruption',
@@ -39,7 +42,7 @@ const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(ma
 
 /** Drivers that apply equally to every sector. */
 export function sharedDrivers(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation'>,
   efficiency: Record<MinistryId, number>,
 ): Record<Exclude<GrowthDriver, 'trend'>, number> {
   const { economy, budget, modifiers } = state;
@@ -48,6 +51,7 @@ export function sharedDrivers(
   return {
     policy: sumAdd(modifiers, 'economy.growth'),
     ministries: 0.01 * (capped(efficiency.finance) - 1),
+    infrastructure: coverageEffect(state, 'growth'),
     taxes: -0.04 * (t.corporate - 0.25) - 0.03 * (t.income - 0.2) - 0.02 * (t.gst - 0.18),
     debt: -0.05 * Math.max(0, debtToGdp(economy) - 0.7),
     corruption: -0.0004 * (economy.corruption - 40),
@@ -75,7 +79,7 @@ export function sectorDrivers(
 
 /** Expected growth of a sector before random noise. */
 export function expectedSectorGrowth(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security'>,
+  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation'>,
   efficiency: Record<MinistryId, number>,
   sector: SectorId,
 ): number {

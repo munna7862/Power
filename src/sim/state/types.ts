@@ -2,6 +2,7 @@ import type {
   ApprovalFactor,
   DomainId,
   DrillKind,
+  FacilityId,
   IntelKind,
   CountryId,
   RivalId,
@@ -22,7 +23,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 7;
+export const SCHEMA_VERSION = 8;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -159,6 +160,24 @@ export interface DepartmentsState {
   /** Consecutive monthly settlements a department has been badly underfunded; at the limit a star is lost. */
   underfundedMonths: Record<MinistryId, number>;
   upgrades: ServiceUpgrade[];
+}
+
+/** Facilities under construction: they open (and start costing upkeep) when the order completes. */
+export interface BuildOrder {
+  id: string;
+  facility: FacilityId;
+  region: RegionId;
+  quantity: number;
+  /** ₹ crore paid when ordered, for the partial refund on cancelling. */
+  cost: number;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** Public works in each region (Phase 8): schools, hospitals, water, housing and transport. */
+export interface InfrastructureState {
+  counts: Record<RegionId, Record<FacilityId, number>>;
+  queue: BuildOrder[];
 }
 
 export interface PoliticsState {
@@ -523,6 +542,7 @@ export interface GameState {
   economy: EconomyState;
   budget: BudgetState;
   departments: DepartmentsState;
+  infrastructure: InfrastructureState;
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;

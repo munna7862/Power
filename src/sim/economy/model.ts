@@ -2,6 +2,7 @@ import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId } from '../content/ids';
 import { departmentQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
+import { facilityUpkeep } from '../infrastructure/coverage';
 import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
 import {
   DEFAULT_TAX_RATES,
@@ -128,7 +129,11 @@ export function projectMonth(
 
   const spendingMultiplier = multiplierFor(modifiers, 'economy.expenditure');
   const expenditure = {} as Record<ExpenditureLine, number>;
-  for (const m of MINISTRIES) expenditure[m] = gdpMonth * budget.allocations[m] * spendingMultiplier;
+  // Each department pays its allocation plus the running costs of facilities built beyond the opening network.
+  const upkeep = facilityUpkeep(state);
+  for (const m of MINISTRIES) {
+    expenditure[m] = Math.max(0, gdpMonth * budget.allocations[m] * spendingMultiplier + upkeep[m]);
+  }
   expenditure.establishment = gdpMonth * ESTABLISHMENT_SHARE;
   expenditure.interest = (economy.debt * economy.interestRate) / 12;
 

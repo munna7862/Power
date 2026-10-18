@@ -1,4 +1,5 @@
 import budget from './budget.json';
+import construction from './construction.json';
 import dashboard from './dashboard.json';
 import departments from './departments.json';
 import diplomacy from './diplomacy.json';
@@ -22,6 +23,7 @@ export const en = {
   ...economy,
   ...budget,
   ...departments,
+  ...construction,
   ...security,
   ...military,
   ...world,
