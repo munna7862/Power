@@ -162,6 +162,36 @@ describe('investigations', () => {
     expect(dispatch(s, { type: 'LAUNCH_INVESTIGATION', ministry: 'nope' as never }).ok).toBe(false);
   });
 
+  it('closes the inquiry when the minister leaves, so a successor is never judged by it (DEF-04)', () => {
+    let s = newGame();
+    const step = (cmd: Parameters<typeof dispatch>[1]) => {
+      const r = dispatch(s, cmd);
+      if (!r.ok) throw new Error(r.error);
+      s = r.state;
+    };
+    step({ type: 'LAUNCH_INVESTIGATION', ministry: 'health' });
+    step({ type: 'DISMISS_MINISTER', ministry: 'health' });
+    expect(s.security.investigations).toHaveLength(0);
+    expect(s.log.some((e) => e.title === 'Inquiry closed')).toBe(true);
+    const successor = s.cabinet.candidates.health[0]!;
+    step({ type: 'APPOINT_MINISTER', ministry: 'health', candidateId: successor.id });
+    const later = run(s, 61, 'investigations');
+    expect(later.cabinet.ministers.health?.id).toBe(successor.id);
+    expect(later.cabinet.ministers.health?.loyalty).toBe(s.cabinet.ministers.health?.loyalty);
+
+    // Replacing a minister directly, or a scandal forcing a resignation, closes it too.
+    const opened = dispatch(newGame(), { type: 'LAUNCH_INVESTIGATION', ministry: 'finance' });
+    if (!opened.ok) throw new Error(opened.error);
+    const candidate = opened.state.cabinet.candidates.finance[0]!;
+    const replaced = dispatch(opened.state, {
+      type: 'APPOINT_MINISTER',
+      ministry: 'finance',
+      candidateId: candidate.id,
+    });
+    expect(replaced.ok && replaced.state.security.investigations).toHaveLength(0);
+    expect(exposeMinister(opened.state, 'finance', 'Test.').security.investigations).toHaveLength(0);
+  });
+
   it('an exposed minister resigns and the post is vacant', () => {
     const state = newGame();
     const after = exposeMinister(state, 'finance', 'Test.');
