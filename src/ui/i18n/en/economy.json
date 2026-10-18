@@ -45,7 +45,11 @@
     },
     "indicators": "Indicators",
     "range": "Time range",
-    "ranges": { "1Y": "1Y", "5Y": "5Y", "all": "All" },
+    "ranges": {
+      "1Y": "1Y",
+      "5Y": "5Y",
+      "all": "All"
+    },
     "charts": {
       "growth": "Real GDP growth",
       "inflation": "Inflation",
@@ -80,6 +84,7 @@
     "establishment": "Pensions & salaries",
     "interest": "Interest on debt",
     "total": "Total",
-    "balance": "Balance"
+    "balance": "Balance",
+    "receipts": "One-off receipts"
   }
 }

@@ -43,6 +43,19 @@
     "dueIn_one": "Due in {{count}} day",
     "dueIn_other": "Due in {{count}} days",
     "repay": "Repay now",
-    "repayLabel": "Repay {{principal}} to {{lender}}"
+    "repayLabel": "Repay {{principal}} to {{lender}}",
+    "receipts": {
+      "title": "One-off receipts",
+      "note": "Money that comes in outside the monthly revenue lines, straight into the treasury. Loans are borrowing and are not counted here.",
+      "lastMonth": "Last month",
+      "total": "Total",
+      "sources": {
+        "licenceFees": "Licence fees from investors",
+        "tradeSales": "Trade Market sales",
+        "refunds": "Refunds on cancelled projects",
+        "events": "Windfalls from events",
+        "reparations": "War reparations"
+      }
+    }
   }
 }

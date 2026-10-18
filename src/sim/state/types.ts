@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 13;
+export const SCHEMA_VERSION = 14;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -115,6 +115,14 @@ export type RevenueLine = (typeof REVENUE_LINES)[number];
 
 export type ExpenditureLine = MinistryId | 'establishment' | 'interest';
 
+/**
+ * One-off money the treasury receives outside the revenue lines: licence fees from investors, Trade Market sales
+ * (single trades, surplus sales and supply contracts), refunds on cancelled projects, windfalls from events and war
+ * reparations. Loans are borrowing, not receipts, and are not counted.
+ */
+export const RECEIPT_SOURCES = ['licenceFees', 'tradeSales', 'refunds', 'events', 'reparations'] as const;
+export type ReceiptSource = (typeof RECEIPT_SOURCES)[number];
+
 /** The fiscal settlement of the most recently closed month, in ₹ crore. */
 export interface FiscalMonth {
   revenue: Record<RevenueLine, number>;
@@ -125,6 +133,8 @@ export interface FiscalMonth {
   balance: number;
   borrowed: number;
   repaid: number;
+  /** One-off receipts during the month, outside the revenue lines (not in totalRevenue or balance). */
+  receipts: Record<ReceiptSource, number>;
 }
 
 export interface EconomyState {
@@ -146,6 +156,8 @@ export interface EconomyState {
   /** Human Development Index, 0–1. */
   hdi: number;
   lastMonth: FiscalMonth | null;
+  /** One-off receipts so far this month; the fiscal settlement records them in lastMonth and clears them. */
+  receipts: Record<ReceiptSource, number>;
   /** Loans from countries and the international lender (Sprint 8.8), outside public debt until they fall due. */
   loans: Loan[];
 }

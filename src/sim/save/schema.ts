@@ -31,6 +31,7 @@ import {
   DIFFICULTIES,
   GAME_OVER_CAUSES,
   NUCLEAR_DOCTRINES,
+  RECEIPT_SOURCES,
   REVENUE_LINES,
   SCHEMA_VERSION,
 } from '../state/types';
@@ -50,6 +51,9 @@ const expenditureLines = z.object({
   establishment: finite,
   interest: finite,
 });
+
+/** One-off receipts by source (v14). */
+const receipts = z.record(z.enum(RECEIPT_SOURCES), z.number().min(0));
 
 const tick = z.number().int();
 const keyed = <K extends readonly [string, ...string[]], V extends z.ZodType>(keys: K, value: V) =>
@@ -265,8 +269,10 @@ export const gameStateSchema = z.object({
         balance: finite,
         borrowed: z.number().min(0),
         repaid: z.number().min(0),
+        receipts,
       })
       .nullable(),
+    receipts,
     loans: z.array(
       z.object({
         id: z.string(),

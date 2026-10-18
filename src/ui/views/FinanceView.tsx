@@ -16,7 +16,9 @@ import {
   MINISTRY_CONTENT,
   MIN_LOAN,
   outstanding,
+  RECEIPT_SOURCES,
   REVENUE_LINES,
+  totalReceipts,
   UNDERFUNDED_BELOW,
   validateLoan,
   validateRepay,
@@ -142,6 +144,45 @@ function GeneralExpenses({ game }: { game: GameState }) {
                 {formatCroreDelta(daily.balance * daily.days)}
               </td>
               <td />
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </Panel>
+  );
+}
+
+/** Money that reached the treasury outside the monthly settlement: this month so far, and last month. */
+function Receipts({ game }: { game: GameState }) {
+  const { t } = useTranslation();
+  const now = game.economy.receipts;
+  const last = game.economy.lastMonth?.receipts ?? null;
+  return (
+    <Panel title={t('finance.receipts.title')} className={gameStyles.span6}>
+      <p className={styles.note}>{t('finance.receipts.note')}</p>
+      <div className={styles.tableWrap}>
+        <table className={styles.table} data-testid="one-off-receipts">
+          <thead>
+            <tr>
+              <th>{t('finance.columns.line')}</th>
+              <th className={styles.num}>{t('finance.columns.perMonth')}</th>
+              <th className={styles.num}>{t('finance.receipts.lastMonth')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RECEIPT_SOURCES.map((source) => (
+              <tr key={source}>
+                <td>{t(`finance.receipts.sources.${source}`)}</td>
+                <td className={styles.num}>{formatCrore(now[source])}</td>
+                <td className={styles.num}>{last ? formatCrore(last[source]) : '–'}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>{t('finance.receipts.total')}</td>
+              <td className={styles.num}>{formatCrore(totalReceipts(now))}</td>
+              <td className={styles.num}>{last ? formatCrore(totalReceipts(last)) : '–'}</td>
             </tr>
           </tfoot>
         </table>
@@ -285,6 +326,7 @@ export function FinanceView() {
       <div className={gameStyles.grid}>
         <GeneralExpenses game={game} />
         <Loans game={game} />
+        <Receipts game={game} />
       </div>
     </>
   );

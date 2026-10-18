@@ -11,6 +11,7 @@ import {
   REVENUE_LINES,
   SECTORS,
   sectorShare,
+  totalReceipts,
   type MonthlySnapshot,
 } from '../../sim';
 import { useGame } from '../../store';
@@ -203,6 +204,12 @@ export function EconomyView() {
                     <td className={last.balance >= 0 ? styles.positive : styles.negative}>
                       {formatCrore(last.balance)}
                     </td>
+                  </tr>
+                  <tr>
+                    <td>{t('economy.receipts')}</td>
+                    <td data-testid="last-receipts">{formatCrore(totalReceipts(last.receipts))}</td>
+                    <td />
+                    <td />
                   </tr>
                 </tfoot>
               </table>

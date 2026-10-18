@@ -13,6 +13,7 @@ import {
   MAX_LICENCES,
 } from './constants';
 import { businessClimate, plantProfit } from './flows';
+import { receive } from '../finance/receipts';
 
 /** ₹ crore to build this many state plants. */
 export const industryCost = (industry: IndustryId, quantity: number): number =>
@@ -109,7 +110,7 @@ export function validateLicence(state: GameState, industry: IndustryId, region: 
 /** Licenses an investor to build a private plant: the fee goes to the treasury, the plant opens after a short build. */
 export function licencePlant(state: GameState, industry: IndustryId, region: RegionId): GameState {
   const fee = INDUSTRY_CONTENT[industry].licenceFee;
-  const paid = { ...state, nation: { ...state.nation, treasury: state.nation.treasury + fee } };
+  const paid = receive(state, 'licenceFees', fee);
   return appendLog(enqueue(paid, industry, region, 'private', 1, 0, LICENCE_DAYS), {
     severity: 'good',
     title: `Licence granted in ${placeName(state, region)}`,
@@ -130,8 +131,7 @@ export function cancelIndustry(state: GameState, orderId: string): GameState {
   const refund = Math.round(order.cost * INDUSTRY_CANCEL_REFUND);
   return appendLog(
     {
-      ...state,
-      nation: { ...state.nation, treasury: state.nation.treasury + refund },
+      ...receive(state, 'refunds', refund),
       industry: { ...state.industry, queue: state.industry.queue.filter((o) => o.id !== orderId) },
     },
     {

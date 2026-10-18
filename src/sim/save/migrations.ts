@@ -67,6 +67,21 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
       meta: { ...v12.meta, options: { ...v12.meta.options, regions: true } },
     };
   },
+  // v13 → v14: one-off receipts (licence fees, trade sales, refunds, windfalls, reparations) get their own line in
+  // the monthly figures. A game in progress has none recorded yet, this month or last.
+  13: (state) => {
+    const v13 = state as { economy: { lastMonth: object | null } };
+    const none = { licenceFees: 0, tradeSales: 0, refunds: 0, events: 0, reparations: 0 };
+    return {
+      ...v13,
+      schemaVersion: 14,
+      economy: {
+        ...v13.economy,
+        lastMonth: v13.economy.lastMonth && { ...v13.economy.lastMonth, receipts: { ...none } },
+        receipts: { ...none },
+      },
+    };
+  },
 };
 
 export function migrate(

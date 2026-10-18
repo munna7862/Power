@@ -18,6 +18,7 @@ import {
 } from './constants';
 import { partnerCapacity, partnerPrice, partnerProblem, priceAfterTrade, quotes, type TradeSide } from './pricing';
 import { MAX_TARIFF } from '../industry/constants';
+import { receive } from '../finance/receipts';
 
 /**
  * The President's trades. Goods come from (or go into) the national stocks; money goes to (or comes from) the
@@ -104,7 +105,11 @@ export function validateSell(state: GameState, good: GoodId, partner: CountryId,
 
 export function sellGoods(state: GameState, good: GoodId, partner: CountryId, quantity: number): GameState {
   const revenue = Math.round(quantity * partnerPrice(state, partner, good, 'sell'));
-  const next = moveTreasury(moveStock(record(state, partner, good, quantity, 'sell'), good, -quantity), revenue);
+  const next = receive(
+    moveStock(record(state, partner, good, quantity, 'sell'), good, -quantity),
+    'tradeSales',
+    revenue,
+  );
   return appendLog(next, {
     severity: 'good',
     category: 'diplomacy',
@@ -158,8 +163,9 @@ export function sellAllSurplus(state: GameState): GameState {
   for (const step of surplusPlan(state)) {
     const value = Math.round(step.quantity * partnerPrice(next, step.partner, step.good, 'sell'));
     revenue += value;
-    next = moveTreasury(
+    next = receive(
       moveStock(record(next, step.partner, step.good, step.quantity, 'sell'), step.good, -step.quantity),
+      'tradeSales',
       value,
     );
   }
@@ -182,8 +188,9 @@ export function validateWorldSale(state: GameState, good: GoodId, quantity: numb
 /** Sells any quantity on the open world market, at a discount and with a larger effect on the price. */
 export function sellOnWorldMarket(state: GameState, good: GoodId, quantity: number): GameState {
   const revenue = Math.round(quantity * state.market.prices[good] * WORLD_MARKET_DISCOUNT);
-  const next = moveTreasury(
+  const next = receive(
     moveStock(record(state, null, good, quantity, 'sell', 2 * PRICE_IMPACT), good, -quantity),
+    'tradeSales',
     revenue,
   );
   return appendLog(next, {
@@ -289,7 +296,7 @@ export function deliverContracts(state: GameState): GameState {
     if (side === 'sell') {
       // A sale ships only surplus, like any other sale.
       const shipped = Math.min(quantity, surplus(next, good));
-      next = moveTreasury(moveStock(next, good, -shipped), Math.round(shipped * price));
+      next = receive(moveStock(next, good, -shipped), 'tradeSales', Math.round(shipped * price));
       if (shipped < quantity * 0.999) next = adjustRelation(next, partner, -1);
     } else if (next.nation.treasury >= quantity * price) {
       next = moveTreasury(moveStock(next, good, quantity), -Math.round(quantity * price));

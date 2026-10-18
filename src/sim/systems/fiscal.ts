@@ -2,6 +2,7 @@ import { CASH_RESERVE_MONTHS } from '../economy/constants';
 import { interestRateFor, nominalGdp, projectMonth } from '../economy/model';
 import type { System } from '../engine/system';
 import { settleLoans } from '../finance/loans';
+import { noReceipts } from '../finance/receipts';
 import type { RevenueLine } from '../state/types';
 
 /** Share of the gap between the average and market interest rate closed each month (~2-year average maturity). */
@@ -11,7 +12,8 @@ const REPRICING_RATE = 0.04;
  * Monthly fiscal settlement: collect revenue, pay ministries, establishment and
  * interest. When cash falls below the reserve (half a month of spending) the
  * government borrows to restore it; cash above twice the reserve repays debt.
- * The interest rate then reprices with debt, inflation and the deficit.
+ * The interest rate then reprices with debt, inflation and the deficit. The month's one-off receipts (already in
+ * the treasury) are recorded alongside the settlement and cleared for the new month.
  */
 export const fiscalSystem: System = {
   id: 'fiscal',
@@ -59,7 +61,9 @@ export const fiscalSystem: System = {
           balance,
           borrowed,
           repaid,
+          receipts: economy.receipts,
         },
+        receipts: noReceipts(),
       },
     };
   },
