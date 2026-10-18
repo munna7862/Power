@@ -1,4 +1,3 @@
-import { createOpeningCabinet } from '../cabinet/generate';
 import { MINISTRY_CONTENT } from '../content';
 import {
   MINISTRIES,
@@ -25,6 +24,7 @@ import {
 } from '../economy/constants';
 import { allEfficiencies, interestRateFor } from '../economy/model';
 import { Rng, seedRng } from '../engine/rng';
+import { openingDepartments } from '../departments/services';
 import { openingDiplomacy } from '../diplomacy/opening';
 import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
@@ -35,13 +35,11 @@ import { appendLog } from './log';
 import {
   DEFAULT_OPTIONS,
   SCHEMA_VERSION,
-  type CabinetState,
   type Difficulty,
   type EconomyState,
   type EventsState,
   type GameOptions,
   type GameState,
-  type Minister,
   type PoliticsState,
   type SecurityState,
   type SectorState,
@@ -99,14 +97,7 @@ export function defaultAllocations(): Record<MinistryId, number> {
   >;
 }
 
-export function emptyCabinet(): CabinetState {
-  return {
-    ministers: Object.fromEntries(MINISTRIES.map((m) => [m, null])) as Record<MinistryId, Minister | null>,
-    candidates: Object.fromEntries(MINISTRIES.map((m) => [m, [] as Minister[]])) as Record<MinistryId, Minister[]>,
-  };
-}
-
-/** Politics before the first monthly settlement; satisfaction is recomputed once the cabinet exists. */
+/** Politics before the first monthly settlement; satisfaction is recomputed once the departments exist. */
 export function openingPolitics(ideology: IdeologyId, strategy: StrategyId): PoliticsState {
   return {
     ideology,
@@ -175,7 +166,7 @@ export function createInitialState(options: NewGameOptions): GameState {
     nation: { name: 'India', treasury: profile.treasury, approval: profile.approval, population: START_POPULATION },
     economy: createStartingEconomy(options.difficulty),
     budget: { taxRates: { ...DEFAULT_TAX_RATES }, allocations: defaultAllocations(), lastEnactedTick: null },
-    cabinet: emptyCabinet(),
+    departments: openingDepartments(),
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
     security: openingSecurity(),
@@ -191,7 +182,6 @@ export function createInitialState(options: NewGameOptions): GameState {
 
   state = applyPolicy(state, 'ideology', ideology);
   state = applyPolicy(state, 'strategy', strategy);
-  state = createOpeningCabinet(state, rng);
   state = {
     ...state,
     rng: rng.state,
@@ -201,6 +191,6 @@ export function createInitialState(options: NewGameOptions): GameState {
   return appendLog(state, {
     severity: 'info',
     title: 'Sworn in as President',
-    body: `${presidentName} takes the oath of office. Review the budget and your cabinet: the nation is watching your first decisions.`,
+    body: `${presidentName} takes the oath of office. Review the budget and your departments: the nation is watching your first decisions.`,
   });
 }

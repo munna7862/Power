@@ -1,6 +1,5 @@
 import type { EffectScale, EventEffect } from '../content/events';
-import { MINISTRY_CONTENT } from '../content';
-import { MINISTRIES, REGIONS, type MinistryId, type RegionId } from '../content/ids';
+import { REGIONS, type RegionId } from '../content/ids';
 import { COUNTRY_LIST, isCountryId } from '../content/world';
 import { PACT_YEARS } from '../diplomacy/constants';
 import { adjustRelation as adjustCountryRelation, hasTreaty } from '../diplomacy/relations';
@@ -9,7 +8,6 @@ import { startConflict } from '../diplomacy/world';
 import { ministryEfficiency } from '../economy/model';
 import type { ModifierTarget } from '../engine/modifiers';
 import type { Rng } from '../engine/rng';
-import { exposeMinister, pickCorruptMinister } from '../cabinet/scandal';
 import { addModifier } from '../politics/policy';
 import { patchMilitary } from '../military/forces';
 import { launchOperation } from '../security/operations';
@@ -58,7 +56,7 @@ export interface EffectContext {
  * to about half; a poorly run one (0.5) makes it about a third worse. "Amplify" does the reverse for benefits.
  */
 export function scaleFactor(
-  state: Pick<GameState, 'budget' | 'cabinet' | 'modifiers' | 'economy'>,
+  state: Pick<GameState, 'budget' | 'departments' | 'modifiers' | 'economy'>,
   scale?: EffectScale,
 ): number {
   if (!scale) return 1;
@@ -79,7 +77,6 @@ export function isHarmful(effect: EventEffect): boolean {
     case 'corruption':
       return effect.delta > 0;
     case 'militaryLoyalty':
-    case 'loyalty':
     case 'readiness':
     case 'morale':
     case 'relation':
@@ -91,15 +88,6 @@ export function isHarmful(effect: EventEffect): boolean {
     default:
       return false;
   }
-}
-
-function adjustLoyalty(state: GameState, delta: number, ministry?: MinistryId): GameState {
-  const ministers = { ...state.cabinet.ministers };
-  for (const m of ministry ? [ministry] : MINISTRIES) {
-    const minister = ministers[m];
-    if (minister) ministers[m] = { ...minister, loyalty: clamp(minister.loyalty + delta, 0, 100) };
-  }
-  return { ...state, cabinet: { ...state.cabinet, ministers } };
 }
 
 /** Applies one effect. Harmful effects are scaled by the game's difficulty. */
@@ -204,17 +192,6 @@ export function applyEffect(state: GameState, effect: EventEffect, ctx: EffectCo
         ...state,
         economy: { ...state.economy, corruption: clamp(state.economy.corruption + effect.delta * severity, 0, 100) },
       };
-    case 'loyalty':
-      return adjustLoyalty(state, effect.delta * severity, effect.ministry);
-    case 'scandal': {
-      const ministry = effect.ministry === 'random' ? pickCorruptMinister(state, ctx.rng) : effect.ministry;
-      if (!ministry || !state.cabinet.ministers[ministry]) return state;
-      return exposeMinister(
-        state,
-        ministry,
-        `Press reports and an internal audit pointed to misuse of funds in the ${MINISTRY_CONTENT[ministry].shortName} ministry.`,
-      );
-    }
     case 'operation':
       return launchOperation(state, effect.kind, ctx.rng, ctx.ref);
   }

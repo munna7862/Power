@@ -48,7 +48,7 @@ export const leadershipSystem: System = {
           severity: 'critical',
           category: 'security',
           title: 'Rumours of unrest in the barracks',
-          body: 'Senior officers are said to be questioning your leadership. Keep the defence minister loyal, fund the forces and win back public support.',
+          body: 'Senior officers are said to be questioning your leadership. Strengthen the army command, fund the forces and win back public support.',
         },
       );
     } else if (risk < COUP_RISK_THRESHOLD - 5 && next.security.coupAlert) {

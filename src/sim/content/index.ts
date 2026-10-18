@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import ideologiesJson from '../../../content/ideologies.json';
+import departmentsJson from '../../../content/departments.json';
 import ministriesJson from '../../../content/ministries.json';
-import namesJson from '../../../content/names.json';
 import strategiesJson from '../../../content/strategies.json';
 import { MODIFIER_TARGETS } from '../engine/modifiers';
 import {
+  DEPARTMENT_SERVICES,
   IDEOLOGIES,
   MINISTRIES,
-  REGIONS,
   STRATEGIES,
   type IdeologyId,
   type MinistryId,
-  type RegionId,
+  type ServiceId,
   type StrategyId,
 } from './ids';
 
@@ -44,12 +44,6 @@ const policySchema = <T extends readonly [string, ...string[]]>(ids: T) =>
     summary: z.string().min(1),
     modifiers: z.array(contentModifier).min(1),
   });
-
-const nameListSchema = z.object({
-  female: z.array(z.string().min(2)).min(4),
-  male: z.array(z.string().min(2)).min(4),
-  surnames: z.array(z.string().min(2)).min(4),
-});
 
 /** Parses an array of content records and checks it covers every id exactly once, in id order. */
 function byId<T extends { id: string }, K extends string>(
@@ -94,6 +88,25 @@ export const STRATEGY_CONTENT = byId('strategies.json', policySchema(STRATEGIES)
   PolicyContent<StrategyId>
 >;
 
-const namesParsed = z.record(z.enum(REGIONS), nameListSchema).safeParse(namesJson);
-if (!namesParsed.success) throw new Error(`content/names.json: ${namesParsed.error.issues[0]?.message}`);
-export const NAME_CONTENT = namesParsed.data as Record<RegionId, z.infer<typeof nameListSchema>>;
+const serviceSchema = z.object({ id: z.string(), name: z.string().min(1), summary: z.string().min(1) });
+const departmentSchema = z.object({ id: z.enum(MINISTRIES), services: z.array(serviceSchema).min(1) });
+export interface ServiceContent {
+  id: ServiceId;
+  name: string;
+  summary: string;
+}
+
+/** Each department's services, in the order of DEPARTMENT_SERVICES; the ids must match exactly. */
+export const DEPARTMENT_CONTENT: Record<MinistryId, { id: MinistryId; services: ServiceContent[] }> = (() => {
+  const parsed = byId('departments.json', departmentSchema, MINISTRIES, departmentsJson);
+  for (const m of MINISTRIES) {
+    const found = parsed[m].services.map((x) => x.id);
+    const expected: readonly string[] = DEPARTMENT_SERVICES[m];
+    if (found.length !== expected.length || expected.some((id, i) => found[i] !== id)) {
+      throw new Error(
+        `content/departments.json: ${m} services must be [${expected.join(', ')}], found [${found.join(', ')}]`,
+      );
+    }
+  }
+  return parsed as Record<MinistryId, { id: MinistryId; services: ServiceContent[] }>;
+})();

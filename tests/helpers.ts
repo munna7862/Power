@@ -1,4 +1,11 @@
-import { advanceDays, createInitialState, type GameState, type NewGameOptions } from '../src/sim';
+import {
+  advanceDays,
+  createInitialState,
+  DEPARTMENT_SERVICES,
+  type GameState,
+  type MinistryId,
+  type NewGameOptions,
+} from '../src/sim';
 import { SYSTEMS } from '../src/sim/systems';
 
 export const DEFAULT_OPTIONS: NewGameOptions = {
@@ -30,3 +37,12 @@ export const CALM_SYSTEMS = SYSTEMS.filter(
 );
 
 export const calm = (state: GameState, days: number): GameState => advanceDays(state, days, CALM_SYSTEMS);
+
+/** The same game with every service of a department at the given star rating (1–5). */
+export function withStars(state: GameState, department: MinistryId, stars: number): GameState {
+  const services = Object.fromEntries(DEPARTMENT_SERVICES[department].map((s) => [s, stars]));
+  return {
+    ...state,
+    departments: { ...state.departments, stars: { ...state.departments.stars, [department]: services } },
+  };
+}

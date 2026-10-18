@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDays, hashState, parseSave, SAVE_FORMAT, serializeSave } from '../../src/sim';
+import { advanceDays, hashState, parseSave, SAVE_FORMAT, SCHEMA_VERSION, serializeSave } from '../../src/sim';
 import { stableStringify } from '../../src/sim/save/hash';
-import { migrate } from '../../src/sim/save/migrations';
+import { migrate, PREVIOUS_EDITION_MESSAGE } from '../../src/sim/save/migrations';
 import { newGame } from '../helpers';
 
 const SAVED_AT = '2026-10-11T12:00:00.000Z';
@@ -66,7 +66,7 @@ describe('save files', () => {
     const broken = { ...newGame(), nation: { name: 'India' } };
     const json = JSON.stringify({
       format: SAVE_FORMAT,
-      schemaVersion: 1,
+      schemaVersion: SCHEMA_VERSION,
       savedAt: SAVED_AT,
       checksum: hashState(broken),
       summary: {},
@@ -95,6 +95,10 @@ describe('migrations', () => {
   it('fails clearly when a step is missing or the version is invalid', () => {
     expect(() => migrate({}, 1, 3, { 1: (s) => s })).toThrow(/from save version 2 to 3/);
     expect(() => migrate({}, 0)).toThrow(/Invalid save version/);
+  });
+
+  it('refuses saves from the previous edition (v1–v6) with an explanation', () => {
+    for (const v of [1, 6]) expect(() => migrate({}, v)).toThrow(PREVIOUS_EDITION_MESSAGE);
   });
 });
 

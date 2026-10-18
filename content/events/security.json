@@ -225,9 +225,12 @@
         "default": true,
         "effects": [
           {
-            "type": "loyalty",
-            "delta": -1,
-            "ministry": "intelligence"
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -0.5,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       }
@@ -388,7 +391,7 @@
       {
         "id": "purge",
         "label": "Purge and tighten security",
-        "description": "Costs ₹900 cr; ministers feel watched.",
+        "description": "Costs ₹900 cr; officials feel watched.",
         "outcome": "The leak is traced and the services are cleaned out.",
         "cost": 900,
         "effects": [
@@ -397,9 +400,12 @@
             "delta": -1
           },
           {
-            "type": "loyalty",
-            "delta": -2,
-            "ministry": "intelligence"
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       },
@@ -445,7 +451,7 @@
       {
         "id": "meet",
         "label": "Meet the service chiefs",
-        "description": "Costs ₹200 cr; reassures the generals.",
+        "description": "Costs ₹5,000 cr; buys the army’s loyalty.",
         "outcome": "A frank meeting with the chiefs steadies the army.",
         "cost": 200,
         "effects": [
@@ -454,9 +460,8 @@
             "delta": 6
           },
           {
-            "type": "loyalty",
-            "delta": 4,
-            "ministry": "defence"
+            "type": "militaryLoyalty",
+            "delta": 4
           }
         ]
       },
@@ -492,28 +497,22 @@
             "delta": -4
           },
           {
-            "type": "loyalty",
-            "delta": -3,
-            "ministry": "defence"
+            "type": "militaryLoyalty",
+            "delta": -3
           }
         ]
       }
     ]
   },
   {
-    "id": "defence-minister-rift",
+    "id": "army-command-rift",
     "category": "security",
     "severity": "warning",
-    "title": "Rift with the defence minister",
-    "body": "The defence minister is openly at odds with you over strategy and spending.",
+    "title": "Rift with the army command",
+    "body": "The service chiefs are openly at odds with you over strategy and spending.",
     "conditions": [
       {
-        "stat": "efficiency.defence",
-        "op": ">",
-        "value": 0
-      },
-      {
-        "stat": "minLoyalty",
+        "stat": "militaryLoyalty",
         "op": "<",
         "value": 50
       }
@@ -525,12 +524,11 @@
         "id": "reaffirm",
         "label": "Reaffirm your confidence",
         "description": "Costs a concession.",
-        "outcome": "You publicly back the minister and promise more say. The rift closes.",
+        "outcome": "You publicly back the service chiefs and promise them more say. The rift closes.",
         "effects": [
           {
-            "type": "loyalty",
-            "delta": 8,
-            "ministry": "defence"
+            "type": "militaryLoyalty",
+            "delta": 8
           },
           {
             "type": "militaryLoyalty",
@@ -546,9 +544,8 @@
         "default": true,
         "effects": [
           {
-            "type": "loyalty",
-            "delta": -5,
-            "ministry": "defence"
+            "type": "militaryLoyalty",
+            "delta": -5
           },
           {
             "type": "modifier",

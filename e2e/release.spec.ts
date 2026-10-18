@@ -27,7 +27,7 @@ test.describe('Phase 6: polish and release', () => {
     await page.keyboard.press('F4');
     await expect(page.getByRole('heading', { level: 1, name: 'Budget' })).toBeVisible();
     await coach.getByRole('button', { name: 'Next' }).click();
-    await openView(page, 'Cabinet');
+    await openView(page, 'Departments');
     await coach.getByRole('button', { name: 'Next' }).click();
     await expect(coach).toContainText('Start the clock');
     await page.getByRole('button', { name: 'Speed 4×' }).click();

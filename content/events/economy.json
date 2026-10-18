@@ -660,9 +660,12 @@
             "days": 60
           },
           {
-            "type": "loyalty",
-            "delta": 2,
-            "ministry": "finance"
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1,
+            "days": 120,
+            "label": "Establishment goodwill"
           }
         ]
       },

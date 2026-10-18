@@ -95,6 +95,3 @@ export const START_UNEMPLOYMENT = 0.078;
 export const START_CORRUPTION = 40;
 export const START_HDI = 0.644;
 export const START_REAL_GROWTH = 0.062;
-
-/** Efficiency of a ministry with no minister (an acting civil servant). */
-export const VACANT_COMPETENCE = 35;

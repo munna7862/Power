@@ -1,33 +1,35 @@
 import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, type MinistryId } from '../content/ids';
-import { exposeMinister } from '../cabinet/scandal';
+import { leakagePressure } from '../departments/quality';
 import { allEfficiencies } from '../economy/model';
 import type { Rng } from '../engine/rng';
+import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
 import type { GameState, Investigation } from '../state/types';
 import { INVESTIGATION_COST, INVESTIGATION_DAYS, MAX_INVESTIGATIONS } from './constants';
 import { clamp } from './unrest';
 
-/** Why an investigation cannot be launched, or null. */
-export function validateInvestigation(state: GameState, ministry: MinistryId): string | null {
-  if (!MINISTRIES.includes(ministry)) return `Unknown ministry ${ministry}.`;
-  const minister = state.cabinet.ministers[ministry];
-  if (!minister) return 'There is no minister to investigate: the post is vacant.';
-  if (state.security.investigations.some((i) => i.ministry === ministry)) {
-    return `An inquiry into ${minister.name} is already under way.`;
+/** How long a finding keeps the audited department cleaner, and by how much (corruption target points). */
+export const AUDIT_FINDING_DAYS = 365;
+export const AUDIT_FINDING_CORRUPTION = -2;
+
+/** Why an audit cannot be launched, or null. */
+export function validateInvestigation(state: GameState, department: MinistryId): string | null {
+  if (!MINISTRIES.includes(department)) return `Unknown department ${department}.`;
+  if (state.security.investigations.some((i) => i.department === department)) {
+    return `The ${MINISTRY_CONTENT[department].shortName} department is already being audited.`;
   }
   if (state.security.investigations.length >= MAX_INVESTIGATIONS) {
-    return `The agency can only run ${MAX_INVESTIGATIONS} inquiries at a time.`;
+    return `The bureau can only run ${MAX_INVESTIGATIONS} audits at a time.`;
   }
-  if (state.nation.treasury < INVESTIGATION_COST) return 'The treasury cannot cover the cost of an inquiry.';
+  if (state.nation.treasury < INVESTIGATION_COST) return 'The treasury cannot cover the cost of an audit.';
   return null;
 }
 
-export function startInvestigation(state: GameState, ministry: MinistryId): GameState {
-  const minister = state.cabinet.ministers[ministry];
+export function startInvestigation(state: GameState, department: MinistryId): GameState {
   const investigation: Investigation = {
     id: `inv-${state.nextId}`,
-    ministry,
+    department,
     startedTick: state.clock.tick,
     resolvesTick: state.clock.tick + INVESTIGATION_DAYS,
   };
@@ -41,52 +43,60 @@ export function startInvestigation(state: GameState, ministry: MinistryId): Game
     {
       severity: 'info',
       category: 'corruption',
-      title: `Inquiry opened: ${MINISTRY_CONTENT[ministry].shortName}`,
-      body: `The anti-corruption agency begins quietly examining ${minister?.name ?? 'the ministry'}'s accounts. Results are expected in about two months.`,
+      title: `Audit opened: ${MINISTRY_CONTENT[department].shortName}`,
+      body: `The anti-corruption bureau begins going through the ${MINISTRY_CONTENT[department].shortName} department's accounts. Results are expected in about two months.`,
     },
   );
 }
 
-/** Chance an inquiry uncovers wrongdoing: more likely when the minister is corrupt and the agency is well funded. */
-export function exposureChance(corruption: number, antiCorruptionEfficiency: number): number {
-  return clamp((corruption / 100) * (0.5 + 0.5 * Math.min(antiCorruptionEfficiency, 1.6)) + 0.05, 0.05, 0.9);
+/**
+ * Chance an audit finds misuse: likelier when petty corruption is widespread (national corruption and weak
+ * anti-corruption services) and when the bureau is well funded.
+ */
+export function exposureChance(
+  state: Pick<GameState, 'economy' | 'departments'>,
+  antiCorruptionEfficiency: number,
+): number {
+  const pressure = (state.economy.corruption + leakagePressure(state)) / 2;
+  return clamp((pressure / 100) * (0.5 + 0.5 * Math.min(antiCorruptionEfficiency, 1.6)) + 0.05, 0.05, 0.9);
 }
 
-/** Settles an inquiry whose time has come. */
+/** Settles an audit whose time has come. A finding cleans up the department and earns some credit. */
 export function resolveInvestigation(state: GameState, investigation: Investigation, rng: Rng): GameState {
   const remaining = state.security.investigations.filter((i) => i.id !== investigation.id);
   let next: GameState = { ...state, security: { ...state.security, investigations: remaining } };
-  const minister = next.cabinet.ministers[investigation.ministry];
-  if (!minister) {
+  const name = MINISTRY_CONTENT[investigation.department].shortName;
+  if (!rng.chance(exposureChance(next, allEfficiencies(next).antiCorruption))) {
     return appendLog(next, {
       severity: 'info',
       category: 'corruption',
-      title: 'Inquiry closed',
-      body: `The ${MINISTRY_CONTENT[investigation.ministry].shortName} inquiry was closed because the minister had already left.`,
+      title: `Audit finds the books in order: ${name}`,
+      body: `Auditors found nothing seriously wrong in the ${name} department.`,
     });
   }
-  if (rng.chance(exposureChance(minister.corruption, allEfficiencies(next).antiCorruption))) {
-    next = exposeMinister(
-      next,
-      investigation.ministry,
-      'An anti-corruption inquiry found that ministry funds had been diverted.',
-    );
-    return {
-      ...next,
-      economy: { ...next.economy, corruption: clamp(next.economy.corruption - 3, 0, 100) },
-    };
-  }
-  const ministers = {
-    ...next.cabinet.ministers,
-    [investigation.ministry]: { ...minister, loyalty: clamp(minister.loyalty - 3, 0, 100) },
-  };
-  return appendLog(
-    { ...next, cabinet: { ...next.cabinet, ministers } },
+  next = addTimedModifier(
+    next,
     {
-      severity: 'info',
+      source: 'audit',
+      label: `Audit of ${name}`,
+      target: 'politics.corruption',
+      kind: 'add',
+      value: AUDIT_FINDING_CORRUPTION,
+    },
+    AUDIT_FINDING_DAYS,
+  );
+  next = addTimedModifier(
+    next,
+    { source: 'audit', label: `Audit of ${name}`, target: 'politics.approvalTarget', kind: 'add', value: 1 },
+    60,
+  );
+  return appendLog(
+    { ...next, economy: { ...next.economy, corruption: clamp(next.economy.corruption - 3, 0, 100) } },
+    {
+      severity: 'good',
       category: 'corruption',
-      title: `Inquiry finds no wrongdoing: ${MINISTRY_CONTENT[investigation.ministry].shortName}`,
-      body: `Investigators found nothing against ${minister.name}. The minister is said to be unhappy about being investigated.`,
+      title: `Audit exposes misuse: ${name}`,
+      body: `Auditors traced diverted funds in the ${name} department. The officials responsible are suspended, and the department will be cleaner for a year.`,
     },
   );
 }

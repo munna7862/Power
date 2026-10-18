@@ -6,7 +6,6 @@ import {
   explainGrowth,
   GROWTH_DRIVER_LABELS,
   sectorShare,
-  MINISTRIES,
   MINISTRY_CONTENT,
   nominalGdp,
   projectMonth,
@@ -18,7 +17,7 @@ import {
 } from '../../src/sim';
 import { expectedSectorGrowth } from '../../src/sim/economy/growth';
 import { interestRateFor, ministryEfficiencyFor, taxYieldFactor } from '../../src/sim/economy/model';
-import { calm, newGame } from '../helpers';
+import { calm, newGame, withStars } from '../helpers';
 
 const withTaxes = (state: GameState, rate: (t: TaxId) => number): GameState => ({
   ...state,
@@ -66,22 +65,15 @@ describe('fiscal model', () => {
     expect(moreHealth.expenditure.health).toBeCloseTo(base.expenditure.health * 2);
   });
 
-  it('rates ministry efficiency from funding, competence and corruption', () => {
+  it('rates department efficiency from funding and service stars', () => {
     const state = newGame();
-    const minister = state.cabinet.ministers.health!;
-    const withMinister = (m: typeof minister | null): GameState => ({
-      ...state,
-      cabinet: { ...state.cabinet, ministers: { ...state.cabinet.ministers, health: m } },
-    });
     const allocation = MINISTRY_CONTENT.health.defaultAllocation;
-    const star = withMinister({ ...minister, competence: 95, corruption: 0 });
-    const crook = withMinister({ ...minister, competence: 95, corruption: 100 });
-    const vacant = withMinister(null);
-    expect(ministryEfficiencyFor(allocation, star, 'health')).toBeCloseTo(1.27);
-    expect(ministryEfficiencyFor(allocation, crook, 'health')).toBeLessThan(1);
-    expect(ministryEfficiencyFor(allocation, vacant, 'health')).toBeCloseTo(0.91);
-    expect(ministryEfficiencyFor(allocation * 2, star, 'health')).toBeGreaterThan(1.7);
-    expect(ministryEfficiencyFor(0, star, 'health')).toBe(0);
+    const opening = ministryEfficiencyFor(allocation, state, 'health');
+    expect(opening).toBeCloseTo(0.88, 2);
+    expect(ministryEfficiencyFor(allocation, withStars(state, 'health', 5), 'health')).toBeCloseTo(1.24, 2);
+    expect(ministryEfficiencyFor(allocation, withStars(state, 'health', 1), 'health')).toBeCloseTo(0.76, 2);
+    expect(ministryEfficiencyFor(allocation * 4, state, 'health')).toBeCloseTo(0.88 * Math.sqrt(3), 2);
+    expect(ministryEfficiencyFor(0, state, 'health')).toBe(0);
   });
 
   it('prices debt higher when it is large, inflation is high or deficits are big', () => {
@@ -142,14 +134,10 @@ describe('economy over time', () => {
     expect(feb1.economy.debt).toBeLessThan(start.economy.debt);
   });
 
-  it('lowers corruption with a well-funded anti-corruption bureau and clean ministers', () => {
-    const start = newGame();
-    const ministers = Object.fromEntries(
-      MINISTRIES.map((m) => [m, { ...start.cabinet.ministers[m]!, corruption: 0, competence: 90 }]),
-    ) as GameState['cabinet']['ministers'];
+  it('lowers corruption with a well-funded, well-run anti-corruption bureau', () => {
+    const start = withStars(newGame(), 'antiCorruption', 5);
     const clean: GameState = {
       ...start,
-      cabinet: { ...start.cabinet, ministers },
       budget: {
         ...start.budget,
         allocations: { ...start.budget.allocations, antiCorruption: start.budget.allocations.antiCorruption * 3 },

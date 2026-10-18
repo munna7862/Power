@@ -124,7 +124,8 @@ describe('engine.tick', () => {
       'plots',
       'leadership',
       'investigations',
-      'cabinet',
+      'departments-monthly',
+      'departments-daily',
       'military-monthly',
       'military-daily',
       'diplomacy-monthly',
@@ -134,7 +135,6 @@ describe('engine.tick', () => {
       'history',
       'annual-report',
       'term',
-      'candidate-refresh',
     ]);
   });
 

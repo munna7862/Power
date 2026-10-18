@@ -2,11 +2,14 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { advanceDays, dispatch, parseSave, SCHEMA_VERSION, serializeSave } from '../../src/sim';
+import { FIRST_EDITION_VERSION, PREVIOUS_EDITION_MESSAGE } from '../../src/sim/save/migrations';
 import { newGame } from '../helpers';
 
 /**
  * Golden save fixtures: one per schema version, committed and never edited.
- * Every future version of the game must still load them (via migrations).
+ * From v7 (the current edition) on, every future version of the game must still load them (via migrations).
+ * v1–v6 come from the previous edition, which ran the country through a cabinet; they are kept to prove those
+ * saves are refused with a clear explanation rather than crashing or loading half a game.
  * Regenerate the current version's fixture only when creating it:
  *   UPDATE_GOLDEN=1 npx vitest run tests/sim/goldenSave.test.ts
  */
@@ -15,75 +18,41 @@ const fixture = (version: number) => fileURLToPath(new URL(`../fixtures/saves/v$
 describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
-      // An embassy so the fixture carries a treaty, an option switched on, then a little over a year of play.
-      const opened = dispatch(newGame({ seed: 2026, presidentName: 'Golden Fixture', options: { noRiots: true } }), {
-        type: 'OPEN_EMBASSY',
-        country: 'USA',
-      });
-      if (!opened.ok) throw new Error(opened.error);
-      const state = advanceDays(opened.state, 400);
+      // An embassy and a service upgrade so the fixture carries both, an option switched on, then a year of play.
+      let state = newGame({ seed: 2026, presidentName: 'Golden Fixture', options: { noRiots: true } });
+      for (const command of [
+        { type: 'OPEN_EMBASSY', country: 'USA' },
+        { type: 'UPGRADE_SERVICE', department: 'health', service: 'primaryCare' },
+      ] as const) {
+        const result = dispatch(state, command);
+        if (!result.ok) throw new Error(result.error);
+        state = result.state;
+      }
+      state = advanceDays(state, 400);
       writeFileSync(
         fixture(SCHEMA_VERSION),
-        `${JSON.stringify(JSON.parse(serializeSave(state, '2026-10-11T00:00:00.000Z')), null, 2)}\n`,
+        `${JSON.stringify(JSON.parse(serializeSave(state, '2026-10-18T00:00:00.000Z')), null, 2)}\n`,
       );
     });
   }
 
-  it.each(Array.from({ length: SCHEMA_VERSION }, (_, i) => i + 1))('loads the v%i fixture', (version) => {
+  const current = Array.from(
+    { length: SCHEMA_VERSION - FIRST_EDITION_VERSION + 1 },
+    (_, i) => i + FIRST_EDITION_VERSION,
+  );
+  it.each(current)('loads the v%i fixture', (version) => {
     const result = parseSave(readFileSync(fixture(version), 'utf8'));
     if (!result.ok) throw new Error(result.error);
     expect(result.save.state.schemaVersion).toBe(SCHEMA_VERSION);
     expect(result.save.summary.presidentName).toBe('Golden Fixture');
+    expect(result.save.state.departments.stars.health.primaryCare).toBe(3);
+    expect(advanceDays(result.save.state, 60).status.kind).toBe('playing');
   });
 
-  it('upgrades a v1 (Phase 1) save: keeps the date, treasury, approval and inbox, and adds the new systems', () => {
-    const raw = JSON.parse(readFileSync(fixture(1), 'utf8'));
-    const result = parseSave(JSON.stringify(raw));
-    if (!result.ok) throw new Error(result.error);
-    const { state } = result.save;
-    expect(state.clock).toEqual(raw.state.clock);
-    expect(state.nation).toMatchObject({ treasury: raw.state.nation.treasury, approval: raw.state.nation.approval });
-    expect(state.history).toHaveLength(raw.state.history.length);
-    expect(state.log.slice(0, raw.state.log.length)).toEqual(
-      raw.state.log.map((e: object) => ({ ...e, category: 'general', pendingId: null })),
-    );
-    expect(state.log.at(-1)?.title).toBe('Save upgraded');
-    expect(state.cabinet.ministers.finance).not.toBeNull();
-    expect(state.modifiers.every((m) => m.target !== ('economy.monthlyRevenue' as never))).toBe(true);
-    expect(advanceDays(state, 120).status.kind).toBe('playing');
-  });
-});
-
-describe('v3 → v4 migration (Phase 4)', () => {
-  it('keeps the v3 game and adds the armed forces, rivals and an idle nuclear program', () => {
-    const raw = JSON.parse(readFileSync(fixture(3), 'utf8'));
-    const result = parseSave(JSON.stringify(raw));
-    if (!result.ok) throw new Error(result.error);
-    const { state } = result.save;
-    expect(state.schemaVersion).toBe(SCHEMA_VERSION);
-    expect(state.clock).toEqual(raw.state.clock);
-    expect(state.nation.treasury).toBe(raw.state.nation.treasury);
-    expect(state.security.militaryLoyalty).toBe(raw.state.security.militaryLoyalty);
-    expect(state.military.wars).toEqual([]);
-    expect(state.military.forces.fighter).toBeGreaterThan(0);
-    expect(state.military.nuclear.warheads).toBe(0);
-    expect(advanceDays(state, 30).status.kind).toBe('playing');
-  });
-});
-
-describe('v5 → v6 migration (Phase 6)', () => {
-  it('keeps the v5 game, switches every option off, starts outside endless mode and with no repeat record', () => {
-    const raw = JSON.parse(readFileSync(fixture(5), 'utf8'));
-    const result = parseSave(JSON.stringify(raw));
-    if (!result.ok) throw new Error(result.error);
-    const { state } = result.save;
-    expect(state.schemaVersion).toBe(SCHEMA_VERSION);
-    expect(state.clock).toEqual(raw.state.clock);
-    expect(state.diplomacy.treaties).toEqual(raw.state.diplomacy.treaties);
-    expect(state.meta.options).toEqual({ noWars: false, noRiots: false, tutorial: false });
-    expect(state.meta.endless).toBe(false);
-    expect(state.events.fired).toEqual({});
-    expect(state.events.cooldowns).toEqual(raw.state.events.cooldowns);
-    expect(advanceDays(state, 30).status.kind).toBe('playing');
+  const previous = Array.from({ length: FIRST_EDITION_VERSION - 1 }, (_, i) => i + 1);
+  it.each(previous)('refuses the previous edition’s v%i fixture with an explanation', (version) => {
+    const result = parseSave(readFileSync(fixture(version), 'utf8'));
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toBe(PREVIOUS_EDITION_MESSAGE);
   });
 });

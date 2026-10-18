@@ -126,8 +126,8 @@
       {
         "id": "defend-press",
         "label": "Side with the press",
-        "description": "Popular, but ministers dislike scrutiny.",
-        "outcome": "You back a free press. Voters approve; some ministers sulk.",
+        "description": "Popular, but officials dislike scrutiny.",
+        "outcome": "You back a free press. Voters approve; some officials sulk.",
         "effects": [
           {
             "type": "modifier",
@@ -137,16 +137,20 @@
             "days": 90
           },
           {
-            "type": "loyalty",
-            "delta": -3
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1.5,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       },
       {
         "id": "restrict",
         "label": "Back the new powers",
-        "description": "Ministers are pleased; critics are loud.",
-        "outcome": "You back the new powers. Ministers are pleased, and the press is furious.",
+        "description": "Officials are pleased; critics are loud.",
+        "outcome": "You back the new powers. Officials are pleased, and the press is furious.",
         "effects": [
           {
             "type": "modifier",
@@ -156,8 +160,12 @@
             "days": 90
           },
           {
-            "type": "loyalty",
-            "delta": 3
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": 1.5,
+            "days": 120,
+            "label": "Establishment goodwill"
           }
         ]
       },
@@ -232,8 +240,12 @@
         "label": "Adviser resigns"
       },
       {
-        "type": "loyalty",
-        "delta": -2
+        "type": "modifier",
+        "target": "politics.approvalTarget",
+        "kind": "add",
+        "value": -1,
+        "days": 120,
+        "label": "Establishment unease"
       }
     ]
   },
@@ -267,8 +279,12 @@
             "days": 45
           },
           {
-            "type": "loyalty",
-            "delta": -2
+            "type": "modifier",
+            "target": "politics.approvalTarget",
+            "kind": "add",
+            "value": -1,
+            "days": 120,
+            "label": "Establishment unease"
           }
         ]
       },
@@ -310,57 +326,6 @@
     ]
   },
   {
-    "id": "cabinet-rumours",
-    "category": "personal",
-    "severity": "warning",
-    "title": "Rumours of cabinet discontent",
-    "body": "Ministers are grumbling about the direction of the government, and anonymous briefings are reaching the press.",
-    "conditions": [
-      {
-        "stat": "minLoyalty",
-        "op": "<",
-        "value": 45
-      }
-    ],
-    "weight": 0.96,
-    "cooldownDays": 180,
-    "choices": [
-      {
-        "id": "dinner",
-        "label": "Host a cabinet retreat",
-        "description": "Costs ₹300 cr; rebuilds loyalty.",
-        "outcome": "The retreat clears the air. Ministers leave in better spirits.",
-        "cost": 300,
-        "effects": [
-          {
-            "type": "loyalty",
-            "delta": 5
-          }
-        ]
-      },
-      {
-        "id": "ignore",
-        "label": "Ignore the chatter",
-        "description": "No cost; loyalty slips further.",
-        "outcome": "You ignore the chatter. It does not stop.",
-        "default": true,
-        "effects": [
-          {
-            "type": "loyalty",
-            "delta": -3
-          },
-          {
-            "type": "modifier",
-            "target": "politics.approvalTarget",
-            "kind": "add",
-            "value": -0.5,
-            "days": 30
-          }
-        ]
-      }
-    ]
-  },
-  {
     "id": "youth-townhall",
     "category": "personal",
     "severity": "info",
@@ -390,10 +355,10 @@
         ]
       },
       {
-        "id": "send-minister",
-        "label": "Send a minister",
+        "id": "send-envoy",
+        "label": "Send an envoy",
         "description": "Safe, but flat.",
-        "outcome": "The minister does a competent job. Few notice.",
+        "outcome": "The envoy does a competent job. Few notice.",
         "default": true,
         "effects": []
       }

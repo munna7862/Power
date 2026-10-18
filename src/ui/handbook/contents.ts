@@ -10,7 +10,7 @@ export const HANDBOOK = [
     entries: ['approval', 'satisfaction', 'treasury', 'budget', 'taxes', 'gdp', 'inflation', 'unemployment', 'debt'],
   },
   { id: 'society', entries: ['corruption', 'hdi', 'sectors'] },
-  { id: 'government', entries: ['ministries', 'ministers', 'ideology', 'strategy', 'events'] },
+  { id: 'government', entries: ['ministries', 'services', 'ideology', 'strategy', 'events'] },
   {
     id: 'security',
     entries: ['unrest', 'terror', 'operations', 'investigations', 'borderTension', 'coup', 'safety'],

@@ -1,27 +1,22 @@
-import { MINISTRIES } from '../content/ids';
+import { leakagePressure } from '../departments/quality';
 import { START_GDP, START_HDI, START_POPULATION } from '../economy/constants';
 import { allEfficiencies, realGdp } from '../economy/model';
 import { sumAdd } from '../engine/modifiers';
 import type { System } from '../engine/system';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
-/** Corruption attributed to a vacant ministry run by a civil servant. */
-const VACANT_CORRUPTION = 20;
 
 /** Monthly drift of national corruption and the Human Development Index. */
 export const societySystem: System = {
   id: 'society',
   cadence: 'monthly',
   run(state, { rng }) {
-    const { economy, cabinet, modifiers } = state;
+    const { economy, modifiers } = state;
     const eff = allEfficiencies(state);
 
-    const ministerCorruption =
-      MINISTRIES.reduce((sum, m) => sum + (cabinet.ministers[m]?.corruption ?? VACANT_CORRUPTION), 0) /
-      MINISTRIES.length;
     const corruptionTarget =
       25 +
-      0.4 * ministerCorruption -
+      0.4 * leakagePressure(state) -
       12 * (Math.min(eff.antiCorruption, 2) - 1) +
       sumAdd(modifiers, 'politics.corruption');
     const corruption = clamp(

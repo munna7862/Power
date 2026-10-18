@@ -13,7 +13,7 @@ import { useShortcuts, VIEW_KEYS } from '../shortcuts';
 import { TutorialCoach } from '../tutorial/TutorialCoach';
 import { useTutorialTarget } from '../tutorial/tutorialStore';
 import { BudgetView } from '../views/BudgetView';
-import { CabinetView } from '../views/CabinetView';
+import { DepartmentsView } from '../views/DepartmentsView';
 import { DashboardView } from '../views/DashboardView';
 import { DiplomacyView } from '../views/DiplomacyView';
 import { InboxView } from '../views/InboxView';
@@ -34,8 +34,8 @@ function ActiveView({ view }: { view: ViewId }) {
       return <EconomyView />;
     case 'budget':
       return <BudgetView />;
-    case 'cabinet':
-      return <CabinetView />;
+    case 'departments':
+      return <DepartmentsView />;
     case 'inbox':
       return <InboxView />;
     case 'security':

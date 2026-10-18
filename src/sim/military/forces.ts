@@ -1,5 +1,6 @@
 import { researchNode, UNIT_CONTENT } from '../content/military';
 import { DOMAIN_LABELS, DOMAINS, UNITS, type DomainId, type UnitId } from '../content/ids';
+import { commandConfidence } from '../departments/quality';
 import { allEfficiencies } from '../economy/model';
 import { groupIndian } from '../engine/numberFormat';
 import { appendLog } from '../state/log';
@@ -158,15 +159,11 @@ export function readinessTarget(fundingRatio: number, defenceEfficiency: number)
 export function moraleTarget(
   fundingRatio: number,
   approval: number,
-  defenceMinisterLoyalty: number,
+  commandConfidence: number,
   weariness: number,
 ): number {
   return clamp(
-    40 +
-      25 * Math.min(fundingRatio, 1.2) +
-      0.15 * (approval - 50) +
-      0.1 * (defenceMinisterLoyalty - 60) -
-      0.25 * weariness,
+    40 + 25 * Math.min(fundingRatio, 1.2) + 0.15 * (approval - 50) + 0.1 * (commandConfidence - 60) - 0.25 * weariness,
     10,
     95,
   );
@@ -179,7 +176,7 @@ export function settleForces(state: GameState): GameState {
   const m = state.military;
   const eff = allEfficiencies(state).defence;
   const weariness = Math.max(0, ...m.wars.map((w) => w.weariness));
-  const loyalty = state.cabinet.ministers.defence?.loyalty ?? 30;
+  const loyalty = commandConfidence(state);
 
   const fund = clamp(m.procurementFund - funding.drawn + funding.surplus, 0, Math.max(spend, 1) * FUND_CAP_MONTHS);
   const readiness = clamp(m.readiness + (readinessTarget(funding.ratio, eff) - m.readiness) * 0.12, 0, 100);

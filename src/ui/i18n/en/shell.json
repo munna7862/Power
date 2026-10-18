@@ -53,7 +53,7 @@
     "option": {
       "tutorial": {
         "title": "Guided tutorial",
-        "text": "A short tour of your first month: the budget, the cabinet, a practice decision and the map."
+        "text": "A short tour of your first month: the budget, your departments, a practice decision and the map."
       },
       "noWars": {
         "title": "No wars",
@@ -162,7 +162,7 @@
       "inbox": "Inbox",
       "economy": "Economy",
       "budget": "Budget",
-      "cabinet": "Cabinet",
+      "departments": "Departments",
       "security": "Security",
       "military": "Military",
       "world": "World",

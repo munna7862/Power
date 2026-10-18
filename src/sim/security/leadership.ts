@@ -1,19 +1,15 @@
 import type { MinistryId } from '../content/ids';
 import type { GameState } from '../state/types';
+import { commandConfidence, protectionScore } from '../departments/quality';
 import { COUP_RISK_THRESHOLD } from './constants';
 import { clamp } from './unrest';
 
-const VACANT_LOYALTY = 30;
-
-const loyaltyOf = (state: Pick<GameState, 'cabinet'>, ministry: MinistryId) =>
-  state.cabinet.ministers[ministry]?.loyalty ?? VACANT_LOYALTY;
-
-/** How safe the President is, 0–100: security funding, trusted ministers and the terror threat. */
+/** How safe the President is, 0–100: security funding, the close-protection service and the terror threat. */
 export function presidentialSafety(
-  state: Pick<GameState, 'cabinet' | 'security'>,
+  state: Pick<GameState, 'departments' | 'security'>,
   efficiency: Record<MinistryId, number>,
 ): number {
-  const guard = (loyaltyOf(state, 'home') + loyaltyOf(state, 'intelligence') + loyaltyOf(state, 'defence')) / 3;
+  const guard = protectionScore(state);
   return clamp(
     55 +
       22 * (Math.min(efficiency.home, 1.8) - 1) +
@@ -33,12 +29,12 @@ export const assassinationSuccessChance = (safety: number): number => clamp((70 
 
 /** The level of military loyalty the armed forces are drifting toward. */
 export function militaryLoyaltyTarget(
-  state: Pick<GameState, 'cabinet' | 'nation' | 'military'>,
+  state: Pick<GameState, 'departments' | 'nation' | 'military'>,
   efficiency: Record<MinistryId, number>,
 ): number {
   return clamp(
     35 +
-      0.35 * loyaltyOf(state, 'defence') +
+      0.35 * commandConfidence(state) +
       0.2 * state.nation.approval +
       12 * (Math.min(efficiency.defence, 1.8) - 1) +
       0.12 * (state.military.morale - 65) -
@@ -48,10 +44,9 @@ export function militaryLoyaltyTarget(
   );
 }
 
-/** Coup risk, 0–100, from military loyalty, the defence minister's loyalty and approval. */
-export function coupRisk(state: Pick<GameState, 'cabinet' | 'nation' | 'security'>): number {
-  const trust =
-    0.45 * state.security.militaryLoyalty + 0.3 * loyaltyOf(state, 'defence') + 0.25 * state.nation.approval;
+/** Coup risk, 0–100, from military loyalty, the army command's confidence and approval. */
+export function coupRisk(state: Pick<GameState, 'departments' | 'nation' | 'security'>): number {
+  const trust = 0.45 * state.security.militaryLoyalty + 0.3 * commandConfidence(state) + 0.25 * state.nation.approval;
   return clamp(100 - trust, 0, 100);
 }
 

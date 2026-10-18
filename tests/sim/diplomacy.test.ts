@@ -1,5 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   advanceDays,
@@ -394,21 +392,6 @@ describe('saves', () => {
     const parsed = parseSave(serializeSave(s, '2026-01-01T00:00:00.000Z'));
     if (!parsed.ok) throw new Error(parsed.error);
     expect(hashState(parsed.save.state)).toBe(hashState(s));
-  });
-
-  it('upgrades a v4 save: rivals become real countries and keep their relation and war record', () => {
-    const raw = JSON.parse(
-      readFileSync(fileURLToPath(new URL('../fixtures/saves/v4.json', import.meta.url)), 'utf8'),
-    ) as { state: { military: { rivals: Record<string, { relation: number }> } } };
-    const parsed = parseSave(JSON.stringify(raw));
-    if (!parsed.ok) throw new Error(parsed.error);
-    const { state } = parsed.save;
-    expect(Object.keys(state.military.rivals).sort()).toEqual([...RIVALS].sort());
-    expect(relationOf(state, 'CHN')).toBe(raw.state.military.rivals['zarnak']!.relation);
-    expect(relationOf(state, 'LKA')).toBe(raw.state.military.rivals['haldrin']!.relation);
-    expect('relation' in state.military.rivals.CHN).toBe(false);
-    expect(state.diplomacy.treaties).toEqual([]);
-    expect(startWar(state, 'PAK', 'rival').military.wars).toHaveLength(1);
   });
 });
 

@@ -12,6 +12,8 @@ import {
   INVESTIGATION_COST,
   INVESTIGATION_DAYS,
   MAX_INVESTIGATIONS,
+  departmentStars,
+  MINISTRIES,
   MINISTRY_CONTENT,
   OPERATION_KINDS,
   OPERATIONS,
@@ -110,7 +112,7 @@ export function SecurityView() {
   const game = useGame((s) => s.game);
   if (!game) return null;
 
-  const { security, economy, nation, politics, cabinet, clock } = game;
+  const { security, economy, nation, politics, clock } = game;
   const eff = allEfficiencies(game);
   const safety = presidentialSafety(game, eff);
   const risk = coupRisk(game);
@@ -118,14 +120,13 @@ export function SecurityView() {
   const { dispatch, setView } = gameStore.getState();
   const debtRatio = debtToGdp(economy);
   const daysLeft = (tick: number) => Math.max(0, tick - clock.tick);
-  const vacant = t('cabinet.vacant');
 
   const agencies = (['home', 'intelligence', 'disaster', 'antiCorruption'] as const).map((m) => ({
     id: m,
     name: MINISTRY_CONTENT[m].shortName,
     efficiency: eff[m],
     allocation: game.budget.allocations[m],
-    minister: cabinet.ministers[m]?.name ?? vacant,
+    stars: departmentStars(game, m),
   }));
 
   return (
@@ -313,7 +314,7 @@ export function SecurityView() {
                 <span className={styles.personName}>{a.name}</span>
                 <span>{t('security.agencyEfficiency', { value: Math.round(a.efficiency * 100) })}</span>
                 <span className={styles.muted}>
-                  {t('security.agencyFunding', { share: (a.allocation * 100).toFixed(2), minister: a.minister })}
+                  {t('security.agencyFunding', { share: (a.allocation * 100).toFixed(2), stars: a.stars.toFixed(1) })}
                 </span>
               </li>
             ))}
@@ -336,21 +337,18 @@ export function SecurityView() {
             <thead>
               <tr>
                 <th>{t('security.ministry')}</th>
-                <th>{t('security.minister')}</th>
-                <th className={styles.num}>{t('cabinet.traits.corruption')}</th>
+                <th className={styles.num}>{t('security.efficiency')}</th>
                 <th>{t('security.inquiry')}</th>
               </tr>
             </thead>
             <tbody>
-              {Object.entries(cabinet.ministers).map(([id, minister]) => {
-                const ministry = id as keyof typeof cabinet.ministers;
-                const inquiry = security.investigations.find((i) => i.ministry === ministry);
+              {MINISTRIES.map((ministry) => {
+                const inquiry = security.investigations.find((i) => i.department === ministry);
                 const blocked = validateInvestigation(game, ministry);
                 return (
-                  <tr key={id}>
+                  <tr key={ministry}>
                     <td>{MINISTRY_CONTENT[ministry].shortName}</td>
-                    <td>{minister?.name ?? vacant}</td>
-                    <td className={styles.num}>{minister ? Math.round(minister.corruption) : '–'}</td>
+                    <td className={styles.num}>{Math.round(eff[ministry] * 100)}%</td>
                     <td>
                       {inquiry ? (
                         <span className={styles.tag}>
@@ -361,7 +359,7 @@ export function SecurityView() {
                           disabled={blocked !== null}
                           title={blocked ?? undefined}
                           aria-label={t('security.investigateName', { ministry: MINISTRY_CONTENT[ministry].shortName })}
-                          onClick={() => dispatch({ type: 'LAUNCH_INVESTIGATION', ministry })}
+                          onClick={() => dispatch({ type: 'LAUNCH_INVESTIGATION', department: ministry })}
                         >
                           {t('security.investigate')}
                         </Button>

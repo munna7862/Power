@@ -1,6 +1,6 @@
 import budget from './budget.json';
-import cabinet from './cabinet.json';
 import dashboard from './dashboard.json';
+import departments from './departments.json';
 import diplomacy from './diplomacy.json';
 import economy from './economy.json';
 import handbook from './handbook.json';
@@ -21,7 +21,7 @@ export const en = {
   ...inbox,
   ...economy,
   ...budget,
-  ...cabinet,
+  ...departments,
   ...security,
   ...military,
   ...world,

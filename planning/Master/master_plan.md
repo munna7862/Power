@@ -174,7 +174,7 @@ Monthly settlement: `treasury += revenue − expenditure`. Growth is driven by i
 ### 5.3 Governance
 
 - **Ministries (v1):** Finance, Home Affairs (police), Defence, External Affairs, Health, Education, Agriculture, Industry & Commerce, Disaster Management, Intelligence (Director), Anti-Corruption.
-- **Ministers** have `competence`, `loyalty`, `corruption` and `ideologyAffinity` (0–100) and a salary. Competence scales ministry efficiency. Low loyalty raises coup risk. High corruption leaks budget.
+- **Departments (Phase 8):** there are no ministers. Each ministry is a department with services rated 1–5 stars; stars are bought with treasury money and lost to long underfunding. Efficiency = funding × service quality × national corruption. (Stage A had appointed ministers with competence, loyalty and corruption; see [Phase 8](../Phases/phase_8_hands_on_governance.md).)
 - **Ideologies:** Liberalism, Socialism, Conservatism, Nationalism, Technocracy. Each gives economic, approval, diplomatic and military modifiers.
 - **Development strategies:** Agrarian, Industrial, Services & Tech, Defence-first, Balanced.
 - **Approval** (0–100) is a weighted mix of economy (jobs, inflation), safety, corruption, crises handled and war weariness. It drifts toward a target, with shocks from events.

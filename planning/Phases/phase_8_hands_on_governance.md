@@ -59,7 +59,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 ## 4. Sprints
 
-### Sprint 8.1: Departments replace the cabinet (8 SP)
+### Sprint 8.1: Departments replace the cabinet (8 SP) ✅
 
 | ID     | Story                                                                                                                            | SP  |
 | ------ | -------------------------------------------------------------------------------------------------------------------------------- | --- |
@@ -70,14 +70,18 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] `content/departments.json`: each department's services (for Disaster Response: search and rescue, engineering, hazardous materials, fire service…), an upgrade cost per star and the effect each star gives. Our own names and wording throughout
-- [ ] State: `departments: Record<MinistryId, { services: Record<ServiceId, 1 | 2 | 3 | 4 | 5> }>`; command `UPGRADE_SERVICE { department, service }` (treasury-checked, takes a few weeks)
-- [ ] Stars decay by one if a department stays badly underfunded for six months, so running costs still matter
-- [ ] Remove `cabinet` from `GameState`, along with `cabinet/generate.ts`, `cabinet/scandal.ts`, `commands/cabinet.ts`, `systems/cabinet.ts` (`cabinetSystem`, `candidateRefreshSystem`), `CabinetView.tsx`, `i18n/en/cabinet.json` and the Cabinet nav entry and F-key
-- [ ] `coupRisk`, `militaryLoyaltyTarget`, `presidentialSafety` and the corruption target: replace minister terms with Defence pay, morale, Presidential Protection and Anti-Corruption agency strength
-- [ ] Inquiries become `{ department }` audits; a finding cuts that department's leakage for a year
-- [ ] Events: rewrite the 21 `loyalty` effects, the 3 `scandal` effects, and the `minLoyalty` / `maxMinisterCorruption` / `vacancies` conditions; drop those effect types and stats from the zod schema
-- [ ] Tutorial and handbook: replace the cabinet steps and chapter
+- [x] `content/departments.json`: each department's services (for Disaster Response: search and rescue, engineering, hazardous materials, fire service…), an upgrade cost per star and the effect each star gives. Our own names and wording throughout
+- [x] State: `departments: Record<MinistryId, { services: Record<ServiceId, 1 | 2 | 3 | 4 | 5> }>`; command `UPGRADE_SERVICE { department, service }` (treasury-checked, takes a few weeks)
+- [x] Stars decay by one if a department stays badly underfunded for six months, so running costs still matter
+- [x] Remove `cabinet` from `GameState`, along with `cabinet/generate.ts`, `cabinet/scandal.ts`, `commands/cabinet.ts`, `systems/cabinet.ts` (`cabinetSystem`, `candidateRefreshSystem`), `CabinetView.tsx`, `i18n/en/cabinet.json` and the Cabinet nav entry and F-key
+- [x] `coupRisk`, `militaryLoyaltyTarget`, `presidentialSafety` and the corruption target: replace minister terms with Defence pay, morale, Presidential Protection and Anti-Corruption agency strength
+- [x] Inquiries become `{ department }` audits; a finding cuts that department's leakage for a year
+- [x] Events: rewrite the 21 `loyalty` effects, the 3 `scandal` effects, and the `minLoyalty` / `maxMinisterCorruption` / `vacancies` conditions; drop those effect types and stats from the zod schema
+- [x] Tutorial and handbook: replace the cabinet steps and chapter
+- [x] Pulled forward from 8.9, because removing the cabinet changes the save shape: `SCHEMA_VERSION` 7, v1–v6 saves refused with an explanation, golden fixture `v7.json`, AGENTS.md save rule updated
+- [x] Balance re-run with no band changes needed (balanced bot re-elected 98% Easy, 80% Normal, 24% Hard); the cabinet-only event (`cabinet-rumours`) removed, `minister-scandal` became `officials-scandal` and `defence-minister-rift` became `army-command-rift`
+
+---
 
 ### Sprint 8.2: Public works and construction (8 SP)
 
@@ -208,7 +212,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] **Fresh start (decision 5):** `SCHEMA_VERSION` 7 starts a new save line; `parseSave` recognises v1–v6 files and returns a clear "saved in the previous edition" message instead of loading them. The v1–v6 golden fixtures stay, as tests of that message
+- [x] **Fresh start (decision 5, done in Sprint 8.1):** `SCHEMA_VERSION` 7 starts a new save line; `parseSave` recognises v1–v6 files and returns a clear "saved in the previous edition" message instead of loading them. The v1–v6 golden fixtures stay, as tests of that message
 - [ ] Update AGENTS.md: the "old saves must keep loading" rule now applies from v7 onwards, with this phase noted as the one deliberate break
 - [ ] Bots: the passive bot builds nothing; the greedy bot over-taxes and under-builds; the balanced bot builds to coverage targets, keeps the grid positive, runs profitable industry, trades surplus and repays loans
 - [ ] New KPI bands: coverage, power balance, trade balance, industry profit, police per capita, loan burden; re-tune Easy, Normal and Hard in `difficulty.ts`

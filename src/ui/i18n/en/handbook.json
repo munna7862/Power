@@ -49,7 +49,7 @@
       },
       "budget": {
         "title": "Budget",
-        "body": "Ministry allocations are a share of GDP. Underfunded ministries are less efficient, which weakens everything they do. A new budget can be enacted at most once every 30 days; announcing large tax rises costs approval at once."
+        "body": "Department allocations are a share of GDP. Underfunded departments are less efficient, which weakens everything they do, and months of underfunding cost them service stars. A new budget can be enacted at most once every 30 days; announcing large tax rises costs approval at once."
       },
       "taxes": {
         "title": "Taxes",
@@ -57,7 +57,7 @@
       },
       "gdp": {
         "title": "GDP and growth",
-        "body": "The economy is the sum of five sectors: agriculture, industry, services, energy and technology. Real growth comes from investment, ministry efficiency, stability, corruption drag, the tax burden, your strategy and events. The Economy screen's “Why?” shows each driver."
+        "body": "The economy is the sum of five sectors: agriculture, industry, services, energy and technology. Real growth comes from investment, department efficiency, stability, corruption drag, the tax burden, your strategy and events. The Economy screen's “Why?” shows each driver."
       },
       "inflation": {
         "title": "Inflation",
@@ -73,7 +73,7 @@
       },
       "corruption": {
         "title": "Corruption",
-        "body": "A national index from 0 (clean) to 100. It leaks budget money, drags on growth and angers voters. Corrupt ministers raise it; the Anti-Corruption ministry and investigations bring it down."
+        "body": "A national index from 0 (clean) to 100. It leaks budget money, drags on growth and angers voters. Weak anti-corruption services let petty corruption spread; better ones and audits bring it down."
       },
       "hdi": {
         "title": "Human Development Index",
@@ -84,12 +84,12 @@
         "body": "Each sector grows at its own rate. Your development strategy favours some sectors, and trade contracts boost the sector they cover for their term."
       },
       "ministries": {
-        "title": "Ministries",
-        "body": "Eleven ministries do the work: Finance, Home Affairs, Defence, External Affairs, Health, Education, Agriculture, Industry, Disaster Management, Intelligence and Anti-Corruption. Each one's efficiency comes from its funding and its minister."
+        "title": "Departments",
+        "body": "Eleven departments do the work: Finance, Home Affairs, Defence, External Affairs, Health, Education, Agriculture, Industry, Disaster Management, Intelligence and Anti-Corruption. Each one's efficiency is its funding × the quality of its services × national corruption."
       },
-      "ministers": {
-        "title": "Ministers",
-        "body": "Competence makes a ministry efficient. Loyalty matters most in Home Affairs, Defence and Intelligence, where disloyal ministers raise coup risk. Corruption leaks money and causes scandals. Reshuffles cost a little approval; new candidates arrive every January."
+      "services": {
+        "title": "Services and stars",
+        "body": "Each department runs three or four services, each rated from one to five stars. Upgrading a service costs money once and takes about a month; two stars is where every service starts. Stars last only while the department is funded: after months of heavy underfunding its best service loses one. A few services matter beyond their department: army command keeps the forces loyal, presidential protection keeps you safe, and the intelligence services run operations abroad."
       },
       "ideology": {
         "title": "Ideology",
@@ -116,8 +116,8 @@
         "body": "Raids hit cells at once but can go wrong. Surveillance works slowly and quietly. Sealing the border cuts the threat sharply but hurts trade. Each costs money and needs a pause before it can be repeated."
       },
       "investigations": {
-        "title": "Investigations",
-        "body": "The Anti-Corruption agency can investigate a ministry. If its minister is corrupt they are exposed and resign; the scandal costs approval, but corruption falls."
+        "title": "Audits",
+        "body": "The Anti-Corruption bureau can audit a department. If it finds misuse, the officials responsible are suspended, corruption falls and the department stays cleaner for a year."
       },
       "borderTension": {
         "title": "Border tension",
@@ -125,11 +125,11 @@
       },
       "coup": {
         "title": "Army loyalty and coup risk",
-        "body": "The armed forces' loyalty follows their funding, the Defence minister's loyalty and your approval. Low loyalty raises coup risk; above {{coup}}, a coup can happen in any month."
+        "body": "The armed forces' loyalty follows their funding, the army command's confidence and your approval. Low loyalty raises coup risk; above {{coup}}, a coup can happen in any month."
       },
       "safety": {
         "title": "Presidential safety",
-        "body": "How well you are protected, from Home Affairs and Intelligence funding and the loyalty of their ministers. A high terror threat brings attempts; low safety lets them succeed."
+        "body": "How well you are protected, from Home Affairs and Intelligence funding and the presidential protection service. A high terror threat brings attempts; low safety lets them succeed."
       },
       "forces": {
         "title": "Armed forces",

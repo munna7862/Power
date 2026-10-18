@@ -16,9 +16,9 @@ describe('balance harness', () => {
     for (const t of TAXES) expect(run.final.budget.taxRates[t]).toBeGreaterThan(DEFAULT_TAX_RATES[t]);
   });
 
-  it('balanced bot reshapes the cabinet in January', () => {
+  it('balanced bot upgrades department services', () => {
     const run = simulate(balancedBot, 3, 1);
-    expect(run.final.log.some((e) => e.title.startsWith('New minister'))).toBe(true);
+    expect(run.final.departments.stars.defence.armyCommand).toBeGreaterThan(2);
   });
 
   it('meets the Normal-difficulty KPI bands on a small sample', () => {

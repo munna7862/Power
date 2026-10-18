@@ -2,7 +2,6 @@ import { IDEOLOGY_CONTENT, STRATEGY_CONTENT } from '../content';
 import { EVENT_CONTENT } from '../content/events';
 import {
   IDEOLOGIES,
-  MINISTRIES,
   OPERATION_KINDS,
   STRATEGIES,
   type DomainId,
@@ -13,6 +12,7 @@ import {
   type OperationKind,
   type CountryId,
   type RivalId,
+  type ServiceId,
   type SectorId,
   type StrategyId,
   type UnitId,
@@ -77,7 +77,7 @@ import { normalisePresidentName, PRESIDENT_NAME_MAX } from '../state/initialStat
 import { appendLog } from '../state/log';
 import type { GameState, NuclearDoctrine } from '../state/types';
 import { enactBudget, validateBudget, type BudgetProposal } from './budget';
-import { appointMinister, dismissMinister, validateAppointment } from './cabinet';
+import { startUpgrade, validateUpgrade } from '../departments/services';
 
 /** Player actions. Every change a player makes to GameState goes through dispatch(). */
 export type Command =
@@ -85,12 +85,11 @@ export type Command =
   | { type: 'MARK_LOG_READ'; id: string }
   | { type: 'MARK_ALL_LOG_READ' }
   | { type: 'ENACT_BUDGET'; proposal: BudgetProposal }
-  | { type: 'APPOINT_MINISTER'; ministry: MinistryId; candidateId: string }
-  | { type: 'DISMISS_MINISTER'; ministry: MinistryId }
+  | { type: 'UPGRADE_SERVICE'; department: MinistryId; service: ServiceId }
   | { type: 'SET_IDEOLOGY'; ideology: IdeologyId }
   | { type: 'SET_STRATEGY'; strategy: StrategyId }
   | { type: 'RESOLVE_EVENT'; pendingId: string; choiceId: string }
-  | { type: 'LAUNCH_INVESTIGATION'; ministry: MinistryId }
+  | { type: 'LAUNCH_INVESTIGATION'; department: MinistryId }
   | { type: 'LAUNCH_OPERATION'; kind: OperationKind }
   | { type: 'ORDER_UNITS'; unit: UnitId; quantity: number }
   | { type: 'CANCEL_ORDER'; orderId: string }
@@ -220,16 +219,10 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       const problem = validateBudget(state, command.proposal);
       return problem ? fail(state, problem) : ok(enactBudget(state, command.proposal));
     }
-    case 'APPOINT_MINISTER': {
+    case 'UPGRADE_SERVICE': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateAppointment(state, command.ministry, command.candidateId);
-      return problem ? fail(state, problem) : ok(appointMinister(state, command.ministry, command.candidateId));
-    }
-    case 'DISMISS_MINISTER': {
-      if (gameOver) return fail(state, 'The game is over.');
-      if (!MINISTRIES.includes(command.ministry)) return fail(state, `Unknown ministry ${command.ministry}.`);
-      if (!state.cabinet.ministers[command.ministry]) return fail(state, 'That post is already vacant.');
-      return ok(dismissMinister(state, command.ministry));
+      const problem = validateUpgrade(state, command.department, command.service);
+      return problem ? fail(state, problem) : ok(startUpgrade(state, command.department, command.service));
     }
     case 'RESOLVE_EVENT': {
       if (gameOver) return fail(state, 'The game is over.');
@@ -242,8 +235,8 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'LAUNCH_INVESTIGATION': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateInvestigation(state, command.ministry);
-      return problem ? fail(state, problem) : ok(startInvestigation(state, command.ministry));
+      const problem = validateInvestigation(state, command.department);
+      return problem ? fail(state, problem) : ok(startInvestigation(state, command.department));
     }
     case 'LAUNCH_OPERATION': {
       if (gameOver) return fail(state, 'The game is over.');
