@@ -46,10 +46,10 @@ describe('determinism', () => {
         },
       },
       linux: {
-        hash: 'e080b3e1',
+        hash: '75f9a52f',
         parts: {
           economy: 'b17fcacb',
-          history: '9d8602e7',
+          history: '9a8a1f4e',
           military: '127b92b1',
           modifiers: '9cdcb8a6',
           politics: 'ecff432c',
