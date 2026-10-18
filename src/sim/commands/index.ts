@@ -7,10 +7,12 @@ import {
   type DomainId,
   type DrillKind,
   type FacilityId,
+  type AgencyId,
   type IdeologyId,
   type IntelKind,
   type MinistryId,
   type OperationKind,
+  type PoliceUnitId,
   type RegionId,
   type CountryId,
   type RivalId,
@@ -88,6 +90,18 @@ import {
   validateCancelBuild,
   validateDemolish,
 } from '../infrastructure/build';
+import {
+  buildStations,
+  changeUnits,
+  fundAgency,
+  recruit,
+  upgradeEquipment,
+  validateAgency,
+  validateEquipment,
+  validateRecruit,
+  validateStations,
+  validateUnit,
+} from '../police/actions';
 
 /** Player actions. Every change a player makes to GameState goes through dispatch(). */
 export type Command =
@@ -99,6 +113,13 @@ export type Command =
   | { type: 'BUILD_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
   | { type: 'CANCEL_BUILD'; orderId: string }
   | { type: 'DEMOLISH_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
+  /** Positive recruits, negative dismisses. */
+  | { type: 'RECRUIT_POLICE'; region: RegionId; officers: number }
+  | { type: 'BUILD_STATION'; region: RegionId; quantity: number }
+  | { type: 'UPGRADE_POLICE_EQUIPMENT' }
+  /** Positive raises, negative disbands. */
+  | { type: 'RAISE_UNIT'; unit: PoliceUnitId; quantity: number }
+  | { type: 'FUND_AGENCY'; agency: AgencyId; strength: number }
   | { type: 'SET_IDEOLOGY'; ideology: IdeologyId }
   | { type: 'SET_STRATEGY'; strategy: StrategyId }
   | { type: 'RESOLVE_EVENT'; pendingId: string; choiceId: string }
@@ -251,6 +272,31 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateDemolish(state, command.facility, command.region, command.quantity);
       return problem ? fail(state, problem) : ok(demolish(state, command.facility, command.region, command.quantity));
+    }
+    case 'RECRUIT_POLICE': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateRecruit(state, command.region, command.officers);
+      return problem ? fail(state, problem) : ok(recruit(state, command.region, command.officers));
+    }
+    case 'BUILD_STATION': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateStations(state, command.region, command.quantity);
+      return problem ? fail(state, problem) : ok(buildStations(state, command.region, command.quantity));
+    }
+    case 'UPGRADE_POLICE_EQUIPMENT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateEquipment(state);
+      return problem ? fail(state, problem) : ok(upgradeEquipment(state));
+    }
+    case 'RAISE_UNIT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateUnit(state, command.unit, command.quantity);
+      return problem ? fail(state, problem) : ok(changeUnits(state, command.unit, command.quantity));
+    }
+    case 'FUND_AGENCY': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateAgency(state, command.agency, command.strength);
+      return problem ? fail(state, problem) : ok(fundAgency(state, command.agency, command.strength));
     }
     case 'RESOLVE_EVENT': {
       if (gameOver) return fail(state, 'The game is over.');

@@ -2,6 +2,7 @@ import { APPROVAL_FACTORS, type ApprovalFactor, type MinistryId } from '../conte
 import { DEFAULT_TAX_RATES } from '../economy/constants';
 import { resolve, type Resolution } from '../engine/modifiers';
 import { coverageEffect } from '../infrastructure/coverage';
+import { civilLibertiesCost, crimeSafetyEffect } from '../police/strength';
 import { rulesFor } from '../state/difficulty';
 import type { GameState } from '../state/types';
 
@@ -73,17 +74,30 @@ export function computeSatisfaction(
     ),
     // Ministries' efficiency and, since Phase 8, how much of the country its schools, clinics and roads reach.
     services: clamp(50 + 60 * (services - 1) + coverageEffect(state, 'services')),
-    safety: clamp(100 - 0.8 * meanUnrest - 0.6 * security.terrorThreat),
+    safety: clamp(100 - 0.8 * meanUnrest - 0.6 * security.terrorThreat + crimeSafetyEffect(state)),
   };
 }
 
-/** Weighted satisfaction plus modifiers (ideology, difficulty, scandals, reshuffles…). */
+/**
+ * Weighted satisfaction plus modifiers (ideology, difficulty, scandals…) and, since Phase 8, the cost of
+ * over-policing to civil liberties, which shows in the breakdown like a modifier.
+ */
 export function approvalTarget(
-  state: Pick<GameState, 'modifiers'>,
+  state: Pick<GameState, 'modifiers' | 'police' | 'nation'>,
   satisfaction: Record<ApprovalFactor, number>,
 ): Resolution {
   const base = APPROVAL_FACTORS.reduce((sum, f) => sum + APPROVAL_WEIGHTS[f] * satisfaction[f], 0);
-  return resolve(state.modifiers, 'politics.approvalTarget', base);
+  const liberties = civilLibertiesCost(state);
+  if (liberties <= 0) return resolve(state.modifiers, 'politics.approvalTarget', base);
+  const resolved = resolve(state.modifiers, 'politics.approvalTarget', base - liberties);
+  return {
+    ...resolved,
+    base,
+    breakdown: [
+      ...resolved.breakdown,
+      { label: 'Civil liberties (over-policing)', source: 'police', kind: 'add', value: -liberties },
+    ],
+  };
 }
 
 /** The factors voters are least happy with, worst first. */

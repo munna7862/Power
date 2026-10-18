@@ -80,6 +80,19 @@ export const FACILITIES = [
 ] as const;
 export type FacilityId = (typeof FACILITIES)[number];
 
+/** National police formations the President can raise or disband (content/police.json). */
+export const POLICE_UNITS = ['armedPolice', 'rapidResponse', 'cyberCell', 'counterTerror'] as const;
+export type PoliceUnitId = (typeof POLICE_UNITS)[number];
+
+/** Security agencies whose strength (0–100) the President funds directly. */
+export const AGENCIES = [
+  'intelligenceService',
+  'antiCorruptionBureau',
+  'borderPolice',
+  'presidentialProtection',
+] as const;
+export type AgencyId = (typeof AGENCIES)[number];
+
 /** Things voters judge the President on. Each is scored 0–100 every month. */
 export const APPROVAL_FACTORS = [
   'jobs',

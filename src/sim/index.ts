@@ -67,6 +67,51 @@ export {
 } from './infrastructure/coverage';
 export { buildCost, validateBuild, validateCancelBuild, validateDemolish } from './infrastructure/build';
 export {
+  AGENCY_CONTENT,
+  EQUIPMENT_CONTENT,
+  OFFICER_CONTENT,
+  POLICE_UNIT_CONTENT,
+  STATION_CONTENT,
+  type AgencyContent,
+  type EquipmentContent,
+  type PoliceUnitContent,
+} from './content/police';
+export {
+  CIVIL_LIBERTIES,
+  MAX_RECRUIT,
+  MAX_STATIONS,
+  MAX_UNIT_ORDER,
+  OPENING_AGENCY_STRENGTH,
+  POLICE_IMPACT,
+  START_CRIME,
+} from './police/constants';
+export {
+  civilLibertiesCost,
+  crimeTarget,
+  deployedOfficers,
+  equipmentEffect,
+  headcountRatio,
+  officersForRatio,
+  officersPer100k,
+  policeRatio,
+  policeUpkeep,
+  stationCapacity,
+  stationsNeeded,
+  unitRatio,
+} from './police/strength';
+export {
+  agencyCost,
+  nextEquipment,
+  recruitCost,
+  stationCost,
+  unitCost as policeUnitCost,
+  validateAgency,
+  validateEquipment,
+  validateRecruit,
+  validateStations,
+  validateUnit,
+} from './police/actions';
+export {
   createInitialState,
   normalisePresidentName,
   DEFAULT_PRESIDENT_NAME,

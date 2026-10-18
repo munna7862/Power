@@ -1,0 +1,110 @@
+{
+  "officer": {
+    "name": "Police officer",
+    "summary": "Constables and officers on the beat, recruited and trained for each region.",
+    "recruitCost": 0.02,
+    "upkeep": 0.005,
+    "openingPer100k": 150
+  },
+  "station": {
+    "name": "Police station",
+    "summary": "A station houses and equips officers; officers beyond the stations' capacity work at half strength.",
+    "cost": 3,
+    "upkeep": 0.05,
+    "capacity": 120
+  },
+  "equipment": [
+    {
+      "tier": 1,
+      "name": "Basic kit",
+      "summary": "Radios, vehicles and protective gear of the standard issue.",
+      "cost": 0,
+      "upkeep": 0,
+      "effect": 1
+    },
+    {
+      "tier": 2,
+      "name": "Modern kit",
+      "summary": "Patrol vehicles, body cameras and a digital case system in every station.",
+      "cost": 8000,
+      "upkeep": 120,
+      "effect": 1.1
+    },
+    {
+      "tier": 3,
+      "name": "Advanced kit",
+      "summary": "Forensic labs, a national records network and rapid transport for every district.",
+      "cost": 16000,
+      "upkeep": 260,
+      "effect": 1.2
+    }
+  ],
+  "units": [
+    {
+      "id": "armedPolice",
+      "name": "Armed police battalion",
+      "summary": "Reserve battalions that back up local police against serious crime and disorder.",
+      "cost": 50,
+      "upkeep": 1.2,
+      "opening": 320
+    },
+    {
+      "id": "rapidResponse",
+      "name": "Rapid response company",
+      "summary": "Trained to calm crowds and protests before they turn into riots.",
+      "cost": 12,
+      "upkeep": 0.3,
+      "opening": 150
+    },
+    {
+      "id": "cyberCell",
+      "name": "Cyber crime cell",
+      "summary": "Investigators who chase fraud, scams and online crime.",
+      "cost": 8,
+      "upkeep": 0.2,
+      "opening": 60
+    },
+    {
+      "id": "counterTerror",
+      "name": "Counter-terror squad",
+      "summary": "A tactical team that stops attacks in progress and makes plots harder to carry out.",
+      "cost": 30,
+      "upkeep": 0.8,
+      "opening": 40
+    }
+  ],
+  "agencies": [
+    {
+      "id": "intelligenceService",
+      "department": "intelligence",
+      "name": "Intelligence service",
+      "summary": "Watches for plots at home and abroad. Stronger, it uncovers more plots and lowers the terror threat.",
+      "costPerPoint": 120,
+      "upkeepPerPoint": 6
+    },
+    {
+      "id": "antiCorruptionBureau",
+      "department": "antiCorruption",
+      "name": "Anti-corruption bureau",
+      "summary": "Investigates officials. Stronger, it pushes corruption down and its audits find more.",
+      "costPerPoint": 60,
+      "upkeepPerPoint": 3
+    },
+    {
+      "id": "borderPolice",
+      "department": "home",
+      "name": "Border police",
+      "summary": "Guards crossings and coasts. Stronger, it keeps weapons and fighters out.",
+      "costPerPoint": 80,
+      "upkeepPerPoint": 5
+    },
+    {
+      "id": "presidentialProtection",
+      "department": "home",
+      "name": "Presidential protection",
+      "summary": "The close-protection service around the President.",
+      "costPerPoint": 20,
+      "upkeepPerPoint": 1
+    }
+  ]
+}

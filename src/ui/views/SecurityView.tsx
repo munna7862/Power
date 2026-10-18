@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   allEfficiencies,
@@ -6,37 +6,39 @@ import {
   BANKRUPTCY_MONTHS,
   COUP_RISK_THRESHOLD,
   coupRisk,
+  crimeTarget,
   debtToGdp,
   IMPEACHMENT_MONTHS,
   impeachmentThreshold,
-  INVESTIGATION_COST,
-  INVESTIGATION_DAYS,
-  MAX_INVESTIGATIONS,
   departmentStars,
-  MINISTRIES,
   MINISTRY_CONTENT,
-  OPERATION_KINDS,
-  OPERATIONS,
   presidentialSafety,
   REGIONS,
   RIOT_UNREST,
   TENSE_UNREST,
   terrorTarget,
   unrestTarget,
-  validateInvestigation,
-  operationBlocked,
   type GameState,
   type RegionId,
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
 import { Button, Gauge, Panel, Tooltip } from '../design/primitives';
-import { formatCrore, pct, signed } from '../format';
+import { pct, signed } from '../format';
 import gameStyles from '../screens/game.module.css';
 import styles from './views.module.css';
 
 const unrestColour = (v: number) =>
   v >= RIOT_UNREST ? 'var(--danger)' : v >= TENSE_UNREST ? 'var(--warning)' : 'var(--green)';
 const unrestLevel = (v: number) => (v >= RIOT_UNREST ? 'riots' : v >= TENSE_UNREST ? 'tense' : 'calm');
+
+/** Crime at or above these counts as high or severe on the map. */
+const HIGH_CRIME = 45;
+const SEVERE_CRIME = 60;
+const crimeColour = (v: number) =>
+  v >= SEVERE_CRIME ? 'var(--danger)' : v >= HIGH_CRIME ? 'var(--warning)' : 'var(--green)';
+const crimeLevel = (v: number) => (v >= SEVERE_CRIME ? 'severe' : v >= HIGH_CRIME ? 'high' : 'low');
+
+type MapMetric = 'unrest' | 'crime';
 
 /** Schematic tile map of the six macro-regions, coloured by unrest. Not to scale; it shows no borders. */
 const TILES: Record<RegionId, { x: number; y: number; w: number; h: number }> = {
@@ -48,14 +50,21 @@ const TILES: Record<RegionId, { x: number; y: number; w: number; h: number }> = 
   south: { x: 100, y: 160, w: 95, h: 70 },
 };
 
-function UnrestMap({ game }: { game: GameState }) {
+function UnrestMap({ game, metric }: { game: GameState; metric: MapMetric }) {
   const { t } = useTranslation();
+  const colour = metric === 'unrest' ? unrestColour : crimeColour;
+  const level = (v: number) =>
+    metric === 'unrest' ? t(`security.levels.${unrestLevel(v)}`) : t(`security.crimeLevels.${crimeLevel(v)}`);
   return (
     <figure className={styles.mapFigure}>
-      <svg viewBox="0 0 300 230" role="img" aria-label={t('security.mapLabel')}>
+      <svg
+        viewBox="0 0 300 230"
+        role="img"
+        aria-label={metric === 'unrest' ? t('security.mapLabel') : t('security.crimeMapLabel')}
+      >
         {REGIONS.map((r) => {
           const tile = TILES[r];
-          const v = game.security.unrest[r];
+          const v = game.security[metric][r];
           return (
             <g key={r}>
               <rect
@@ -64,9 +73,9 @@ function UnrestMap({ game }: { game: GameState }) {
                 width={tile.w}
                 height={tile.h}
                 rx={8}
-                fill={unrestColour(v)}
+                fill={colour(v)}
                 fillOpacity={0.28}
-                stroke={unrestColour(v)}
+                stroke={colour(v)}
                 strokeWidth={2}
               />
               <text
@@ -86,7 +95,7 @@ function UnrestMap({ game }: { game: GameState }) {
                 fill="var(--text-muted)"
                 fontSize="12"
               >
-                {t('security.mapValue', { value: Math.round(v), level: t(`security.levels.${unrestLevel(v)}`) })}
+                {t('security.mapValue', { value: Math.round(v), level: level(v) })}
               </text>
             </g>
           );
@@ -110,16 +119,16 @@ function Risk({ name, value, detail, danger }: { name: string; value: string; de
 export function SecurityView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
+  const [metric, setMetric] = useState<MapMetric>('unrest');
   if (!game) return null;
 
-  const { security, economy, nation, politics, clock } = game;
+  const { security, economy, nation, politics } = game;
   const eff = allEfficiencies(game);
   const safety = presidentialSafety(game, eff);
   const risk = coupRisk(game);
   const threat = terrorTarget(game, eff);
-  const { dispatch, setView } = gameStore.getState();
+  const { setView } = gameStore.getState();
   const debtRatio = debtToGdp(economy);
-  const daysLeft = (tick: number) => Math.max(0, tick - clock.tick);
 
   const agencies = (['home', 'intelligence', 'disaster', 'antiCorruption'] as const).map((m) => ({
     id: m,
@@ -176,9 +185,21 @@ export function SecurityView() {
       </div>
 
       <div className={gameStyles.grid}>
-        <Panel title={t('security.unrest')} className={gameStyles.span8}>
+        <Panel
+          title={t('security.unrest')}
+          className={gameStyles.span8}
+          actions={
+            <div className={styles.segmented} role="group" aria-label={t('security.mapShows')}>
+              {(['unrest', 'crime'] as const).map((m) => (
+                <button key={m} type="button" aria-pressed={metric === m} onClick={() => setMetric(m)}>
+                  {t(`security.mapMetric.${m}`)}
+                </button>
+              ))}
+            </div>
+          }
+        >
           <div className={styles.unrestLayout}>
-            <UnrestMap game={game} />
+            <UnrestMap game={game} metric={metric} />
             <div className={styles.tableWrap}>
               <table className={styles.table}>
                 <thead>
@@ -187,11 +208,14 @@ export function SecurityView() {
                     <th className={styles.num}>{t('security.unrestColumn')}</th>
                     <th className={styles.num}>{t('security.headingColumn')}</th>
                     <th />
+                    <th className={styles.num}>{t('security.crimeColumn')}</th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
                   {REGIONS.map((r) => {
                     const target = unrestTarget(game, r, eff);
+                    const crime = crimeTarget(game, r);
                     return (
                       <tr key={r}>
                         <td>{t(`regions.${r}`)}</td>
@@ -211,6 +235,23 @@ export function SecurityView() {
                             </span>
                           </Tooltip>
                         </td>
+                        <td className={styles.num} style={{ color: crimeColour(security.crime[r]) }}>
+                          {security.crime[r].toFixed(0)}
+                        </td>
+                        <td>
+                          <Tooltip label={t('security.whyCrime', { region: t(`regions.${r}`) })}>
+                            <span className={gameStyles.breakdown}>
+                              {crime.drivers.map((d) => (
+                                <Fragment key={d.label}>
+                                  <span>{d.label}</span>
+                                  <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
+                                </Fragment>
+                              ))}
+                              <span>{t('security.crimeHeading')}</span>
+                              <span className={gameStyles.breakdownValue}>{crime.total.toFixed(0)}</span>
+                            </span>
+                          </Tooltip>
+                        </td>
                       </tr>
                     );
                   })}
@@ -223,6 +264,9 @@ export function SecurityView() {
         <Panel title={t('security.safety')} className={gameStyles.span4}>
           <Gauge value={safety} label={t('security.safety')} />
           <p className={styles.note}>{t('security.safetyNote')}</p>
+          <div className={styles.cardActions}>
+            <Button onClick={() => setView('police')}>{t('security.toPolice')}</Button>
+          </div>
         </Panel>
 
         <Panel title={t('security.threats')} className={gameStyles.span12}>
@@ -262,51 +306,6 @@ export function SecurityView() {
           </ul>
         </Panel>
 
-        <Panel title={t('security.operations')} className={gameStyles.span8}>
-          {security.plots.length > 0 && (
-            <ul className={styles.riskList} aria-label={t('security.plotsLabel')}>
-              {security.plots.map((p) => (
-                <li key={p.id} className={styles.riskRow} data-danger="true">
-                  <span className={styles.personName}>{p.group}</span>
-                  <span>{t(`regions.${p.region}`)}</span>
-                  <span className={styles.muted}>{t('security.strikesIn', { count: daysLeft(p.strikeTick) })}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className={styles.opGrid}>
-            {OPERATION_KINDS.map((kind) => {
-              const spec = OPERATIONS[kind];
-              const active = security.operations.find((o) => o.kind === kind);
-              return (
-                <div key={kind} className={styles.ministryCard}>
-                  <div className={styles.personName}>{t(`security.ops.${kind}.label`)}</div>
-                  <p className={styles.muted}>{t(`security.ops.${kind}.summary`)}</p>
-                  <p className={styles.note}>{t('decision.costs', { cost: formatCrore(spec.cost) })}</p>
-                  <div className={styles.cardActions}>
-                    {active ? (
-                      <span className={styles.tag}>
-                        {t(kind === 'raid' ? 'security.recovering' : 'security.active', {
-                          count: daysLeft(active.endsTick),
-                        })}
-                      </span>
-                    ) : (
-                      <Button
-                        variant="primary"
-                        disabled={operationBlocked(game, kind) !== null}
-                        title={operationBlocked(game, kind) ?? undefined}
-                        onClick={() => dispatch({ type: 'LAUNCH_OPERATION', kind })}
-                      >
-                        {t(`security.ops.${kind}.label`)}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Panel>
-
         <Panel title={t('security.agencies')} className={gameStyles.span4}>
           <ul className={styles.riskList} aria-label={t('security.agencies')}>
             {agencies.map((a) => (
@@ -322,54 +321,6 @@ export function SecurityView() {
           <div className={styles.cardActions}>
             <Button onClick={() => setView('budget')}>{t('security.adjustBudget')}</Button>
           </div>
-        </Panel>
-
-        <Panel title={t('security.inquiries')} className={gameStyles.span12}>
-          <p className={styles.note}>
-            {t('security.inquiriesNote', {
-              corruption: economy.corruption.toFixed(1),
-              cost: formatCrore(INVESTIGATION_COST),
-              days: INVESTIGATION_DAYS,
-              max: MAX_INVESTIGATIONS,
-            })}
-          </p>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>{t('security.ministry')}</th>
-                <th className={styles.num}>{t('security.efficiency')}</th>
-                <th>{t('security.inquiry')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MINISTRIES.map((ministry) => {
-                const inquiry = security.investigations.find((i) => i.department === ministry);
-                const blocked = validateInvestigation(game, ministry);
-                return (
-                  <tr key={ministry}>
-                    <td>{MINISTRY_CONTENT[ministry].shortName}</td>
-                    <td className={styles.num}>{Math.round(eff[ministry] * 100)}%</td>
-                    <td>
-                      {inquiry ? (
-                        <span className={styles.tag}>
-                          {t('security.reportsIn', { count: daysLeft(inquiry.resolvesTick) })}
-                        </span>
-                      ) : (
-                        <Button
-                          disabled={blocked !== null}
-                          title={blocked ?? undefined}
-                          aria-label={t('security.investigateName', { ministry: MINISTRY_CONTENT[ministry].shortName })}
-                          onClick={() => dispatch({ type: 'LAUNCH_INVESTIGATION', department: ministry })}
-                        >
-                          {t('security.investigate')}
-                        </Button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
         </Panel>
       </div>
     </>

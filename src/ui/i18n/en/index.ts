@@ -6,6 +6,7 @@ import diplomacy from './diplomacy.json';
 import economy from './economy.json';
 import handbook from './handbook.json';
 import inbox from './inbox.json';
+import police from './police.json';
 import military from './military.json';
 import reports from './reports.json';
 import security from './security.json';
@@ -25,6 +26,7 @@ export const en = {
   ...departments,
   ...construction,
   ...security,
+  ...police,
   ...military,
   ...world,
   ...diplomacy,

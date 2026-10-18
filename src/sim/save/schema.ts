@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  AGENCIES,
   APPROVAL_FACTORS,
   DOMAINS,
   DRILL_KINDS,
@@ -9,6 +10,7 @@ import {
   LOG_CATEGORIES,
   MINISTRIES,
   OPERATION_KINDS,
+  POLICE_UNITS,
   REGIONS,
   RIVALS,
   SERVICE_IDS,
@@ -290,6 +292,13 @@ export const gameStateSchema = z.object({
       }),
     ),
   }),
+  police: z.object({
+    officers: z.record(z.enum(REGIONS), z.number().int().min(0)),
+    stations: z.record(z.enum(REGIONS), z.number().int().min(0)),
+    equipment: z.union([z.literal(1), z.literal(2), z.literal(3)]),
+    units: z.record(z.enum(POLICE_UNITS), z.number().int().min(0)),
+    agencies: z.record(z.enum(AGENCIES), z.number().int().min(0).max(100)),
+  }),
   politics: z.object({
     ideology: z.enum(IDEOLOGIES),
     strategy: z.enum(STRATEGIES),
@@ -311,6 +320,7 @@ export const gameStateSchema = z.object({
   ),
   security: z.object({
     unrest: z.record(z.enum(REGIONS), score),
+    crime: z.record(z.enum(REGIONS), score),
     terrorThreat: score,
     borderTension: score,
     militaryLoyalty: score,

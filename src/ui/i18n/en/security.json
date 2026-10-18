@@ -2,13 +2,28 @@
   "security": {
     "subtitle": "Unrest, terror, corruption and threats to your presidency",
     "mapLabel": "Unrest by region (schematic map)",
+    "crimeMapLabel": "Crime by region (schematic map)",
+    "mapShows": "Map shows",
+    "mapMetric": {
+      "unrest": "Unrest",
+      "crime": "Crime"
+    },
+    "crimeLevels": {
+      "low": "Low",
+      "high": "High",
+      "severe": "Severe"
+    },
+    "crimeColumn": "Crime",
+    "whyCrime": "Why crime in the {{region}}?",
+    "crimeHeading": "Heading to",
+    "toPolice": "Police, operations and audits",
     "mapValue": "{{value}} · {{level}}",
     "levels": {
       "calm": "Calm",
       "tense": "Tense",
       "riots": "Riots"
     },
-    "mapCaption": "Schematic map: regions are not to scale and no borders are drawn. Unrest here is caused by jobs, prices, corruption, approval and policing: never by religion or caste.",
+    "mapCaption": "Schematic map: regions are not to scale and no borders are drawn. Unrest and crime here are caused by jobs, prices, corruption, approval and policing: never by religion or caste.",
     "terror": "Terror threat",
     "headingTo": "Heading to {{value}}",
     "border": "Border tension",
@@ -24,7 +39,7 @@
     "headingColumn": "Heading to",
     "whyRegion": "Why {{region}}?",
     "safety": "Presidential safety",
-    "safetyNote": "Rises with police and intelligence funding and a strong presidential protection service; falls with the terror threat.",
+    "safetyNote": "Rises with police and intelligence funding and a strong presidential protection service; falls with the terror threat. Operations, audits and the police themselves are run from the Police screen.",
     "threats": "Threats to your presidency",
     "risks": {
       "impeachment": "Impeachment",

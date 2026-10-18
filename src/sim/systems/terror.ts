@@ -114,7 +114,7 @@ export const plotSystem: System = {
     const eff = allEfficiencies(next);
     for (const plot of due) {
       const bonus = (hasOperation(next, 'surveillance') ? 0.2 : 0) + (hasOperation(next, 'borderSeal') ? 0.4 : 0);
-      const success = rng.chance(plotSuccessChance(Math.min(plot.mitigation + bonus, 0.75), eff));
+      const success = rng.chance(plotSuccessChance(next, Math.min(plot.mitigation + bonus, 0.75), eff));
       next = {
         ...next,
         security: { ...next.security, plots: next.security.plots.filter((p) => p.id !== plot.id) },
