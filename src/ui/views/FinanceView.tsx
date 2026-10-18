@@ -8,7 +8,11 @@ import {
   lenderName,
   lenderProblem,
   LENDERS,
+  cashReserve,
   loanCeiling,
+  maxDebtRepayment,
+  MIN_DEBT_REPAYMENT,
+  validateRepayDebt,
   loanRate,
   marketRate,
   MAX_LOAN_YEARS,
@@ -148,6 +152,65 @@ function GeneralExpenses({ game }: { game: GameState }) {
           </tfoot>
         </table>
       </div>
+    </Panel>
+  );
+}
+
+/** Public debt: the automatic rule, and early repayment from cash above the reserve. */
+function PublicDebt({ game }: { game: GameState }) {
+  const { t } = useTranslation();
+  const { dispatch } = gameStore.getState();
+  const most = maxDebtRepayment(game);
+  const [amount, setAmount] = useState(MIN_DEBT_REPAYMENT * 10);
+  const chosen = Math.min(amount, Math.max(most, MIN_DEBT_REPAYMENT));
+  const problem = validateRepayDebt(game, chosen);
+  const { debt, interestRate } = game.economy;
+  const reserve = cashReserve(game);
+  const last = game.economy.lastMonth;
+  return (
+    <Panel title={t('finance.debt.title')} className={gameStyles.span6}>
+      <p className={styles.note}>
+        {t('finance.debt.summary', {
+          debt: formatCrore(debt),
+          rate: pct(interestRate),
+          interest: formatCrore((debt * interestRate) / 12),
+        })}
+      </p>
+      <p className={styles.note} data-testid="debt-rule">
+        {t('finance.debt.rule', { reserve: formatCrore(reserve), ceiling: formatCrore(2 * reserve) })}
+        {last &&
+          ` ${t('finance.debt.lastMonth', { repaid: formatCrore(last.repaid), borrowed: formatCrore(last.borrowed) })}`}
+      </p>
+      <div className={styles.orderBar}>
+        <input
+          type="number"
+          className={styles.qtyInput}
+          style={{ width: '9em' }}
+          min={MIN_DEBT_REPAYMENT}
+          step={1_000}
+          value={chosen}
+          aria-label={t('finance.debt.amount')}
+          onChange={(e) => setAmount(Math.max(MIN_DEBT_REPAYMENT, Math.round(Number(e.target.value) || 0)))}
+        />
+        <Button
+          variant="primary"
+          disabled={problem !== null}
+          title={problem ?? undefined}
+          onClick={() => dispatch({ type: 'REPAY_DEBT', amount: chosen })}
+        >
+          {t('finance.debt.repay', { amount: formatCrore(chosen) })}
+        </Button>
+        <Button
+          disabled={validateRepayDebt(game, most) !== null}
+          onClick={() => dispatch({ type: 'REPAY_DEBT', amount: most })}
+        >
+          {t('finance.debt.repayAll', { amount: formatCrore(most) })}
+        </Button>
+      </div>
+      <p className={styles.note} data-testid="debt-room">
+        {problem ??
+          t('finance.debt.room', { amount: formatCrore(most), saved: formatCrore((chosen * interestRate) / 12) })}
+      </p>
     </Panel>
   );
 }
@@ -326,6 +389,7 @@ export function FinanceView() {
       <div className={gameStyles.grid}>
         <GeneralExpenses game={game} />
         <Loans game={game} />
+        <PublicDebt game={game} />
         <Receipts game={game} />
       </div>
     </>

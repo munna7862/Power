@@ -347,6 +347,7 @@ export { exposureChance, validateInvestigation } from './security/investigations
 export { operationBlocked } from './security/operations';
 export { loanInterest, nationalLeakageFactor } from './economy/model';
 export { noReceipts, totalReceipts } from './finance/receipts';
+export { cashReserve, maxDebtRepayment, MIN_DEBT_REPAYMENT, validateRepayDebt } from './finance/debt';
 export { advanceUntilAttention } from './engine/tick';
 export { UNIT_CONTENT, RESEARCH_LIST, RIVAL_CONTENT, researchNode } from './content/military';
 export type { UnitContent, ResearchContent, RivalContent, FrontContent } from './content/military';
