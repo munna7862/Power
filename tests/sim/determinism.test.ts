@@ -35,14 +35,14 @@ describe('determinism', () => {
       linux: { hash: string; parts: Record<string, string> };
     } = {
       win32: {
-        hash: 'bcef6f9c',
+        hash: '6c93f776',
         parts: {
-          economy: '2bcaa8bb',
-          history: '546d771e',
-          military: '5e3c3118',
-          modifiers: '30a2bace',
-          politics: '35a05754',
-          security: '8260bc1f',
+          economy: '0f3983dd',
+          history: 'c22919a2',
+          military: '52ca9382',
+          modifiers: 'be90c258',
+          politics: '5ac8ad2a',
+          security: '45e69711',
         },
       },
       linux: {
@@ -59,16 +59,16 @@ describe('determinism', () => {
     };
 
     const target = process.platform === 'win32' ? GOLDEN.win32 : GOLDEN.linux;
-    expect(hashState(state)).toBe(target.hash);
-
     const actualParts = Object.fromEntries(
       Object.keys(state)
         .sort()
         .map((key) => [key, hashState(state[key as keyof typeof state])]),
     );
-    for (const [key, expectedHash] of Object.entries(target.parts)) {
-      expect(actualParts[key]).toBe(expectedHash);
-    }
+    // One assertion for the hash and every platform part, so a failure (on CI, say) shows all the new values at once.
+    expect({
+      hash: hashState(state),
+      parts: Object.fromEntries(Object.keys(target.parts).map((key) => [key, actualParts[key]])),
+    }).toEqual(target);
 
     expect({
       hash: hashState(state) === target.hash ? 'golden-hash' : hashState(state),

@@ -21,18 +21,18 @@ The whole suite is green, but every defect below survives it. The tests don't co
 
 ## Summary
 
-| #                 | Severity | Area                 | Defect                                                                                                             |
-| ----------------- | -------- | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [DEF-01](#def-01) | Critical | Economy / diplomacy  | **Fixed.** A trade contract signed while the customs rate is 0% gives a customs multiplier of about 600,000%       |
-| [DEF-02](#def-02) | High     | Engine / store       | **Fixed.** Critical alerts stop pausing the game once the inbox holds 400 entries                                  |
-| [DEF-03](#def-03) | High     | UI                   | **Fixed.** The clock keeps running while a decision dialog is open, so decisions lapse and cost approval           |
-| [DEF-04](#def-04) | Medium   | Security / cabinet   | An anti-corruption inquiry lands on whoever holds the post when it ends, not on the minister it was opened against |
-| [DEF-05](#def-05) | Medium   | Diplomacy            | An annexed country remains a full diplomatic partner (embassy, aid, pacts, sanctions, events)                      |
-| [DEF-06](#def-06) | Medium   | Military / diplomacy | Treaties with a rival that invades India stay in force for the whole war                                           |
-| [DEF-07](#def-07) | Medium   | Diplomacy            | Accepting a foreign offer skips the treaty rules (trade with a country India sanctions)                            |
-| [DEF-08](#def-08) | Low      | Commands             | Operations, inquiries and decision costs don't check the treasury, so it goes negative                             |
-| [DEF-09](#def-09) | Low      | UI / fog of war      | The War screen shows the enemy's true strength                                                                     |
-| [DEF-10](#def-10) | Low      | Economy              | The sanctions customs penalty has no floor, so customs revenue can go negative                                     |
+| #                 | Severity | Area                 | Defect                                                                                                                        |
+| ----------------- | -------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| [DEF-01](#def-01) | Critical | Economy / diplomacy  | **Fixed.** A trade contract signed while the customs rate is 0% gives a customs multiplier of about 600,000%                  |
+| [DEF-02](#def-02) | High     | Engine / store       | **Fixed.** Critical alerts stop pausing the game once the inbox holds 400 entries                                             |
+| [DEF-03](#def-03) | High     | UI                   | **Fixed.** The clock keeps running while a decision dialog is open, so decisions lapse and cost approval                      |
+| [DEF-04](#def-04) | Medium   | Security / cabinet   | **Fixed.** An anti-corruption inquiry lands on whoever holds the post when it ends, not on the minister it was opened against |
+| [DEF-05](#def-05) | Medium   | Diplomacy            | **Fixed.** An annexed country remains a full diplomatic partner (embassy, aid, pacts, sanctions, events)                      |
+| [DEF-06](#def-06) | Medium   | Military / diplomacy | **Fixed.** Treaties with a rival that invades India stay in force for the whole war                                           |
+| [DEF-07](#def-07) | Medium   | Diplomacy            | **Fixed.** Accepting a foreign offer skips the treaty rules (trade with a country India sanctions)                            |
+| [DEF-08](#def-08) | Low      | Commands             | **Fixed.** Operations, inquiries and decision costs don't check the treasury, so it goes negative                             |
+| [DEF-09](#def-09) | Low      | UI / fog of war      | **Fixed.** The War screen shows the enemy's true strength                                                                     |
+| [DEF-10](#def-10) | Low      | Economy              | **Fixed.** The sanctions customs penalty has no floor, so customs revenue can go negative                                     |
 
 ---
 
@@ -121,6 +121,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-04: An anti-corruption inquiry lands on whoever holds the post when it ends, not on the minister it was opened against
 
 - **Severity:** Medium
+- **Status:** Fixed on `feat/qa-defect-fixes`. A minister leaving office (dismissal, replacement or a forced resignation) closes the inquiry into that ministry; test in `tests/sim/security.test.ts`.
 - **Location:** [src/sim/security/investigations.ts:56-58](../../src/sim/security/investigations.ts) (`resolveInvestigation`); [src/sim/commands/cabinet.ts:14](../../src/sim/commands/cabinet.ts) (`removeMinister` leaves the inquiry running)
 
 **Description.** An `Investigation` records only the ministry. Dismissing the minister and appointing a successor leaves the inquiry running. When it ends after 60 days it looks up whoever holds the post at that point and judges that person. The "the minister had already left" branch only runs if the post is empty.
@@ -140,6 +141,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-05: An annexed country remains a full diplomatic partner
 
 - **Severity:** Medium
+- **Status:** Fixed on `feat/qa-defect-fixes`. Diplomacy validators, `pickCountry` and the focus AI skip annexed states, and annexation ends all of the country's treaties and offers; test in `tests/sim/diplomacy.test.ts`.
 - **Location:** [src/sim/diplomacy/treaties.ts:154](../../src/sim/diplomacy/treaties.ts) (`validateProposal`), `validateEmbassy` (line 197), `validateAid` (line 209), `validateSanctions` (line 219); [src/sim/diplomacy/world.ts:12](../../src/sim/diplomacy/world.ts) (`pickCountry`); [src/sim/diplomacy/ai.ts:220](../../src/sim/diplomacy/ai.ts) (focus AI loop); [src/ui/views/world/CountryPanel.tsx](../../src/ui/views/world/CountryPanel.tsx)
 
 **Description.** Annexation sets `military.rivals[id].annexed = true` and folds the country's GDP and population into India. The military and intelligence code checks `annexed`. The diplomacy code never does. The country keeps its relation and incidents, its AI keeps scoring actions, events can still be about it, and the World screen still treats it as independent.
@@ -163,6 +165,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-06: Treaties with a rival that invades India stay in force for the whole war
 
 - **Severity:** Medium
+- **Status:** Fixed on `feat/qa-defect-fixes`. When a rival attacks, its contracts, pact and embassy end with no penalty to India and its offers lapse (India's sanctions stay); test in `tests/sim/diplomacy.test.ts`.
 - **Location:** [src/sim/military/war.ts:121-139](../../src/sim/military/war.ts) (`startWar`)
 
 **Description.** `breakTreatiesForWar` only runs when India declares the war. When a rival attacks, which is how the AI starts wars, its trade contracts, embassy and pending offers with India all survive. India keeps the contract's growth and customs bonuses from the country it is fighting and keeps paying embassy upkeep. The relation formula still credits the trade. The only way out is `BREAK_TREATY`, which charges India the "broke a deal" penalty even though the other side invaded.
@@ -182,6 +185,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-07: Accepting a foreign offer skips the treaty rules
 
 - **Severity:** Medium
+- **Status:** Fixed on `feat/qa-defect-fixes`. `validateOffer` applies the proposal rules (annexed, at war, sanctioned, duplicate sector), sanctions cancel the country's open offers, the AI no longer offers a duplicate sector, and the Accept button is disabled with the reason; test in `tests/sim/diplomacy.test.ts`.
 - **Location:** [src/sim/diplomacy/treaties.ts:494](../../src/sim/diplomacy/treaties.ts) (`validateOffer`); [src/sim/diplomacy/ai.ts:52](../../src/sim/diplomacy/ai.ts) (`canOffer`)
 
 **Description.** AGENTS.md requires "one path for treaties… so nobody gets a deal the others could not". `validateOffer` checks only the trade-contract cap and whether a pact already exists. It doesn't check sanctions, war, annexation, or a second contract in the same sector, all of which `validateTrade` and `validatePact` refuse. Offers also stay open for 90 days after things change, for example after India sanctions the country.
@@ -201,6 +205,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-08: Operations, inquiries and decision costs don't check the treasury
 
 - **Severity:** Low
+- **Status:** Fixed on `feat/qa-defect-fixes`. Operations, inquiries and decision choices are refused when the treasury cannot cover them, and the UI disables those buttons; test in `tests/sim/security.test.ts`.
 - **Location:** [src/sim/commands/index.ts:242-256](../../src/sim/commands/index.ts) (`LAUNCH_INVESTIGATION`, `LAUNCH_OPERATION`); [src/sim/security/investigations.ts:36](../../src/sim/security/investigations.ts); [src/sim/events/engine.ts:155](../../src/sim/events/engine.ts) (a choice's `cost`)
 
 **Description.** Embassies, aid, the nuclear program, war mobilisation and intelligence operations are refused when the treasury can't cover them. Security operations, anti-corruption inquiries and decision choices that cost money are charged without any check, and the UI doesn't disable them. The monthly settlement then quietly borrows to cover the shortfall, so the rules are inconsistent and the player sees a negative treasury.
@@ -226,6 +231,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-09: The War screen shows the enemy's true strength
 
 - **Severity:** Low (it breaks a documented rule)
+- **Status:** Fixed on `feat/qa-defect-fixes`. The war card shows the enemy army as the intelligence estimate, and front odds come from that estimate ("Odds unknown: run recon" without one).
 - **Location:** [src/ui/views/military/WarTab.tsx:49-51](../../src/ui/views/military/WarTab.tsx)
 
 **Description.** AGENTS.md says: "the UI shows a rival's strength only through `strengthView()`, never from `state.military.rivals[...].strength`." The war card computes "Enemy army left" from `rival.strength / war.enemyStartStrength` and labels each front with odds from `frontOdds()`, which uses the enemy's true front power. Together with India's known strength, this gives away the exact figures that recon and the intelligence budget are supposed to estimate.
@@ -239,6 +245,7 @@ One month later the treasury had gone from ₹1,98,258 crore to ₹4,26,60,848 c
 ## DEF-10: The sanctions customs penalty has no floor, so customs revenue can go negative
 
 - **Severity:** Low
+- **Status:** Fixed on `feat/qa-defect-fixes`. `projectMonth` floors the customs multiplier at 0; test in `tests/sim/economy.test.ts`.
 - **Location:** [src/sim/diplomacy/treaties.ts:313](../../src/sim/diplomacy/treaties.ts) (`signTreaty`, sanctions branch); `multiplierFor` in [src/sim/engine/modifiers.ts](../../src/sim/engine/modifiers.ts)
 
 **Description.** Each sanction India imposes adds `−0.0008 × the target's power` to the customs multiplier. `validateSanctions` sets no limit, and neither the modifier stack nor `projectMonth` clamps the result, so the multiplier can drop below zero.
