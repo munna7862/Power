@@ -1,4 +1,4 @@
-# Phase 8: Hands-on Governance (redesign, about 61 SP)
+# Phase 8: Hands-on Governance (redesign, about 66 SP)
 
 > [Planning index](../README.md) · [Master plan](../Master/master_plan.md) · [← Phase 7 backlog](phase_7_apex_mobile.md)
 
@@ -246,6 +246,56 @@ band, Normal and Hard were re-tuned in `difficulty.ts`: voter fatigue 5 → 6 po
 
 All earlier bands still hold. Balanced re-election: Easy 100%, Normal 76%, Hard 36%.
 
+### Sprint 8.10: National play option (5 SP) ✅
+
+A New Game option, **Regional play**. On, the game plays exactly as it does now. Off, the President runs one India:
+no region pickers, no tile map, national figures everywhere. The simulation is the same in both modes: it keeps its
+six regions underneath, and with regions off the President's orders are spread across them automatically, **worst
+region first**. One simulation means one save shape, one set of formulas and "Why?" tooltips that cannot drift
+between the modes; the cost is one extra code path (the split) that every regional command has to go through.
+
+| ID      | Story                                                                                                              | SP  |
+| ------- | ------------------------------------------------------------------------------------------------------------------ | --- |
+| S8.10-1 | As a player, I choose Regional play on or off on the New Game screen; on plays exactly as before                   | 1   |
+| S8.10-2 | As the sim, an order with no region is split across regions, worst first, by one pure function the UI previews too | 2   |
+| S8.10-3 | As a player with regions off, every screen, event, advisor tip and "Why?" speaks of India, never of a region       | 1   |
+| S8.10-4 | As a developer, the bots play both modes and a national-play probe and band keep the two modes comparable          | 1   |
+
+**Decisions**
+
+| Question                                     | Decision                                                                                                   |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Separate national formulas?                  | **No.** The six regions stay in the state; national play is a way of giving orders and of showing results  |
+| How orders are split                         | **Worst region first** (water-filling), ties broken in `REGIONS` order, so it is deterministic             |
+| Default                                      | **On** in `DEFAULT_OPTIONS`, so tests, bots and the determinism hashes are unchanged; the toggle starts on |
+| Which unrest figure the national gauge shows | **The highest region's**, because that is where riots fire; "Why?" lists its drivers without naming it     |
+| Crime, coverage, police per 100k             | Population-weighted national averages                                                                      |
+
+**Tasks**
+
+- [x] State: `meta.options.regions: boolean` in `GameOptions` and `DEFAULT_OPTIONS` (`true`); a facility order's `region` may be `null` (an order for all of India); `SCHEMA_VERSION` 13 with a v12 → v13 migration that sets `regions: true`, `src/sim/save/schema.ts` updated, golden fixture `v13.json` (national play, with region-free clinic and police orders)
+- [x] `src/sim/national/split.ts` (pure, exported from `src/sim/index.ts`): `fillLowest()` spreads whole units over the regions, lowest level first, weighted by how far one unit moves each region, never past a cap; ties go in `REGIONS` order. On top of it:
+  - `splitFacilities` / `splitDemolish`: lowest (highest) coverage of the facility's area (`coverage()`)
+  - `splitOfficers`: recruits where officers per head against the opening force are lowest, dismissals where highest; `splitStations`: where the most officers have no station
+  - `splitDecommission` / `splitCloseIndustry`: where there are most plants of that kind
+  - `homeRegion()`: power plants and state factories do not depend on their region (the grid and the goods market are national), so national orders go to the most populous region
+- [x] Commands: `region` is optional on `BUILD_FACILITY`, `DEMOLISH_FACILITY`, `BUILD_PLANT`, `DECOMMISSION_PLANT`, `BUILD_INDUSTRY`, `LICENSE_PLANT`, `CLOSE_INDUSTRY`, `RECRUIT_POLICE` and `BUILD_STATION`, in both modes. **Changed from the plan:** a national facility order is queued once, with `region: null`, and split when it opens, so it takes one queue slot, writes one inbox entry and lands where the gaps are on the day it opens. Immediate orders (police, stations, closures) split at once and write one entry
+- [x] Read helpers in `src/sim/national/view.ts`: `nationalUnrest()` (the hottest region), `nationalCrime()` and `nationalCrimeTarget()` (population-weighted, drivers averaged), `nationalPoliceRatio()`, `nationalHeadcountRatio()`, and national officer and station counts and needs. `coverage()`, `explainCoverage()` and `facilitiesForTarget()` take `null` for India
+- [x] Inbox and events: every log line names its place through `placeName()` ("the North", or "India" in national play); `fillText()` writes "the affected area" for `the {region}` / `The {region}` in national play, and regional events still pick a region underneath, so the odds and outcomes are those of regional play. The cyclone text was reworded to read well both ways
+- [x] Advisor: `advise()` keeps the region; `adviceText()` uses region-free wordings of the coverage, police and unrest topics in national play
+- [x] UI: the **Regional play** toggle on the New Game screen; with it off, Construction, Police, Energy and Industry hide their region pickers and show national rows, Security shows India's unrest and crime with their "Why?" in place of the map, and terror plots and the war annexation note name no region. Text in i18n only (`regions.india`, `regions.inSentence`)
+- [x] Bots: the balanced bot gives region-free orders in national play; the passive and greedy bots are unchanged
+- [x] Balance: a national-play probe in `tools/balance/release.ts` (balanced bot, Normal, regions off, the same seeds as the regional runs) and two bands, `national-play-comparable` and `national-play-governed` (below)
+- [x] Tests: `tests/sim/national.test.ts` (worst first, deterministic, caps, weights, every region-free command, national text, national figures, the v12 → v13 migration); the determinism golden hash moves only through `meta` and `schemaVersion`, and a regional bot game writes exactly the same inbox as before; Playwright: a national game builds clinics with no region and shows India on the Police and Security screens
+- [x] Docs: the handbook's Game options entry explains both modes; AGENTS.md has a National play section
+
+**Balance at the end of the sprint.** Regional play is unchanged: every earlier band holds with the same results as Sprint 8.9 (balanced re-election 100% Easy, 76% Normal, 36% Hard). National play is a little easier, because worst-region-first placement spends each rupee where coverage and policing are thinnest. That is within the band, and no rule was re-tuned for it.
+
+| KPI                        | Band                                                                                                             | Result at merge                                  |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `national-play-comparable` | With Regional play off, balanced re-election on Normal is within 10 points of regional play (50 seeds × 5 years) | ✅ 84% vs 76%                                    |
+| `national-play-governed`   | Every region keeps ≥ 95% of the opening police per head in ≥ 90% of terms; coverage ends ≥ 1 point above opening | ✅ police 100% of terms; coverage 77.0% vs 67.0% |
+
 ---
 
 ## 5. How the pieces connect
@@ -273,7 +323,8 @@ Running costs (upkeep, salaries, interest) settle monthly in `projectMonth` and 
 3. **8.4 before 8.5:** industry needs power.
 4. **8.6 after 8.5:** trade needs goods.
 5. **8.7 and 8.8** are independent and can slot in anywhere after 8.1.
-6. **8.9 last.**
+6. **8.9 last** of the redesign.
+7. **8.10** (national play) after 8.9: it builds on every regional screen and on the balanced bot.
 
 ---
 

@@ -11,7 +11,11 @@ import {
   IMPEACHMENT_MONTHS,
   impeachmentThreshold,
   departmentStars,
+  hottestRegion,
   MINISTRY_CONTENT,
+  nationalCrime,
+  nationalCrimeTarget,
+  nationalUnrest,
   presidentialSafety,
   REGIONS,
   RIOT_UNREST,
@@ -25,6 +29,7 @@ import { gameStore, useGame } from '../../store';
 import { Button, Gauge, Panel, Tooltip } from '../design/primitives';
 import { pct, signed } from '../format';
 import gameStyles from '../screens/game.module.css';
+import { placePhrase, useRegional } from './place';
 import styles from './views.module.css';
 
 const unrestColour = (v: number) =>
@@ -106,6 +111,61 @@ function UnrestMap({ game, metric }: { game: GameState; metric: MapMetric }) {
   );
 }
 
+/** A list of "Why?" drivers. */
+function Drivers({ drivers }: { drivers: { label: string; value: number }[] }) {
+  return drivers.map((d) => (
+    <Fragment key={d.label}>
+      <span>{d.label}</span>
+      <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
+    </Fragment>
+  ));
+}
+
+/**
+ * National play: one unrest figure and one crime figure for India, in place of the map. Riots break out region by
+ * region, so unrest is the hottest region's, explained by that region's drivers; crime is weighted by population.
+ */
+function NationalUnrest({ game, eff }: { game: GameState; eff: ReturnType<typeof allEfficiencies> }) {
+  const { t } = useTranslation();
+  const unrest = nationalUnrest(game);
+  const target = unrestTarget(game, hottestRegion(game), eff);
+  const crime = nationalCrime(game);
+  const crimeHeading = nationalCrimeTarget(game);
+  return (
+    <div className={styles.tiles} data-testid="national-unrest">
+      <div className={styles.tile}>
+        <span className={styles.tileLabel}>{t('security.mapMetric.unrest')}</span>
+        <span className={styles.tileValue} style={{ color: unrestColour(unrest) }}>
+          {t('security.mapValue', { value: Math.round(unrest), level: t(`security.levels.${unrestLevel(unrest)}`) })}
+        </span>
+        <span className={styles.tileNote}>
+          {t('security.headingTo', { value: target.total.toFixed(0) })}{' '}
+          <Tooltip label={t('security.whyNationalUnrest')}>
+            <span className={gameStyles.breakdown}>
+              <Drivers drivers={target.drivers} />
+            </span>
+          </Tooltip>
+        </span>
+      </div>
+      <div className={styles.tile}>
+        <span className={styles.tileLabel}>{t('security.mapMetric.crime')}</span>
+        <span className={styles.tileValue} style={{ color: crimeColour(crime) }}>
+          {t('security.mapValue', { value: Math.round(crime), level: t(`security.crimeLevels.${crimeLevel(crime)}`) })}
+        </span>
+        <span className={styles.tileNote}>
+          {t('security.headingTo', { value: crimeHeading.total.toFixed(0) })}{' '}
+          <Tooltip label={t('security.whyCrime', { region: placePhrase(null) })}>
+            <span className={gameStyles.breakdown}>
+              <Drivers drivers={crimeHeading.drivers} />
+            </span>
+          </Tooltip>
+        </span>
+      </div>
+      <p className={styles.note}>{t('security.nationalCaption')}</p>
+    </div>
+  );
+}
+
 function Risk({ name, value, detail, danger }: { name: string; value: string; detail: string; danger: boolean }) {
   return (
     <li className={styles.riskRow} data-danger={danger}>
@@ -120,6 +180,7 @@ export function SecurityView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
   const [metric, setMetric] = useState<MapMetric>('unrest');
+  const regional = useRegional();
   if (!game) return null;
 
   const { security, economy, nation, politics } = game;
@@ -186,79 +247,85 @@ export function SecurityView() {
 
       <div className={gameStyles.grid}>
         <Panel
-          title={t('security.unrest')}
+          title={regional ? t('security.unrest') : t('security.unrestNational')}
           className={gameStyles.span8}
           actions={
-            <div className={styles.segmented} role="group" aria-label={t('security.mapShows')}>
-              {(['unrest', 'crime'] as const).map((m) => (
-                <button key={m} type="button" aria-pressed={metric === m} onClick={() => setMetric(m)}>
-                  {t(`security.mapMetric.${m}`)}
-                </button>
-              ))}
-            </div>
+            regional && (
+              <div className={styles.segmented} role="group" aria-label={t('security.mapShows')}>
+                {(['unrest', 'crime'] as const).map((m) => (
+                  <button key={m} type="button" aria-pressed={metric === m} onClick={() => setMetric(m)}>
+                    {t(`security.mapMetric.${m}`)}
+                  </button>
+                ))}
+              </div>
+            )
           }
         >
-          <div className={styles.unrestLayout}>
-            <UnrestMap game={game} metric={metric} />
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>{t('security.region')}</th>
-                    <th className={styles.num}>{t('security.unrestColumn')}</th>
-                    <th className={styles.num}>{t('security.headingColumn')}</th>
-                    <th />
-                    <th className={styles.num}>{t('security.crimeColumn')}</th>
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  {REGIONS.map((r) => {
-                    const target = unrestTarget(game, r, eff);
-                    const crime = crimeTarget(game, r);
-                    return (
-                      <tr key={r}>
-                        <td>{t(`regions.${r}`)}</td>
-                        <td className={styles.num} style={{ color: unrestColour(security.unrest[r]) }}>
-                          {security.unrest[r].toFixed(0)}
-                        </td>
-                        <td className={styles.num}>{target.total.toFixed(0)}</td>
-                        <td>
-                          <Tooltip label={t('security.whyRegion', { region: t(`regions.${r}`) })}>
-                            <span className={gameStyles.breakdown}>
-                              {target.drivers.map((d) => (
-                                <Fragment key={d.label}>
-                                  <span>{d.label}</span>
-                                  <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
-                                </Fragment>
-                              ))}
-                            </span>
-                          </Tooltip>
-                        </td>
-                        <td className={styles.num} style={{ color: crimeColour(security.crime[r]) }}>
-                          {security.crime[r].toFixed(0)}
-                        </td>
-                        <td>
-                          <Tooltip label={t('security.whyCrime', { region: t(`regions.${r}`) })}>
-                            <span className={gameStyles.breakdown}>
-                              {crime.drivers.map((d) => (
-                                <Fragment key={d.label}>
-                                  <span>{d.label}</span>
-                                  <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
-                                </Fragment>
-                              ))}
-                              <span>{t('security.crimeHeading')}</span>
-                              <span className={gameStyles.breakdownValue}>{crime.total.toFixed(0)}</span>
-                            </span>
-                          </Tooltip>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+          {regional ? (
+            <div className={styles.unrestLayout}>
+              <UnrestMap game={game} metric={metric} />
+              <div className={styles.tableWrap}>
+                <table className={styles.table}>
+                  <thead>
+                    <tr>
+                      <th>{t('security.region')}</th>
+                      <th className={styles.num}>{t('security.unrestColumn')}</th>
+                      <th className={styles.num}>{t('security.headingColumn')}</th>
+                      <th />
+                      <th className={styles.num}>{t('security.crimeColumn')}</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {REGIONS.map((r) => {
+                      const target = unrestTarget(game, r, eff);
+                      const crime = crimeTarget(game, r);
+                      return (
+                        <tr key={r}>
+                          <td>{t(`regions.${r}`)}</td>
+                          <td className={styles.num} style={{ color: unrestColour(security.unrest[r]) }}>
+                            {security.unrest[r].toFixed(0)}
+                          </td>
+                          <td className={styles.num}>{target.total.toFixed(0)}</td>
+                          <td>
+                            <Tooltip label={t('security.whyRegion', { region: t(`regions.${r}`) })}>
+                              <span className={gameStyles.breakdown}>
+                                {target.drivers.map((d) => (
+                                  <Fragment key={d.label}>
+                                    <span>{d.label}</span>
+                                    <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
+                                  </Fragment>
+                                ))}
+                              </span>
+                            </Tooltip>
+                          </td>
+                          <td className={styles.num} style={{ color: crimeColour(security.crime[r]) }}>
+                            {security.crime[r].toFixed(0)}
+                          </td>
+                          <td>
+                            <Tooltip label={t('security.whyCrime', { region: placePhrase(r) })}>
+                              <span className={gameStyles.breakdown}>
+                                {crime.drivers.map((d) => (
+                                  <Fragment key={d.label}>
+                                    <span>{d.label}</span>
+                                    <span className={gameStyles.breakdownValue}>{signed(d.value)}</span>
+                                  </Fragment>
+                                ))}
+                                <span>{t('security.crimeHeading')}</span>
+                                <span className={gameStyles.breakdownValue}>{crime.total.toFixed(0)}</span>
+                              </span>
+                            </Tooltip>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          ) : (
+            <NationalUnrest game={game} eff={eff} />
+          )}
         </Panel>
 
         <Panel title={t('security.safety')} className={gameStyles.span4}>

@@ -24,22 +24,23 @@
       "short": "Short"
     },
     "unitNote": "{{unit}}",
-    "buildIn": "Plants in the {{region}}",
+    "buildIn": "Plants in {{region}}",
     "region": "Region",
     "recipe": "{{inputs}} → {{outputs}} a month",
     "noInputs": "Nothing",
     "flow": "{{quantity}} {{unit}} {{good}}",
     "plantLine": "Here: {{state}} state · {{private}} private · nationwide {{total}} · running at {{throughput}}",
+    "plantLineNational": "{{state}} state · {{private}} private · {{total}} in all · running at {{throughput}}",
     "economics": "Price {{cost}} · {{days}} · profit {{profit}} / month each · {{power}} GW · {{jobs}} jobs",
     "days_one": "{{count}} day",
     "days_other": "{{count}} days",
     "quantityLabel": "How many {{name}} to build or close",
     "build": "Build · {{cost}}",
-    "buildLabel": "Build {{count}} state {{name}} in the {{region}} for {{cost}}",
+    "buildLabel": "Build {{count}} state {{name}} in {{region}} for {{cost}}",
     "license": "License · +{{fee}}",
-    "licenseLabel": "License a private {{name}} in the {{region}} for a fee of {{fee}}",
+    "licenseLabel": "License a private {{name}} in {{region}} for a fee of {{fee}}",
     "close": "Close",
-    "closeLabel": "Close {{count}} state {{name}} in the {{region}}",
+    "closeLabel": "Close {{count}} state {{name}} in {{region}}",
     "projects": "Industrial projects",
     "projectsNote": "{{queued}} of {{max}} projects. Cancelling a state build refunds {{refund}}% of the price; licensed plants are the investors' to build.",
     "noProjects": "Nothing is being built.",
@@ -52,6 +53,6 @@
     "opensIn_one": "Opens in {{count}} day",
     "opensIn_other": "Opens in {{count}} days",
     "cancel": "Cancel · refund {{refund}}",
-    "cancelLabel": "Cancel {{name}} in the {{region}} and get {{refund}} back"
+    "cancelLabel": "Cancel {{name}} in {{region}} and get {{refund}} back"
   }
 }

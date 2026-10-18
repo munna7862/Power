@@ -14,7 +14,7 @@
       "severe": "Severe"
     },
     "crimeColumn": "Crime",
-    "whyCrime": "Why crime in the {{region}}?",
+    "whyCrime": "Why crime in {{region}}?",
     "crimeHeading": "Heading to",
     "toPolice": "Police, operations and audits",
     "mapValue": "{{value}} · {{level}}",
@@ -34,6 +34,9 @@
     "livePlots_one": "{{count}} plot live",
     "livePlots_other": "{{count}} plots live",
     "unrest": "Regional unrest",
+    "unrestNational": "Unrest and crime across India",
+    "whyNationalUnrest": "Why unrest in India?",
+    "nationalCaption": "Riots break out where unrest is highest, so India's unrest is its hottest region's; crime is weighted by population. Both are caused by jobs, prices, corruption, approval and policing: never by religion or caste.",
     "region": "Region",
     "unrestColumn": "Unrest",
     "headingColumn": "Heading to",

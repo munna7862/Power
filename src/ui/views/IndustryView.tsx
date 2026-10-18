@@ -15,6 +15,7 @@ import {
   OPENING_SETTLEMENT,
   plantCount,
   plantProfit,
+  homeRegion,
   REGIONS,
   validateCloseIndustry,
   validateIndustry,
@@ -32,6 +33,7 @@ import gameStyles from '../screens/game.module.css';
 import { Bar } from './military/parts';
 import { daysLeft, shareDone } from './military/progress';
 import { qty } from './market/quantity';
+import { placeName, placePhrase, useRegional } from './place';
 import styles from './views.module.css';
 
 function Tiles({ game }: { game: GameState }) {
@@ -130,6 +132,7 @@ function GoodsTable({ game }: { game: GameState }) {
 
 function Projects({ game }: { game: GameState }) {
   const { t } = useTranslation();
+  const regional = useRegional();
   const { dispatch } = gameStore.getState();
   const { queue } = game.industry;
   return (
@@ -147,7 +150,8 @@ function Projects({ game }: { game: GameState }) {
         <ul className={styles.riskList} aria-label={t('industry.projects')}>
           {queue.map((order) => {
             const name = INDUSTRY_CONTENT[order.industry].name;
-            const region = t(`regions.${order.region}`);
+            const region = placeName(regional ? order.region : null);
+            const phrase = placePhrase(regional ? order.region : null);
             const refund = formatCrore(Math.round(order.cost * INDUSTRY_CANCEL_REFUND));
             return (
               <li key={order.id} className={styles.reportCard} data-testid="industry-order">
@@ -171,7 +175,7 @@ function Projects({ game }: { game: GameState }) {
                   {order.owner === 'state' && (
                     <Button
                       variant="ghost"
-                      aria-label={t('industry.cancelLabel', { name, region, refund })}
+                      aria-label={t('industry.cancelLabel', { name, region: phrase, refund })}
                       onClick={() => dispatch({ type: 'CANCEL_INDUSTRY', orderId: order.id })}
                     >
                       {t('industry.cancel', { refund })}
@@ -198,17 +202,29 @@ function flowText(flows: Partial<Record<GoodId, number>>) {
   return parts.length > 0 ? parts.join(' + ') : translate('industry.noInputs');
 }
 
-function IndustryCard({ game, region, industry }: { game: GameState; region: RegionId; industry: IndustryId }) {
+/** One industry, built in a region or (null, national play) for all of India. */
+function IndustryCard({ game, region, industry }: { game: GameState; region: RegionId | null; industry: IndustryId }) {
   const { t } = useTranslation();
   const { dispatch } = gameStore.getState();
   const [quantity, setQuantity] = useState(1);
   const c = INDUSTRY_CONTENT[industry];
-  const here = game.industry.plants[region][industry];
-  const regionName = t(`regions.${region}`);
+  const here =
+    region === null
+      ? REGIONS.reduce(
+          (sum, r) => ({
+            state: sum.state + game.industry.plants[r][industry].state,
+            private: sum.private + game.industry.plants[r][industry].private,
+          }),
+          { state: 0, private: 0 },
+        )
+      : game.industry.plants[region][industry];
+  const regionName = placePhrase(region);
+  const site = region ?? homeRegion();
+  const where = region === null ? {} : { region };
   const cost = formatCrore(industryCost(industry, quantity));
   const fee = formatCrore(c.licenceFee);
-  const buildProblem = validateIndustry(game, industry, region, quantity);
-  const licenceProblem = validateLicence(game, industry, region);
+  const buildProblem = validateIndustry(game, industry, site, quantity);
+  const licenceProblem = validateLicence(game, industry, site);
   const closeProblem = validateCloseIndustry(game, industry, region, quantity);
   return (
     <div className={styles.facilityCard} data-testid={`industry-${industry}`}>
@@ -219,7 +235,7 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
         </div>
         <div className={styles.facilityStats}>
           <span data-testid={`plants-${industry}`}>
-            {t('industry.plantLine', {
+            {t(region === null ? 'industry.plantLineNational' : 'industry.plantLine', {
               state: here.state,
               private: here.private,
               total: plantCount(game.industry.plants, industry),
@@ -255,7 +271,7 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
           disabled={buildProblem !== null}
           title={buildProblem ?? undefined}
           aria-label={t('industry.buildLabel', { count: quantity, name: c.name, region: regionName, cost })}
-          onClick={() => dispatch({ type: 'BUILD_INDUSTRY', industry, region, quantity })}
+          onClick={() => dispatch({ type: 'BUILD_INDUSTRY', industry, ...where, quantity })}
         >
           {t('industry.build', { cost })}
         </Button>
@@ -263,7 +279,7 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
           disabled={licenceProblem !== null}
           title={licenceProblem ?? undefined}
           aria-label={t('industry.licenseLabel', { name: c.name.toLowerCase(), region: regionName, fee })}
-          onClick={() => dispatch({ type: 'LICENSE_PLANT', industry, region })}
+          onClick={() => dispatch({ type: 'LICENSE_PLANT', industry, ...where })}
         >
           {t('industry.license', { fee })}
         </Button>
@@ -272,7 +288,7 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
           disabled={closeProblem !== null}
           title={closeProblem ?? undefined}
           aria-label={t('industry.closeLabel', { count: quantity, name: c.name.toLowerCase(), region: regionName })}
-          onClick={() => dispatch({ type: 'CLOSE_INDUSTRY', industry, region, quantity })}
+          onClick={() => dispatch({ type: 'CLOSE_INDUSTRY', industry, ...where, quantity })}
         >
           {t('industry.close')}
         </Button>
@@ -284,8 +300,10 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
 export function IndustryView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
-  const [region, setRegion] = useState<RegionId>('north');
+  const regional = useRegional();
+  const [chosen, setRegion] = useState<RegionId>('north');
   if (!game) return null;
+  const region = regional ? chosen : null;
 
   return (
     <>
@@ -303,23 +321,25 @@ export function IndustryView() {
         <Projects game={game} />
 
         <Panel
-          title={t('industry.buildIn', { region: t(`regions.${region}`) })}
+          title={t('industry.buildIn', { region: placePhrase(region) })}
           className={gameStyles.span12}
           actions={
-            <div
-              className={`${styles.segmented} ${styles.segmentedWrap}`}
-              role="group"
-              aria-label={t('industry.region')}
-            >
-              {REGIONS.map((r) => (
-                <button key={r} type="button" aria-pressed={region === r} onClick={() => setRegion(r)}>
-                  {t(`regions.${r}`)}
-                </button>
-              ))}
-            </div>
+            regional && (
+              <div
+                className={`${styles.segmented} ${styles.segmentedWrap}`}
+                role="group"
+                aria-label={t('industry.region')}
+              >
+                {REGIONS.map((r) => (
+                  <button key={r} type="button" aria-pressed={region === r} onClick={() => setRegion(r)}>
+                    {t(`regions.${r}`)}
+                  </button>
+                ))}
+              </div>
+            )
           }
         >
-          <div className={styles.facilityList} key={region}>
+          <div className={styles.facilityList} key={region ?? 'india'}>
             {INDUSTRIES.map((i) => (
               <IndustryCard key={i} game={game} region={region} industry={i} />
             ))}

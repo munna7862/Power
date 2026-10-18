@@ -8,6 +8,7 @@ import {
   explainCoverage,
   FACILITY_CONTENT,
   facilitiesForTarget,
+  facilityCount,
   facilitiesIn,
   facilityUpkeep,
   groupIndian,
@@ -28,16 +29,32 @@ import { Button, Panel, Tooltip } from '../design/primitives';
 import { formatCrore, formatCroreFine, pct } from '../format';
 import gameStyles from '../screens/game.module.css';
 import { Bar } from './military/parts';
+import { placeName, placePhrase, useRegional } from './place';
 import { daysLeft, shareDone } from './military/progress';
 import styles from './views.module.css';
 
 const coverageTone = (value: number) => (value >= 0.9 ? 'good' : value >= 0.7 ? 'warning' : 'danger');
 
-/** Every region against every area, so the gaps stand out; picking a row opens that region below. */
-function Overview({ game, region, onSelect }: { game: GameState; region: RegionId; onSelect(r: RegionId): void }) {
+/**
+ * Every region against every area, so the gaps stand out; picking a row opens that region below. In national play
+ * there is one row, India, and orders go wherever coverage is thinnest.
+ */
+function Overview({
+  game,
+  region,
+  onSelect,
+}: {
+  game: GameState;
+  region: RegionId | null;
+  onSelect(r: RegionId): void;
+}) {
   const { t } = useTranslation();
+  const rows: (RegionId | null)[] = region === null ? [null] : [...REGIONS];
   return (
-    <Panel title={t('construction.overview')} className={gameStyles.span12}>
+    <Panel
+      title={region === null ? t('construction.overviewNational') : t('construction.overview')}
+      className={gameStyles.span12}
+    >
       <div className={styles.tableWrap}>
         <table className={styles.table} data-testid="coverage-overview">
           <thead>
@@ -51,17 +68,21 @@ function Overview({ game, region, onSelect }: { game: GameState; region: RegionI
             </tr>
           </thead>
           <tbody>
-            {REGIONS.map((r) => (
-              <tr key={r} className={r === region ? styles.selectedRow : undefined}>
+            {rows.map((r) => (
+              <tr key={r ?? 'india'} className={r === region ? styles.selectedRow : undefined}>
                 <td>
-                  <Button
-                    variant="ghost"
-                    aria-pressed={r === region}
-                    aria-label={t('construction.selectRegion', { region: t(`regions.${r}`) })}
-                    onClick={() => onSelect(r)}
-                  >
-                    {t(`regions.${r}`)}
-                  </Button>
+                  {r === null ? (
+                    placeName(null)
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      aria-pressed={r === region}
+                      aria-label={t('construction.selectRegion', { region: placeName(r) })}
+                      onClick={() => onSelect(r)}
+                    >
+                      {placeName(r)}
+                    </Button>
+                  )}
                 </td>
                 {COVERAGE_AREAS.map((a) => {
                   const value = coverage(game, r, a);
@@ -76,13 +97,15 @@ function Overview({ game, region, onSelect }: { game: GameState; region: RegionI
           </tbody>
         </table>
       </div>
-      <p className={styles.note}>{t('construction.overviewNote')}</p>
+      <p className={styles.note}>
+        {region === null ? t('construction.overviewNoteNational') : t('construction.overviewNote')}
+      </p>
     </Panel>
   );
 }
 
 /** The "Why?" behind one area's coverage: who each facility type serves, against the people living there. */
-function AreaWhy({ game, region, area }: { game: GameState; region: RegionId; area: CoverageArea }) {
+function AreaWhy({ game, region, area }: { game: GameState; region: RegionId | null; area: CoverageArea }) {
   const { t } = useTranslation();
   const why = explainCoverage(game, region, area);
   return (
@@ -119,7 +142,7 @@ function FacilityRow({
   onQuantity,
 }: {
   game: GameState;
-  region: RegionId;
+  region: RegionId | null;
   facility: FacilityId;
   quantity: number;
   onQuantity(n: number): void;
@@ -127,7 +150,7 @@ function FacilityRow({
   const { t } = useTranslation();
   const { dispatch } = gameStore.getState();
   const c = FACILITY_CONTENT[facility];
-  const regionName = t(`regions.${region}`);
+  const regionName = placePhrase(region);
   const cost = formatCrore(buildCost(facility, quantity));
   const buildProblem = validateBuild(game, facility, region, quantity);
   const demolishProblem = validateDemolish(game, facility, region, quantity);
@@ -142,9 +165,7 @@ function FacilityRow({
         <div className={styles.facilityStats}>
           <span>
             {t('construction.columns.inService')}{' '}
-            <strong data-testid={`count-${facility}`}>
-              {groupIndian(game.infrastructure.counts[region][facility])}
-            </strong>
+            <strong data-testid={`count-${facility}`}>{groupIndian(facilityCount(game, region, facility))}</strong>
           </span>
           <span>
             {t('construction.columns.price')} <strong>{formatCroreFine(c.cost)}</strong>
@@ -184,7 +205,13 @@ function FacilityRow({
           disabled={buildProblem !== null}
           title={buildProblem ?? undefined}
           aria-label={t('construction.buildLabel', { count: quantity, name: c.name, region: regionName, cost })}
-          onClick={() => dispatch({ type: 'BUILD_FACILITY', facility, region, quantity })}
+          onClick={() =>
+            dispatch(
+              region === null
+                ? { type: 'BUILD_FACILITY', facility, quantity }
+                : { type: 'BUILD_FACILITY', facility, region, quantity },
+            )
+          }
         >
           {t('construction.build', { cost })}
         </Button>
@@ -192,7 +219,13 @@ function FacilityRow({
           disabled={demolishProblem !== null}
           title={demolishProblem ?? undefined}
           aria-label={t('construction.demolishLabel', { count: quantity, name: c.name, region: regionName })}
-          onClick={() => dispatch({ type: 'DEMOLISH_FACILITY', facility, region, quantity })}
+          onClick={() =>
+            dispatch(
+              region === null
+                ? { type: 'DEMOLISH_FACILITY', facility, quantity }
+                : { type: 'DEMOLISH_FACILITY', facility, region, quantity },
+            )
+          }
         >
           {t('construction.demolish')}
         </Button>
@@ -201,10 +234,10 @@ function FacilityRow({
   );
 }
 
-function BuildPanel({ game, region }: { game: GameState; region: RegionId }) {
+function BuildPanel({ game, region }: { game: GameState; region: RegionId | null }) {
   const { t } = useTranslation();
   const [quantities, setQuantities] = useState<Record<string, number>>({});
-  const regionName = t(`regions.${region}`);
+  const regionName = placePhrase(region);
   return (
     <Panel title={t('construction.buildIn', { region: regionName })} className={gameStyles.span8}>
       {COVERAGE_AREAS.map((area) => {
@@ -263,7 +296,8 @@ function Projects({ game }: { game: GameState }) {
         <ul className={styles.riskList} aria-label={t('construction.projects')}>
           {queue.map((order) => {
             const name = FACILITY_CONTENT[order.facility].name;
-            const region = t(`regions.${order.region}`);
+            const region = placeName(order.region);
+            const phrase = placePhrase(order.region);
             const refund = formatCrore(Math.round(order.cost * CANCEL_REFUND));
             return (
               <li key={order.id} className={styles.reportCard} data-testid="build-order">
@@ -281,7 +315,7 @@ function Projects({ game }: { game: GameState }) {
                   </span>
                   <Button
                     variant="ghost"
-                    aria-label={t('construction.cancelLabel', { name, region, refund })}
+                    aria-label={t('construction.cancelLabel', { name, region: phrase, refund })}
                     onClick={() => dispatch({ type: 'CANCEL_BUILD', orderId: order.id })}
                   >
                     {t('construction.cancel', { refund })}
@@ -324,8 +358,10 @@ function RunningCosts({ game }: { game: GameState }) {
 export function ConstructionView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
-  const [region, setRegion] = useState<RegionId>('north');
+  const regional = useRegional();
+  const [chosen, setRegion] = useState<RegionId>('north');
   if (!game) return null;
+  const region = regional ? chosen : null;
 
   return (
     <>
@@ -338,7 +374,7 @@ export function ConstructionView() {
 
       <div className={gameStyles.grid}>
         <Overview game={game} region={region} onSelect={setRegion} />
-        <BuildPanel key={region} game={game} region={region} />
+        <BuildPanel key={region ?? 'india'} game={game} region={region} />
         <div className={`${gameStyles.span4} ${styles.stack}`}>
           <Projects game={game} />
           <RunningCosts game={game} />

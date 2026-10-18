@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 12;
+export const SCHEMA_VERSION = 13;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -49,9 +49,14 @@ export interface GameOptions {
   noRiots: boolean;
   /** The guided tutorial runs: a practice decision arrives in the first week. */
   tutorial: boolean;
+  /**
+   * Regional play: the President builds and polices region by region. Off, they run one India: the six regions stay
+   * in the simulation, but orders go where they are needed most and the game speaks only of India (Sprint 8.10).
+   */
+  regions: boolean;
 }
 
-export const DEFAULT_OPTIONS: GameOptions = { noWars: false, noRiots: false, tutorial: false };
+export const DEFAULT_OPTIONS: GameOptions = { noWars: false, noRiots: false, tutorial: false, regions: true };
 
 export interface GameMeta {
   seed: number;
@@ -188,7 +193,8 @@ export interface DepartmentsState {
 export interface BuildOrder {
   id: string;
   facility: FacilityId;
-  region: RegionId;
+  /** Null for an order placed for all of India: it opens where coverage is thinnest (Sprint 8.10). */
+  region: RegionId | null;
   quantity: number;
   /** ₹ crore paid when ordered, for the partial refund on cancelling. */
   cost: number;

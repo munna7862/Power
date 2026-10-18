@@ -5,16 +5,9 @@ import {
   POLICE_UNIT_CONTENT,
   STATION_CONTENT,
 } from '../content/police';
-import {
-  AGENCIES,
-  POLICE_UNITS,
-  REGION_LABELS,
-  REGIONS,
-  type AgencyId,
-  type PoliceUnitId,
-  type RegionId,
-} from '../content/ids';
+import { AGENCIES, POLICE_UNITS, REGIONS, type AgencyId, type PoliceUnitId, type RegionId } from '../content/ids';
 import { groupIndian } from '../engine/numberFormat';
+import { placeName, splitOfficers, splitStations, type Share } from '../national/split';
 import { appendLog } from '../state/log';
 import type { EquipmentTier, GameState, PoliceState } from '../state/types';
 import { MAX_RECRUIT, MAX_STATIONS, MAX_UNIT_ORDER } from './constants';
@@ -38,26 +31,38 @@ const afford = (state: GameState, cost: number): string | null =>
 /** ₹ crore to recruit officers (dismissals are free). */
 export const recruitCost = (officers: number): number => Math.max(0, officers) * OFFICER_CONTENT.recruitCost;
 
-/** Why officers cannot be recruited (positive) or dismissed (negative) in a region, or null. */
-export function validateRecruit(state: GameState, region: RegionId, officers: number): string | null {
-  if (!REGIONS.includes(region)) return `Unknown region ${region}.`;
+const unknownRegion = (region: RegionId | null) =>
+  region !== null && !REGIONS.includes(region) ? `Unknown region ${region}.` : null;
+
+/** Adds each share to a per-region count (negative shares take away). */
+const addShares = (counts: Record<RegionId, number>, shares: readonly Share[], sign: 1 | -1) =>
+  shares.reduce((c, s) => ({ ...c, [s.region]: c[s.region] + sign * s.quantity }), counts);
+
+/** Where the officers join or leave: the chosen region, or for all of India where the force is thinnest (thickest). */
+function officerShares(state: GameState, region: RegionId | null, officers: number): Share[] | null {
+  if (region === null) return splitOfficers(state, officers);
+  return state.police.officers[region] + officers < 0 ? null : [{ region, quantity: Math.abs(officers) }];
+}
+
+/** Why officers cannot be recruited (positive) or dismissed (negative) in a region (null: all of India), or null. */
+export function validateRecruit(state: GameState, region: RegionId | null, officers: number): string | null {
+  const problem = unknownRegion(region);
+  if (problem) return problem;
   if (!whole(officers) || officers === 0) return 'Choose a whole number of officers.';
   if (Math.abs(officers) > MAX_RECRUIT) return `At most ${groupIndian(MAX_RECRUIT)} officers at a time.`;
-  if (state.police.officers[region] + officers < 0) return 'There are not that many officers to dismiss.';
+  if (!officerShares(state, region, officers)) return 'There are not that many officers to dismiss.';
   return afford(state, recruitCost(officers));
 }
 
-export function recruit(state: GameState, region: RegionId, officers: number): GameState {
-  const police = {
-    ...state.police,
-    officers: { ...state.police.officers, [region]: state.police.officers[region] + officers },
-  };
+export function recruit(state: GameState, region: RegionId | null, officers: number): GameState {
+  const shares = officerShares(state, region, officers) ?? [];
+  const police = { ...state.police, officers: addShares(state.police.officers, shares, officers > 0 ? 1 : -1) };
   const cost = recruitCost(officers);
-  const place = REGION_LABELS[region];
+  const place = placeName(state, region);
   return appendLog(withPolice(state, police, cost), {
     severity: officers > 0 ? 'info' : 'warning',
     category: 'security',
-    title: officers > 0 ? `Police recruited in the ${place}` : `Police cut in the ${place}`,
+    title: officers > 0 ? `Police recruited in ${place}` : `Police cut in ${place}`,
     body:
       officers > 0
         ? `${groupIndian(officers)} officers join the force for ₹${groupIndian(cost)} crore in training. Their pay comes out of the Home Affairs budget.`
@@ -67,22 +72,22 @@ export function recruit(state: GameState, region: RegionId, officers: number): G
 
 export const stationCost = (quantity: number): number => quantity * STATION_CONTENT.cost;
 
-export function validateStations(state: GameState, region: RegionId, quantity: number): string | null {
-  if (!REGIONS.includes(region)) return `Unknown region ${region}.`;
+export function validateStations(state: GameState, region: RegionId | null, quantity: number): string | null {
+  const problem = unknownRegion(region);
+  if (problem) return problem;
   if (!whole(quantity) || quantity < 1) return 'Choose a whole number of stations, at least one.';
   if (quantity > MAX_STATIONS) return `At most ${groupIndian(MAX_STATIONS)} stations at a time.`;
   return afford(state, stationCost(quantity));
 }
 
-export function buildStations(state: GameState, region: RegionId, quantity: number): GameState {
-  const police = {
-    ...state.police,
-    stations: { ...state.police.stations, [region]: state.police.stations[region] + quantity },
-  };
+/** Builds stations in a region, or for all of India (null) where the most officers have none. */
+export function buildStations(state: GameState, region: RegionId | null, quantity: number): GameState {
+  const shares = region === null ? splitStations(state, quantity) : [{ region, quantity }];
+  const police = { ...state.police, stations: addShares(state.police.stations, shares, 1) };
   return appendLog(withPolice(state, police, stationCost(quantity)), {
     severity: 'info',
     category: 'security',
-    title: `New police stations in the ${REGION_LABELS[region]}`,
+    title: `New police stations in ${placeName(state, region)}`,
     body: `${groupIndian(quantity)} stations open, with room for ${groupIndian(quantity * STATION_CONTENT.capacity)} more officers.`,
   });
 }

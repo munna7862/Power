@@ -191,7 +191,7 @@
     "reparations": "Reparations · {{value}}",
     "annex": "Annex {{country}}",
     "whitePeace": "Magnanimous peace",
-    "annexNote": "Annexation adds {{gdp}}% to GDP and {{population}}% to the population, but raises unrest in the {{region}} and brings three years of sanctions.",
+    "annexNote": "Annexation adds {{gdp}}% to GDP and {{population}}% to the population, but raises unrest in {{region}} and brings three years of sanctions.",
     "ceasefire": "Accept ceasefire",
     "suePeace": "Sue for peace with {{country}}",
     "block": {

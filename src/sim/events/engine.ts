@@ -1,5 +1,6 @@
 import { EVENT_CONTENT, EVENT_LIST, type Condition, type EventChoice, type EventContent } from '../content/events';
-import { REGION_LABELS, REGIONS, type RegionId } from '../content/ids';
+import { REGIONS, type RegionId } from '../content/ids';
+import { eventPlace } from '../national/split';
 import { COUNTRY_CONTENT } from '../content/world';
 import { pickCountry } from '../diplomacy/world';
 import { disasterFactor } from '../energy/grid';
@@ -76,12 +77,16 @@ export interface EventText {
   body: string;
 }
 
+const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 /** Fills {region}, {president}, {group}, {rival} and {country} into a piece of event text. */
 export function fillText(state: GameState, text: string, region: RegionId | null, ref: string | null): string {
   const group = state.security.plots.find((p) => p.id === ref)?.group ?? 'a militant group';
   const country = (ref ? COUNTRY_CONTENT[ref]?.name : undefined) ?? 'a neighbouring state';
   return text
-    .replaceAll('{region}', region ? REGION_LABELS[region] : 'the country')
+    .replaceAll('The {region}', capitalise(eventPlace(state, region)))
+    .replaceAll('the {region}', eventPlace(state, region))
+    .replaceAll('{region}', eventPlace(state, region))
     .replaceAll('{president}', state.meta.presidentName)
     .replaceAll('{group}', group)
     .replaceAll('{rival}', country)

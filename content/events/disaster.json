@@ -685,7 +685,7 @@
     "category": "disaster",
     "severity": "critical",
     "title": "Cyclone approaches the {region}",
-    "body": "A cyclone is bearing down on the {region} coast with strong winds and a storm surge. Evacuations are under way.",
+    "body": "A cyclone is bearing down on the coast of the {region} with strong winds and a storm surge. Evacuations are under way.",
     "scope": "region",
     "regionWeights": {
       "east": 3,

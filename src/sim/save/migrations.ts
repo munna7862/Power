@@ -58,6 +58,15 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
       military,
     };
   },
+  // v12 → v13 (Sprint 8.10): the Regional play option. A game in progress was played region by region, so it keeps that.
+  12: (state) => {
+    const v12 = state as { meta: { options: object } };
+    return {
+      ...v12,
+      schemaVersion: 13,
+      meta: { ...v12.meta, options: { ...v12.meta.options, regions: true } },
+    };
+  },
 };
 
 export function migrate(
