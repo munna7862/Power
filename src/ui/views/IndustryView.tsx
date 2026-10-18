@@ -18,6 +18,8 @@ import {
   homeRegion,
   REGIONS,
   validateCloseIndustry,
+  validateSellPlant,
+  salePrice,
   validateIndustry,
   validateLicence,
   type GameState,
@@ -226,6 +228,8 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
   const buildProblem = validateIndustry(game, industry, site, quantity);
   const licenceProblem = validateLicence(game, industry, site);
   const closeProblem = validateCloseIndustry(game, industry, region, quantity);
+  const sellProblem = validateSellPlant(game, industry, region, quantity);
+  const price = formatCrore(salePrice(game, industry) * quantity);
   return (
     <div className={styles.facilityCard} data-testid={`industry-${industry}`}>
       <div>
@@ -291,6 +295,20 @@ function IndustryCard({ game, region, industry }: { game: GameState; region: Reg
           onClick={() => dispatch({ type: 'CLOSE_INDUSTRY', industry, ...where, quantity })}
         >
           {t('industry.close')}
+        </Button>
+        <Button
+          variant="ghost"
+          disabled={sellProblem !== null}
+          title={sellProblem ?? t('industry.sellNote')}
+          aria-label={t('industry.sellLabel', {
+            count: quantity,
+            name: c.name.toLowerCase(),
+            region: regionName,
+            price,
+          })}
+          onClick={() => dispatch({ type: 'SELL_STATE_PLANT', industry, ...where, quantity })}
+        >
+          {t('industry.sell', { price })}
         </Button>
       </div>
     </div>

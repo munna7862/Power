@@ -18,9 +18,9 @@ const fixture = (version: number) => fileURLToPath(new URL(`../fixtures/saves/v$
 describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
-      // An embassy, a service upgrade, some schools, more police, a solar park, a licensed plant, a tariff, tanks and a loan so
-      // the fixture carries them all, two options switched (no riots, and national play with region-free orders for clinics
-      // and police), then a year of play.
+      // An embassy, a service upgrade, some schools, more police, a solar park, a licensed plant, a state plant sold, a
+      // tariff, tanks and a loan so the fixture carries them all, two options switched (no riots, and national play with
+      // region-free orders for clinics and police), then a year of play.
       let state = newGame({
         seed: 2026,
         presidentName: 'Golden Fixture',
@@ -36,6 +36,7 @@ describe('golden save fixtures', () => {
         { type: 'FUND_AGENCY', agency: 'intelligenceService', strength: 55 },
         { type: 'BUILD_PLANT', plant: 'solar', region: 'west', quantity: 4 },
         { type: 'LICENSE_PLANT', industry: 'textileMill', region: 'south' },
+        { type: 'SELL_STATE_PLANT', industry: 'steelMill', quantity: 1 },
         { type: 'SET_TRADE_CONTROL', good: 'electronics', control: { tariff: 0.2, quota: null, ban: null } },
         { type: 'ORDER_UNITS', unit: 'armour', quantity: 5 },
         { type: 'TAKE_LOAN', lender: 'intl', amount: 30_000, years: 3 },

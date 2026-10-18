@@ -3,7 +3,6 @@ import {
   dispatch,
   noReceipts,
   parseSave,
-  RECEIPT_SOURCES,
   serializeSave,
   totalReceipts,
   type Command,
@@ -114,10 +113,11 @@ describe('v13 → v14 migration', () => {
       };
     };
     expect(v14.schemaVersion).toBe(14);
-    expect(v14.economy.receipts).toEqual(noReceipts());
-    expect(v14.economy.lastMonth.receipts).toEqual(noReceipts());
+    // The five sources of v14, frozen: later sources arrive in later migrations.
+    const v14Sources = { licenceFees: 0, tradeSales: 0, refunds: 0, events: 0, reparations: 0 };
+    expect(v14.economy.receipts).toEqual(v14Sources);
+    expect(v14.economy.lastMonth.receipts).toEqual(v14Sources);
     expect(v14.economy.lastMonth.totalRevenue).toBe(10);
-    expect(Object.keys(v14.economy.receipts)).toEqual([...RECEIPT_SOURCES]);
     const fresh = MIGRATIONS[13]!({ schemaVersion: 13, economy: { lastMonth: null } }) as {
       economy: { lastMonth: null };
     };

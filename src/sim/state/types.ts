@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 14;
+export const SCHEMA_VERSION = 15;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -117,10 +117,10 @@ export type ExpenditureLine = MinistryId | 'establishment' | 'interest';
 
 /**
  * One-off money the treasury receives outside the revenue lines: licence fees from investors, Trade Market sales
- * (single trades, surplus sales and supply contracts), refunds on cancelled projects, windfalls from events and war
- * reparations. Loans are borrowing, not receipts, and are not counted.
+ * (single trades, surplus sales and supply contracts), state plants sold to investors, refunds on cancelled
+ * projects, windfalls from events and war reparations. Loans are borrowing, not receipts, and are not counted.
  */
-export const RECEIPT_SOURCES = ['licenceFees', 'tradeSales', 'refunds', 'events', 'reparations'] as const;
+export const RECEIPT_SOURCES = ['licenceFees', 'tradeSales', 'plantSales', 'refunds', 'events', 'reparations'] as const;
 export type ReceiptSource = (typeof RECEIPT_SOURCES)[number];
 
 /** The fiscal settlement of the most recently closed month, in ₹ crore. */

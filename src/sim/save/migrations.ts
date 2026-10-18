@@ -82,6 +82,22 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
       },
     };
   },
+  // v14 → v15: state plants can be sold to investors, a new source of one-off receipts. None sold yet.
+  14: (state) => {
+    const v14 = state as {
+      economy: { receipts: Record<string, number>; lastMonth: { receipts: Record<string, number> } | null };
+    };
+    const { lastMonth } = v14.economy;
+    return {
+      ...v14,
+      schemaVersion: 15,
+      economy: {
+        ...v14.economy,
+        lastMonth: lastMonth && { ...lastMonth, receipts: { ...lastMonth.receipts, plantSales: 0 } },
+        receipts: { ...v14.economy.receipts, plantSales: 0 },
+      },
+    };
+  },
 };
 
 export function migrate(

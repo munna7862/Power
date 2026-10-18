@@ -108,11 +108,13 @@ import {
   cancelIndustry,
   closeIndustry,
   licencePlant,
+  sellPlants,
   startIndustry,
   validateCancelIndustry,
   validateCloseIndustry,
   validateIndustry,
   validateLicence,
+  validateSellPlant,
 } from '../industry/build';
 import {
   buyGoods,
@@ -160,6 +162,8 @@ export type Command =
   | { type: 'LICENSE_PLANT'; industry: IndustryId; region?: RegionId }
   | { type: 'CANCEL_INDUSTRY'; orderId: string }
   | { type: 'CLOSE_INDUSTRY'; industry: IndustryId; region?: RegionId; quantity: number }
+  /** Disinvestment: state plants pass to private investors for a one-off price. */
+  | { type: 'SELL_STATE_PLANT'; industry: IndustryId; region?: RegionId; quantity: number }
   | { type: 'SELL_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'BUY_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'SELL_ALL_SURPLUS' }
@@ -375,6 +379,13 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       return problem
         ? fail(state, problem)
         : ok(closeIndustry(state, command.industry, command.region ?? null, command.quantity));
+    }
+    case 'SELL_STATE_PLANT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateSellPlant(state, command.industry, command.region ?? null, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(sellPlants(state, command.industry, command.region ?? null, command.quantity));
     }
     case 'SELL_GOODS': {
       if (gameOver) return fail(state, 'The game is over.');

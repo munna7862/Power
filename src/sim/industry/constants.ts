@@ -31,6 +31,13 @@ export const LICENCE_DAYS = 45;
 export const MAX_LICENCES = 2;
 /** Investors take licences only while the business climate is at least this good. */
 export const LICENCE_MIN_CLIMATE = 0.95;
+/**
+ * Selling a state plant (disinvestment): an investor pays this many months of the plant's after-tax profit at
+ * today's prices, scaled by the business climate (capped at SALE_MAX_CLIMATE). Four years is below the five of a
+ * term, so a sale raises cash now and costs income later.
+ */
+export const SALE_MONTHS = 48;
+export const SALE_MAX_CLIMATE = 1.5;
 
 /** Build orders (state plants and licences together) that may run at once. */
 export const MAX_INDUSTRY_QUEUE = 10;

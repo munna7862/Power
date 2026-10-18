@@ -11,6 +11,8 @@ import {
   MAX_INDUSTRY_ORDER,
   MAX_INDUSTRY_QUEUE,
   MAX_LICENCES,
+  SALE_MAX_CLIMATE,
+  SALE_MONTHS,
 } from './constants';
 import { businessClimate, plantProfit } from './flows';
 import { receive } from '../finance/receipts';
@@ -176,6 +178,63 @@ export function closeIndustry(
     severity: 'warning',
     title: `State plants closed in ${placeName(state, region)}`,
     body: `${quantity} × ${plantName(industry)} shut down. Their running costs stop, and so do their output and jobs.`,
+  });
+}
+
+/**
+ * What an investor pays for one state plant today, ₹ crore: SALE_MONTHS of its after-tax profit at today's prices,
+ * scaled by the business climate. 0 for a plant that loses money.
+ */
+export function salePrice(state: GameState, industry: IndustryId): number {
+  const profit = plantProfit(state, industry);
+  if (profit <= 0) return 0;
+  const climate = Math.min(businessClimate(state).total, SALE_MAX_CLIMATE);
+  return Math.round(SALE_MONTHS * profit * (1 - state.budget.taxRates.corporate) * climate);
+}
+
+/** Why state plants cannot be sold to investors, or null. Like a licence, a sale needs an investor. */
+export function validateSellPlant(
+  state: GameState,
+  industry: IndustryId,
+  region: RegionId | null,
+  quantity: number,
+): string | null {
+  const problem = validateTarget(industry, region, quantity);
+  if (problem) return problem;
+  if (!closeShares(state, industry, region, quantity)) return 'There are not that many state plants to sell.';
+  if (businessClimate(state).total < LICENCE_MIN_CLIMATE)
+    return 'The business climate is too poor to attract an investor.';
+  if (salePrice(state, industry) <= 0) return 'No investor wants a plant that loses money at today’s prices.';
+  return null;
+}
+
+/**
+ * Sells state plants to private investors (disinvestment), taken where there are most in national play. The plants
+ * keep running with the same output and jobs; the price is a one-off receipt, their profit stops reaching the
+ * treasury, and their owners pay corporate tax on it instead.
+ */
+export function sellPlants(
+  state: GameState,
+  industry: IndustryId,
+  region: RegionId | null,
+  quantity: number,
+): GameState {
+  const price = salePrice(state, industry) * quantity;
+  const moved = (closeShares(state, industry, region, quantity) ?? []).reduce(
+    (next, s) =>
+      changePlants(
+        changePlants(next, industry, s.region, 'state', -s.quantity),
+        industry,
+        s.region,
+        'private',
+        s.quantity,
+      ),
+    state,
+  );
+  return appendLog(receive(moved, 'plantSales', price), {
+    severity: 'info',
+    title: `State plants sold in ${placeName(state, region)}`,
+    body: `Investors pay ₹${groupIndian(price)} crore for ${quantity} × ${plantName(industry)}. The plants keep running and employing the same people; from now on their owners keep the profit and pay corporate tax on it.`,
   });
 }
 
