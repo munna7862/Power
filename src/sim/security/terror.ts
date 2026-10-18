@@ -1,4 +1,5 @@
 import type { MinistryId, OperationKind } from '../content/ids';
+import { foilBonus, plotSuccessShift, policeTerrorDrivers } from '../police/strength';
 import type { GameState } from '../state/types';
 import { clamp, type Driver, type Explained } from './unrest';
 
@@ -11,7 +12,10 @@ export function averageUnrest(state: Pick<GameState, 'security'>): number {
 }
 
 /** The terror threat level the country is heading toward. */
-export function terrorTarget(state: Pick<GameState, 'security'>, efficiency: Record<MinistryId, number>): Explained {
+export function terrorTarget(
+  state: Pick<GameState, 'security' | 'police'>,
+  efficiency: Record<MinistryId, number>,
+): Explained {
   const drivers: Driver[] = [
     { label: 'Baseline', value: 15 },
     { label: 'Border tension', value: 0.35 * state.security.borderTension },
@@ -19,6 +23,7 @@ export function terrorTarget(state: Pick<GameState, 'security'>, efficiency: Rec
     { label: 'Intelligence services', value: -18 * (Math.min(efficiency.intelligence, 1.8) - 1) },
     { label: 'Surveillance operation', value: hasOperation(state, 'surveillance') ? -8 : 0 },
     { label: 'Sealed border', value: hasOperation(state, 'borderSeal') ? -12 : 0 },
+    ...policeTerrorDrivers(state),
   ];
   return {
     total: clamp(
@@ -35,13 +40,21 @@ export const plotFormationChance = (threat: number): number => 0.05 + 0.25 * (th
 
 /** Chance intelligence uncovers a newly forming plot before it becomes a live threat. */
 export function intelligenceFoilChance(
-  state: Pick<GameState, 'security'>,
+  state: Pick<GameState, 'security' | 'police'>,
   efficiency: Record<MinistryId, number>,
 ): number {
-  return clamp(0.15 + 0.35 * efficiency.intelligence + (hasOperation(state, 'surveillance') ? 0.15 : 0), 0.1, 0.9);
+  return clamp(
+    0.15 + 0.35 * efficiency.intelligence + (hasOperation(state, 'surveillance') ? 0.15 : 0) + foilBonus(state),
+    0.1,
+    0.9,
+  );
 }
 
 /** Chance a live plot succeeds when it strikes. */
-export function plotSuccessChance(mitigation: number, efficiency: Record<MinistryId, number>): number {
-  return clamp(0.85 - mitigation - 0.2 * (Math.min(efficiency.home, 1.6) - 1), 0.1, 0.95);
+export function plotSuccessChance(
+  state: Pick<GameState, 'police'>,
+  mitigation: number,
+  efficiency: Record<MinistryId, number>,
+): number {
+  return clamp(0.85 - mitigation - 0.2 * (Math.min(efficiency.home, 1.6) - 1) + plotSuccessShift(state), 0.1, 0.95);
 }

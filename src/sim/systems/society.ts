@@ -3,6 +3,7 @@ import { START_GDP, START_HDI, START_POPULATION } from '../economy/constants';
 import { allEfficiencies, realGdp } from '../economy/model';
 import { sumAdd } from '../engine/modifiers';
 import { coverageEffect } from '../infrastructure/coverage';
+import { bureauCorruptionShift } from '../police/strength';
 import type { System } from '../engine/system';
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
@@ -19,6 +20,7 @@ export const societySystem: System = {
       25 +
       0.4 * leakagePressure(state) -
       12 * (Math.min(eff.antiCorruption, 2) - 1) +
+      bureauCorruptionShift(state) +
       sumAdd(modifiers, 'politics.corruption');
     const corruption = clamp(
       economy.corruption + (corruptionTarget - economy.corruption) * 0.05 + rng.range(-0.3, 0.3),

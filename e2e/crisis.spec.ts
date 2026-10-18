@@ -59,7 +59,9 @@ test.describe('crises and security (Phase 3)', () => {
     await expect(list).toContainText('Bumper harvest');
   });
 
-  test('the Security screen shows unrest by region and runs an operation and an audit', async ({ page }) => {
+  test('the Security screen shows unrest and crime by region; operations and audits run from the Police screen', async ({
+    page,
+  }) => {
     await patchGame(page, {
       security: { unrest: { east: 80, north: 20, south: 20, west: 20, central: 20, northEast: 20 } },
     });
@@ -69,13 +71,40 @@ test.describe('crises and security (Phase 3)', () => {
 
     await page.getByRole('button', { name: 'Why East?' }).hover();
     await expect(page.getByRole('tooltip').first()).toContainText('Policing and order');
+    await page.getByRole('button', { name: 'Crime', exact: true }).click();
+    await expect(page.getByRole('img', { name: /Crime by region/ })).toBeVisible();
+    await page.getByRole('button', { name: 'Why crime in the East?' }).hover();
+    await expect(page.getByRole('tooltip').filter({ hasText: 'Police on the street' })).toBeVisible();
+    await expect(page.getByRole('list', { name: 'Threats to your presidency' })).toContainText('Coup');
 
+    await page.getByRole('button', { name: 'Police, operations and audits' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Police' })).toBeVisible();
     await page.getByRole('button', { name: 'Expand surveillance' }).click();
     await expect(page.getByText(/Active: \d+ days/)).toBeVisible();
 
     await page.getByRole('button', { name: 'Audit Home Affairs' }).click();
     await expect(page.getByText(/Reports in \d+ days/)).toBeVisible();
-    await expect(page.getByRole('list', { name: 'Threats to your presidency' })).toContainText('Coup');
+  });
+
+  test('the Police screen recruits officers, houses them, funds an agency and shows the civil-liberties cost', async ({
+    page,
+  }) => {
+    await openView(page, 'Police');
+    const east = page.getByTestId('police-east');
+    await expect(east).toContainText('Strength 100%');
+
+    await east.getByRole('spinbutton').fill('200000');
+    await east.getByRole('button', { name: /^Recruit 200000 officers in the East/ }).click();
+    await expect(east).toContainText(/Strength 1\d\d%/);
+    await expect(page.getByTestId('civil-liberties')).toContainText('−');
+    await east.getByRole('button', { name: /^Build \d+ stations in the East/ }).click();
+    await expect(east.getByRole('button', { name: /^Build \d+ stations/ })).toHaveCount(0);
+
+    const intelligence = page.getByTestId('agency-intelligenceService');
+    await intelligence.getByRole('button', { name: /^Raise the intelligence service to 55/ }).click();
+    await expect(intelligence).toContainText('Strength 55');
+    await expect(page.getByTestId('police-running-costs')).toContainText('Home Affairs');
+    await expect(page.getByTestId('police-running-costs')).toContainText('Intelligence');
   });
 
   test('the clock pauses itself when a critical event arrives', async ({ page }) => {

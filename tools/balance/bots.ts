@@ -51,6 +51,13 @@ import {
   validateBuild,
   type CoverageArea,
   type FacilityId,
+  officersForRatio,
+  POLICE_UNIT_CONTENT,
+  policeRatio,
+  stationsNeeded,
+  validateRecruit,
+  validateStations,
+  validateUnit,
 } from '../../src/sim';
 
 /**
@@ -152,6 +159,33 @@ function buildPublicWorks(state: GameState): GameState {
     );
     if (quantity < 1 || validateBuild(next, best.facility, best.region, quantity)) break;
     next = apply(next, { type: 'BUILD_FACILITY', facility: best.facility, region: best.region, quantity });
+  }
+  return next;
+}
+
+/**
+ * Keeps the police at the strength the country started with as the population grows (recruiting and housing the
+ * officers each region needs), and adds counter-terror squads while the threat is high. It never over-polices,
+ * so civil liberties are untouched.
+ */
+function managePolice(state: GameState): GameState {
+  let next = state;
+  if (debtToGdp(next.economy) > 0.75) return next;
+  for (const region of REGIONS) {
+    if (policeRatio(next, region) >= 0.99) continue;
+    const officers = officersForRatio(next, region);
+    if (officers > 0 && !validateRecruit(next, region, officers)) {
+      next = apply(next, { type: 'RECRUIT_POLICE', region, officers });
+    }
+    const stations = stationsNeeded(next.police, region);
+    if (stations > 0 && !validateStations(next, region, stations)) {
+      next = apply(next, { type: 'BUILD_STATION', region, quantity: stations });
+    }
+  }
+  const squads = next.police.units.counterTerror;
+  if (next.security.terrorThreat > 45 && squads < 1.5 * POLICE_UNIT_CONTENT.counterTerror.opening) {
+    if (!validateUnit(next, 'counterTerror', 5))
+      next = apply(next, { type: 'RAISE_UNIT', unit: 'counterTerror', quantity: 5 });
   }
   return next;
 }
@@ -301,10 +335,11 @@ function manageDiplomacy(state: GameState): GameState {
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
+    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, keeps the police at strength as the population grows, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
     let next = upgradeServices(state);
     next = buildPublicWorks(next);
+    next = managePolice(next);
 
     // Audit the biggest-spending department not already under audit when the country looks corrupt.
     if (next.economy.corruption > 42 && next.security.investigations.length < MAX_INVESTIGATIONS - 1) {

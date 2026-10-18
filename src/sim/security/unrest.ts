@@ -1,5 +1,6 @@
 import type { MinistryId, RegionId } from '../content/ids';
 import { coverageEffect } from '../infrastructure/coverage';
+import { policingUnrest } from '../police/strength';
 import type { GameState } from '../state/types';
 import { NO_RIOTS_UNREST_CAP, REGION_UNREST_BIAS } from './constants';
 
@@ -33,11 +34,12 @@ export function capUnrest(state: GameState): GameState {
  * Security screen's "Why?" tooltip. Causes are economic, regional and law-and-order only.
  */
 export function unrestTarget(
-  state: Pick<GameState, 'economy' | 'nation' | 'infrastructure'>,
+  state: Pick<GameState, 'economy' | 'nation' | 'infrastructure' | 'police' | 'security'>,
   region: RegionId,
   efficiency: Record<MinistryId, number>,
 ): Explained {
   const { economy, nation } = state;
+  const policing = policingUnrest(state, region);
   const drivers: Driver[] = [
     { label: 'Baseline', value: 18 },
     { label: 'Unemployment', value: (economy.unemployment - 0.06) * 250 },
@@ -47,6 +49,8 @@ export function unrestTarget(
     { label: 'Regional pressures', value: REGION_UNREST_BIAS[region] },
     { label: 'Policing and order', value: -14 * (Math.min(efficiency.home, 1.8) - 1) },
     { label: 'Schools, clinics and housing', value: coverageEffect(state, 'unrest', region) },
+    { label: 'Police on the street', value: policing.police },
+    { label: 'Crime', value: policing.crime },
   ];
   return {
     total: clamp(

@@ -12,6 +12,7 @@ import { investigationSystem } from './investigations';
 import { leadershipSystem } from './leadership';
 import { militaryDailySystem, militaryMonthlySystem } from './military';
 import { modifierExpirySystem } from './modifierExpiry';
+import { crimeSystem } from './police';
 import { societySystem } from './society';
 import { plotSystem, terrorSystem } from './terror';
 import { termSystem } from './term';
@@ -27,6 +28,7 @@ export const SYSTEMS: readonly System[] = [
   economySystem,
   fiscalSystem,
   societySystem,
+  crimeSystem,
   unrestSystem,
   terrorSystem,
   plotSystem,

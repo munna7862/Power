@@ -104,7 +104,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 - [x] Construction screen: coverage of every area in every region, a build panel per region with "Why?" per area, the project queue (cancel with refund) and the running costs added per department. F1–F10 keep their screens; new screens are reached from the navigation bar
 - [x] Balance: the balanced bot builds toward 95% coverage where it buys the most per rupee (pulled forward from 8.9). All bands pass unchanged: balanced re-election 98% Easy, 84% Normal, 38% Hard
 
-### Sprint 8.3: Police and internal affairs (8 SP)
+### Sprint 8.3: Police and internal affairs (8 SP) ✅
 
 | ID     | Story                                                                                                                        | SP  |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------- | --- |
@@ -115,11 +115,14 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] `content/police.json`: units (constables, armed police, rapid response, cyber cell, counter-terror squad), equipment tiers, station cost and capacity
-- [ ] State: `police: { officers: Record<RegionId, number>; stations: Record<RegionId, number>; equipment: 1 | 2 | 3; units: Record<PoliceUnitId, number>; agencies: Record<AgencyId, number /* 0–100 */> }`
-- [ ] Commands: `RECRUIT_POLICE`, `BUILD_STATION`, `UPGRADE_POLICE_EQUIPMENT`, `RAISE_UNIT`, `FUND_AGENCY`
-- [ ] A new regional `crime` stat on the schematic tile map; `unrestTarget`, `terrorTarget`, `intelligenceFoilChance` and `presidentialSafety` read police and agency strength
-- [ ] A "civil liberties" approval driver with diminishing returns, so maximum policing is never free
+- [x] `content/police.json` (zod-validated in `src/sim/content/police.ts`): officers (recruit cost, pay, 150 per 1,00,000 at the start), stations (cost, capacity), three equipment tiers, four units (armed police, rapid response, cyber cell, counter-terror squad) and four agencies (intelligence service, anti-corruption bureau, border police, presidential protection), each paid by a department
+- [x] State: `police: { officers; stations; equipment; units; agencies }` as planned, plus `security.crime` per region; `SCHEMA_VERSION` 9 with a v8 → v9 migration (opening force, starting crime) and golden fixture `v9.json`
+- [x] Commands: `RECRUIT_POLICE` (negative dismisses), `BUILD_STATION`, `UPGRADE_POLICE_EQUIPMENT`, `RAISE_UNIT` (negative disbands), `FUND_AGENCY`; growing the force is paid up front, cuts are free and save upkeep, charged per department in `projectMonth` beyond the opening force
+- [x] A regional `crime` stat (monthly `crime` system before unrest) driven by jobs, corruption, officers, armed police and cyber cells, on the Security tile map (Unrest / Crime toggle) with "Why?"; crime feeds unrest and "safety and order". `unrestTarget`, `terrorTarget`, `intelligenceFoilChance`, `plotSuccessChance`, `presidentialSafety`, the corruption target and audit odds read police and agency strength. Officers beyond station capacity work at half strength
+- [x] A "civil liberties" approval line in `approvalTarget`'s breakdown: police benefits grow with the log of the force, while the cost grows as (ratio − 1)^1.5, so maximum policing is never free; equipment does not count
+- [x] Every police effect is measured against the opening force, so tick 0 is unchanged; a growing population thins the police unless the President recruits
+- [x] Police & Internal Affairs screen (nav after Security): police by region with recruit, dismiss, "to 100%" and stations, equipment, special units, agencies, civil liberties with "Why?", running costs; the counter-terror operations and audits moved here from Security
+- [x] Balance: the balanced bot keeps each region's police at its opening strength and adds counter-terror squads when the threat is high. All bands pass unchanged: balanced re-election 96% Easy, 86% Normal, 34% Hard
 
 ### Sprint 8.4: Energy and the power grid (5 SP)
 

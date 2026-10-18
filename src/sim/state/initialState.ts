@@ -26,6 +26,8 @@ import { allEfficiencies, interestRateFor } from '../economy/model';
 import { Rng, seedRng } from '../engine/rng';
 import { openingDepartments } from '../departments/services';
 import { openingInfrastructure } from '../infrastructure/coverage';
+import { START_CRIME } from '../police/constants';
+import { openingPolice } from '../police/strength';
 import { openingDiplomacy } from '../diplomacy/opening';
 import { openingMilitary } from '../military/opening';
 import { computeSatisfaction } from '../politics/approval';
@@ -122,6 +124,7 @@ export function openingPolitics(ideology: IdeologyId, strategy: StrategyId): Pol
 export function openingSecurity(): SecurityState {
   return {
     unrest: Object.fromEntries(REGIONS.map((r) => [r, START_UNREST])) as Record<RegionId, number>,
+    crime: { ...START_CRIME },
     terrorThreat: START_TERROR_THREAT,
     borderTension: START_BORDER_TENSION,
     militaryLoyalty: START_MILITARY_LOYALTY,
@@ -169,6 +172,7 @@ export function createInitialState(options: NewGameOptions): GameState {
     budget: { taxRates: { ...DEFAULT_TAX_RATES }, allocations: defaultAllocations(), lastEnactedTick: null },
     departments: openingDepartments(),
     infrastructure: openingInfrastructure(),
+    police: openingPolice(),
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
     security: openingSecurity(),

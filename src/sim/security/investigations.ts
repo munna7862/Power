@@ -2,6 +2,7 @@ import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, type MinistryId } from '../content/ids';
 import { leakagePressure } from '../departments/quality';
 import { allEfficiencies } from '../economy/model';
+import { bureauExposureBonus } from '../police/strength';
 import type { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
@@ -54,11 +55,15 @@ export function startInvestigation(state: GameState, department: MinistryId): Ga
  * anti-corruption services) and when the bureau is well funded.
  */
 export function exposureChance(
-  state: Pick<GameState, 'economy' | 'departments'>,
+  state: Pick<GameState, 'economy' | 'departments' | 'police'>,
   antiCorruptionEfficiency: number,
 ): number {
   const pressure = (state.economy.corruption + leakagePressure(state)) / 2;
-  return clamp((pressure / 100) * (0.5 + 0.5 * Math.min(antiCorruptionEfficiency, 1.6)) + 0.05, 0.05, 0.9);
+  return clamp(
+    (pressure / 100) * (0.5 + 0.5 * Math.min(antiCorruptionEfficiency, 1.6)) + 0.05 + bureauExposureBonus(state),
+    0.05,
+    0.9,
+  );
 }
 
 /** Settles an audit whose time has come. A finding cleans up the department and earns some credit. */

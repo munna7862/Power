@@ -1,4 +1,6 @@
 import { openingInfrastructure } from '../infrastructure/coverage';
+import { START_CRIME } from '../police/constants';
+import { openingPolice } from '../police/strength';
 import { SCHEMA_VERSION } from '../state/types';
 
 /** Upgrades a raw state from version N to N + 1. */
@@ -21,6 +23,17 @@ export const PREVIOUS_EDITION_MESSAGE =
 export const MIGRATIONS: Readonly<Record<number, Migration>> = {
   // v7 → v8 (Sprint 8.2): public works arrive. A game in progress gets the opening network every game starts with.
   7: (state) => ({ ...(state as object), schemaVersion: 8, infrastructure: openingInfrastructure() }),
+  // v8 → v9 (Sprint 8.3): the police and agencies are run directly, and crime is tracked by region. A game in
+  // progress gets the opening force and starting crime.
+  8: (state) => {
+    const v8 = state as { security: object };
+    return {
+      ...v8,
+      schemaVersion: 9,
+      security: { ...v8.security, crime: { ...START_CRIME } },
+      police: openingPolice(),
+    };
+  },
 };
 
 export function migrate(

@@ -35,25 +35,25 @@ describe('determinism', () => {
       linux: { hash: string; parts: Record<string, string> };
     } = {
       win32: {
-        hash: '837b920c',
+        hash: 'f7f0e177',
         parts: {
-          economy: '68a60c97',
-          history: 'f04b1c33',
-          military: '3807b184',
-          modifiers: '1130d426',
-          politics: 'ea31abdc',
-          security: '9f9142da',
+          economy: '783272cb',
+          history: '6f9d4865',
+          military: 'c5659af0',
+          modifiers: '084a986c',
+          politics: '361ecdae',
+          security: '775b3c62',
         },
       },
       linux: {
-        hash: '837b920c',
+        hash: 'f7f0e177',
         parts: {
-          economy: '68a60c97',
-          history: 'f04b1c33',
-          military: '3807b184',
-          modifiers: '1130d426',
-          politics: 'ea31abdc',
-          security: '9f9142da',
+          economy: '783272cb',
+          history: '6f9d4865',
+          military: 'c5659af0',
+          modifiers: '084a986c',
+          politics: '361ecdae',
+          security: '775b3c62',
         },
       },
     };

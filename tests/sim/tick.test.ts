@@ -119,6 +119,7 @@ describe('engine.tick', () => {
       'economy',
       'fiscal',
       'society',
+      'crime',
       'unrest',
       'terror',
       'plots',

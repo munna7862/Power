@@ -1,12 +1,13 @@
 import type { MinistryId } from '../content/ids';
 import type { GameState } from '../state/types';
 import { commandConfidence, protectionScore } from '../departments/quality';
+import { protectionBonus } from '../police/strength';
 import { COUP_RISK_THRESHOLD } from './constants';
 import { clamp } from './unrest';
 
 /** How safe the President is, 0–100: security funding, the close-protection service and the terror threat. */
 export function presidentialSafety(
-  state: Pick<GameState, 'departments' | 'security'>,
+  state: Pick<GameState, 'departments' | 'security' | 'police'>,
   efficiency: Record<MinistryId, number>,
 ): number {
   const guard = protectionScore(state);
@@ -14,7 +15,8 @@ export function presidentialSafety(
     55 +
       22 * (Math.min(efficiency.home, 1.8) - 1) +
       12 * (Math.min(efficiency.intelligence, 1.8) - 1) +
-      0.15 * (guard - 60) -
+      0.15 * (guard - 60) +
+      protectionBonus(state) -
       0.25 * (state.security.terrorThreat - 30),
     0,
     100,

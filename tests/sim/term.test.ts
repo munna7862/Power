@@ -25,6 +25,7 @@ import {
 import { Rng } from '../../src/sim/engine/rng';
 import { rollDailyEvent } from '../../src/sim/events/engine';
 import { applyEffect } from '../../src/sim/events/effects';
+import { SYSTEMS } from '../../src/sim/systems';
 import { termSystem, voterFatigue, ELECTION_SWING } from '../../src/sim/systems/term';
 import { deepFreeze, newGame } from '../helpers';
 
@@ -114,8 +115,10 @@ describe('difficulty', () => {
   });
 
   it('makes rivals more likely to attack on Hard', () => {
+    // Without the approval and leadership systems, so a hands-off game cannot end before the rivals' grace period.
+    const survives = SYSTEMS.filter((s) => s.id !== 'approval' && s.id !== 'leadership');
     const hostile = (difficulty: 'easy' | 'hard') => {
-      const s = advanceDays(newGame({ difficulty, options: { noRiots: true } }), 400);
+      const s = advanceDays(newGame({ difficulty, options: { noRiots: true } }), 400, survives);
       const countries = { ...s.diplomacy.countries, PAK: { ...s.diplomacy.countries.PAK!, relation: -90 } };
       return declarationChance({ ...s, diplomacy: { ...s.diplomacy, countries } }, 'PAK');
     };

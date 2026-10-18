@@ -18,13 +18,15 @@ const fixture = (version: number) => fileURLToPath(new URL(`../fixtures/saves/v$
 describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
-      // An embassy, a service upgrade and some schools so the fixture carries all three, an option switched on,
-      // then a year of play.
+      // An embassy, a service upgrade, some schools and more police so the fixture carries them all, an option
+      // switched on, then a year of play.
       let state = newGame({ seed: 2026, presidentName: 'Golden Fixture', options: { noRiots: true } });
       for (const command of [
         { type: 'OPEN_EMBASSY', country: 'USA' },
         { type: 'UPGRADE_SERVICE', department: 'health', service: 'primaryCare' },
         { type: 'BUILD_FACILITY', facility: 'primarySchool', region: 'east', quantity: 500 },
+        { type: 'RECRUIT_POLICE', region: 'north', officers: 5000 },
+        { type: 'FUND_AGENCY', agency: 'intelligenceService', strength: 55 },
       ] as const) {
         const result = dispatch(state, command);
         if (!result.ok) throw new Error(result.error);

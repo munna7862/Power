@@ -1,4 +1,5 @@
 import type {
+  AgencyId,
   ApprovalFactor,
   DomainId,
   DrillKind,
@@ -12,6 +13,7 @@ import type {
   LogCategory,
   MinistryId,
   OperationKind,
+  PoliceUnitId,
   RegionId,
   ServiceId,
   SectorId,
@@ -23,7 +25,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 8;
+export const SCHEMA_VERSION = 9;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -180,6 +182,18 @@ export interface InfrastructureState {
   queue: BuildOrder[];
 }
 
+export type EquipmentTier = 1 | 2 | 3;
+
+/** The police and the security agencies, run directly by the President (Phase 8). */
+export interface PoliceState {
+  officers: Record<RegionId, number>;
+  stations: Record<RegionId, number>;
+  equipment: EquipmentTier;
+  units: Record<PoliceUnitId, number>;
+  /** Strength of each agency, 0–100 (50 at the start). */
+  agencies: Record<AgencyId, number>;
+}
+
 export interface PoliticsState {
   ideology: IdeologyId;
   strategy: StrategyId;
@@ -282,6 +296,8 @@ export interface Plot {
 export interface SecurityState {
   /** Unrest per region, 0 (calm) – 100 (uprising). */
   unrest: Record<RegionId, number>;
+  /** Crime per region, 0 (safe) – 100 (lawless). Set by jobs, corruption and policing (Phase 8). */
+  crime: Record<RegionId, number>;
   /** National terror threat, 0–100. */
   terrorThreat: number;
   /** Tension with neighbours, 0–100. Follows the most hostile rival (see military/rivals.ts). */
@@ -543,6 +559,7 @@ export interface GameState {
   budget: BudgetState;
   departments: DepartmentsState;
   infrastructure: InfrastructureState;
+  police: PoliceState;
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;

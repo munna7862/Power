@@ -27,6 +27,12 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Every coverage effect is measured against the opening network (`openingCounts()`), so a new game starts exactly where it did before public works. Keep it that way when you add a facility or an area: give it an `opening` share per region and an `AREA_WEIGHTS` row entry.
 - Building is `BUILD_FACILITY` (treasury-checked), `CANCEL_BUILD` (partial refund) and `DEMOLISH_FACILITY`; projects open in the daily `infrastructure-daily` system.
 
+## Police and internal affairs
+
+- Police content is `content/police.json` (ids in `POLICE_UNITS` and `AGENCIES`). Every police effect (crime, unrest, terror, plots, presidential safety, corruption, audits, civil liberties) and the police upkeep come from `src/sim/police/strength.ts`, shared by the systems, the Police screen and the bots.
+- As with public works, effects compare today's force with `openingPolice()`, so a new game starts unchanged. Benefits enter as the log of a ratio; the civil-liberties cost grows faster than that, so more police is never free.
+- Crime is regional and economic (jobs, corruption, policing), like unrest: never framed by religion or caste.
+
 ## Events
 
 - Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.
