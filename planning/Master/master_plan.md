@@ -8,7 +8,7 @@ NaN ✅ |NaN ✅ |NaN ✅ |NaN ✅ |NaN ✅ |NaN ✅ |# India: Apex Sovereign �
 
 ## 1. Vision
 
-You are the President of India. Every rupee, minister, crisis, treaty and soldier is your decision.
+You are the President of India. Every rupee, school, power plant, crisis, treaty and soldier is your decision.
 _India: Apex Sovereign_ starts as a **feature-complete re-imagining of the mobile "country simulator" genre** (reference: _India Simulator 2_ by Oxiwyle). It is rebuilt for PC with deeper systems, a modern UI, no ads and no pay-to-win. Then it grows beyond the genre.
 
 ### 1.1 Two-stage strategy
@@ -42,28 +42,28 @@ _India: Apex Sovereign_ starts as a **feature-complete re-imagining of the mobil
 
 Derived from the reference game's public store listing. We design all internals ourselves.
 
-| #   | Reference feature                            | Our system                                               | Phase    |
-| --- | -------------------------------------------- | -------------------------------------------------------- | -------- |
-| F1  | Rule as President, with daily tasks          | Game clock, turn engine, inbox and decisions             | 1 ✅     |
-| F2  | Control government institutions              | Ministries and budget allocation                         | 2 ✅     |
-| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits                     | 2 ✅     |
-| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                         | 2 ✅     |
-| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)          | 2 ✅     |
-| F6  | Rating / approval                            | Approval model with drift and shocks                     | 2 ✅     |
-| F7  | Handle emergencies                           | Disaster events (flood, cyclone, quake, epidemic)        | 3 ✅     |
-| F8  | Fight corruption                             | Corruption index, anti-corruption agency, investigations | 3 ✅     |
-| F9  | Riots / unrest                               | Unrest per region, police response                       | 3 ✅     |
-| F10 | Fight terror groups                          | Terror threat, intelligence, counter-terror operations   | 3 ✅     |
-| F11 | Ensure your own safety                       | Presidential security, assassination and coup risk       | 3 ✅     |
-| F12 | Army with 10+ weapon types                   | Armed forces, procurement, upkeep                        | 4 ✅     |
-| F13 | Army drills                                  | Drills raise readiness and morale and deter rivals       | 4 ✅     |
-| F14 | Espionage against enemy armies               | Intelligence ops: recon, sabotage, counter-intelligence  | 4 ✅     |
-| F15 | Wars & expansion                             | War resolution, fronts, annexation                       | 4 ✅     |
-| F16 | Nuclear program                              | Research, warheads, deterrence, doctrine                 | 4 ✅     |
-| F17 | World map                                    | Interactive world map with an India detail view          | 5 ✅     |
-| F18 | Trade contracts                              | Bilateral trade deals                                    | 5 ✅     |
-| F19 | Non-aggression pacts                         | Treaties and relations                                   | 5 ✅     |
-| F20 | Game over / end states                       | Impeachment, coup, assassination, term victory           | 3 / 6 ✅ |
+| #   | Reference feature                            | Our system                                                       | Phase    |
+| --- | -------------------------------------------- | ---------------------------------------------------------------- | -------- |
+| F1  | Rule as President, with daily tasks          | Game clock, turn engine, inbox and decisions                     | 1 ✅     |
+| F2  | Control government institutions              | Ministries and budget allocation                                 | 2 ✅     |
+| F3  | Appoint ministers of key ministries          | Cabinet system with candidate traits (departments since Phase 8) | 2 ✅     |
+| F4  | Ideology & development strategy              | Ideology plus strategy modifiers                                 | 2 ✅     |
+| F5  | Build a prosperous nation / living standards | Economy, sectors, Human Development Index (HDI)                  | 2 ✅     |
+| F6  | Rating / approval                            | Approval model with drift and shocks                             | 2 ✅     |
+| F7  | Handle emergencies                           | Disaster events (flood, cyclone, quake, epidemic)                | 3 ✅     |
+| F8  | Fight corruption                             | Corruption index, anti-corruption agency, investigations         | 3 ✅     |
+| F9  | Riots / unrest                               | Unrest per region, police response                               | 3 ✅     |
+| F10 | Fight terror groups                          | Terror threat, intelligence, counter-terror operations           | 3 ✅     |
+| F11 | Ensure your own safety                       | Presidential security, assassination and coup risk               | 3 ✅     |
+| F12 | Army with 10+ weapon types                   | Armed forces, procurement, upkeep                                | 4 ✅     |
+| F13 | Army drills                                  | Drills raise readiness and morale and deter rivals               | 4 ✅     |
+| F14 | Espionage against enemy armies               | Intelligence ops: recon, sabotage, counter-intelligence          | 4 ✅     |
+| F15 | Wars & expansion                             | War resolution, fronts, annexation                               | 4 ✅     |
+| F16 | Nuclear program                              | Research, warheads, deterrence, doctrine                         | 4 ✅     |
+| F17 | World map                                    | Interactive world map with an India detail view                  | 5 ✅     |
+| F18 | Trade contracts                              | Bilateral trade deals                                            | 5 ✅     |
+| F19 | Non-aggression pacts                         | Treaties and relations                                           | 5 ✅     |
+| F20 | Game over / end states                       | Impeachment, coup, assassination, term victory                   | 3 / 6 ✅ |
 
 ### 2.2 Explicit improvements already in Stage A (cheap wins)
 
@@ -108,7 +108,8 @@ Parliament (Lok Sabha and Rajya Sabha), the 28 states and 8 union territories as
 Power/
 ├─ planning/                  # This plan, phases, sprints
 ├─ content/                   # Game data as JSON (validated by zod schemas)
-│  ├─ countries.json  ministries.json  ministers.json
+│  ├─ countries.json  ministries.json   departments.json  facilities.json
+│  ├─ police.json     power.json        goods.json        industries.json
 │  ├─ weapons.json    events/*.json     ideologies.json
 ├─ src/
 │  ├─ sim/                    # PURE simulation, no UI imports (lint-enforced)
@@ -119,7 +120,7 @@ Power/
 │  │  └─ save/                # serialize, migrate, validate
 │  ├─ ui/                     # React screens and components
 │  │  ├─ design/              # tokens, theme, primitives (Panel, Stat, Gauge, Button)
-│  │  ├─ screens/             # Dashboard, Economy, Cabinet, Security, Military, World
+│  │  ├─ screens/             # Shell; views/ hold Dashboard, Economy, Departments, Construction, … , World
 │  │  └─ map/                 # SVG world/India map
 │  ├─ store/                  # Zustand bridge: dispatch(command), subscribe(state)
 │  └─ platform/               # storage and shell adapters (web / electron / capacitor)
@@ -135,7 +136,7 @@ Player command ──► commands/<cmd>.ts (validate) ──► new GameState
                                                      │
 Game clock tick (1 day) ──► engine.tick(state, rng) ─┤
    ├─ daily:   events roll, war fronts, security checks
-   ├─ monthly: economy settlement, budget spend, approval update, minister performance
+   ├─ monthly: economy settlement, goods market, loans, approval update, department funding
    └─ yearly:  annual budget, GDP report, term counter, stat snapshots
                                                      ▼
                                             UI re-renders from state
@@ -143,7 +144,7 @@ Game clock tick (1 day) ──► engine.tick(state, rng) ─┤
 
 - `GameState` is **immutable**. Every tick and command returns a new state, which makes undo, replay and tests trivial.
 - Systems run in a **fixed order** each tick: economy → society → security → military → diplomacy → events → approval. This keeps the simulation deterministic.
-- A **modifier stack** (`{source, target, value, expires}`) is the single mechanism for ideology, ministers, events and policies. It also powers the "Why?" tooltips.
+- A **modifier stack** (`{source, target, value, expires}`) is the single mechanism for ideology, departments, events and policies. It also powers the "Why?" tooltips.
 
 ---
 
@@ -154,7 +155,7 @@ All values are normalised and tuned in Phase 6. Formulas live in `src/sim/system
 ### 5.1 Time
 
 - 1 tick = 1 in-game day. Speeds are paused, 1× (1 day/s), 2× and 4×.
-- The game starts on **1 Jan of the current year**, and a term lasts 5 years. On election day (1 January after five years) approval plus a small campaign swing must reach 55% to win a second term; voter fatigue lowers approval each year, faster on harder difficulties. A re-elected President may stay on in endless mode (Phase 6).
+- The game starts on **1 Jan of the current year**, and a term lasts 5 years. On election day (1 January after five years) approval plus a small campaign swing must reach the difficulty's bar to win a second term (55% on Easy, 58% on Normal and Hard since Phase 8); voter fatigue lowers approval each year, faster on harder difficulties. A re-elected President may stay on in endless mode (Phase 6).
 
 ### 5.2 Economy
 
@@ -173,21 +174,29 @@ Monthly settlement: `treasury += revenue − expenditure`. Growth is driven by i
 
 ### 5.3 Governance
 
-- **Ministries (v1):** Finance, Home Affairs (police), Defence, External Affairs, Health, Education, Agriculture, Industry & Commerce, Disaster Management, Intelligence (Director), Anti-Corruption.
-- **Departments (Phase 8):** there are no ministers. Each ministry is a department with services rated 1–5 stars; stars are bought with treasury money and lost to long underfunding. Efficiency = funding × service quality × national corruption. (Stage A had appointed ministers with competence, loyalty and corruption; see [Phase 8](../Phases/phase_8_hands_on_governance.md).)
+- **No ministers (Phase 8).** Each of the eleven ministries (Finance, Home Affairs, Defence, External Affairs, Health, Education, Agriculture, Industry & Commerce, Disaster Management, Intelligence, Anti-Corruption) is a department the President runs directly. Its services are rated 1–5 stars, bought with treasury money and lost to long underfunding. Efficiency = funding × service quality × national corruption. (Stage A had appointed ministers with competence, loyalty and corruption; [Phase 8](../Phases/phase_8_hands_on_governance.md) replaced them.)
+- **Hands-on screens (Phase 8).** The President builds and buys directly, and every effect is measured against the opening state, so a new game starts balanced:
+  - **Construction:** schools, clinics, hospitals, water, housing and transport by region; coverage drives HDI, public services, unrest, growth and jobs.
+  - **Police:** officers, stations, units and agencies; they drive crime, unrest, terror and corruption, and over-policing costs civil liberties.
+  - **Energy:** a national grid of power plants; a shortfall means power cuts (growth and approval), and dirty plants mean air pollution.
+  - **Industry:** state and licensed private plants turn goods into goods; their output, jobs and profits feed the economy and the treasury.
+  - **Trade Market:** goods are bought and sold with partners at prices set by relations and distance, with tariffs, quotas, bans and supply contracts.
+  - **Armoury:** units are bought from the treasury and delivered within weeks.
+  - **Finance:** money by the day, general expenses, and loans from friendly countries or an international lender.
+  - **The advisor** names the most urgent problem and opens the screen that fixes it.
 - **Ideologies:** Liberalism, Socialism, Conservatism, Nationalism, Technocracy. Each gives economic, approval, diplomatic and military modifiers.
 - **Development strategies:** Agrarian, Industrial, Services & Tech, Defence-first, Balanced.
 - **Approval** (0–100) is a weighted mix of economy (jobs, inflation), safety, corruption, crises handled and war weariness. It drifts toward a target, with shocks from events.
 
 ### 5.4 Domestic security
 
-| Variable                        | Driver                                      | Consequence                            |
-| ------------------------------- | ------------------------------------------- | -------------------------------------- |
-| `corruption`                    | Minister corruption, anti-corruption budget | Budget leakage, approval drag          |
-| `crime` / `unrest` (per region) | Unemployment, inflation, police funding     | Riots, which cost GDP and approval     |
-| `terrorThreat`                  | Intelligence funding, border tension        | Attacks, which cost approval and lives |
-| `presidentSafety`               | Security service funding, loyalty           | Assassination attempts                 |
-| `coupRisk`                      | Low military loyalty, low approval          | Game over                              |
+| Variable                        | Driver                                     | Consequence                            |
+| ------------------------------- | ------------------------------------------ | -------------------------------------- |
+| `corruption`                    | Department quality, anti-corruption budget | Budget leakage, approval drag          |
+| `crime` / `unrest` (per region) | Unemployment, inflation, police funding    | Riots, which cost GDP and approval     |
+| `terrorThreat`                  | Intelligence funding, border tension       | Attacks, which cost approval and lives |
+| `presidentSafety`               | Security service funding, loyalty          | Assassination attempts                 |
+| `coupRisk`                      | Low military loyalty, low approval         | Game over                              |
 
 ### 5.5 Military
 
@@ -256,6 +265,7 @@ Sprints are **2 weeks** long, sized for a hobby pace of about 8–10 hours a wee
 | 5                 | [Diplomacy & World](../Phases/phase_5_diplomacy_world.md)                | 5.1 – 5.3                           | 24         | May – Jun 2027      |
 | 6                 | [Polish & PC Release (Parity v1.0)](../Phases/phase_6_polish_release.md) | 6.1 – 6.3                           | 24         | Jul – Aug 2027      |
 | 7                 | [Apex: Beyond Parity & Mobile](../Phases/phase_7_apex_mobile.md)         | Backlog (to be sprinted after v1.0) | —          | Sep 2027 +          |
+| 8                 | [Hands-on Governance](../Phases/phase_8_hands_on_governance.md)          | 8.1 – 8.9                           | 61         | Ahead of Phase 7    |
 | **Total Stage A** |                                                                          | **19 sprints**                      | **152 SP** | **~10 months**      |
 
 ### 8.1 Milestones

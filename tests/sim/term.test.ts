@@ -43,14 +43,15 @@ const runTerm = (state: GameState) => termSystem.run(state, { rng: new Rng(state
 
 describe('election day (F20 term victory)', () => {
   it('re-elects a President whose approval clears the bar even after the worst campaign', () => {
-    const state = runTerm(electionEve(55 + ELECTION_SWING));
+    const state = runTerm(electionEve(DIFFICULTY_RULES.normal.reelectionApproval + ELECTION_SWING));
     expect(state.status).toMatchObject({ kind: 'over', cause: 'reelected', title: 'Re-elected' });
   });
 
   it('votes out a President who falls short even after the best campaign', () => {
-    const state = runTerm(electionEve(55 - ELECTION_SWING - 0.1));
+    const state = runTerm(electionEve(DIFFICULTY_RULES.normal.reelectionApproval - ELECTION_SWING - 0.1));
     expect(state.status).toMatchObject({ kind: 'over', cause: 'votedOut' });
-    if (state.status.kind === 'over') expect(state.status.summary).toMatch(/55% needed/);
+    if (state.status.kind === 'over')
+      expect(state.status.summary).toContain(`${DIFFICULTY_RULES.normal.reelectionApproval}% needed`);
   });
 
   it('holds the election on 1 January after five years of real play, and never before', () => {

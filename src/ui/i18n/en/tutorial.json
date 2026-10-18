@@ -8,7 +8,7 @@
     "steps": {
       "welcome": {
         "title": "Welcome, {{name}}",
-        "body": "You have five years. The clock is paused while you look around. This short tour covers your first month: the budget, your departments, decisions and the world map."
+        "body": "You have five years. The clock is paused while you look around. This short tour covers your first month: the budget, your departments, building the country, decisions and the world map."
       },
       "approval": {
         "title": "Approval is everything",
@@ -16,12 +16,12 @@
       },
       "budget": {
         "title": "Open the budget",
-        "body": "Money drives everything else. Taxes fill the treasury; ministries spend it.",
+        "body": "Money drives everything else. Taxes fill the treasury; departments spend it.",
         "hint": "Click Budget in the side menu (or press F4)."
       },
       "budgetExplain": {
         "title": "Taxes and allocations",
-        "body": "Move the sliders and the forecast updates before you commit. Higher taxes raise revenue but cost approval and growth; underfunded ministries work badly. A new budget can be enacted at most once every 30 days."
+        "body": "Move the sliders and the forecast updates before you commit. Higher taxes raise revenue but cost approval and growth; underfunded departments work badly. A new budget can be enacted at most once every 30 days."
       },
       "departments": {
         "title": "Run your departments",
@@ -31,6 +31,15 @@
       "departmentsExplain": {
         "title": "Stars, funding, efficiency",
         "body": "Upgrade a service to add a star: better services make every rupee go further. Stars need funding to last; a department starved of its budget for months loses them. Your ideology and strategy are set here too."
+      },
+      "construction": {
+        "title": "Build the country",
+        "body": "You build what the country needs yourself, region by region.",
+        "hint": "Click Construction in the side menu."
+      },
+      "constructionExplain": {
+        "title": "Build, power, produce, trade",
+        "body": "Schools, clinics and roads raise coverage, which lifts living standards, growth and calm. Energy, Industry, the Trade Market, Police and the Military's Armoury work the same way: pay from the treasury, then upkeep every month. Build for a growing population, and keep the grid ahead of demand."
       },
       "clock": {
         "title": "Start the clock",
@@ -51,6 +60,10 @@
         "title": "The world stage",
         "body": "Other nations watch India. Trade contracts, pacts and embassies are made on the World and Diplomacy screens.",
         "hint": "Click World in the side menu (or press F8)."
+      },
+      "advisor": {
+        "title": "Your advisor",
+        "body": "The advisor on the Dashboard names the most urgent problem and opens the screen that fixes it. The top bar shows how much the treasury gains or loses each day; Finance breaks it down and arranges loans."
       },
       "handbook": {
         "title": "The Constitution",

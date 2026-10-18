@@ -3,13 +3,14 @@
  *   npm run balance                       # 50 seeds × 5 years × 3 bots on every difficulty, bands on Normal
  *   npm run balance -- --seeds 10 --years 3 --difficulty hard
  * Writes reports/balance/balance.csv and summary.md; exits 1 if a KPI band fails (a blocking CI check).
- * The KPI bands are documented in planning/Phases/phase_6_polish_release.md.
+ * The KPI bands are documented in planning/Phases/phase_6_polish_release.md and phase_8_hands_on_governance.md.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
-import { DIFFICULTIES, type Difficulty } from '../../src/sim';
+import { createInitialState, DIFFICULTIES, type Difficulty } from '../../src/sim';
 import { BOTS } from './bots';
 import { evaluateDiplomacy } from './diplomacy';
+import { evaluateGovernance, governanceStats, meanStats } from './governance';
 import { difficultyRows, evaluateRelease, probeOptions, worstRepeat } from './release';
 import { evaluate, simulate, type RunResult } from './simulate';
 import { evaluateWars, probeWars } from './wars';
@@ -62,11 +63,18 @@ const csv = [
   ),
 ].join('\n');
 
+const opening = governanceStats(createInitialState({ seed: 1, difficulty, presidentName: 'Opening', startYear: 2026 }));
+const governanceRows = BOTS.map((bot) => {
+  const g = meanStats(results.filter((r) => r.bot === bot.id));
+  return `| ${bot.id} | ${pct(g.coverage)}% | ${pct(g.powerMargin)}% | ${pct(g.importShare)}% | ${Math.round(g.stateProfit)} | ${pct(g.police)}% | ${pct(g.loanBurden)}% |`;
+});
+
 const warProbes = probeWars(Math.min(seeds, 30), 240, difficulty);
 const kpis = [
   ...evaluate(results, years),
   ...evaluateWars(warProbes),
   ...evaluateDiplomacy(results),
+  ...evaluateGovernance(results, opening),
   ...(optionProbe ? evaluateRelease(byDifficulty, optionProbe) : []),
 ];
 const worst = worstRepeat(results);
@@ -97,6 +105,15 @@ const summary = [
   '| Result | KPI | Measured |',
   '|---|---|---|',
   ...kpis.map((k) => `| ${k.pass ? '✅' : '❌'} | ${k.description} | ${k.detail} |`),
+  '',
+  '## Hands-on governance',
+  '',
+  'Means over all runs at the end of the game (runs that ended early count where they ended).',
+  '',
+  '| Bot | Coverage | Reserve margin | Imports / GDP | State plant profit (₹ cr/month) | Thinnest police | Loans / GDP |',
+  '|---|---|---|---|---|---|---|',
+  `| opening | ${pct(opening.coverage)}% | ${pct(opening.powerMargin)}% | ${pct(opening.importShare)}% | ${Math.round(opening.stateProfit)} | ${pct(opening.police)}% | ${pct(opening.loanBurden)}% |`,
+  ...governanceRows,
   '',
   `## War probe`,
   '',

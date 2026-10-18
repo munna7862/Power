@@ -29,6 +29,9 @@ test.describe('Phase 6: polish and release', () => {
     await coach.getByRole('button', { name: 'Next' }).click();
     await openView(page, 'Departments');
     await coach.getByRole('button', { name: 'Next' }).click();
+    await expect(coach).toContainText('Build the country');
+    await openView(page, 'Construction');
+    await coach.getByRole('button', { name: 'Next' }).click();
     await expect(coach).toContainText('Start the clock');
     await page.getByRole('button', { name: 'Speed 4×' }).click();
     // The practice decision arrives on day 4 and pauses the clock.
@@ -37,6 +40,8 @@ test.describe('Phase 6: polish and release', () => {
     await page.getByRole('button', { name: /Choose: Issue a crop advisory/ }).click();
     await expect(coach).toContainText('The world stage');
     await openView(page, 'World');
+    await expect(coach).toContainText('Your advisor');
+    await coach.getByRole('button', { name: 'Next' }).click();
     await coach.getByRole('button', { name: 'Next' }).click();
     await expect(coach).toContainText('The nation is yours');
     await coach.getByRole('button', { name: 'Take office' }).click();
