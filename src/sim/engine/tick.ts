@@ -44,11 +44,12 @@ export function advanceUntilAttention(
 ): { state: GameState; interrupted: boolean } {
   let next = state;
   for (let i = 0; i < days && next.status.kind === 'playing'; i++) {
-    const logBefore = next.log.length;
+    const tickBefore = next.clock.tick;
     const pendingBefore = next.events.pending.length;
     next = tick(next, systems);
-    const fresh = next.log.slice(logBefore > next.log.length ? 0 : logBefore);
-    const newCritical = fresh.some((e) => e.severity === 'critical');
+    // Entries are stamped with the tick they arrive on. Counting them by array length would miss every one
+    // once the inbox is full, because the oldest entry is dropped as each new one comes in.
+    const newCritical = next.log.some((e) => e.tick > tickBefore && e.severity === 'critical');
     if (newCritical || next.events.pending.length > pendingBefore) return { state: next, interrupted: true };
   }
   return { state: next, interrupted: false };

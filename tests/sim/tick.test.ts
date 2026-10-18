@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { advanceDays, HISTORY_LIMIT, LOG_LIMIT, tick, type GameState } from '../../src/sim';
+import { advanceDays, advanceUntilAttention, HISTORY_LIMIT, LOG_LIMIT, tick, type GameState } from '../../src/sim';
 import type { System } from '../../src/sim/engine/system';
 import { appendLog } from '../../src/sim/state/log';
 import { SYSTEMS } from '../../src/sim/systems';
@@ -136,5 +136,23 @@ describe('engine.tick', () => {
       'term',
       'candidate-refresh',
     ]);
+  });
+
+  it('stops on a critical inbox entry even when the inbox is full (DEF-02)', () => {
+    const alarm: System = {
+      id: 'alarm',
+      cadence: 'daily',
+      run: (s) => (s.clock.tick === 3 ? appendLog(s, { severity: 'critical', title: 'Alarm', body: '' }) : s),
+    };
+    let full = newGame();
+    while (full.log.length < LOG_LIMIT) full = appendLog(full, { severity: 'info', title: 'filler', body: '' });
+    for (const start of [newGame(), full]) {
+      const { state, interrupted } = advanceUntilAttention(start, 30, [alarm]);
+      expect(interrupted).toBe(true);
+      expect(state.clock.tick).toBe(3);
+    }
+    // Entries that were already there never count as new.
+    const critical = appendLog(full, { severity: 'critical', title: 'Old alarm', body: '' });
+    expect(advanceUntilAttention(critical, 5, []).interrupted).toBe(false);
   });
 });
