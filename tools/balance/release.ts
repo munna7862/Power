@@ -1,4 +1,11 @@
-import { EVENT_CONTENT, isRiotEvent, MAX_REPEATS, NO_RIOTS_UNREST_CAP, type Difficulty } from '../../src/sim';
+import {
+  EVENT_CONTENT,
+  isRiotEvent,
+  MAX_RANDOM_EVENTS_PER_MONTH,
+  MAX_REPEATS,
+  NO_RIOTS_UNREST_CAP,
+  type Difficulty,
+} from '../../src/sim';
 import { balancedBot, passiveBot } from './bots';
 import { governanceStats, type GovernanceStats } from './governance';
 import { simulate, type Kpi, type RunResult } from './simulate';
@@ -56,6 +63,9 @@ export interface OptionProbe {
   riotEventsWithNoRiots: number;
   /** Balanced games on Normal with Regional play off (Sprint 8.10). */
   national: RunResult[];
+  /** Runs with "calm months": the most random events in any calendar month, and how many served the term. */
+  busiestCalmMonth: number;
+  calm: RunResult[];
   runs: number;
 }
 
@@ -70,6 +80,9 @@ export function probeOptions(seeds: number, years: number, nationalSeeds = seeds
   const noRiots = [passiveBot, balancedBot].flatMap((bot) =>
     Array.from({ length: seeds }, (_, i) => simulate(bot, i + 1, years, 'hard', { noRiots: true })),
   );
+  const calm = [passiveBot, balancedBot].flatMap((bot) =>
+    Array.from({ length: seeds }, (_, i) => simulate(bot, i + 1, years, 'normal', { calmMonths: true })),
+  );
   const national = Array.from({ length: nationalSeeds }, (_, i) =>
     simulate(balancedBot, i + 1, years, 'normal', { regions: false }),
   );
@@ -83,7 +96,9 @@ export function probeOptions(seeds: number, years: number, nationalSeeds = seeds
     peakUnrestWithNoRiots: Math.max(...noRiots.map((r) => r.peakUnrest)),
     riotEventsWithNoRiots: noRiots.reduce((s, r) => s + riotEvents(r), 0),
     national,
-    runs: noWars.length + noRiots.length + national.length,
+    busiestCalmMonth: Math.max(0, ...calm.map((r) => r.busiestMonth)),
+    calm,
+    runs: noWars.length + noRiots.length + calm.length + national.length,
   };
 }
 
@@ -148,6 +163,12 @@ export function evaluateRelease(
       description: `With "no riots" on, unrest never rises above ${NO_RIOTS_UNREST_CAP} and no riot event fires`,
       pass: options.peakUnrestWithNoRiots <= NO_RIOTS_UNREST_CAP && options.riotEventsWithNoRiots === 0,
       detail: `peak ${options.peakUnrestWithNoRiots.toFixed(1)}, ${options.riotEventsWithNoRiots} riot events`,
+    },
+    {
+      id: 'calm-months-option',
+      description: `With "calm months" on, no calendar month sees more than ${MAX_RANDOM_EVENTS_PER_MONTH} random event (hands-off and balanced, Normal)`,
+      pass: options.busiestCalmMonth <= MAX_RANDOM_EVENTS_PER_MONTH,
+      detail: `busiest month ${options.busiestCalmMonth}`,
     },
     {
       id: 'national-play-comparable',

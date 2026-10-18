@@ -309,6 +309,7 @@ export { describeEffect, choiceUtility, pendingView, type EffectLine, type Pendi
 export { statValue, STAT_IDS, type StatId } from './events/stats';
 export {
   MAX_PENDING,
+  MAX_RANDOM_EVENTS_PER_MONTH,
   MAX_REPEATS,
   raiseEvent,
   recentFires,

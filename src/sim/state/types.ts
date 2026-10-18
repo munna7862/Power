@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 16;
+export const SCHEMA_VERSION = 17;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -54,9 +54,20 @@ export interface GameOptions {
    * in the simulation, but orders go where they are needed most and the game speaks only of India (Sprint 8.10).
    */
   regions: boolean;
+  /**
+   * Calm months: at most one random event fires in a calendar month. Follow-ups to decisions and briefings the
+   * simulation raises itself still arrive. Fewer crises make the game easier.
+   */
+  calmMonths: boolean;
 }
 
-export const DEFAULT_OPTIONS: GameOptions = { noWars: false, noRiots: false, tutorial: false, regions: true };
+export const DEFAULT_OPTIONS: GameOptions = {
+  noWars: false,
+  noRiots: false,
+  tutorial: false,
+  regions: true,
+  calmMonths: false,
+};
 
 export interface GameMeta {
   seed: number;

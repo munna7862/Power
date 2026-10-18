@@ -227,7 +227,13 @@ export const gameStateSchema = z.object({
   meta: z.object({
     seed: uint32,
     difficulty: z.enum(DIFFICULTIES),
-    options: z.object({ noWars: z.boolean(), noRiots: z.boolean(), tutorial: z.boolean(), regions: z.boolean() }),
+    options: z.object({
+      noWars: z.boolean(),
+      noRiots: z.boolean(),
+      tutorial: z.boolean(),
+      regions: z.boolean(),
+      calmMonths: z.boolean(),
+    }),
     presidentName: z.string().min(1),
     startDate: date,
     endless: z.boolean(),

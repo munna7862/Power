@@ -191,7 +191,13 @@ describe('New Game options', () => {
     expect(EVENT_CONTENT[TUTORIAL_EVENT]?.weight).toBe(0);
     const arrived = advanceDays(tutorial, TUTORIAL_EVENT_DAY);
     expect(arrived.events.pending.some((p) => p.eventId === TUTORIAL_EVENT)).toBe(true);
-    expect(arrived.meta.options).toEqual({ noWars: false, noRiots: false, regions: true, tutorial: true });
+    expect(arrived.meta.options).toEqual({
+      noWars: false,
+      noRiots: false,
+      regions: true,
+      tutorial: true,
+      calmMonths: false,
+    });
   });
 
   it('"tutorial": keeps the first week free of random events, whatever the dice say', () => {

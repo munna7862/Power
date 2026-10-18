@@ -35,7 +35,7 @@ describe('determinism', () => {
       linux: { hash: string; parts: Record<string, string> };
     } = {
       win32: {
-        hash: '69e3cbd8',
+        hash: 'd7b95a06',
         parts: {
           economy: '340a70c3',
           history: '19b8c0ff',
@@ -46,7 +46,7 @@ describe('determinism', () => {
         },
       },
       linux: {
-        hash: '69e3cbd8',
+        hash: 'd7b95a06',
         parts: {
           economy: '340a70c3',
           history: '19b8c0ff',

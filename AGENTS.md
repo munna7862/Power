@@ -79,7 +79,7 @@ Rules for every human and AI contributor. The full design lives in the [master p
 ## Difficulty, options and the term
 
 - Everything that differs between Easy, Normal and Hard is in one table, `src/sim/state/difficulty.ts` (`rulesFor(state)`). Read rules from there, never by comparing `meta.difficulty` in a system.
-- New Game options live in `state.meta.options` (`noWars`, `noRiots`, `tutorial`, `regions`). A new option needs the schema, a migration default, a probe in `tools/balance/release.ts` and a band.
+- New Game options live in `state.meta.options` (`noWars`, `noRiots`, `tutorial`, `regions`, `calmMonths`). A new option needs the schema, a migration default, a probe in `tools/balance/release.ts` and a band.
 
 ## National play
 

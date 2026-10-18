@@ -32,7 +32,7 @@ export async function startGame(
   page: Page,
   name = 'Asha Rao',
   difficulty = 'Normal',
-  options: { tutorial?: boolean; noWars?: boolean; noRiots?: boolean; regions?: boolean } = {},
+  options: { tutorial?: boolean; noWars?: boolean; noRiots?: boolean; regions?: boolean; calmMonths?: boolean } = {},
 ): Promise<void> {
   await page.getByRole('button', { name: 'New Game' }).click();
   await page.getByLabel("President's name").fill(name);
@@ -41,6 +41,7 @@ export async function startGame(
   await page.getByRole('checkbox', { name: /Regional play/ }).setChecked(options.regions ?? true);
   await page.getByRole('checkbox', { name: /No wars/ }).setChecked(options.noWars ?? false);
   await page.getByRole('checkbox', { name: /No riots/ }).setChecked(options.noRiots ?? false);
+  await page.getByRole('checkbox', { name: /Calm months/ }).setChecked(options.calmMonths ?? false);
   await page.getByRole('button', { name: 'Begin term' }).click();
   await expect(page.getByTestId('game-date')).toBeVisible();
 }

@@ -28,6 +28,19 @@ export const MAX_PENDING = 6;
 export const MAX_REPEATS = 2;
 export const REPEAT_WINDOW_DAYS = Math.round(TERM_YEARS * 365.25);
 
+/**
+ * With the Calm months option, the random events that may fire in one calendar month. Follow-ups to the
+ * President's decisions and briefings the simulation raises itself (weight 0) are exempt, so consequences still
+ * arrive on time.
+ */
+export const MAX_RANDOM_EVENTS_PER_MONTH = 1;
+
+/** Random events fired since the 1st of this month, from the fire record the repeat rule keeps. */
+export function randomEventsThisMonth(state: Pick<GameState, 'events' | 'clock'>): number {
+  const monthStart = state.clock.tick - (state.clock.date.day - 1);
+  return Object.values(state.events.fired).reduce((n, ticks) => n + ticks.filter((t) => t >= monthStart).length, 0);
+}
+
 /** In a tutorial game no random event fires in the first week, so the practice decision arrives undisturbed. */
 export const TUTORIAL_QUIET_DAYS = 7;
 
@@ -216,7 +229,10 @@ export function rollDailyEvent(state: GameState, rng: Rng): GameState {
   const frequency = EVENT_DIFFICULTY[state.meta.difficulty].frequency;
   const disasters = disasterFactor(state);
   const quiet = state.meta.options.tutorial && state.clock.tick < TUTORIAL_QUIET_DAYS;
-  const open = state.events.pending.length < MAX_PENDING && !quiet;
+  const open =
+    state.events.pending.length < MAX_PENDING &&
+    !quiet &&
+    !(state.meta.options.calmMonths && randomEventsThisMonth(state) >= MAX_RANDOM_EVENTS_PER_MONTH);
   let fired = false;
   let next = state;
   for (const def of EVENT_LIST) {

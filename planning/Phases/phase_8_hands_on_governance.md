@@ -296,6 +296,12 @@ between the modes; the cost is one extra code path (the split) that every region
 | `national-play-comparable` | With Regional play off, balanced re-election on Normal is within 10 points of regional play (50 seeds × 5 years) | ✅ 84% vs 76%                                    |
 | `national-play-governed`   | Every region keeps ≥ 95% of the opening police per head in ≥ 90% of terms; coverage ends ≥ 1 point above opening | ✅ police 100% of terms; coverage 77.0% vs 67.0% |
 
+**Calm months option (after Phase 8).** `meta.options.calmMonths` (off by default, save v17) lets at most `MAX_RANDOM_EVENTS_PER_MONTH` (1) random event fire in a calendar month; follow-ups and weight-0 briefings are exempt. Capping random events for every game was tried first and broke `passive-loses-early` and `balanced-beats-passive` (a hands-off President served every term), so it is an option that makes the game easier, like "no riots". The probe plays hands-off and balanced games on Normal with it on and counts random events per month from outside the simulation.
+
+| KPI                  | Band                                                                                                    | Result at merge    |
+| -------------------- | ------------------------------------------------------------------------------------------------------- | ------------------ |
+| `calm-months-option` | With "calm months" on, no calendar month sees more than 1 random event (hands-off and balanced, Normal) | ✅ busiest month 1 |
+
 ---
 
 ## 5. How the pieces connect

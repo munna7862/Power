@@ -66,6 +66,10 @@
       "noRiots": {
         "title": "No riots",
         "text": "Unrest can still rise, but it never boils over into riots."
+      },
+      "calmMonths": {
+        "title": "Calm months",
+        "text": "At most one random event a month. Follow-ups to your decisions still arrive. Fewer crises make the term easier."
       }
     },
     "begin": "Begin term"

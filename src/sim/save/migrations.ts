@@ -104,6 +104,11 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
     const v15 = state as { market: object };
     return { ...v15, schemaVersion: 16, market: { ...v15.market, deliveries: {} } };
   },
+  // v16 → v17: the Calm months option. A game in progress was started without it.
+  16: (state) => {
+    const v16 = state as { meta: { options: object } };
+    return { ...v16, schemaVersion: 17, meta: { ...v16.meta, options: { ...v16.meta.options, calmMonths: false } } };
+  },
 };
 
 export function migrate(
