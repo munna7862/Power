@@ -7,7 +7,14 @@ import { groupIndian } from '../engine/numberFormat';
 import type { Rng } from '../engine/rng';
 import { surplus } from '../industry/flows';
 import { appendLog } from '../state/log';
-import { INDIA, type GameState, type TradeBan, type TradeControl, type Treaty } from '../state/types';
+import {
+  INDIA,
+  type ContractDelivery,
+  type GameState,
+  type TradeBan,
+  type TradeControl,
+  type Treaty,
+} from '../state/types';
 import {
   MAX_CONTRACT_YEARS,
   MAX_SUPPLY_CONTRACTS,
@@ -256,7 +263,23 @@ export function validateContract(
     return `There is already a ${GOOD_CONTENT[good].name.toLowerCase()} contract with ${name(partner)}.`;
   }
   if (relationOf(state, partner) < 0) return `${name(partner)} will not commit to a contract while relations are cold.`;
+  if (side === 'sell') {
+    const spare = spareForContracts(state, good);
+    if (quantity > spare + 1e-9)
+      return `India has only ${fmt(spare)} ${GOOD_CONTENT[good].unit} of spare ${GOOD_CONTENT[good].name.toLowerCase()} a month for new contracts; the rest keeps the country supplied or is already promised.`;
+  }
   return null;
+}
+
+/**
+ * Surplus not yet promised to other sale contracts: the most a new sale contract may promise a month. A contract
+ * ships only surplus, so promising more than this would fall short from the first month.
+ */
+export function spareForContracts(state: GameState, good: GoodId): number {
+  const promised = supplyContracts(state)
+    .filter((t) => t.terms.good === good && t.terms.side === 'sell')
+    .reduce((sum, t) => sum + (t.terms.quantity ?? 0), 0);
+  return Math.max(0, surplus(state, good) - promised);
 }
 
 /** Signs a standing contract at today's partner price, through the one path every treaty takes. */
@@ -289,21 +312,42 @@ export function signContract(
  */
 export function deliverContracts(state: GameState): GameState {
   let next = state;
+  const deliveries: Record<string, ContractDelivery> = {};
+  const short: string[] = [];
   for (const t of supplyContracts(state)) {
     const { good, side, quantity, price } = t.terms;
     if (!good || !side || !quantity || price === undefined) continue;
     const partner = t.parties[0] === INDIA ? t.parties[1] : t.parties[0];
+    let delivered = 0;
+    let value = 0;
     if (side === 'sell') {
       // A sale ships only surplus, like any other sale.
-      const shipped = Math.min(quantity, surplus(next, good));
-      next = receive(moveStock(next, good, -shipped), 'tradeSales', Math.round(shipped * price));
-      if (shipped < quantity * 0.999) next = adjustRelation(next, partner, -1);
+      delivered = Math.min(quantity, surplus(next, good));
+      value = Math.round(delivered * price);
+      next = receive(moveStock(next, good, -delivered), 'tradeSales', value);
     } else if (next.nation.treasury >= quantity * price) {
-      next = moveTreasury(moveStock(next, good, quantity), -Math.round(quantity * price));
-    } else {
+      delivered = quantity;
+      value = Math.round(quantity * price);
+      next = moveTreasury(moveStock(next, good, quantity), -value);
+    }
+    deliveries[t.id] = { quantity: delivered, promised: quantity, value };
+    if (delivered < quantity * 0.999) {
       next = adjustRelation(next, partner, -1);
+      short.push(
+        side === 'sell'
+          ? `${GOOD_CONTENT[good].name.toLowerCase()} to ${name(partner)}: shipped ${fmt(delivered)} of ${fmt(quantity)} ${GOOD_CONTENT[good].unit} (not enough surplus)`
+          : `${GOOD_CONTENT[good].name.toLowerCase()} from ${name(partner)}: the treasury could not pay ${crore(Math.round(quantity * price))}`,
+      );
     }
   }
+  next = { ...next, market: { ...next.market, deliveries } };
+  if (short.length > 0)
+    next = appendLog(next, {
+      severity: 'warning',
+      category: 'diplomacy',
+      title: short.length === 1 ? 'A supply contract fell short' : `${short.length} supply contracts fell short`,
+      body: `This month: ${short.join('; ')}. Each partner left short thinks a little less of India. Build plants for a surplus, or end the contract on the Diplomacy screen.`,
+    });
   return next;
 }
 

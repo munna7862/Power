@@ -32,13 +32,16 @@
     "applyRulesLabel": "Apply the trade rules for {{good}}",
     "rulesNow": "Now: tariff {{tariff}}, {{quota}}, {{ban}}",
     "contracts": "Supply contracts",
-    "contractsNote": "Standing deals that deliver every month at the price agreed when signed. India can hold {{max}}; partners sign only while relations are not cold.",
+    "contractsNote": "Standing deals that deliver every month at the price agreed when signed. A sale ships only surplus (stock beyond what the country needs), so India can promise no more than its spare surplus; a contract that falls short costs the partner’s goodwill. India can hold {{max}}; partners sign only while relations are not cold.",
     "noContracts": "No supply contracts.",
+    "notYet": "Not yet",
+    "delivered": "{{quantity}} of {{promised}} {{unit}} · {{value}}",
     "columns": {
       "good": "Good",
       "deal": "Deal",
       "partner": "Partner",
-      "monthly": "A month",
+      "monthly": "Promised a month",
+      "delivered": "Delivered last month",
       "ends": "Ends"
     },
     "sides": {
@@ -47,6 +50,7 @@
     },
     "contractTerms": "{{side}} {{quantity}} {{unit}} of {{good}} a month at {{price}}",
     "newContract": "New contract",
+    "spare": "Spare {{good}} for new sale contracts: {{quantity}} {{unit}} a month.",
     "good": "Good",
     "partner": "Partner",
     "side": "Deal",

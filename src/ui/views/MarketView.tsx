@@ -13,6 +13,7 @@ import {
   partnerProblem,
   quotes,
   spreadOf,
+  spareForContracts,
   supplyContracts,
   surplus,
   surplusPlan,
@@ -272,6 +273,7 @@ function Contracts({ game }: { game: GameState }) {
                 <th>{t('market.columns.deal')}</th>
                 <th>{t('market.columns.partner')}</th>
                 <th className={styles.num}>{t('market.columns.monthly')}</th>
+                <th className={styles.num}>{t('market.columns.delivered')}</th>
                 <th className={styles.num}>{t('market.columns.ends')}</th>
               </tr>
             </thead>
@@ -279,11 +281,24 @@ function Contracts({ game }: { game: GameState }) {
               {contracts.map((c) => {
                 const other = c.parties[0] === 'IND' ? c.parties[1] : c.parties[0];
                 const value = (c.terms.quantity ?? 0) * (c.terms.price ?? 0);
+                const delivered = game.market.deliveries[c.id];
+                const unit = c.terms.good ? GOOD_CONTENT[c.terms.good].unit : '';
+                const short = delivered !== undefined && delivered.quantity < delivered.promised * 0.999;
                 return (
                   <tr key={c.id}>
                     <td>{contractTerms(c)}</td>
                     <td>{countryName(other)}</td>
                     <td className={styles.num}>{(c.terms.side === 'sell' ? '+' : '−') + formatCrore(value)}</td>
+                    <td className={`${styles.num} ${short ? styles.negative : ''}`} data-testid={`delivered-${c.id}`}>
+                      {delivered === undefined
+                        ? t('market.notYet')
+                        : t('market.delivered', {
+                            quantity: qty(delivered.quantity),
+                            promised: qty(delivered.promised),
+                            unit,
+                            value: (c.terms.side === 'sell' ? '+' : '−') + formatCrore(delivered.value),
+                          })}
+                    </td>
                     <td className={styles.num}>
                       {c.endTick === null ? '—' : formatDate(addDays(game.clock.date, c.endTick - game.clock.tick))}
                     </td>
@@ -295,6 +310,15 @@ function Contracts({ game }: { game: GameState }) {
         </div>
       )}
       <h3 className={styles.personName}>{t('market.newContract')}</h3>
+      {side === 'sell' && (
+        <p className={styles.note} data-testid="contract-spare">
+          {t('market.spare', {
+            quantity: qty(spareForContracts(game, good)),
+            unit: GOOD_CONTENT[good].unit,
+            good: GOOD_CONTENT[good].name.toLowerCase(),
+          })}
+        </p>
+      )}
       <div className={styles.actions} style={{ justifyContent: 'flex-start' }}>
         <select
           className={styles.select}

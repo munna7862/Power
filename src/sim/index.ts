@@ -116,6 +116,7 @@ export {
   supplyContracts,
   surplusPlan,
   validateBuy,
+  spareForContracts,
   validateContract,
   validateControl,
   validateSell,

@@ -150,8 +150,14 @@ test.describe('economy and governance (Phase 2)', () => {
 
     await page.getByRole('combobox', { name: 'Good' }).selectOption({ label: 'Steel' });
     await page.getByRole('combobox', { name: 'Partner' }).selectOption({ label: 'Japan' });
+    // A new game has no spare steel, so a sale contract cannot be signed; a purchase can.
+    await expect(page.getByTestId('contract-spare')).toContainText('Spare steel for new sale contracts: 0 Mt');
+    await expect(page.getByRole('button', { name: /^Sign at ₹/ })).toBeDisabled();
+    await page.getByRole('combobox', { name: 'Deal' }).selectOption({ label: 'India buys' });
     await page.getByRole('button', { name: /^Sign at ₹/ }).click();
-    await expect(page.getByTestId('supply-contracts')).toContainText('India sells 1 Mt of steel a month');
+    const contracts = page.getByTestId('supply-contracts');
+    await expect(contracts).toContainText('India buys 1 Mt of steel a month');
+    await expect(contracts).toContainText('Not yet');
   });
 
   test('ideology can be changed once a year', async ({ page }) => {
