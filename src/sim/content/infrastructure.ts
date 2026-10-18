@@ -27,6 +27,8 @@ const facilitySchema = z.strictObject({
   buildDays: z.number().int().min(7).max(120),
   /** ₹ crore per month to run one. */
   upkeep: z.number().positive(),
+  /** ₹ crore per month one collects in user charges (tolls, fares), counted with non-tax revenue. */
+  fees: z.number().min(0).default(0),
   /** People one facility serves. */
   capacity: z.number().int().positive(),
   /** Staff one facility employs. */

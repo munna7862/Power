@@ -7,6 +7,7 @@ import type { EnergyState, GameState } from '../state/types';
 import {
   DEMAND_ELASTICITY,
   DEMAND_SHARES,
+  DOMESTIC_POWER_MARGIN,
   EXPORT_MARGIN,
   EXPORT_PRICE,
   MIN_EXPORT_GW,
@@ -126,6 +127,16 @@ export function exportedPower(state: GridInputs): number {
   const surplus = production(state) - consumption(state) * (1 + EXPORT_MARGIN);
   return surplus > MIN_EXPORT_GW ? surplus : 0;
 }
+
+/** GW sold at home: the demand the grid meets. */
+export const domesticSales = (state: GridInputs): number => Math.min(production(state), consumption(state));
+
+/**
+ * ₹ crore a month from power sold at home beyond the opening sales (non-tax revenue): new plants that meet growing
+ * demand earn their keep, power cuts and closed plants cost it.
+ */
+export const domesticPowerRevenue = (state: GridInputs): number =>
+  DOMESTIC_POWER_MARGIN * (domesticSales(state) - OPENING_DEMAND);
 
 /** ₹ crore a month from power exports, counted with non-tax revenue. */
 export const exportRevenue = (state: GridInputs): number => exportedPower(state) * EXPORT_PRICE;

@@ -168,6 +168,7 @@
     "cost": 400,
     "buildDays": 45,
     "upkeep": 3,
+    "fees": 1.5,
     "capacity": 1500000,
     "jobs": 500,
     "opening": {
@@ -188,6 +189,7 @@
     "cost": 1500,
     "buildDays": 90,
     "upkeep": 12,
+    "fees": 6,
     "capacity": 4000000,
     "jobs": 1500,
     "opening": {

@@ -242,6 +242,17 @@ const valueOf = (q: Record<GoodId, number>) => GOODS.reduce((s, g) => s + q[g] *
 export const shortageShareOf = (flows: SettledFlows): number =>
   valueOf(flows.demand) > 0 ? valueOf(flows.shortage) / valueOf(flows.demand) : 0;
 
+/**
+ * What each good's tariff counts for in customs on imports beyond the goods market: its share of the opening import
+ * bill (crude oil above all). Fixed, so the average reflects tariff policy, not this month's volumes.
+ */
+export const OPENING_IMPORT_WEIGHTS: Readonly<Record<GoodId, number>> = (() => {
+  const total = valueOf(OPENING_FLOWS.imports);
+  return Object.fromEntries(
+    GOODS.map((g) => [g, total > 0 ? (OPENING_FLOWS.imports[g] * GOOD_CONTENT[g].price) / total : 1 / GOODS.length]),
+  ) as Record<GoodId, number>;
+})();
+
 /** Shortage share in the opening settlement, against which shortages are measured. */
 export const OPENING_SHORTAGE_SHARE = shortageShareOf(OPENING_FLOWS);
 

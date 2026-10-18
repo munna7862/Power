@@ -145,6 +145,13 @@ export function facilityUpkeep(state: Pick<GameState, 'infrastructure'>): Record
   return upkeep;
 }
 
+/** User charges (tolls, fares) from facilities built beyond the opening network, ₹ crore a month (non-tax revenue). */
+export function facilityFees(state: Pick<GameState, 'infrastructure'>): number {
+  let fees = 0;
+  for (const r of REGIONS) for (const f of FACILITIES) fees += netBuilt(state, r, f) * FACILITY_CONTENT[f].fees;
+  return fees;
+}
+
 /** Change in unemployment from staffing facilities built beyond the opening network (negative = fewer jobless). */
 export function facilityJobsEffect(state: Pick<GameState, 'infrastructure'>): number {
   let jobs = 0;
