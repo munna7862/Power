@@ -16,6 +16,11 @@ export const DEMAND_ELASTICITY = { industry: 0.7, homesIncome: 0.4, services: 0.
 export const EXPORT_MARGIN = OPENING_MARGIN;
 /** ₹ crore earned per month for each GW exported around the clock (about ₹4 a unit). */
 export const EXPORT_PRICE = 290;
+/**
+ * ₹ crore the treasury keeps per month for each GW sold at home around the clock (about 50 paise a unit, after
+ * generation costs and distribution losses). Counted with non-tax revenue against the opening sales.
+ */
+export const DOMESTIC_POWER_MARGIN = 36;
 /** Exports smaller than this are not worth a contract. */
 export const MIN_EXPORT_GW = 0.01;
 

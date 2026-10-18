@@ -262,11 +262,12 @@ export {
   projectMonth,
   realGdp,
   sectorShare,
-  taxBreakdown,
+  averageTariff,
+  revenueBreakdown,
   type FiscalProjection,
-  type TaxAdditionId,
-  type TaxBreakdown,
-  type TaxFactorId,
+  type RevenueAdditionId,
+  type RevenueBreakdown,
+  type RevenueFactorId,
 } from './economy/model';
 export { explainGrowth, GROWTH_DRIVER_LABELS, type GrowthDriver } from './economy/growth';
 export {

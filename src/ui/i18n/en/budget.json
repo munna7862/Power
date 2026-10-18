@@ -32,7 +32,13 @@
     "customsMoved": "Customs tariffs are set good by good on the Trade Market screen.",
     "why": {
       "heading": "What sets {{tax}}",
-      "base": "GDP × tax base × rate",
+      "base": {
+        "income": "GDP × tax base × rate",
+        "corporate": "GDP × tax base × rate",
+        "gst": "GDP × tax base × rate",
+        "customs": "GDP × import base × average tariff",
+        "nonTax": "Fees and dividends (share of GDP)"
+      },
       "factors": {
         "avoidance": "Avoidance at this rate",
         "compliance": "Collection and corruption",
@@ -45,7 +51,11 @@
       },
       "additions": {
         "privatePlants": "Private plants’ profits",
-        "importedGoods": "Tariffs on imported goods"
+        "importedGoods": "Tariffs on imported goods",
+        "statePlants": "State plants’ profits",
+        "powerExports": "Power sold to neighbours",
+        "powerSales": "Power sold at home",
+        "transportFees": "Tolls and rail fares"
       },
       "total": "Proposed month",
       "note": "Percentages multiply the base; amounts in rupees are added."

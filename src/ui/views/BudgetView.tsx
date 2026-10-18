@@ -13,11 +13,13 @@ import {
   nextBudgetDate,
   nominalGdp,
   projectMonth,
+  REVENUE_LINES,
+  revenueBreakdown,
   TAX_LIMITS,
-  taxBreakdown,
   TAXES,
   type BudgetProposal,
   type GameState,
+  type RevenueLine,
   type TaxId,
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
@@ -27,18 +29,18 @@ import { formatCrore, formatCroreDelta, formatPercent, pct, signed } from '../fo
 import gameStyles from '../screens/game.module.css';
 import styles from './views.module.css';
 
-const isTax = (id: string): id is TaxId => (TAXES as readonly string[]).includes(id);
+const isRevenueLine = (id: string): id is RevenueLine => (REVENUE_LINES as readonly string[]).includes(id);
 
-/** What sets one tax under the proposed budget: the same breakdown the monthly settlement collects. */
-function TaxWhy({ game, proposal, tax }: { game: GameState; proposal: BudgetProposal; tax: TaxId }) {
+/** What sets one revenue line under the proposed budget: the same breakdown the monthly settlement collects. */
+function RevenueWhy({ game, proposal, line }: { game: GameState; proposal: BudgetProposal; line: RevenueLine }) {
   const { t } = useTranslation();
-  const name = t(`budget.rows.${tax}`);
-  const { base, factors, additions, total } = taxBreakdown(game, proposal, tax);
+  const name = t(`budget.rows.${line}`);
+  const { base, factors, additions, total } = revenueBreakdown(game, proposal, line);
   return (
     <Tooltip label={t('common.why')}>
-      <span className={gameStyles.breakdown} data-testid={`tax-why-${tax}`}>
+      <span className={gameStyles.breakdown} data-testid={`revenue-why-${line}`}>
         <span className={gameStyles.breakdownHeading}>{t('budget.why.heading', { tax: name })}</span>
-        <span>{t('budget.why.base')}</span>
+        <span>{t(`budget.why.base.${line}`)}</span>
         <span className={gameStyles.breakdownValue}>{formatCrore(base)}</span>
         {factors.map((f) => (
           <span key={f.id} style={{ display: 'contents' }}>
@@ -168,7 +170,8 @@ export function BudgetView() {
             {rows.map((r) => (
               <span key={r.id} style={{ display: 'contents' }}>
                 <span>
-                  {t(`budget.rows.${r.id}`)} {isTax(r.id) && <TaxWhy game={game} proposal={proposal} tax={r.id} />}
+                  {t(`budget.rows.${r.id}`)}{' '}
+                  {isRevenueLine(r.id) && <RevenueWhy game={game} proposal={proposal} line={r.id} />}
                 </span>
                 <span className={styles.num}>{formatCrore(r.now)}</span>
                 <span

@@ -1,19 +1,29 @@
 import { MINISTRY_CONTENT } from '../content';
-import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId } from '../content/ids';
+import { GOODS, MINISTRIES, SECTORS, type MinistryId, type SectorId, type TaxId } from '../content/ids';
 import { departmentQuality, serviceStars, starQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
-import { exportRevenue, plantUpkeep } from '../energy/grid';
+import { domesticPowerRevenue, exportRevenue, plantUpkeep } from '../energy/grid';
 import {
   climateBeyondTax,
   goodsCustomsDelta,
+  OPENING_IMPORT_WEIGHTS,
   OPENING_SHORTAGE_SHARE,
   privateProfitDelta,
   shortageShareOf,
   stateProfitDelta,
 } from '../industry/flows';
-import { facilityUpkeep } from '../infrastructure/coverage';
+import { facilityFees, facilityUpkeep } from '../infrastructure/coverage';
 import { policeUpkeep } from '../police/strength';
-import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
+import type {
+  BudgetState,
+  EconomyState,
+  ExpenditureLine,
+  FiscalMonth,
+  GameState,
+  MarketState,
+  RevenueLine,
+} from '../state/types';
+import { REVENUE_LINES } from '../state/types';
 import {
   COMPLIANCE_PER_CORRUPTION,
   CORPORATE_CLIMATE_ELASTICITY,
@@ -129,42 +139,88 @@ export function sectorMixFactor(economy: EconomyState, tax: Exclude<TaxId, 'cust
   return weightedMix(shares, TAX_SECTOR_WEIGHTS[tax]) / weightedMix(SECTOR_START_SHARE, TAX_SECTOR_WEIGHTS[tax]);
 }
 
-/** Multipliers on a tax's base, each 1 at the start; the Budget screen's "Why?" names them. */
-export type TaxFactorId =
-  'avoidance' | 'compliance' | 'modifiers' | 'sectorMix' | 'jobs' | 'climate' | 'shortages' | 'trade';
-/** Amounts added to a tax, each 0 at the start. */
-export type TaxAdditionId = 'privatePlants' | 'importedGoods';
+/**
+ * Average tariff on India's imports, weighted by the opening import bill (`OPENING_IMPORT_WEIGHTS`): since Phase 8
+ * tariffs are set good by good on the Trade Market screen, and this is the customs rate.
+ */
+export const averageTariff = (market: MarketState): number =>
+  GOODS.reduce((sum, g) => sum + OPENING_IMPORT_WEIGHTS[g] * market.controls[g].tariff, 0);
 
-export interface TaxBreakdown {
-  /** Monthly GDP × base share × rate: what the tax would raise with every factor at 1. */
+/** Avoidance across the tariff schedule: each good's tariff on its own Laffer curve, and nothing from banned imports. */
+function tariffYield(market: MarketState): number {
+  const average = averageTariff(market);
+  if (average <= 0) return 1;
+  const collected = GOODS.reduce((sum, g) => {
+    const control = market.controls[g];
+    if (control.ban === 'import') return sum;
+    return sum + OPENING_IMPORT_WEIGHTS[g] * control.tariff * taxYieldFactor('customs', control.tariff);
+  }, 0);
+  return collected / average;
+}
+
+/** Multipliers on a revenue line's base, each 1 at the start; the Budget screen's "Why?" names them. */
+export type RevenueFactorId =
+  'avoidance' | 'compliance' | 'modifiers' | 'sectorMix' | 'jobs' | 'climate' | 'shortages' | 'trade';
+/** Amounts added to a revenue line, each 0 at the start. */
+export type RevenueAdditionId =
+  'privatePlants' | 'importedGoods' | 'statePlants' | 'powerExports' | 'powerSales' | 'transportFees';
+
+export interface RevenueBreakdown {
+  /** What the line would raise with every factor at 1: monthly GDP × base share × rate (fees: × their share). */
   base: number;
-  factors: { id: TaxFactorId; value: number }[];
-  additions: { id: TaxAdditionId; value: number }[];
+  factors: { id: RevenueFactorId; value: number }[];
+  additions: { id: RevenueAdditionId; value: number }[];
   /** base × every factor + every addition, never below zero. */
   total: number;
 }
 
+const settle = (
+  base: number,
+  factors: RevenueBreakdown['factors'],
+  additions: RevenueBreakdown['additions'],
+): RevenueBreakdown => {
+  const total =
+    base * factors.reduce((product, f) => product * f.value, 1) + additions.reduce((sum, a) => sum + a.value, 0);
+  // Each line is floored at zero (DEF-10).
+  return { base, factors, additions, total: Math.max(0, total) };
+};
+
 /**
- * One month of one tax, with its causes: the single formula behind the fiscal settlement, the budget preview,
- * the daily figures and the Budget screen's "Why?" tooltip.
+ * One month of one revenue line, with its causes: the single formula behind the fiscal settlement, the budget
+ * preview, the daily figures and the Budget screen's "Why?" tooltips.
  */
-export function taxBreakdown(
+export function revenueBreakdown(
   state: GameState,
   budget: Pick<BudgetState, 'taxRates' | 'allocations'>,
-  tax: TaxId,
-): TaxBreakdown {
+  line: RevenueLine,
+): RevenueBreakdown {
   const { economy, modifiers } = state;
-  const rate = budget.taxRates[tax];
-  const base = (nominalGdp(economy) / 12) * TAX_BASE_SHARE[tax] * rate;
-  const factors: TaxBreakdown['factors'] = [
-    { id: 'avoidance', value: taxYieldFactor(tax, rate) },
+  const gdpMonth = nominalGdp(economy) / 12;
+  const revenueMultiplier = multiplierFor(modifiers, 'economy.revenue');
+  if (line === 'nonTax')
+    // Fees and dividends follow GDP; the rest is measured against the opening settlement (Phase 8).
+    return settle(
+      gdpMonth * NON_TAX_REVENUE_SHARE,
+      [{ id: 'modifiers', value: revenueMultiplier }],
+      [
+        { id: 'statePlants', value: stateProfitDelta(state) },
+        { id: 'powerExports', value: exportRevenue(state) },
+        { id: 'powerSales', value: domesticPowerRevenue(state) },
+        { id: 'transportFees', value: facilityFees(state) },
+      ],
+    );
+
+  const tax = line;
+  const rate = tax === 'customs' ? averageTariff(state.market) : budget.taxRates[tax];
+  const factors: RevenueBreakdown['factors'] = [
+    { id: 'avoidance', value: tax === 'customs' ? tariffYield(state.market) : taxYieldFactor(tax, rate) },
     {
       id: 'compliance',
       value: complianceFactor(taxAdministration(state, budget.allocations.finance), economy.corruption),
     },
-    { id: 'modifiers', value: multiplierFor(modifiers, 'economy.revenue') },
+    { id: 'modifiers', value: revenueMultiplier },
   ];
-  const additions: TaxBreakdown['additions'] = [];
+  const additions: RevenueBreakdown['additions'] = [];
   if (tax !== 'customs') factors.push({ id: 'sectorMix', value: sectorMixFactor(economy, tax) });
   if (tax === 'income') factors.push({ id: 'jobs', value: employmentTaxFactor(economy.unemployment) });
   if (tax === 'corporate') {
@@ -186,10 +242,7 @@ export function taxBreakdown(
     // Since Phase 8: tariffs on imported goods, against the opening settlement.
     additions.push({ id: 'importedGoods', value: goodsCustomsDelta(state) });
   }
-  const total =
-    base * factors.reduce((product, f) => product * f.value, 1) + additions.reduce((sum, a) => sum + a.value, 0);
-  // Each line is floored at zero (DEF-10).
-  return { base, factors, additions, total: Math.max(0, total) };
+  return settle(gdpMonth * TAX_BASE_SHARE[tax] * rate, factors, additions);
 }
 
 /** Ceiling on the market rate; beyond it a government defaults (bankruptcy ending arrives in Phase 3). */
@@ -229,16 +282,9 @@ export function projectMonth(
 ): FiscalProjection {
   const { economy, modifiers } = state;
   const gdpMonth = nominalGdp(economy) / 12;
-  const revenueMultiplier = multiplierFor(modifiers, 'economy.revenue');
 
   const revenue = {} as Record<RevenueLine, number>;
-  for (const tax of TAXES) revenue[tax] = taxBreakdown(state, budget, tax).total;
-  // Fees, dividends, state plants' profits (against the opening settlement, since Phase 8) and power sold to
-  // neighbours, floored at zero (DEF-10).
-  revenue.nonTax = Math.max(
-    0,
-    gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier + exportRevenue(state) + stateProfitDelta(state),
-  );
+  for (const line of REVENUE_LINES) revenue[line] = revenueBreakdown(state, budget, line).total;
 
   const spendingMultiplier = multiplierFor(modifiers, 'economy.expenditure');
   const expenditure = {} as Record<ExpenditureLine, number>;
