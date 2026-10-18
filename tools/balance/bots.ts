@@ -58,6 +58,10 @@ import {
   validateRecruit,
   validateStations,
   validateUnit,
+  MAX_PLANT_ORDER,
+  PLANT_CONTENT,
+  plantsForMargin,
+  validatePlant,
 } from '../../src/sim';
 
 /**
@@ -188,6 +192,25 @@ function managePolice(state: GameState): GameState {
       next = apply(next, { type: 'RAISE_UNIT', unit: 'counterTerror', quantity: 5 });
   }
   return next;
+}
+
+/** Reserve margin the balanced bot keeps on the grid, and the most it spends on solar in a month. */
+const GRID_MARGIN = 0.06;
+const POWER_BUDGET = 12_000;
+
+/**
+ * Keeps the grid ahead of demand with solar parks (quick to build and clean, so the air stays as it was), placed
+ * in the sunniest region it can; projects under way count toward the margin.
+ */
+function manageEnergy(state: GameState): GameState {
+  if (debtToGdp(state.economy) > 0.8 || state.nation.treasury < 30_000) return state;
+  const quantity = Math.min(
+    plantsForMargin(state, 'solar', GRID_MARGIN),
+    MAX_PLANT_ORDER,
+    Math.floor(POWER_BUDGET / PLANT_CONTENT.solar.cost),
+  );
+  if (quantity < 1 || validatePlant(state, 'solar', 'west', quantity)) return state;
+  return apply(state, { type: 'BUILD_PLANT', plant: 'solar', region: 'west', quantity });
 }
 
 export const passiveBot: Bot = {
@@ -335,11 +358,12 @@ function manageDiplomacy(state: GameState): GameState {
 export const balancedBot: Bot = {
   id: 'balanced',
   description:
-    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, keeps the police at strength as the population grows, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
+    'Upgrades the services that keep it safe and the economy growing, builds schools, clinics and roads toward 95% coverage where they buy the most, keeps the police at strength as the population grows, keeps the grid ahead of demand with solar parks, nudges taxes and spending toward a ~3% deficit, funds security when pressure builds, audits departments, runs the armed forces (equipment, drills, research, recon, ending wars), runs foreign policy (answers offers, embassies, trade contracts, pacts) and settles every decision on its merits.',
   act(state) {
     let next = upgradeServices(state);
     next = buildPublicWorks(next);
     next = managePolice(next);
+    next = manageEnergy(next);
 
     // Audit the biggest-spending department not already under audit when the country looks corrupt.
     if (next.economy.corruption > 42 && next.security.investigations.length < MAX_INVESTIGATIONS - 1) {

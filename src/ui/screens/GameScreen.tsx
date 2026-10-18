@@ -17,6 +17,7 @@ import { ConstructionView } from '../views/ConstructionView';
 import { DepartmentsView } from '../views/DepartmentsView';
 import { DashboardView } from '../views/DashboardView';
 import { DiplomacyView } from '../views/DiplomacyView';
+import { EnergyView } from '../views/EnergyView';
 import { InboxView } from '../views/InboxView';
 import { MilitaryView } from '../views/MilitaryView';
 import { PoliceView } from '../views/PoliceView';
@@ -40,6 +41,8 @@ function ActiveView({ view }: { view: ViewId }) {
       return <DepartmentsView />;
     case 'construction':
       return <ConstructionView />;
+    case 'energy':
+      return <EnergyView />;
     case 'inbox':
       return <InboxView />;
     case 'security':

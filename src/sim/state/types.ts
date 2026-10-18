@@ -13,6 +13,7 @@ import type {
   LogCategory,
   MinistryId,
   OperationKind,
+  PlantId,
   PoliceUnitId,
   RegionId,
   ServiceId,
@@ -25,7 +26,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 9;
+export const SCHEMA_VERSION = 10;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -180,6 +181,24 @@ export interface BuildOrder {
 export interface InfrastructureState {
   counts: Record<RegionId, Record<FacilityId, number>>;
   queue: BuildOrder[];
+}
+
+/** Power plants under construction: they start generating when the order completes. */
+export interface PlantOrder {
+  id: string;
+  plant: PlantId;
+  region: RegionId;
+  quantity: number;
+  /** ₹ crore paid when ordered, for the partial refund on cancelling. */
+  cost: number;
+  startedTick: number;
+  endsTick: number;
+}
+
+/** Power plants in each region (Phase 8). The grid is national: production and demand are derived. */
+export interface EnergyState {
+  plants: Record<RegionId, Record<PlantId, number>>;
+  queue: PlantOrder[];
 }
 
 export type EquipmentTier = 1 | 2 | 3;
@@ -560,6 +579,7 @@ export interface GameState {
   departments: DepartmentsState;
   infrastructure: InfrastructureState;
   police: PoliceState;
+  energy: EnergyState;
   politics: PoliticsState;
   modifiers: Modifier[];
   security: SecurityState;

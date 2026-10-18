@@ -10,6 +10,7 @@ import {
   LOG_CATEGORIES,
   MINISTRIES,
   OPERATION_KINDS,
+  PLANTS,
   POLICE_UNITS,
   REGIONS,
   RIVALS,
@@ -284,6 +285,20 @@ export const gameStateSchema = z.object({
       z.object({
         id: z.string(),
         facility: z.enum(FACILITIES),
+        region: z.enum(REGIONS),
+        quantity: z.number().int().positive(),
+        cost: z.number().min(0),
+        startedTick: tick,
+        endsTick: tick,
+      }),
+    ),
+  }),
+  energy: z.object({
+    plants: z.record(z.enum(REGIONS), z.record(z.enum(PLANTS), z.number().int().min(0))),
+    queue: z.array(
+      z.object({
+        id: z.string(),
+        plant: z.enum(PLANTS),
         region: z.enum(REGIONS),
         quantity: z.number().int().positive(),
         cost: z.number().min(0),

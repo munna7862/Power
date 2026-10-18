@@ -2,6 +2,7 @@ import { EVENT_CONTENT, EVENT_LIST, type Condition, type EventChoice, type Event
 import { REGION_LABELS, REGIONS, type RegionId } from '../content/ids';
 import { COUNTRY_CONTENT } from '../content/world';
 import { pickCountry } from '../diplomacy/world';
+import { disasterFactor } from '../energy/grid';
 import { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
@@ -208,13 +209,16 @@ function regionCandidates(state: GameState, def: EventContent): { region: Region
  */
 export function rollDailyEvent(state: GameState, rng: Rng): GameState {
   const frequency = EVENT_DIFFICULTY[state.meta.difficulty].frequency;
+  const disasters = disasterFactor(state);
   const quiet = state.meta.options.tutorial && state.clock.tick < TUTORIAL_QUIET_DAYS;
   const open = state.events.pending.length < MAX_PENDING && !quiet;
   let fired = false;
   let next = state;
   for (const def of EVENT_LIST) {
     const roll = rng.next();
-    if (fired || !open || roll >= (def.weight / 365) * frequency) continue;
+    // Pollution above the opening grid makes floods, cyclones and landslides likelier (1 at the start).
+    const factor = def.category === 'disaster' ? disasters : 1;
+    if (fired || !open || roll >= (def.weight / 365) * frequency * factor) continue;
     if ((next.events.cooldowns[def.id] ?? 0) > next.clock.tick) continue;
     if (repeatsExhausted(next, def.id)) continue;
 

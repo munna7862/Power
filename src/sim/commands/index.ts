@@ -12,6 +12,7 @@ import {
   type IntelKind,
   type MinistryId,
   type OperationKind,
+  type PlantId,
   type PoliceUnitId,
   type RegionId,
   type CountryId,
@@ -91,6 +92,14 @@ import {
   validateDemolish,
 } from '../infrastructure/build';
 import {
+  cancelPlant,
+  decommission,
+  startPlant,
+  validateCancelPlant,
+  validateDecommission,
+  validatePlant,
+} from '../energy/build';
+import {
   buildStations,
   changeUnits,
   fundAgency,
@@ -113,6 +122,9 @@ export type Command =
   | { type: 'BUILD_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
   | { type: 'CANCEL_BUILD'; orderId: string }
   | { type: 'DEMOLISH_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
+  | { type: 'BUILD_PLANT'; plant: PlantId; region: RegionId; quantity: number }
+  | { type: 'CANCEL_PLANT'; orderId: string }
+  | { type: 'DECOMMISSION_PLANT'; plant: PlantId; region: RegionId; quantity: number }
   /** Positive recruits, negative dismisses. */
   | { type: 'RECRUIT_POLICE'; region: RegionId; officers: number }
   | { type: 'BUILD_STATION'; region: RegionId; quantity: number }
@@ -272,6 +284,21 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateDemolish(state, command.facility, command.region, command.quantity);
       return problem ? fail(state, problem) : ok(demolish(state, command.facility, command.region, command.quantity));
+    }
+    case 'BUILD_PLANT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validatePlant(state, command.plant, command.region, command.quantity);
+      return problem ? fail(state, problem) : ok(startPlant(state, command.plant, command.region, command.quantity));
+    }
+    case 'CANCEL_PLANT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateCancelPlant(state, command.orderId);
+      return problem ? fail(state, problem) : ok(cancelPlant(state, command.orderId));
+    }
+    case 'DECOMMISSION_PLANT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDecommission(state, command.plant, command.region, command.quantity);
+      return problem ? fail(state, problem) : ok(decommission(state, command.plant, command.region, command.quantity));
     }
     case 'RECRUIT_POLICE': {
       if (gameOver) return fail(state, 'The game is over.');

@@ -2,6 +2,7 @@ import { MINISTRY_CONTENT } from '../content';
 import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId } from '../content/ids';
 import { departmentQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
+import { exportRevenue, plantUpkeep } from '../energy/grid';
 import { facilityUpkeep } from '../infrastructure/coverage';
 import { policeUpkeep } from '../police/strength';
 import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
@@ -126,16 +127,21 @@ export function projectMonth(
       amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
     revenue[tax] = amount;
   }
-  revenue.nonTax = gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier;
+  // Fees, dividends and, since Phase 8, power sold to neighbours.
+  revenue.nonTax = gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier + exportRevenue(state);
 
   const spendingMultiplier = multiplierFor(modifiers, 'economy.expenditure');
   const expenditure = {} as Record<ExpenditureLine, number>;
-  // Each department pays its allocation plus the running costs of facilities, police and agencies beyond the
-  // opening ones (whose costs the allocation already covers).
+  // Each department pays its allocation plus the running costs of facilities, police, agencies and power plants
+  // beyond the opening ones (whose costs the allocation already covers).
   const facilities = facilityUpkeep(state);
   const police = policeUpkeep(state);
+  const plants = plantUpkeep(state);
   for (const m of MINISTRIES) {
-    expenditure[m] = Math.max(0, gdpMonth * budget.allocations[m] * spendingMultiplier + facilities[m] + police[m]);
+    expenditure[m] = Math.max(
+      0,
+      gdpMonth * budget.allocations[m] * spendingMultiplier + facilities[m] + police[m] + plants[m],
+    );
   }
   expenditure.establishment = gdpMonth * ESTABLISHMENT_SHARE;
   expenditure.interest = (economy.debt * economy.interestRate) / 12;

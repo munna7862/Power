@@ -33,6 +33,11 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - As with public works, effects compare today's force with `openingPolice()`, so a new game starts unchanged. Benefits enter as the log of a ratio; the civil-liberties cost grows faster than that, so more police is never free.
 - Crime is regional and economic (jobs, corruption, policing), like unrest: never framed by religion or caste.
 
+## Energy
+
+- Power plants are content (`content/power.json`, ids in `PLANTS`). Production, demand, shortfall, exports, emissions and their effects (the "Power cuts" growth driver, the power-cut and air-pollution approval lines, disaster odds) and plant upkeep come from `src/sim/energy/grid.ts`, shared by the systems, the Energy screen and the bots.
+- The grid is national. It opens with a 5% reserve margin over demand, so a new game starts unchanged; approval-target lines from public policy (civil liberties, power cuts, air pollution) are collected in `governanceLines()` and are all 0 at the start.
+
 ## Events
 
 - Events live in `content/events/<category>.json` and are validated by zod (`src/sim/content/events.ts`). To add a choice, effect or condition type, extend the schema there first, then `src/sim/events`.

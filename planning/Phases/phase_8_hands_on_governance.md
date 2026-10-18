@@ -124,7 +124,7 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 - [x] Police & Internal Affairs screen (nav after Security): police by region with recruit, dismiss, "to 100%" and stations, equipment, special units, agencies, civil liberties with "Why?", running costs; the counter-terror operations and audits moved here from Security
 - [x] Balance: the balanced bot keeps each region's police at its opening strength and adds counter-terror squads when the threat is high. All bands pass unchanged: balanced re-election 96% Easy, 86% Normal, 34% Hard
 
-### Sprint 8.4: Energy and the power grid (5 SP)
+### Sprint 8.4: Energy and the power grid (5 SP) ✅
 
 | ID     | Story                                                                                                                    | SP  |
 | ------ | ------------------------------------------------------------------------------------------------------------------------ | --- |
@@ -134,10 +134,15 @@ As in Stage A, we borrow mechanics only. Names, text, layouts and art stay our o
 
 **Tasks**
 
-- [ ] `content/power.json`: plant type, cost, build time (solar weeks, nuclear about a year at genre speed), output, upkeep, fuel good (coal, gas, uranium) and an emissions score
-- [ ] State: `energy: { plants: Record<RegionId, Record<PlantId, number>>; queue: BuildOrder[] }`; derived `production`, `consumption`, `balance`
-- [ ] Thermal and gas plants burn fuel from stock (Sprint 8.5), so energy and trade connect
-- [ ] An emissions score feeds a new "environment" approval factor (small weight) and disaster events
+- [x] `content/power.json` (zod-validated in `src/sim/content/power.ts`): six plant types (solar, wind, coal, gas, hydro, nuclear) with cost, build time (solar 3 weeks to nuclear a year), capacity and capacity factor, upkeep, fuel and fuel cost, emissions and the opening fleet per region (about 183 GW on average, 69% coal)
+- [x] State: `energy: { plants: Record<RegionId, Record<PlantId, number>>; queue: PlantOrder[] }`; derived `production`, `consumption` (homes, industry, services, public facilities, each following its driver) and `powerBalance` in `src/sim/energy/grid.ts`. `SCHEMA_VERSION` 10 with a v9 → v10 migration and golden fixture `v10.json`
+- [x] Commands `BUILD_PLANT` (treasury-checked), `CANCEL_PLANT` (50% refund), `DECOMMISSION_PLANT`; plants connect in the daily `energy-daily` system; running and fuel costs beyond the opening fleet are charged to Industry & Infrastructure in `projectMonth`
+- [ ] Thermal and gas plants burn fuel from stock (Sprint 8.5), so energy and trade connect. Until stocks exist, fuel is a monthly running cost in the content (`fuelCost`), ready to be drawn from stock instead
+- [x] A shortfall (share of demand unmet) costs every sector growth (a "Power cuts" growth driver) and approval; production beyond demand and a 5% reserve is exported, earning non-tax revenue
+- [x] Emissions against the opening grid add an "Air pollution" line to the approval target (a cleaner grid earns approval back) and make disaster events likelier. Implemented as an approval-target line rather than a new approval factor, so the satisfaction weights and saves stay unchanged
+- [x] The grid opens with a 5% reserve margin, so tick 0 is unchanged; demand grows about 5.6 GW a year and a hands-off grid is short in its second year
+- [x] Energy screen (nav after Construction): production, demand, balance and emissions; demand by source with "Why?", production by plant type, what the grid does now, power projects and a build panel per region
+- [x] Balance: the balanced bot keeps a 6% margin with solar parks. All bands pass unchanged: balanced re-election 96% Easy, 78% Normal, 38% Hard
 
 ### Sprint 8.5: Industry and production (8 SP)
 

@@ -1,3 +1,4 @@
+import { openingEnergy } from '../energy/grid';
 import { openingInfrastructure } from '../infrastructure/coverage';
 import { START_CRIME } from '../police/constants';
 import { openingPolice } from '../police/strength';
@@ -34,6 +35,8 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
       police: openingPolice(),
     };
   },
+  // v9 → v10 (Sprint 8.4): the power grid. A game in progress gets the opening fleet of power plants.
+  9: (state) => ({ ...(state as object), schemaVersion: 10, energy: openingEnergy() }),
 };
 
 export function migrate(

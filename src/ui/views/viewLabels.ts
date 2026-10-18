@@ -8,6 +8,7 @@ export const VIEWS: readonly ViewId[] = [
   'budget',
   'departments',
   'construction',
+  'energy',
   'security',
   'police',
   'military',

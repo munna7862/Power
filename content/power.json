@@ -1,0 +1,128 @@
+[
+  {
+    "id": "solar",
+    "name": "Solar park",
+    "summary": "Fields of panels that build in weeks and burn nothing, but only generate in daylight.",
+    "cost": 1500,
+    "buildDays": 21,
+    "upkeep": 3,
+    "fuel": null,
+    "fuelCost": 0,
+    "capacity": 0.5,
+    "capacityFactor": 0.19,
+    "emissions": 0,
+    "opening": {
+      "north": 40,
+      "south": 35,
+      "east": 10,
+      "west": 50,
+      "central": 20,
+      "northEast": 5
+    }
+  },
+  {
+    "id": "wind",
+    "name": "Wind farm",
+    "summary": "Turbines on ridges and coasts: clean and cheap to run, with output that rises and falls with the wind.",
+    "cost": 1600,
+    "buildDays": 45,
+    "upkeep": 4,
+    "fuel": null,
+    "fuelCost": 0,
+    "capacity": 0.3,
+    "capacityFactor": 0.27,
+    "emissions": 0,
+    "opening": {
+      "north": 5,
+      "south": 70,
+      "east": 0,
+      "west": 65,
+      "central": 10,
+      "northEast": 0
+    }
+  },
+  {
+    "id": "coal",
+    "name": "Coal power station",
+    "summary": "Cheap, steady power around the clock, at the price of smoke and a monthly fuel bill.",
+    "cost": 6000,
+    "buildDays": 180,
+    "upkeep": 5,
+    "fuel": "coal",
+    "fuelCost": 20,
+    "capacity": 1,
+    "capacityFactor": 0.6,
+    "emissions": 1,
+    "opening": {
+      "north": 32,
+      "south": 31,
+      "east": 63,
+      "west": 32,
+      "central": 52,
+      "northEast": 0
+    }
+  },
+  {
+    "id": "gas",
+    "name": "Gas power station",
+    "summary": "Quick to start and cleaner than coal, but its fuel is dear.",
+    "cost": 2000,
+    "buildDays": 90,
+    "upkeep": 3,
+    "fuel": "gas",
+    "fuelCost": 15,
+    "capacity": 0.5,
+    "capacityFactor": 0.25,
+    "emissions": 0.45,
+    "opening": {
+      "north": 10,
+      "south": 10,
+      "east": 3,
+      "west": 20,
+      "central": 2,
+      "northEast": 5
+    }
+  },
+  {
+    "id": "hydro",
+    "name": "Hydro dam",
+    "summary": "A dam and turbines in the hills: clean and long-lived, but slow and costly to build.",
+    "cost": 5000,
+    "buildDays": 270,
+    "upkeep": 4,
+    "fuel": null,
+    "fuelCost": 0,
+    "capacity": 0.5,
+    "capacityFactor": 0.38,
+    "emissions": 0,
+    "opening": {
+      "north": 38,
+      "south": 23,
+      "east": 8,
+      "west": 5,
+      "central": 2,
+      "northEast": 18
+    }
+  },
+  {
+    "id": "nuclear",
+    "name": "Nuclear power station",
+    "summary": "Huge, steady and clean output from a little uranium, after about a year of building.",
+    "cost": 12000,
+    "buildDays": 365,
+    "upkeep": 8,
+    "fuel": "uranium",
+    "fuelCost": 4,
+    "capacity": 0.9,
+    "capacityFactor": 0.8,
+    "emissions": 0,
+    "opening": {
+      "north": 2,
+      "south": 3,
+      "east": 0,
+      "west": 3,
+      "central": 0,
+      "northEast": 0
+    }
+  }
+]

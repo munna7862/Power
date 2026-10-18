@@ -794,3 +794,8 @@
     justify-content: flex-start;
   }
 }
+
+/* A segmented control with many options wraps onto a second line on narrow screens. */
+.segmentedWrap {
+  flex-wrap: wrap;
+}
