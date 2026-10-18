@@ -1,0 +1,57 @@
+{
+  "industry": {
+    "subtitle": "Build state factories, mines, fields and farms, and license private ones. Plants turn inputs into goods, draw power, create jobs and add to growth; state plants' profits go to the treasury, private plants pay corporate tax.",
+    "tiles": {
+      "stateProfit": "State plants' profit",
+      "perMonth": "{{value}} / month",
+      "sinceStart": "{{value}} against the start",
+      "climate": "Business climate",
+      "climateNote": "Investors build above 105% and close below 95%",
+      "jobs": "Jobs added",
+      "jobsNote": "In plants beyond the opening ones",
+      "imports": "Goods imported",
+      "importsNote": "Last month, at world prices"
+    },
+    "whyClimate": "Why this climate?",
+    "goods": "Goods last month",
+    "columns": {
+      "good": "Good",
+      "made": "Made",
+      "used": "Used by plants",
+      "demand": "Bought by the country",
+      "imported": "Imported",
+      "stock": "Stock",
+      "short": "Short"
+    },
+    "unitNote": "{{unit}}",
+    "buildIn": "Plants in the {{region}}",
+    "region": "Region",
+    "recipe": "{{inputs}} → {{outputs}} a month",
+    "noInputs": "Nothing",
+    "flow": "{{quantity}} {{unit}} {{good}}",
+    "plantLine": "Here: {{state}} state · {{private}} private · nationwide {{total}} · running at {{throughput}}",
+    "economics": "Price {{cost}} · {{days}} · profit {{profit}} / month each · {{power}} GW · {{jobs}} jobs",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "quantityLabel": "How many {{name}} to build or close",
+    "build": "Build · {{cost}}",
+    "buildLabel": "Build {{count}} state {{name}} in the {{region}} for {{cost}}",
+    "license": "License · +{{fee}}",
+    "licenseLabel": "License a private {{name}} in the {{region}} for a fee of {{fee}}",
+    "close": "Close",
+    "closeLabel": "Close {{count}} state {{name}} in the {{region}}",
+    "projects": "Industrial projects",
+    "projectsNote": "{{queued}} of {{max}} projects. Cancelling a state build refunds {{refund}}% of the price; licensed plants are the investors' to build.",
+    "noProjects": "Nothing is being built.",
+    "project": "{{count}} × {{name}} ({{owner}}), {{region}}",
+    "owners": {
+      "state": "state",
+      "private": "private"
+    },
+    "projectProgress": "Progress of {{name}}",
+    "opensIn_one": "Opens in {{count}} day",
+    "opensIn_other": "Opens in {{count}} days",
+    "cancel": "Cancel · refund {{refund}}",
+    "cancelLabel": "Cancel {{name}} in the {{region}} and get {{refund}} back"
+  }
+}

@@ -6,6 +6,8 @@ const PATHS: Record<ViewId, string> = {
   economy: 'M4 20h16M7 16v-5M12 16V7M17 16v-8',
   budget: 'M4 7h16v12H4zM4 7l2-3h12l2 3M14 13h3M9 4v3',
   departments: 'M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6z',
+  industry: 'M3 21V9l6 4V9l6 4V5h6v16zM7 17h2M12 17h2M17 17h2',
+  market: 'M4 7h16M4 7l2-3h12l2 3M5 7v13h14V7M9 11h6M9 15h4',
   energy: 'M13 2L4 14h7l-1 8 9-12h-7z',
   construction: 'M3 21h18M6 21V11h12v10M10 21v-5h4v5M4 11l8-7 8 7M16 6V3h2v4.5',
   security: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z',

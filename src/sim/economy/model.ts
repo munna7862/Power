@@ -3,6 +3,7 @@ import { MINISTRIES, SECTORS, TAXES, type MinistryId, type SectorId, type TaxId 
 import { departmentQuality } from '../departments/quality';
 import { multiplierFor } from '../engine/modifiers';
 import { exportRevenue, plantUpkeep } from '../energy/grid';
+import { goodsCustomsDelta, privateProfitDelta, stateProfitDelta } from '../industry/flows';
 import { facilityUpkeep } from '../infrastructure/coverage';
 import { policeUpkeep } from '../police/strength';
 import type { BudgetState, EconomyState, ExpenditureLine, FiscalMonth, GameState, RevenueLine } from '../state/types';
@@ -127,8 +128,15 @@ export function projectMonth(
       amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
     revenue[tax] = amount;
   }
-  // Fees, dividends and, since Phase 8, power sold to neighbours.
-  revenue.nonTax = gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier + exportRevenue(state);
+  // Since Phase 8, against the opening settlement: tariffs on imported goods, corporate tax on private plants'
+  // profits, and state plants' profits with fees and dividends. Each line is floored at zero (DEF-10).
+  revenue.customs = Math.max(0, revenue.customs + goodsCustomsDelta(state));
+  revenue.corporate = Math.max(0, revenue.corporate + budget.taxRates.corporate * privateProfitDelta(state));
+  // Fees, dividends, state plants' profits and power sold to neighbours.
+  revenue.nonTax = Math.max(
+    0,
+    gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier + exportRevenue(state) + stateProfitDelta(state),
+  );
 
   const spendingMultiplier = multiplierFor(modifiers, 'economy.expenditure');
   const expenditure = {} as Record<ExpenditureLine, number>;

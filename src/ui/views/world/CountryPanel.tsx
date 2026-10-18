@@ -43,6 +43,7 @@ import { formatCrore, signed } from '../../format';
 import { t as translate } from '../../i18n';
 import gameStyles from '../../screens/game.module.css';
 import { Bar } from '../military/parts';
+import { contractTerms } from '../market/contractTerms';
 import views from '../views.module.css';
 import styles from '../../map/world.module.css';
 
@@ -69,14 +70,16 @@ const strengthText = (view: ReturnType<typeof strengthView>): string => {
 
 function treatyText(treaty: Treaty, now: number): string {
   const base =
-    treaty.type === 'trade'
-      ? translate('country.treaty.trade', {
-          sector: translate(`economy.sectorNames.${treaty.terms.sector ?? 'services'}`),
-          value: formatCrore(treaty.terms.value ?? 0),
-        })
-      : treaty.type === 'sanctions'
-        ? translate(treaty.parties[0] === 'IND' ? 'country.treaty.indiaSanctions' : 'country.treaty.sanctionsOnIndia')
-        : translate(`country.treaty.${treaty.type}`);
+    treaty.type === 'trade' && treaty.terms.good
+      ? contractTerms(treaty)
+      : treaty.type === 'trade'
+        ? translate('country.treaty.trade', {
+            sector: translate(`economy.sectorNames.${treaty.terms.sector ?? 'services'}`),
+            value: formatCrore(treaty.terms.value ?? 0),
+          })
+        : treaty.type === 'sanctions'
+          ? translate(treaty.parties[0] === 'IND' ? 'country.treaty.indiaSanctions' : 'country.treaty.sanctionsOnIndia')
+          : translate(`country.treaty.${treaty.type}`);
   return treaty.endTick === null
     ? base
     : translate('country.treaty.left', { base, count: Math.max(0, Math.ceil((treaty.endTick - now) / 30)) });
@@ -279,7 +282,8 @@ export function CountryPanel({ game, id }: { game: GameState; id: string }) {
                   <span className={gameStyles.breakdownValue}>{formatCrore(tradeCap(id))}</span>
                   <span>{t('country.contractsHeld')}</span>
                   <span className={gameStyles.breakdownValue}>
-                    {game.diplomacy.treaties.filter((x) => x.type === 'trade').length}/{MAX_TRADE_TREATIES}
+                    {game.diplomacy.treaties.filter((x) => x.type === 'trade' && !x.terms.good).length}/
+                    {MAX_TRADE_TREATIES}
                   </span>
                 </span>
               </Tooltip>

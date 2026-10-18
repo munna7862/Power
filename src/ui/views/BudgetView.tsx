@@ -94,7 +94,8 @@ export function BudgetView() {
       <div className={gameStyles.grid}>
         <Panel title={t('budget.taxes')} className={gameStyles.span8}>
           <div className={styles.sliders}>
-            {TAXES.map((x) => {
+            {/* Customs is set per good on the Trade Market screen (tariffs) since Phase 8. */}
+            {TAXES.filter((x) => x !== 'customs').map((x) => {
               const min = round(Math.max(TAX_LIMITS[x].min, current.taxRates[x] - MAX_TAX_STEP), 0.005);
               const max = round(Math.min(TAX_LIMITS[x].max, current.taxRates[x] + MAX_TAX_STEP), 0.005);
               const value = proposal.taxRates[x];
@@ -122,6 +123,7 @@ export function BudgetView() {
               );
             })}
           </div>
+          <p className={styles.note}>{t('budget.customsMoved')}</p>
         </Panel>
 
         <Panel title={t('budget.projected')} className={gameStyles.span4}>

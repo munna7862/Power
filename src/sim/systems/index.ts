@@ -8,6 +8,7 @@ import { energyDailySystem } from './energy';
 import { eventsSystem } from './events';
 import { fiscalSystem } from './fiscal';
 import { historySystem } from './history';
+import { industryDailySystem, industryMonthlySystem, marketMonthlySystem } from './industry';
 import { infrastructureDailySystem } from './infrastructure';
 import { investigationSystem } from './investigations';
 import { leadershipSystem } from './leadership';
@@ -27,6 +28,8 @@ import { riotCapSystem, unrestSystem } from './unrest';
 export const SYSTEMS: readonly System[] = [
   modifierExpirySystem,
   economySystem,
+  industryMonthlySystem,
+  marketMonthlySystem,
   fiscalSystem,
   societySystem,
   crimeSystem,
@@ -39,6 +42,7 @@ export const SYSTEMS: readonly System[] = [
   departmentsDailySystem,
   infrastructureDailySystem,
   energyDailySystem,
+  industryDailySystem,
   militaryMonthlySystem,
   militaryDailySystem,
   diplomacyMonthlySystem,

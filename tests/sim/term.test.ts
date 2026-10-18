@@ -128,7 +128,9 @@ describe('difficulty', () => {
 
 describe('New Game options', () => {
   it('"no wars": no rival can declare war and India cannot either', () => {
-    const s = advanceDays(newGame({ options: { noWars: true } }), 400);
+    // Without the approval and leadership systems, so a hands-off game is still running after 400 days.
+    const survives = SYSTEMS.filter((x) => x.id !== 'approval' && x.id !== 'leadership');
+    const s = advanceDays(newGame({ options: { noWars: true } }), 400, survives);
     const countries = { ...s.diplomacy.countries, PAK: { ...s.diplomacy.countries.PAK!, relation: -100 } };
     const hostile = { ...s, diplomacy: { ...s.diplomacy, countries }, military: { ...s.military, deterrence: 0 } };
     expect(declarationChance(hostile, 'PAK')).toBe(0);

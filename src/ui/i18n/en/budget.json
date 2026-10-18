@@ -28,6 +28,7 @@
     "spendingPerYear": "Spending per year",
     "nextDate": "Next budget can be enacted on {{date}}.",
     "reset": "Reset",
-    "enact": "Enact budget"
+    "enact": "Enact budget",
+    "customsMoved": "Customs tariffs are set good by good on the Trade Market screen."
   }
 }

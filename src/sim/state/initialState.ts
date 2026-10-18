@@ -26,6 +26,7 @@ import { allEfficiencies, interestRateFor } from '../economy/model';
 import { Rng, seedRng } from '../engine/rng';
 import { openingDepartments } from '../departments/services';
 import { openingEnergy } from '../energy/grid';
+import { openingIndustry, openingMarket } from '../industry/flows';
 import { openingInfrastructure } from '../infrastructure/coverage';
 import { START_CRIME } from '../police/constants';
 import { openingPolice } from '../police/strength';
@@ -175,6 +176,8 @@ export function createInitialState(options: NewGameOptions): GameState {
     infrastructure: openingInfrastructure(),
     police: openingPolice(),
     energy: openingEnergy(),
+    industry: openingIndustry(),
+    market: openingMarket(),
     politics: openingPolitics(ideology, strategy),
     modifiers: profile.modifiers.map((m, i) => ({ ...m, id: `mod-${i}` })),
     security: openingSecurity(),

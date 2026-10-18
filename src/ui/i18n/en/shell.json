@@ -165,6 +165,8 @@
       "departments": "Departments",
       "construction": "Construction",
       "energy": "Energy",
+      "industry": "Industry",
+      "market": "Trade Market",
       "security": "Security",
       "police": "Police",
       "military": "Military",

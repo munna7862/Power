@@ -29,6 +29,8 @@ export type ViewId =
   | 'departments'
   | 'construction'
   | 'energy'
+  | 'industry'
+  | 'market'
   | 'security'
   | 'police'
   | 'military'

@@ -22,6 +22,7 @@ import { t as translate } from '../i18n';
 import gameStyles from '../screens/game.module.css';
 import mapStyles from '../map/world.module.css';
 import { AiDebug } from './diplomacy/AiDebug';
+import { contractTerms } from './market/contractTerms';
 import styles from './views.module.css';
 
 const EXPIRING_DAYS = 180;
@@ -29,6 +30,7 @@ const name = (id: string) => COUNTRY_CONTENT[id]?.name ?? id;
 const typeName = (type: Treaty['type']) => translate(`diplomacy.types.${type}`);
 
 function terms(t: Treaty): string {
+  if (t.type === 'trade' && t.terms.good) return contractTerms(t);
   if (t.type === 'trade') {
     return translate('diplomacy.tradeTerms', {
       sector: translate(`economy.sectorNames.${t.terms.sector ?? 'services'}`),

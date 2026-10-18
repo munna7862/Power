@@ -3,6 +3,8 @@ import { POPULATION_GROWTH } from '../economy/constants';
 import { expectedSectorGrowth } from '../economy/growth';
 import { allEfficiencies, lastDeficitRatio, realGdp } from '../economy/model';
 import { sumAdd } from '../engine/modifiers';
+import { goodsInflation, industryJobs } from '../industry/flows';
+import { LABOUR_FORCE } from '../infrastructure/constants';
 import { facilityJobsEffect } from '../infrastructure/coverage';
 import type { System } from '../engine/system';
 import type { SectorState } from '../state/types';
@@ -41,6 +43,7 @@ export const economySystem: System = {
       0.15 * (t.gst - 0.18) +
       0.1 * (t.customs - 0.1) -
       0.01 * (capped(eff.agriculture) - 1) +
+      goodsInflation(state).total +
       sumAdd(modifiers, 'economy.inflation');
     const inflation = clamp(
       economy.inflation + (inflationTarget - economy.inflation) * 0.12 + rng.range(-0.001, 0.001),
@@ -54,7 +57,8 @@ export const economySystem: System = {
         0.01 * (capped(eff.industry) - 1) -
         0.005 * (capped(eff.agriculture) - 1) +
         0.05 * (t.corporate - 0.25) +
-        facilityJobsEffect(state) +
+        facilityJobsEffect(state) -
+        industryJobs(state) / LABOUR_FORCE +
         sumAdd(modifiers, 'economy.unemployment'),
       0.02,
       0.4,
@@ -68,6 +72,8 @@ export const economySystem: System = {
     return {
       ...state,
       nation: { ...state.nation, population: state.nation.population * (1 + POPULATION_GROWTH / 12) },
+      // The plants' value added is now part of sector output; only changes after this settle into growth.
+      industry: { ...state.industry, applied: { ...state.industry.last.valueAdded } },
       economy: {
         ...economy,
         sectors,

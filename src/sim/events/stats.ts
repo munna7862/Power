@@ -1,4 +1,4 @@
-import { MINISTRIES, REGIONS, RIVALS, type MinistryId, type RegionId } from '../content/ids';
+import { MINISTRIES, REGIONS, RIVALS, type GoodId, type MinistryId, type RegionId } from '../content/ids';
 import { FOCUS_IDS } from '../content/world';
 import { allEfficiencies, debtToGdp, ministryEfficiency } from '../economy/model';
 import { militaryStrength } from '../military/strength';
@@ -62,6 +62,9 @@ export const BASE_STATS = [
   /** Crises between other countries, and countries sanctioning India. */
   'conflicts',
   'sanctionsOnIndia',
+  /** Share of demand for food and grain, and for fuel, coal and gas, left unmet last month (percent). */
+  'foodShortage',
+  'fuelShortage',
 ] as const;
 export type BaseStat = (typeof BASE_STATS)[number];
 
@@ -70,6 +73,13 @@ export type EfficiencyStat = `efficiency.${MinistryId}`;
 
 export type StatId = BaseStat | EfficiencyStat;
 export const STAT_IDS: readonly StatId[] = [...BASE_STATS, ...EFFICIENCY_STATS];
+
+/** Percent of demand for these goods the country could not meet last month. */
+function unmetShare(state: GameState, goods: readonly GoodId[]): number {
+  const { shortage, demand } = state.industry.last;
+  const need = goods.reduce((s, g) => s + demand[g], 0);
+  return need > 0 ? (100 * goods.reduce((s, g) => s + shortage[g], 0)) / need : 0;
+}
 
 /** Value of a stat. `region` is the event's region; only `regionUnrest` needs it. */
 export function statValue(state: GameState, stat: StatId, region: RegionId | null): number {
@@ -149,6 +159,10 @@ export function statValue(state: GameState, stat: StatId, region: RegionId | nul
       return state.diplomacy.conflicts.length;
     case 'sanctionsOnIndia':
       return state.diplomacy.treaties.filter((t) => t.type === 'sanctions' && t.parties[1] === 'IND').length;
+    case 'foodShortage':
+      return unmetShare(state, ['food', 'grain']);
+    case 'fuelShortage':
+      return unmetShare(state, ['fuel', 'coal', 'gas']);
     default:
       return ministryEfficiency(state, stat.slice('efficiency.'.length) as MinistryId);
   }

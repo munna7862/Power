@@ -1,0 +1,60 @@
+{
+  "market": {
+    "subtitle": "Sell surplus goods and buy what the country lacks at the best price you can get. Each partner's price depends on relations, distance, reputation and what they produce; every trade moves the world price and partners take only so much a month.",
+    "sellAll": "Sell all surplus · about {{value}}",
+    "sellAllNone": "No surplus to sell",
+    "goods": "Goods",
+    "price": "World price {{price}} per {{unit}} ({{change}} against base)",
+    "stockLine": "Stock {{stock}} · surplus {{surplus}} · imported last month {{imported}} {{unit}}",
+    "bestBuyer": "Best buyer: {{partner}} at {{price}}",
+    "bestSeller": "Best seller: {{partner}} at {{price}}",
+    "noBuyer": "No partner will buy this month",
+    "noSeller": "No partner will sell this month",
+    "whyPrice": "Why this price?",
+    "quantityLabel": "How many {{unit}} of {{good}} to trade",
+    "sell": "Sell · {{value}}",
+    "sellLabel": "Sell {{quantity}} {{unit}} of {{good}} to {{partner}} for {{value}}",
+    "buy": "Buy · {{value}}",
+    "buyLabel": "Buy {{quantity}} {{unit}} of {{good}} from {{partner}} for {{value}}",
+    "worldSale": "World market · {{value}}",
+    "worldSaleLabel": "Sell {{quantity}} {{unit}} of {{good}} on the world market for {{value}}",
+    "rules": "Trade rules",
+    "tariff": "Tariff",
+    "quota": "Import quota ({{unit}} a month)",
+    "quotaNone": "No limit",
+    "ban": "Ban",
+    "bans": {
+      "none": "No ban",
+      "export": "Ban exports",
+      "import": "Ban imports"
+    },
+    "applyRules": "Apply rules",
+    "applyRulesLabel": "Apply the trade rules for {{good}}",
+    "rulesNow": "Now: tariff {{tariff}}, {{quota}}, {{ban}}",
+    "contracts": "Supply contracts",
+    "contractsNote": "Standing deals that deliver every month at the price agreed when signed. India can hold {{max}}; partners sign only while relations are not cold.",
+    "noContracts": "No supply contracts.",
+    "columns": {
+      "good": "Good",
+      "deal": "Deal",
+      "partner": "Partner",
+      "monthly": "A month",
+      "ends": "Ends"
+    },
+    "sides": {
+      "sell": "India sells",
+      "buy": "India buys"
+    },
+    "contractTerms": "{{side}} {{quantity}} {{unit}} of {{good}} a month at {{price}}",
+    "newContract": "New contract",
+    "good": "Good",
+    "partner": "Partner",
+    "side": "Deal",
+    "quantity": "Units a month",
+    "years": "Years",
+    "yearsOption_one": "{{count}} year",
+    "yearsOption_other": "{{count}} years",
+    "sign": "Sign at {{price}} per {{unit}}",
+    "noPartner": "No partner available"
+  }
+}

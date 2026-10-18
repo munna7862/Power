@@ -95,7 +95,7 @@ describe('demand and shortfall', () => {
 });
 
 describe('power plant commands', () => {
-  it('pay up front, connect after the build time and charge running and fuel costs to Industry & Infra', () => {
+  it('pay up front, connect after the build time and charge running costs to Industry & Infra', () => {
     let state = rich(newGame());
     const before = state.nation.treasury;
     state = run(state, { type: 'BUILD_PLANT', plant: 'gas', region: 'west', quantity: 4 });
@@ -105,7 +105,7 @@ describe('power plant commands', () => {
     expect(done.energy.queue).toHaveLength(0);
     expect(done.energy.plants.west.gas).toBe(state.energy.plants.west.gas + 4);
     expect(production(done)).toBeCloseTo(production(newGame()) + 4 * plantOutput('gas'), 10);
-    expect(plantUpkeep(done).industry).toBeCloseTo(4 * (PLANT_CONTENT.gas.upkeep + PLANT_CONTENT.gas.fuelCost), 10);
+    expect(plantUpkeep(done).industry).toBeCloseTo(4 * PLANT_CONTENT.gas.upkeep, 10);
     for (const m of MINISTRIES) if (m !== 'industry') expect(plantUpkeep(done)[m]).toBe(0);
   });
 

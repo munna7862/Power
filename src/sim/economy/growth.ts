@@ -1,6 +1,7 @@
 import { SECTORS, type MinistryId, type SectorId } from '../content/ids';
 import { sumAdd } from '../engine/modifiers';
 import { shortfallGrowth } from '../energy/grid';
+import { industryGrowth } from '../industry/flows';
 import { coverageEffect } from '../infrastructure/coverage';
 import type { GameState } from '../state/types';
 import { averageUnrest } from '../security/terror';
@@ -17,6 +18,7 @@ export type GrowthDriver =
   | 'ministries'
   | 'infrastructure'
   | 'power'
+  | 'industry'
   | 'taxes'
   | 'debt'
   | 'corruption'
@@ -31,6 +33,7 @@ export const GROWTH_DRIVER_LABELS: Record<GrowthDriver, string> = {
   ministries: 'Ministry performance',
   infrastructure: 'Roads, rail and universities',
   power: 'Power cuts',
+  industry: 'Factories, mines and farms',
   taxes: 'Tax burden',
   debt: 'Debt overhang',
   corruption: 'Corruption',
@@ -45,9 +48,12 @@ const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(ma
 
 /** Drivers that apply equally to every sector. */
 export function sharedDrivers(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation' | 'energy'>,
+  state: Pick<
+    GameState,
+    'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation' | 'energy' | 'industry'
+  >,
   efficiency: Record<MinistryId, number>,
-): Record<Exclude<GrowthDriver, 'trend'>, number> {
+): Record<Exclude<GrowthDriver, 'trend' | 'industry'>, number> {
   const { economy, budget, modifiers } = state;
   const t = budget.taxRates;
   const deficit = lastDeficitRatio(economy);
@@ -69,40 +75,46 @@ export function sharedDrivers(
 
 /** Drivers specific to one sector: its trend, sector-targeted policy and the ministries that serve it. */
 export function sectorDrivers(
-  state: Pick<GameState, 'modifiers'>,
+  state: Pick<GameState, 'modifiers' | 'industry' | 'economy'>,
   efficiency: Record<MinistryId, number>,
   sector: SectorId,
-): { trend: number; policy: number; ministries: number } {
+): { trend: number; policy: number; ministries: number; industry: number } {
   const links = Object.entries(SECTOR_MINISTRY_LINKS[sector]) as [MinistryId, number][];
   return {
     trend: SECTOR_BASE_GROWTH[sector],
     policy: sumAdd(state.modifiers, `economy.growth.${sector}`),
     ministries: links.reduce((sum, [ministry, weight]) => sum + weight * (capped(efficiency[ministry]) - 1), 0),
+    // Plants that opened, closed or ran short since the last settlement shift the sector's output once.
+    industry: industryGrowth(state, sector),
   };
 }
 
 /** Expected growth of a sector before random noise. */
 export function expectedSectorGrowth(
-  state: Pick<GameState, 'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation' | 'energy'>,
+  state: Pick<
+    GameState,
+    'economy' | 'budget' | 'modifiers' | 'security' | 'infrastructure' | 'nation' | 'energy' | 'industry'
+  >,
   efficiency: Record<MinistryId, number>,
   sector: SectorId,
 ): number {
   const shared = Object.values(sharedDrivers(state, efficiency)).reduce((a, b) => a + b, 0);
   const own = sectorDrivers(state, efficiency, sector);
-  return shared + own.trend + own.policy + own.ministries;
+  return shared + own.trend + own.policy + own.ministries + own.industry;
 }
 
 /** GDP-weighted breakdown of expected real growth, for the "Why?" tooltip. */
 export function explainGrowth(state: GameState): { driver: GrowthDriver; value: number }[] {
   const efficiency = allEfficiencies(state);
   const shared = sharedDrivers(state, efficiency);
-  const totals: Record<GrowthDriver, number> = { trend: 0, ...shared };
+  const totals: Record<GrowthDriver, number> = { trend: 0, industry: 0, ...shared };
   for (const s of SECTORS) {
     const weight = sectorShare(state.economy, s);
     const own = sectorDrivers(state, efficiency, s);
     totals.trend += weight * own.trend;
     totals.policy += weight * own.policy;
     totals.ministries += weight * own.ministries;
+    totals.industry += weight * own.industry;
   }
   return (Object.keys(GROWTH_DRIVER_LABELS) as GrowthDriver[]).map((driver) => ({ driver, value: totals[driver] }));
 }
