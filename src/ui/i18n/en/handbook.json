@@ -122,7 +122,7 @@
       },
       "tradeMarket": {
         "title": "The trade market",
-        "body": "The Trade Market buys and sells goods with partner countries. Each partner's price depends on the world price, your relation, distance and what it produces itself, and every trade moves the world price. Only surplus above what the private market needs can be sold; “Sell all surplus” finds the best buyers. Tariffs raise customs revenue and prices, quotas cap imports and bans stop a good entirely; supply contracts deliver every month at an agreed price."
+        "body": "The Trade Market buys and sells goods with partner countries. Each partner's price depends on the world price, your relation, distance and what it produces itself, and every trade moves the world price. Only surplus above what the private market needs can be sold; “Sell all surplus” finds the best buyers. Tariffs raise customs revenue and prices, quotas cap imports and bans stop a good entirely; supply contracts deliver every month at an agreed price. A sale contract ships only surplus, so it can promise no more than the spare surplus at signing; the table shows what each one delivered last month, and a contract that falls short costs goodwill and sends a notice."
       },
       "finance": {
         "title": "Money by the day",

@@ -98,6 +98,12 @@ export const MIGRATIONS: Readonly<Record<number, Migration>> = {
       },
     };
   },
+  // v15 → v16: each supply contract's last delivery is recorded. A game in progress has none recorded yet; the
+  // next monthly delivery fills them in.
+  15: (state) => {
+    const v15 = state as { market: object };
+    return { ...v15, schemaVersion: 16, market: { ...v15.market, deliveries: {} } };
+  },
 };
 
 export function migrate(

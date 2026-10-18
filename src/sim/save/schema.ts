@@ -377,6 +377,10 @@ export const gameStateSchema = z.object({
       }),
     ),
     volumes: z.record(z.string(), z.number().min(0)),
+    deliveries: z.record(
+      z.string(),
+      z.object({ quantity: z.number().min(0), promised: z.number().min(0), value: z.number().min(0) }),
+    ),
   }),
   police: z.object({
     officers: z.record(z.enum(REGIONS), z.number().int().min(0)),

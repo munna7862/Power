@@ -170,6 +170,7 @@ export const openingMarket = (): MarketState => ({
     MarketState['controls'][GoodId]
   >,
   volumes: {},
+  deliveries: {},
 });
 
 const OPENING_FLOWS: SettledFlows = (() => {

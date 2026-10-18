@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 15;
+export const SCHEMA_VERSION = 16;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -303,6 +303,18 @@ export interface MarketState {
   controls: Record<GoodId, TradeControl>;
   /** Units traded with each partner this month, keyed "<country>:<good>". Reset monthly. */
   volumes: Record<string, number>;
+  /** What each supply contract delivered at the last monthly delivery, keyed by treaty id (v16). */
+  deliveries: Record<string, ContractDelivery>;
+}
+
+/** One supply contract's last monthly delivery. */
+export interface ContractDelivery {
+  /** Units shipped (a sale) or received (a purchase). */
+  quantity: number;
+  /** Units the contract promised a month. */
+  promised: number;
+  /** ₹ crore earned (a sale) or paid (a purchase). */
+  value: number;
 }
 
 export type EquipmentTier = 1 | 2 | 3;
