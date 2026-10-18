@@ -144,6 +144,7 @@ import {
   validateUnit,
 } from '../police/actions';
 import { homeRegion } from '../national/split';
+import { repayDebt, validateRepayDebt } from '../finance/debt';
 
 /** Player actions. Every change a player makes to GameState goes through dispatch(). */
 export type Command =
@@ -169,6 +170,8 @@ export type Command =
   | { type: 'SELL_ALL_SURPLUS' }
   | { type: 'TAKE_LOAN'; lender: LoanLender; amount: number; years: number }
   | { type: 'REPAY_LOAN'; loanId: string }
+  /** Early repayment of public debt from cash above the treasury's reserve, ₹ crore. */
+  | { type: 'REPAY_DEBT'; amount: number }
   | { type: 'SELL_ON_WORLD_MARKET'; good: GoodId; quantity: number }
   | { type: 'SET_TRADE_CONTROL'; good: GoodId; control: TradeControl }
   | { type: 'SIGN_SUPPLY_CONTRACT'; good: GoodId; partner: CountryId; side: TradeSide; quantity: number; years: number }
@@ -406,6 +409,11 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateRepay(state, command.loanId);
       return problem ? fail(state, problem) : ok(repayLoan(state, command.loanId));
+    }
+    case 'REPAY_DEBT': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateRepayDebt(state, command.amount);
+      return problem ? fail(state, problem) : ok(repayDebt(state, command.amount));
     }
     case 'SELL_ALL_SURPLUS': {
       if (gameOver) return fail(state, 'The game is over.');

@@ -57,6 +57,16 @@
         "events": "Windfalls from events",
         "reparations": "War reparations"
       }
+    },
+    "debt": {
+      "title": "Public debt",
+      "summary": "India owes {{debt}} at an average {{rate}}: {{interest}} a month in interest.",
+      "rule": "Every month the settlement keeps a reserve of half a month of spending ({{reserve}}), borrows when cash falls below it, and repays debt with any cash above twice it ({{ceiling}}).",
+      "lastMonth": "Last month it repaid {{repaid}} and borrowed {{borrowed}}.",
+      "amount": "Amount to repay, ₹ crore",
+      "repay": "Repay {{amount}}",
+      "repayAll": "Repay all spare · {{amount}}",
+      "room": "Up to {{amount}} can be repaid now, down to the reserve. Repaying this saves about {{saved}} a month in interest."
     }
   }
 }
