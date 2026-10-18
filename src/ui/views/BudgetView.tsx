@@ -6,7 +6,6 @@ import {
   announcementEffect,
   approvalTarget,
   computeSatisfaction,
-  employmentTaxFactor,
   formatDate,
   MAX_TAX_STEP,
   MINISTRIES,
@@ -15,6 +14,7 @@ import {
   nominalGdp,
   projectMonth,
   TAX_LIMITS,
+  taxBreakdown,
   TAXES,
   type BudgetProposal,
   type GameState,
@@ -22,10 +22,43 @@ import {
 } from '../../sim';
 import { gameStore, useGame } from '../../store';
 import { CompareBars } from '../charts/CompareBars';
-import { Button, Panel } from '../design/primitives';
-import { formatCrore, formatPercent, pct, signed } from '../format';
+import { Button, Panel, Tooltip } from '../design/primitives';
+import { formatCrore, formatCroreDelta, formatPercent, pct, signed } from '../format';
 import gameStyles from '../screens/game.module.css';
 import styles from './views.module.css';
+
+const isTax = (id: string): id is TaxId => (TAXES as readonly string[]).includes(id);
+
+/** What sets one tax under the proposed budget: the same breakdown the monthly settlement collects. */
+function TaxWhy({ game, proposal, tax }: { game: GameState; proposal: BudgetProposal; tax: TaxId }) {
+  const { t } = useTranslation();
+  const name = t(`budget.rows.${tax}`);
+  const { base, factors, additions, total } = taxBreakdown(game, proposal, tax);
+  return (
+    <Tooltip label={t('common.why')}>
+      <span className={gameStyles.breakdown} data-testid={`tax-why-${tax}`}>
+        <span className={gameStyles.breakdownHeading}>{t('budget.why.heading', { tax: name })}</span>
+        <span>{t('budget.why.base')}</span>
+        <span className={gameStyles.breakdownValue}>{formatCrore(base)}</span>
+        {factors.map((f) => (
+          <span key={f.id} style={{ display: 'contents' }}>
+            <span>{t(`budget.why.factors.${f.id}`)}</span>
+            <span className={gameStyles.breakdownValue}>{formatPercent(f.value - 1)}</span>
+          </span>
+        ))}
+        {additions.map((a) => (
+          <span key={a.id} style={{ display: 'contents' }}>
+            <span>{t(`budget.why.additions.${a.id}`)}</span>
+            <span className={gameStyles.breakdownValue}>{formatCroreDelta(a.value)}</span>
+          </span>
+        ))}
+        <span>{t('budget.why.total')}</span>
+        <span className={gameStyles.breakdownValue}>{formatCrore(total)}</span>
+        <span className={gameStyles.breakdownHeading}>{t('budget.why.note')}</span>
+      </span>
+    </Tooltip>
+  );
+}
 
 /** Snaps to the slider step and strips floating-point dust (0.12999… → 0.13) so bounds land on the step grid. */
 const round = (v: number, step: number) => Number((Math.round(v / step) * step).toFixed(6));
@@ -125,12 +158,6 @@ export function BudgetView() {
             })}
           </div>
           <p className={styles.note}>{t('budget.customsMoved')}</p>
-          <p className={styles.note} data-testid="income-tax-jobs">
-            {t('budget.incomeTaxJobs', {
-              change: formatPercent(employmentTaxFactor(game.economy.unemployment) - 1),
-              unemployment: pct(game.economy.unemployment),
-            })}
-          </p>
         </Panel>
 
         <Panel title={t('budget.projected')} className={gameStyles.span4}>
@@ -140,7 +167,9 @@ export function BudgetView() {
             <span className={styles.projectionHead}>{t('budget.proposed')}</span>
             {rows.map((r) => (
               <span key={r.id} style={{ display: 'contents' }}>
-                <span>{t(`budget.rows.${r.id}`)}</span>
+                <span>
+                  {t(`budget.rows.${r.id}`)} {isTax(r.id) && <TaxWhy game={game} proposal={proposal} tax={r.id} />}
+                </span>
                 <span className={styles.num}>{formatCrore(r.now)}</span>
                 <span
                   className={`${styles.num} ${r.tone ? (r.next >= 0 ? styles.positive : styles.negative) : ''}`}

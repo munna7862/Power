@@ -30,6 +30,25 @@
     "reset": "Reset",
     "enact": "Enact budget",
     "customsMoved": "Customs tariffs are set good by good on the Trade Market screen.",
-    "incomeTaxJobs": "Income tax base from jobs: {{change}} against the start, with unemployment at {{unemployment}}. Every point of unemployment cut widens it by about 3%."
+    "why": {
+      "heading": "What sets {{tax}}",
+      "base": "GDP × tax base × rate",
+      "factors": {
+        "avoidance": "Avoidance at this rate",
+        "compliance": "Collection and corruption",
+        "modifiers": "Events and difficulty",
+        "sectorMix": "Mix of farms, industry and tech",
+        "jobs": "People in work",
+        "climate": "Business climate",
+        "shortages": "Goods shortages",
+        "trade": "Trade deals and sanctions"
+      },
+      "additions": {
+        "privatePlants": "Private plants’ profits",
+        "importedGoods": "Tariffs on imported goods"
+      },
+      "total": "Proposed month",
+      "note": "Percentages multiply the base; amounts in rupees are added."
+    }
   }
 }

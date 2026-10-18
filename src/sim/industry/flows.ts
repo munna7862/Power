@@ -238,10 +238,17 @@ export const goodsCustomsDelta = (state: Pick<GameState, 'industry'>): number =>
 /** Value of a set of quantities at base prices. */
 const valueOf = (q: Record<GoodId, number>) => GOODS.reduce((s, g) => s + q[g] * GOOD_CONTENT[g].price, 0);
 
+/** Share of domestic demand for goods (at base prices) that went unmet. */
+export const shortageShareOf = (flows: SettledFlows): number =>
+  valueOf(flows.demand) > 0 ? valueOf(flows.shortage) / valueOf(flows.demand) : 0;
+
+/** Shortage share in the opening settlement, against which shortages are measured. */
+export const OPENING_SHORTAGE_SHARE = shortageShareOf(OPENING_FLOWS);
+
 function inflationParts(flows: SettledFlows, market: MarketState) {
   const demandValue = valueOf(flows.demand) + valueOf(flows.use);
   const importShare = demandValue > 0 ? valueOf(flows.imports) / demandValue : 0;
-  const shortageShare = valueOf(flows.demand) > 0 ? valueOf(flows.shortage) / valueOf(flows.demand) : 0;
+  const shortageShare = shortageShareOf(flows);
   const importValue = valueOf(flows.imports);
   const tariff =
     importValue > 0
@@ -292,6 +299,13 @@ export function businessClimate(
     drivers,
   };
 }
+
+/**
+ * The business climate without its corporate-tax driver: how attractive India is for reasons other than the tax
+ * rate (power, corruption, unrest). Corporate tax revenue follows it; the rate's own effect is the Laffer curve.
+ */
+export const climateBeyondTax = (state: Parameters<typeof businessClimate>[0]): number =>
+  Math.max(0, businessClimate(state).total - CLIMATE.corporateTax * (state.budget.taxRates.corporate - 0.25));
 
 /** Units of a good above the private market's target stock: what can be sold without causing a shortage. */
 export const surplus = (state: Pick<GameState, 'industry' | 'economy'>, good: GoodId): number =>

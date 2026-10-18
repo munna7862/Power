@@ -21,9 +21,12 @@ export function departmentStars(state: WithDepartments, department: MinistryId):
   );
 }
 
+/** How well something rated this many stars is run: 0.76 (one star) to 1.24 (five stars); 0.88 at two. */
+export const starQuality = (stars: number): number => QUALITY_BASE + QUALITY_PER_STAR * stars;
+
 /** How well a department is run, about 0.76 (one star everywhere) to 1.24 (five stars); 0.88 at the start. */
 export const departmentQuality = (state: WithDepartments, department: MinistryId): number =>
-  QUALITY_BASE + QUALITY_PER_STAR * departmentStars(state, department);
+  starQuality(departmentStars(state, department));
 
 /**
  * A 0–100 score from one service's rating, on the scale the v1.0 formulas used for a minister's loyalty or

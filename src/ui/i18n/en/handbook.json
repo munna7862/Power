@@ -54,7 +54,7 @@
       },
       "taxes": {
         "title": "Taxes",
-        "body": "Income tax, corporate tax, GST and customs. Higher rates raise revenue but slow growth and annoy voters. Each budget can move a rate by at most 5 points. Trade contracts add to customs revenue."
+        "body": "Income tax, corporate tax, GST and customs. Higher rates raise revenue but slow growth and annoy voters. Each budget can move a rate by at most 5 points. What a tax raises also depends on the economy: more people in work pay more income tax and buy more, a shift toward industry and tech widens every base, a better business climate lifts corporate tax, shortages cut GST, and corruption lets people evade (a well-run Tax administration collects more). Trade contracts add to customs revenue. Each tax row on the Budget screen has a “Why?” breakdown."
       },
       "gdp": {
         "title": "GDP and growth",
