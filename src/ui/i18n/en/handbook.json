@@ -133,7 +133,7 @@
       },
       "forces": {
         "title": "Armed forces",
-        "body": "Twelve unit types across land, air and sea, each with a cost, monthly upkeep and combat power. Upkeep comes out of the Defence budget; what is left funds new orders, research and drills."
+        "body": "Twelve unit types across land, air and sea, each with a price, monthly upkeep and combat power. The Armoury buys them with treasury money and delivers within weeks; the Defence budget pays the forces' upkeep, and research and drills are paid from the treasury too. Decommissioning units saves their upkeep."
       },
       "readiness": {
         "title": "Readiness and morale",

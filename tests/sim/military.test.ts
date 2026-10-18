@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   advanceDays,
   allEfficiencies,
+  deliveryDays,
+  MAX_ORDER_SIZE,
+  previewForces,
   DOMAINS,
   dispatch,
   militaryStrength,
@@ -87,49 +90,86 @@ describe('strength', () => {
   });
 });
 
-describe('procurement', () => {
-  it('pays for orders from the procurement fund and delivers them after the build time', () => {
+describe('the armoury', () => {
+  const rich = (state: GameState): GameState => ({ ...state, nation: { ...state.nation, treasury: 5_000_000 } });
+
+  it('pays for orders from the treasury and delivers them within weeks', () => {
     let state = newGame();
-    const fund = state.military.procurementFund;
+    const treasury = state.nation.treasury;
     const cost = unitCost('infantry', 1) * 2;
     state = run(state, { type: 'ORDER_UNITS', unit: 'infantry', quantity: 2 });
-    expect(state.military.procurementFund).toBe(fund - cost);
+    expect(state.nation.treasury).toBe(treasury - cost);
     expect(state.military.queue).toHaveLength(1);
+    const days = deliveryDays('infantry', 2);
+    expect(days).toBeGreaterThanOrEqual(7);
+    expect(days).toBeLessThanOrEqual(42);
     const before = state.military.forces.infantry;
 
-    state = calm(state, 100);
+    state = calm(state, days - 1);
     expect(state.military.forces.infantry).toBe(before);
-    state = calm(state, 60);
+    state = calm(state, 1);
     expect(state.military.forces.infantry).toBe(before + 2);
     expect(state.military.queue).toHaveLength(0);
     expect(state.log.some((e) => e.title === 'Equipment delivered')).toBe(true);
+    // Even the largest order of the slowest unit takes weeks, not months.
+    expect(deliveryDays('carrier', MAX_ORDER_SIZE)).toBeLessThanOrEqual(70);
   });
 
-  it('refuses orders the fund cannot cover, bad quantities and a full queue', () => {
+  it('refuses orders the treasury cannot cover, bad quantities and a full queue', () => {
     const state = newGame();
     expect(dispatch(state, { type: 'ORDER_UNITS', unit: 'carrier', quantity: 20 }).ok).toBe(false);
     expect(dispatch(state, { type: 'ORDER_UNITS', unit: 'infantry', quantity: 0 }).ok).toBe(false);
     expect(dispatch(state, { type: 'ORDER_UNITS', unit: 'infantry', quantity: 1.5 }).ok).toBe(false);
-    expect(dispatch(state, { type: 'ORDER_UNITS', unit: 'infantry', quantity: 21 }).ok).toBe(false);
-    let full = withMilitary(state, { procurementFund: 1_000_000 });
+    expect(dispatch(rich(state), { type: 'ORDER_UNITS', unit: 'infantry', quantity: MAX_ORDER_SIZE + 1 }).ok).toBe(
+      false,
+    );
+    let full = rich(state);
     for (let i = 0; i < 8; i++) full = run(full, { type: 'ORDER_UNITS', unit: 'cyber', quantity: 1 });
     expect(dispatch(full, { type: 'ORDER_UNITS', unit: 'cyber', quantity: 1 }).ok).toBe(false);
   });
 
-  it('refunds part of an order when it is cancelled', () => {
+  it('refunds part of an order to the treasury when it is cancelled', () => {
     let state = run(newGame(), { type: 'ORDER_UNITS', unit: 'fighter', quantity: 2 });
-    const spent = state.military.procurementFund;
+    const spent = state.nation.treasury;
     const order = state.military.queue[0]!;
     state = run(state, { type: 'CANCEL_ORDER', orderId: order.id });
     expect(state.military.queue).toHaveLength(0);
-    expect(state.military.procurementFund).toBeGreaterThan(spent);
-    expect(state.military.procurementFund).toBeLessThan(spent + unitCost('fighter', 1) * 2);
+    expect(state.nation.treasury).toBe(spent + Math.round(unitCost('fighter', 1) * 2 * 0.6));
     expect(dispatch(state, { type: 'CANCEL_ORDER', orderId: order.id }).ok).toBe(false);
   });
 
-  it('unlocks a higher technology tier through research, which makes new orders cost more', () => {
-    let state = withMilitary(newGame(), { procurementFund: 100_000 });
+  it('previews strength and upkeep with the formula the simulation uses', () => {
+    const state = newGame();
+    const preview = previewForces(state, 'armour', 10);
+    const forces = { ...state.military.forces, armour: state.military.forces.armour + 10 };
+    expect(preview.strength).toBeCloseTo(militaryStrength({ ...state.military, forces }), 12);
+    expect(preview.strength).toBeGreaterThan(militaryStrength(state.military));
+    expect(preview.upkeep).toBeCloseTo(monthlyUpkeep(state.military) + 10 * UNIT_CONTENT.armour.upkeep, 9);
+    expect(previewForces(state, 'armour', -1000).strength).toBeLessThan(militaryStrength(state.military));
+  });
+
+  it('decommissions units to save their upkeep, never more than are in service and never in a war', () => {
+    const state = newGame();
+    const stood = run(state, { type: 'DECOMMISSION_UNITS', unit: 'armour', quantity: 5 });
+    expect(stood.military.forces.armour).toBe(state.military.forces.armour - 5);
+    expect(monthlyUpkeep(stood.military)).toBeCloseTo(
+      monthlyUpkeep(state.military) - 5 * UNIT_CONTENT.armour.upkeep,
+      9,
+    );
+    expect(stood.nation.treasury).toBe(state.nation.treasury);
+    expect(
+      dispatch(state, { type: 'DECOMMISSION_UNITS', unit: 'armour', quantity: state.military.forces.armour + 1 }).ok,
+    ).toBe(false);
+    expect(dispatch(state, { type: 'DECOMMISSION_UNITS', unit: 'armour', quantity: 0 }).ok).toBe(false);
+    const atWar = startWar(state, 'PAK', 'india');
+    expect(dispatch(atWar, { type: 'DECOMMISSION_UNITS', unit: 'armour', quantity: 1 }).ok).toBe(false);
+  });
+
+  it('unlocks a higher technology tier through research, paid from the treasury', () => {
+    let state = rich(newGame());
+    const treasury = state.nation.treasury;
     state = run(state, { type: 'START_RESEARCH', domain: 'air' });
+    expect(state.nation.treasury).toBeLessThan(treasury);
     expect(dispatch(state, { type: 'START_RESEARCH', domain: 'land' }).ok).toBe(false);
     state = calm(state, 245);
     expect(state.military.tech.air).toBe(2);
@@ -137,12 +177,14 @@ describe('procurement', () => {
     expect(unitCost('fighter', 2)).toBeGreaterThan(unitCost('fighter', 1));
     state = withMilitary(state, { tech: { ...state.military.tech, air: 3 } });
     expect(dispatch(state, { type: 'START_RESEARCH', domain: 'air' }).ok).toBe(false);
+    const poor = { ...newGame(), nation: { ...newGame().nation, treasury: 10 } };
+    expect(dispatch(poor, { type: 'START_RESEARCH', domain: 'air' }).ok).toBe(false);
   });
 
-  it('banks the surplus of the Defence budget after upkeep, and decays readiness and morale when underfunded', () => {
+  it('spends the Defence budget on pay and upkeep, and decays readiness and morale when underfunded', () => {
     const state = newGame();
-    const rich = calm(state, 365);
-    expect(rich.military.fundingRatio).toBeGreaterThan(0.9);
+    const funded = calm(state, 365);
+    expect(funded.military.fundingRatio).toBeGreaterThan(0.9);
 
     const lean = {
       ...state,
@@ -150,7 +192,6 @@ describe('procurement', () => {
         ...state.budget,
         allocations: { ...state.budget.allocations, defence: state.budget.allocations.defence * 0.25 },
       },
-      military: { ...state.military, procurementFund: 0 },
     };
     const poor = calm(lean, 540);
     expect(poor.military.fundingRatio).toBeLessThan(0.5);
@@ -173,9 +214,9 @@ describe('procurement', () => {
 describe('drills', () => {
   it('cost money and time, then raise readiness, morale and deterrence', () => {
     let state = withMilitary(newGame(), { readiness: 50, morale: 50, deterrence: 30 });
-    const fund = state.military.procurementFund;
+    const treasury = state.nation.treasury;
     state = run(state, { type: 'START_DRILL', kind: 'joint' });
-    expect(state.military.procurementFund).toBeLessThan(fund);
+    expect(state.nation.treasury).toBe(treasury - 2_800);
     expect(dispatch(state, { type: 'START_DRILL', kind: 'joint' }).ok).toBe(false);
 
     const done = completeDrills(

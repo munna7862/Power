@@ -155,7 +155,6 @@ const military = z.object({
   research: z
     .object({ domain: z.enum(DOMAINS), tier: z.union([z.literal(2), z.literal(3)]), startedTick: tick, endsTick: tick })
     .nullable(),
-  procurementFund: z.number().min(0),
   queue: z.array(
     z.object({
       id: z.string(),
@@ -268,6 +267,16 @@ export const gameStateSchema = z.object({
         repaid: z.number().min(0),
       })
       .nullable(),
+    loans: z.array(
+      z.object({
+        id: z.string(),
+        lender: z.string().min(1),
+        principal: z.number().positive(),
+        rate: z.number().min(0),
+        startTick: tick,
+        dueTick: tick,
+      }),
+    ),
   }),
   budget: z.object({
     taxRates: z.record(z.enum(TAXES), z.number().min(0).max(1)),

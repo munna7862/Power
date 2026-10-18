@@ -5,8 +5,6 @@ export const START_READINESS = 70;
 export const START_MORALE = 65;
 export const START_DETERRENCE = 40;
 export const START_COUNTER_INTEL = 40;
-/** ₹ crore in the Defence procurement fund on day one, so the first orders can be placed. */
-export const START_PROCUREMENT_FUND = 20_000;
 
 /** Multipliers by technology tier. */
 export const TIER_POWER: Record<1 | 2 | 3, number> = { 1: 1, 2: 1.25, 3: 1.6 };
@@ -16,11 +14,13 @@ export const TIER_UPKEEP: Record<1 | 2 | 3, number> = { 1: 1, 2: 1.12, 3: 1.25 }
 /** Converts raw unit points to the strength index (India starts near 80 at 70% readiness). */
 export const POWER_SCALE = 1 / 15;
 
-/** Ceiling on the procurement fund, in months of Defence spending. Surplus beyond it is not banked. */
-export const FUND_CAP_MONTHS = 8;
-
 export const MAX_QUEUE = 8;
-export const MAX_ORDER_SIZE = 20;
+export const MAX_ORDER_SIZE = 100;
+/**
+ * Delivery (Sprint 8.7): a week to clear the order, a day for every 24 days the unit used to take to build and a
+ * day for every five units. Weeks, not days, so a war still cannot be won by buying on the day it starts.
+ */
+export const DELIVERY = { base: 7, buildDaysPerDay: 24, unitsPerDay: 5 } as const;
 /** Share of the price returned when an order is cancelled. */
 export const CANCEL_REFUND = 0.6;
 
@@ -31,7 +31,7 @@ export const MAX_REPORTS = 6;
 export interface DrillSpec {
   label: string;
   summary: string;
-  /** ₹ crore from the procurement fund. */
+  /** ₹ crore from the treasury. */
   cost: number;
   days: number;
   readiness: number;

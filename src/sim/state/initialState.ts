@@ -92,6 +92,7 @@ export function createStartingEconomy(difficulty: Difficulty): EconomyState {
     corruption: START_CORRUPTION,
     hdi: START_HDI,
     lastMonth: null,
+    loans: [],
   };
 }
 

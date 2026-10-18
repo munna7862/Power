@@ -6,6 +6,7 @@ export const VIEWS: readonly ViewId[] = [
   'inbox',
   'economy',
   'budget',
+  'finance',
   'departments',
   'construction',
   'energy',

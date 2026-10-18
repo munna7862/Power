@@ -1,6 +1,7 @@
 import { CASH_RESERVE_MONTHS } from '../economy/constants';
 import { interestRateFor, nominalGdp, projectMonth } from '../economy/model';
 import type { System } from '../engine/system';
+import { settleLoans } from '../finance/loans';
 import type { RevenueLine } from '../state/types';
 
 /** Share of the gap between the average and market interest rate closed each month (~2-year average maturity). */
@@ -15,7 +16,8 @@ const REPRICING_RATE = 0.04;
 export const fiscalSystem: System = {
   id: 'fiscal',
   cadence: 'monthly',
-  run(state, { rng }) {
+  run(current, { rng }) {
+    const state = settleLoans(current);
     const projection = projectMonth(state, state.budget);
     const noise = rng.range(0.985, 1.015);
     const revenue = Object.fromEntries(

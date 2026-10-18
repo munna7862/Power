@@ -16,20 +16,29 @@ test.describe('Commander-in-Chief (Phase 4, milestone M4)', () => {
     await openView(page, 'Military');
   });
 
-  test('builds up the air force: orders are paid from the procurement fund and delivered', async ({ page }) => {
+  test('builds up the air force in the Armoury: paid from the treasury, previewed and delivered', async ({ page }) => {
     await expect(page.getByTestId('strength-index')).toHaveText(/^\d+$/);
     const before = Number(await page.getByTestId('count-fighter').textContent());
-    const fund = await page.getByTestId('procurement-fund').textContent();
+    const treasury = await page.getByTestId('topbar-treasury').textContent();
 
-    await page.getByRole('button', { name: 'Order 1 Fighter Squadron' }).click();
-    await expect(page.getByTestId('procurement-fund')).not.toHaveText(fund ?? '');
-    const queue = page.getByRole('list', { name: 'Production queue' });
-    await expect(queue).toContainText('1 × Fighter Squadron');
+    const card = page.getByTestId('unit-fighter');
+    await card.getByRole('spinbutton', { name: 'Number of Fighter Squadron units' }).fill('2');
+    await expect(page.getByTestId('preview-fighter')).toContainText('With 2 more: strength');
+    await card.getByRole('button', { name: /^Buy 2 Fighter Squadron for/ }).click();
+    await expect(page.getByTestId('topbar-treasury')).not.toHaveText(treasury ?? '');
+    const queue = page.getByRole('list', { name: 'Deliveries' });
+    await expect(queue).toContainText('2 × Fighter Squadron');
 
     await steady(page);
-    await advanceDays(page, 300);
-    await expect(page.getByTestId('count-fighter')).toHaveText(String(before + 1));
-    await expect(page.getByRole('list', { name: 'Production queue' })).toHaveCount(0);
+    await advanceDays(page, 60);
+    await expect(page.getByTestId('count-fighter')).toHaveText(String(before + 2));
+    await expect(page.getByRole('list', { name: 'Deliveries' })).toHaveCount(0);
+
+    // Stand two back down to save their upkeep.
+    const upkeep = await page.getByTestId('upkeep').textContent();
+    await card.getByRole('button', { name: 'Decommission 2 Fighter Squadron' }).click();
+    await expect(page.getByTestId('count-fighter')).toHaveText(String(before));
+    await expect(page.getByTestId('upkeep')).not.toHaveText(upkeep ?? '');
 
     // Research the next air tier.
     await page.getByRole('button', { name: 'Research Air tier 2' }).click();

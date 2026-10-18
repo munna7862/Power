@@ -26,6 +26,7 @@ export type ViewId =
   | 'inbox'
   | 'economy'
   | 'budget'
+  | 'finance'
   | 'departments'
   | 'construction'
   | 'energy'

@@ -5,6 +5,8 @@ const PATHS: Record<ViewId, string> = {
   inbox: 'M4 13l2-8h12l2 8v6H4zM4 13h5l1 2h4l1-2h5',
   economy: 'M4 20h16M7 16v-5M12 16V7M17 16v-8',
   budget: 'M4 7h16v12H4zM4 7l2-3h12l2 3M14 13h3M9 4v3',
+  finance:
+    'M12 3v18M16.5 6.5C15.5 5.5 14 5 12 5c-2.8 0-4.5 1.3-4.5 3.2 0 4.6 9 2.4 9 7 0 1.9-1.8 3.3-4.5 3.3-2.2 0-3.8-.7-4.8-1.8',
   departments: 'M3 21h18M5 21V10M10 21V10M14 21V10M19 21V10M2 10l10-6 10 6z',
   industry: 'M3 21V9l6 4V9l6 4V5h6v16zM7 17h2M12 17h2M17 17h2',
   market: 'M4 7h16M4 7l2-3h12l2 3M5 7v13h14V7M9 11h6M9 15h4',

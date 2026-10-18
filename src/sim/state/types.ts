@@ -29,7 +29,7 @@ import type { Modifier } from '../engine/modifiers';
 import type { RngState } from '../engine/rng';
 
 /** Bump when GameState changes shape, and register a migration in save/migrations.ts. */
-export const SCHEMA_VERSION = 11;
+export const SCHEMA_VERSION = 12;
 
 export const DIFFICULTIES = ['easy', 'normal', 'hard'] as const;
 export type Difficulty = (typeof DIFFICULTIES)[number];
@@ -141,6 +141,22 @@ export interface EconomyState {
   /** Human Development Index, 0–1. */
   hdi: number;
   lastMonth: FiscalMonth | null;
+  /** Loans from countries and the international lender (Sprint 8.8), outside public debt until they fall due. */
+  loans: Loan[];
+}
+
+/** A country lends by ISO code; 'intl' is the international lender. */
+export type LoanLender = CountryId | 'intl';
+
+export interface Loan {
+  id: string;
+  lender: LoanLender;
+  /** ₹ crore, repaid in full on the due date. */
+  principal: number;
+  /** Yearly interest rate, fixed when the loan is taken. */
+  rate: number;
+  startTick: number;
+  dueTick: number;
 }
 
 export interface BudgetState {
@@ -538,8 +554,6 @@ export interface MilitaryState {
   /** Technology tier (1–3) of each domain. */
   tech: Record<DomainId, 1 | 2 | 3>;
   research: ResearchProject | null;
-  /** ₹ crore of Defence money left after upkeep, spent when equipment is ordered. */
-  procurementFund: number;
   queue: ProductionOrder[];
   drills: Drill[];
   drillReports: DrillReport[];

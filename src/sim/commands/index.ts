@@ -46,12 +46,15 @@ import {
   validateSanctions,
   validateTrade,
 } from '../diplomacy/treaties';
+import { repayLoan, takeLoan, validateLoan, validateRepay } from '../finance/loans';
 import { startDrill, validateDrill } from '../military/drills';
 import {
   cancelOrder,
+  decommissionUnits,
   placeOrder,
   startResearch,
   validateCancel,
+  validateDecommissionUnits,
   validateOrder,
   validateResearch,
 } from '../military/forces';
@@ -82,7 +85,7 @@ import { startInvestigation, validateInvestigation } from '../security/investiga
 import { launchOperation, operationBlocked } from '../security/operations';
 import { normalisePresidentName, PRESIDENT_NAME_MAX } from '../state/initialState';
 import { appendLog } from '../state/log';
-import type { GameState, NuclearDoctrine, TradeControl } from '../state/types';
+import type { GameState, LoanLender, NuclearDoctrine, TradeControl } from '../state/types';
 import { enactBudget, validateBudget, type BudgetProposal } from './budget';
 import { startUpgrade, validateUpgrade } from '../departments/services';
 import {
@@ -159,6 +162,8 @@ export type Command =
   | { type: 'SELL_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'BUY_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'SELL_ALL_SURPLUS' }
+  | { type: 'TAKE_LOAN'; lender: LoanLender; amount: number; years: number }
+  | { type: 'REPAY_LOAN'; loanId: string }
   | { type: 'SELL_ON_WORLD_MARKET'; good: GoodId; quantity: number }
   | { type: 'SET_TRADE_CONTROL'; good: GoodId; control: TradeControl }
   | { type: 'SIGN_SUPPLY_CONTRACT'; good: GoodId; partner: CountryId; side: TradeSide; quantity: number; years: number }
@@ -176,6 +181,7 @@ export type Command =
   | { type: 'LAUNCH_OPERATION'; kind: OperationKind }
   | { type: 'ORDER_UNITS'; unit: UnitId; quantity: number }
   | { type: 'CANCEL_ORDER'; orderId: string }
+  | { type: 'DECOMMISSION_UNITS'; unit: UnitId; quantity: number }
   | { type: 'START_RESEARCH'; domain: DomainId }
   | { type: 'START_DRILL'; kind: DrillKind }
   | { type: 'LAUNCH_INTEL_OP'; kind: IntelKind; target: RivalId | null }
@@ -371,6 +377,16 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       const problem = validateBuy(state, command.good, command.partner, command.quantity);
       return problem ? fail(state, problem) : ok(buyGoods(state, command.good, command.partner, command.quantity));
     }
+    case 'TAKE_LOAN': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateLoan(state, command.lender, command.amount, command.years);
+      return problem ? fail(state, problem) : ok(takeLoan(state, command.lender, command.amount, command.years));
+    }
+    case 'REPAY_LOAN': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateRepay(state, command.loanId);
+      return problem ? fail(state, problem) : ok(repayLoan(state, command.loanId));
+    }
     case 'SELL_ALL_SURPLUS': {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateSellAll(state);
@@ -451,6 +467,11 @@ export function dispatch(state: GameState, command: Command): CommandResult {
       if (gameOver) return fail(state, 'The game is over.');
       const problem = validateCancel(state, command.orderId);
       return problem ? fail(state, problem) : ok(cancelOrder(state, command.orderId));
+    }
+    case 'DECOMMISSION_UNITS': {
+      if (gameOver) return fail(state, 'The game is over.');
+      const problem = validateDecommissionUnits(state, command.unit, command.quantity);
+      return problem ? fail(state, problem) : ok(decommissionUnits(state, command.unit, command.quantity));
     }
     case 'START_RESEARCH': {
       if (gameOver) return fail(state, 'The game is over.');

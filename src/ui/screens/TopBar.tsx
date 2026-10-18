@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { formatDate } from '../../sim';
+import { dailyFinance, formatDate } from '../../sim';
 import { gameStore, SPEEDS, useGame } from '../../store';
 import { Button } from '../design/primitives';
-import { formatCrore } from '../format';
+import { formatCrore, formatCroreDelta } from '../format';
 import { useTutorialTarget } from '../tutorial/tutorialStore';
 import styles from './game.module.css';
 
@@ -14,6 +14,7 @@ export function TopBar({ onOpenMenu, onOpenHandbook }: { onOpenMenu: () => void;
   if (!game) return null;
 
   const { setSpeed } = gameStore.getState();
+  const daily = dailyFinance(game).balance;
 
   return (
     <header className={styles.topbar}>
@@ -60,6 +61,14 @@ export function TopBar({ onOpenMenu, onOpenHandbook }: { onOpenMenu: () => void;
           <span className={styles.topStatLabel}>{t('topbar.treasury')}</span>
           <span className={styles.topStatValue} data-testid="topbar-treasury">
             {formatCrore(game.nation.treasury)}
+          </span>
+          <span
+            className={styles.topStatDelta}
+            data-tone={daily < 0 ? 'danger' : 'good'}
+            data-testid="topbar-daily"
+            title={t('topbar.perDayHint')}
+          >
+            {t('topbar.perDay', { value: formatCroreDelta(daily) })}
           </span>
         </div>
         <div className={styles.topStat}>

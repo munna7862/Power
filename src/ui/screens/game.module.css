@@ -96,6 +96,15 @@
   font-weight: 700;
 }
 
+.topStatDelta {
+  font-size: 11px;
+  color: var(--green);
+}
+
+.topStatDelta[data-tone='danger'] {
+  color: var(--danger);
+}
+
 /* Navigation */
 .nav {
   grid-area: nav;
@@ -171,6 +180,10 @@
 
 .span4 {
   grid-column: span 4;
+}
+
+.span6 {
+  grid-column: span 6;
 }
 
 .span8 {
@@ -289,6 +302,7 @@
 
 @media (max-width: 1100px) {
   .span4,
+  .span6,
   .span8 {
     grid-column: span 12;
   }

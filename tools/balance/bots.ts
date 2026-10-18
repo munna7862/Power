@@ -265,7 +265,7 @@ function manageMilitary(state: GameState): GameState {
   if (m().readiness < 82 && m().drills.length < 2) {
     const kinds = ['joint', 'air', 'land', 'naval'] as const;
     for (const kind of kinds) {
-      if (m().procurementFund > DRILLS[kind].cost + 12_000) {
+      if (next.nation.treasury > DRILLS[kind].cost + 30_000) {
         next = apply(next, { type: 'START_DRILL', kind });
         break;
       }
