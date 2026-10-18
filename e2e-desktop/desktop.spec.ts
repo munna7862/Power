@@ -85,11 +85,19 @@ test('M6 demo: play the tutorial, save, quit, relaunch and continue', async () =
   await coach.getByRole('button', { name: 'Next' }).click();
   await page.keyboard.press('F5');
   await coach.getByRole('button', { name: 'Next' }).click();
+  await expect(coach).toContainText('Build the country');
+  await page
+    .getByRole('navigation', { name: 'Sections' })
+    .getByRole('button', { name: 'Construction', exact: true })
+    .click();
+  await coach.getByRole('button', { name: 'Next' }).click();
   await page.getByRole('button', { name: 'Speed 4×' }).click();
   await expect(coach).toContainText('Make the call', { timeout: 20_000 });
   await page.getByRole('button', { name: 'Review' }).click();
   await page.getByRole('button', { name: /Choose: Fund grain storage/ }).click();
   await page.keyboard.press('F8');
+  await expect(coach).toContainText('Your advisor');
+  await coach.getByRole('button', { name: 'Next' }).click();
   await coach.getByRole('button', { name: 'Next' }).click();
   await coach.getByRole('button', { name: 'Take office' }).click();
   await expect(coach).toHaveCount(0);
