@@ -14,6 +14,7 @@ import { launchOperation } from '../security/operations';
 import { clamp, unrestCeiling } from '../security/unrest';
 import { DIFFICULTY_RULES } from '../state/difficulty';
 import { DIFFICULTIES, INDIA, type Difficulty, type GameState } from '../state/types';
+import { receive } from '../finance/receipts';
 
 /** How often events happen and how hard their harm lands, by difficulty (see state/difficulty.ts). */
 export const EVENT_DIFFICULTY: Record<Difficulty, { frequency: number; severity: number }> = Object.fromEntries(
@@ -106,11 +107,13 @@ export function applyEffect(state: GameState, effect: EventEffect, ctx: EffectCo
         },
         effect.days,
       );
-    case 'treasury':
-      return {
-        ...state,
-        nation: { ...state.nation, treasury: state.nation.treasury + effect.amount * scaleFactor(state, effect.scale) },
-      };
+    case 'treasury': {
+      const amount = effect.amount * scaleFactor(state, effect.scale);
+      // Windfalls are one-off receipts; costs come straight out of the treasury.
+      return amount > 0
+        ? receive(state, 'events', amount)
+        : { ...state, nation: { ...state.nation, treasury: state.nation.treasury + amount } };
+    }
     case 'unrest': {
       const delta = effect.delta * severity * scaleFactor(state, effect.scale);
       const regions: readonly RegionId[] = effect.where === 'all' ? REGIONS : ctx.region ? [ctx.region] : [];

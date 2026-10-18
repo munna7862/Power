@@ -15,6 +15,7 @@ import { WAR } from './constants';
 import { patchMilitary } from './forces';
 import { adjustRelation, atWarWith, patchRival } from './rivals';
 import { enemyFrontPower, frontPower, militaryStrength, personnel } from './strength';
+import { receive } from '../finance/receipts';
 
 export const MAX_WARS = 2;
 
@@ -352,7 +353,7 @@ export function settleWar(state: GameState, warId: string, terms: PeaceTerms): G
 
   if (terms === 'reparations') {
     const amount = reparationsFor(next, war.rival);
-    next = { ...next, nation: { ...next.nation, treasury: next.nation.treasury + amount } };
+    next = receive(next, 'reparations', amount);
     next = adjustRelation(next, war.rival, -10);
     next = endWar(next, war, 'victory', `Reparations: ₹${groupIndian(amount)} crore received.`);
     next = victoryBoost(next, name);

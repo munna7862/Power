@@ -5,6 +5,7 @@ import { placeName, splitDemolish, splitFacilities, type Share } from '../nation
 import { appendLog } from '../state/log';
 import type { GameState } from '../state/types';
 import { CANCEL_REFUND, MAX_BUILD_QUANTITY, MAX_BUILD_QUEUE } from './constants';
+import { receive } from '../finance/receipts';
 
 /** ₹ crore to build this many facilities. */
 export const buildCost = (facility: FacilityId, quantity: number): number => FACILITY_CONTENT[facility].cost * quantity;
@@ -88,8 +89,7 @@ export function cancelBuild(state: GameState, orderId: string): GameState {
   const refund = Math.round(order.cost * CANCEL_REFUND);
   return appendLog(
     {
-      ...state,
-      nation: { ...state.nation, treasury: state.nation.treasury + refund },
+      ...receive(state, 'refunds', refund),
       infrastructure: {
         ...state.infrastructure,
         queue: state.infrastructure.queue.filter((o) => o.id !== orderId),

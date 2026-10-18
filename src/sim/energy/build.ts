@@ -6,6 +6,7 @@ import { appendLog } from '../state/log';
 import type { GameState } from '../state/types';
 import { MAX_PLANT_ORDER, MAX_PLANT_QUEUE, PLANT_CANCEL_REFUND } from './constants';
 import { plantOutput } from './grid';
+import { receive } from '../finance/receipts';
 
 /** ₹ crore to build this many plants. */
 export const plantCost = (plant: PlantId, quantity: number): number => PLANT_CONTENT[plant].cost * quantity;
@@ -74,8 +75,7 @@ export function cancelPlant(state: GameState, orderId: string): GameState {
   const refund = Math.round(order.cost * PLANT_CANCEL_REFUND);
   return appendLog(
     {
-      ...state,
-      nation: { ...state.nation, treasury: state.nation.treasury + refund },
+      ...receive(state, 'refunds', refund),
       energy: { ...state.energy, queue: state.energy.queue.filter((o) => o.id !== orderId) },
     },
     {

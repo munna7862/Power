@@ -49,6 +49,7 @@ import {
   type SecurityState,
   type SectorState,
 } from './types';
+import { noReceipts } from '../finance/receipts';
 
 export interface NewGameOptions {
   seed: number;
@@ -92,6 +93,7 @@ export function createStartingEconomy(difficulty: Difficulty): EconomyState {
     corruption: START_CORRUPTION,
     hdi: START_HDI,
     lastMonth: null,
+    receipts: noReceipts(),
     loans: [],
   };
 }
