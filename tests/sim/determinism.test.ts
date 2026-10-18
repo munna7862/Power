@@ -46,14 +46,14 @@ describe('determinism', () => {
         },
       },
       linux: {
-        hash: '3da721b1',
+        hash: 'e080b3e1',
         parts: {
-          economy: '4a40ee22',
-          history: '6b5c4dfb',
-          military: 'b7f100fd',
-          modifiers: '834b06d6',
-          politics: '1a01fb99',
-          security: '64e60000',
+          economy: '0f3983dd',
+          history: '9d8602e7',
+          military: '52ca9382',
+          modifiers: 'be90c258',
+          politics: '5ac8ad2a',
+          security: '45e69711',
         },
       },
     };
