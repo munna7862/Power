@@ -124,7 +124,8 @@ export function projectMonth(
     const rate = budget.taxRates[tax];
     let amount = gdpMonth * TAX_BASE_SHARE[tax] * rate * taxYieldFactor(tax, rate) * compliance * revenueMultiplier;
     if (tax === 'customs')
-      amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * multiplierFor(modifiers, 'economy.customs');
+      // Sanctions on many partners can push the multiplier below zero; customs then raises nothing, never less.
+      amount *= (0.95 + 0.05 * Math.min(external, 1.6)) * Math.max(0, multiplierFor(modifiers, 'economy.customs'));
     revenue[tax] = amount;
   }
   revenue.nonTax = gdpMonth * NON_TAX_REVENUE_SHARE * revenueMultiplier;

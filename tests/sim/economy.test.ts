@@ -179,3 +179,27 @@ describe('growth explanation', () => {
     expect(explainGrowth(taxed).find((l) => l.driver === 'taxes')!.value).toBeLessThan(-0.005);
   });
 });
+
+describe('customs floor', () => {
+  it('sanctions on many partners take customs to zero, never below (DEF-10)', () => {
+    const s = newGame();
+    const sanctioned = {
+      ...s,
+      modifiers: [
+        ...s.modifiers,
+        {
+          id: 'mod-test',
+          source: 'treaty-test',
+          label: 'Sanctions on everyone',
+          target: 'economy.customs' as const,
+          kind: 'mult' as const,
+          value: -3,
+          expiresAtTick: null,
+        },
+      ],
+    };
+    const p = projectMonth(sanctioned, sanctioned.budget);
+    expect(p.revenue.customs).toBe(0);
+    expect(p.totalRevenue).toBeGreaterThan(0);
+  });
+});
