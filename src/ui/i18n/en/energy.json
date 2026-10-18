@@ -1,0 +1,73 @@
+{
+  "energy": {
+    "subtitle": "Keep the power grid ahead of demand. Homes, businesses and public facilities need more power every year as the economy grows; a shortfall slows growth and costs approval, and a surplus beyond the reserve is sold abroad.",
+    "tiles": {
+      "production": "Production",
+      "demand": "Demand",
+      "balance": "Balance",
+      "margin": "Reserve {{value}}",
+      "short": "{{value}} of demand unmet",
+      "air": "Emissions",
+      "airNote": "Against the opening grid (100%)",
+      "gw": "{{value}} GW"
+    },
+    "supply": "Supply and demand",
+    "demandBy": "Demand by source",
+    "sources": {
+      "homes": "Homes",
+      "industry": "Industry",
+      "services": "Services and tech",
+      "public": "Public facilities"
+    },
+    "whyDemand": "Homes follow population and income; industry and services follow their output; public facilities follow public-works coverage.",
+    "productionBy": "Production by plant type",
+    "columns": {
+      "plant": "Plant",
+      "plants": "Plants",
+      "output": "Output",
+      "demand": "Demand",
+      "share": "Share"
+    },
+    "effects": "What the grid does now",
+    "growthEffect": "Growth lost to power cuts",
+    "approvalEffect": "Approval from power cuts",
+    "pollutionEffect": "Approval from air pollution",
+    "disasters": "Disaster risk",
+    "disastersValue": "×{{value}}",
+    "exports": "Power exported",
+    "exportsValue": "{{gw}} GW · {{revenue}} / month",
+    "buildIn": "Build in the {{region}}",
+    "region": "Region",
+    "plantLine": "{{inRegion}} here · {{total}} nationwide · {{output}} GW each on average",
+    "plantCosts": "Price {{cost}} · {{days}} · upkeep {{upkeep}} / month",
+    "plantFuel": "Fuel ({{fuel}}) {{cost}} / month",
+    "clean": "No emissions",
+    "emissions": "Emissions {{value}} per GW",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "fuels": {
+      "coal": "coal",
+      "gas": "gas",
+      "uranium": "uranium"
+    },
+    "quantityLabel": "How many {{name}} to build or close",
+    "toMargin": "Fill the gap",
+    "toMarginLabel": "Set the number of {{name}} that restores the reserve margin",
+    "build": "Build · {{cost}}",
+    "buildLabel": "Build {{count}} × {{name}} in the {{region}} for {{cost}}",
+    "decommission": "Close",
+    "decommissionLabel": "Close {{count}} × {{name}} in the {{region}}",
+    "projects": "Power projects",
+    "projectsNote": "{{queued}} of {{max}} projects. Cancelling refunds {{refund}}% of the price.",
+    "noProjects": "Nothing is being built.",
+    "project": "{{count}} × {{name}}, {{region}}",
+    "projectAdds": "Adds {{gw}} GW",
+    "projectProgress": "Progress of {{name}}",
+    "connectsIn_one": "Connects in {{count}} day",
+    "connectsIn_other": "Connects in {{count}} days",
+    "cancel": "Cancel · refund {{refund}}",
+    "cancelLabel": "Cancel {{name}} in the {{region}} and get {{refund}} back",
+    "runningCosts": "Running costs added: {{cost}} / month",
+    "runningCostsNote": "Industry & Infrastructure already pays for the opening fleet. Plants you add cost their upkeep and fuel on top; closing plants saves it."
+  }
+}

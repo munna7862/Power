@@ -1,7 +1,8 @@
 import { APPROVAL_FACTORS, type ApprovalFactor, type MinistryId } from '../content/ids';
 import { DEFAULT_TAX_RATES } from '../economy/constants';
-import { resolve, type Resolution } from '../engine/modifiers';
+import { resolve, type BreakdownLine, type Resolution } from '../engine/modifiers';
 import { coverageEffect } from '../infrastructure/coverage';
+import { gridApprovalLines } from '../energy/grid';
 import { civilLibertiesCost, crimeSafetyEffect } from '../police/strength';
 import { rulesFor } from '../state/difficulty';
 import type { GameState } from '../state/types';
@@ -79,25 +80,31 @@ export function computeSatisfaction(
 }
 
 /**
- * Weighted satisfaction plus modifiers (ideology, difficulty, scandals…) and, since Phase 8, the cost of
- * over-policing to civil liberties, which shows in the breakdown like a modifier.
+ * Lines Phase 8 adds to the approval target, each shown in the breakdown like a modifier and each 0 at the start
+ * of a game: over-policing (civil liberties), power cuts and air pollution.
  */
+export function governanceLines(
+  state: Pick<GameState, 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure'>,
+): BreakdownLine[] {
+  return [
+    { label: 'Civil liberties (over-policing)', source: 'police', value: -civilLibertiesCost(state) },
+    ...gridApprovalLines(state).map((l) => ({ ...l, source: 'energy' })),
+  ]
+    .filter((l) => l.value !== 0)
+    .map((l) => ({ ...l, kind: 'add' as const }));
+}
+
+/** Weighted satisfaction plus modifiers (ideology, difficulty, scandals…) and the governance lines above. */
 export function approvalTarget(
-  state: Pick<GameState, 'modifiers' | 'police' | 'nation'>,
+  state: Pick<GameState, 'modifiers' | 'police' | 'nation' | 'energy' | 'economy' | 'infrastructure'>,
   satisfaction: Record<ApprovalFactor, number>,
 ): Resolution {
   const base = APPROVAL_FACTORS.reduce((sum, f) => sum + APPROVAL_WEIGHTS[f] * satisfaction[f], 0);
-  const liberties = civilLibertiesCost(state);
-  if (liberties <= 0) return resolve(state.modifiers, 'politics.approvalTarget', base);
-  const resolved = resolve(state.modifiers, 'politics.approvalTarget', base - liberties);
-  return {
-    ...resolved,
-    base,
-    breakdown: [
-      ...resolved.breakdown,
-      { label: 'Civil liberties (over-policing)', source: 'police', kind: 'add', value: -liberties },
-    ],
-  };
+  const lines = governanceLines(state);
+  if (lines.length === 0) return resolve(state.modifiers, 'politics.approvalTarget', base);
+  const extra = lines.reduce((s, l) => s + l.value, 0);
+  const resolved = resolve(state.modifiers, 'politics.approvalTarget', base + extra);
+  return { ...resolved, base, breakdown: [...resolved.breakdown, ...lines] };
 }
 
 /** The factors voters are least happy with, worst first. */

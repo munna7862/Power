@@ -78,6 +78,24 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(page.getByTestId('running-costs')).toContainText('Education');
   });
 
+  test('a solar park is built, connects after a few weeks and raises production', async ({ page }) => {
+    await openView(page, 'Energy');
+    await page.getByRole('group', { name: 'Region' }).getByRole('button', { name: 'West' }).click();
+    await expect(page.getByRole('heading', { name: 'Build in the West' })).toBeVisible();
+    const before = (await page.getByTestId('power-production').textContent()) ?? '';
+
+    const solar = page.getByTestId('plant-solar');
+    await solar.getByRole('spinbutton').fill('10');
+    await solar.getByRole('button', { name: /^Build 10 × Solar park in the West/ }).click();
+    await expect(page.getByTestId('plant-order')).toContainText(/Connects in \d+ days/);
+
+    await advanceDays(page, 22);
+    await expect(page.getByTestId('plant-order')).toHaveCount(0);
+    await expect(page.getByTestId('power-production')).not.toHaveText(before);
+    await expect(page.getByTestId('plant-running-costs')).not.toContainText('₹0 cr');
+    await expect(page.getByTestId('grid-effects')).toContainText('Power exported');
+  });
+
   test('ideology can be changed once a year', async ({ page }) => {
     await openView(page, 'Departments');
     await page.getByRole('combobox', { name: 'Ideology' }).selectOption({ label: 'Socialism' });

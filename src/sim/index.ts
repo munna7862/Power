@@ -66,6 +66,40 @@ export {
   type CoverageLine,
 } from './infrastructure/coverage';
 export { buildCost, validateBuild, validateCancelBuild, validateDemolish } from './infrastructure/build';
+export { PLANT_CONTENT, type PlantContent } from './content/power';
+export {
+  DEMAND_SHARES,
+  EXPORT_MARGIN,
+  EXPORT_PRICE,
+  MAX_PLANT_ORDER,
+  MAX_PLANT_QUEUE,
+  OPENING_MARGIN,
+  PLANT_CANCEL_REFUND,
+  POLLUTION_APPROVAL,
+  POLLUTION_DISASTERS,
+  SHORTFALL_APPROVAL,
+  SHORTFALL_GROWTH,
+  type DemandSource,
+} from './energy/constants';
+export {
+  consumption,
+  demand,
+  disasterFactor,
+  emissionsIndex,
+  exportedPower,
+  exportRevenue,
+  gridApprovalLines,
+  plantOutput,
+  plantsForMargin,
+  plantsOf,
+  plantUpkeep,
+  powerBalance,
+  production,
+  productionBy,
+  shortfall,
+  shortfallGrowth,
+} from './energy/grid';
+export { plantCost, validateCancelPlant, validateDecommission, validatePlant } from './energy/build';
 export {
   AGENCY_CONTENT,
   EQUIPMENT_CONTENT,
@@ -159,6 +193,7 @@ export {
   IMPEACHMENT_THRESHOLD,
   impeachmentThreshold,
   approvalTarget,
+  governanceLines,
   computeSatisfaction,
   topIssues,
 } from './politics/approval';

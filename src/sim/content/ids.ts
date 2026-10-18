@@ -93,6 +93,14 @@ export const AGENCIES = [
 ] as const;
 export type AgencyId = (typeof AGENCIES)[number];
 
+/** Power plants the President can build in a region (content/power.json). */
+export const PLANTS = ['solar', 'wind', 'coal', 'gas', 'hydro', 'nuclear'] as const;
+export type PlantId = (typeof PLANTS)[number];
+
+/** Fuels thermal and nuclear plants burn. From Sprint 8.5 they come from stocks; until then they are a running cost. */
+export const FUELS = ['coal', 'gas', 'uranium'] as const;
+export type FuelId = (typeof FUELS)[number];
+
 /** Things voters judge the President on. Each is scored 0–100 every month. */
 export const APPROVAL_FACTORS = [
   'jobs',

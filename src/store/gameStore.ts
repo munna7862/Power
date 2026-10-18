@@ -28,6 +28,7 @@ export type ViewId =
   | 'budget'
   | 'departments'
   | 'construction'
+  | 'energy'
   | 'security'
   | 'police'
   | 'military'
