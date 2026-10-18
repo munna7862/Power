@@ -46,9 +46,10 @@ export function adviceView(advice: Advice): ViewId {
   }
 }
 
-/** The warning in words. */
-export function adviceText(advice: Advice): string {
+/** The warning in words. In national play the region is left out: the President acts for all of India. */
+export function adviceText(advice: Advice, regional = true): string {
   const region = advice.region ? t(`regions.${advice.region}`) : '';
+  const national = !regional && advice.region !== undefined;
   switch (advice.topic) {
     case 'approval':
       return t('advisor.topics.approval', {
@@ -68,15 +69,21 @@ export function adviceText(advice: Advice): string {
         value: pct(advice.value, 0),
       });
     case 'coverage':
-      return t('advisor.topics.coverage', {
+      return t(national ? 'advisor.topics.coverageNational' : 'advisor.topics.coverage', {
         region,
         area: advice.area ? t(`construction.areas.${advice.area}`).toLowerCase() : '',
         value: pct(advice.value, 0),
       });
     case 'police':
-      return t('advisor.topics.police', { region, value: pct(advice.value, 0) });
+      return t(national ? 'advisor.topics.policeNational' : 'advisor.topics.police', {
+        region,
+        value: pct(advice.value, 0),
+      });
     case 'unrest':
-      return t('advisor.topics.unrest', { region, value: Math.round(advice.value) });
+      return t(national ? 'advisor.topics.unrestNational' : 'advisor.topics.unrest', {
+        region,
+        value: Math.round(advice.value),
+      });
     case 'forces':
       return t('advisor.topics.forces', { value: pct(advice.value, 0) });
     case 'loan':

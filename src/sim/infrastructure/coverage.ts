@@ -63,8 +63,25 @@ function rawCoverage(counts: Counts, population: number, region: RegionId, area:
   return served / regionPopulation(population, region);
 }
 
-export const coverage = (state: WithInfrastructure, region: RegionId, area: CoverageArea): number =>
-  rawCoverage(state.infrastructure.counts, state.nation.population, region, area);
+/** Facilities of one type standing in a region, or in all of India (null). */
+export const facilityCount = (
+  state: Pick<GameState, 'infrastructure'>,
+  region: RegionId | null,
+  facility: FacilityId,
+) =>
+  region === null
+    ? REGIONS.reduce((s, r) => s + state.infrastructure.counts[r][facility], 0)
+    : state.infrastructure.counts[region][facility];
+
+/** People served ÷ people living there, in a region or (null) in all of India. */
+export const coverage = (state: WithInfrastructure, region: RegionId | null, area: CoverageArea): number =>
+  region === null
+    ? REGIONS.reduce(
+        (s, r) =>
+          s + REGION_POPULATION_SHARE[r] * rawCoverage(state.infrastructure.counts, state.nation.population, r, area),
+        0,
+      )
+    : rawCoverage(state.infrastructure.counts, state.nation.population, region, area);
 
 /** Coverage as the sim counts it: in full up to 100%, at half the rate beyond, capped at COVERAGE_CEILING. */
 export const effectiveCoverage = (raw: number): number =>
@@ -141,32 +158,42 @@ export interface CoverageLine {
   served: number;
 }
 
-/** Why a region's coverage of an area is what it is: who each facility type serves, against the population. */
+/**
+ * Why a region's (or, for null, India's) coverage of an area is what it is: who each facility type serves, against the
+ * population. India's counted coverage is each region's, weighted by population, as the sim counts it.
+ */
 export function explainCoverage(
   state: WithInfrastructure,
-  region: RegionId,
+  region: RegionId | null,
   area: CoverageArea,
 ): { lines: CoverageLine[]; population: number; coverage: number; counted: number } {
   const lines = FACILITIES_BY_AREA[area].map((facility) => {
-    const count = state.infrastructure.counts[region][facility];
+    const count = facilityCount(state, region, facility);
     return { facility, count, served: count * FACILITY_CONTENT[facility].capacity };
   });
   const raw = coverage(state, region, area);
   return {
     lines,
-    population: regionPopulation(state.nation.population, region),
+    population: region === null ? state.nation.population : regionPopulation(state.nation.population, region),
     coverage: raw,
-    counted: effectiveCoverage(raw),
+    counted:
+      region === null
+        ? REGIONS.reduce((s, r) => s + REGION_POPULATION_SHARE[r] * effectiveCoverage(coverage(state, r, area)), 0)
+        : effectiveCoverage(raw),
   };
 }
 
-/** Facilities of one type needed for a region's coverage of their area to reach the target (0 if it already does). */
+/**
+ * Facilities of one type needed for a region's coverage of their area to reach the target (0 if it already does).
+ * For all of India (null), enough for every region to reach it, which is what a national order placed worst first needs.
+ */
 export function facilitiesForTarget(
   state: WithInfrastructure,
-  region: RegionId,
+  region: RegionId | null,
   facility: FacilityId,
   target = 1,
 ): number {
+  if (region === null) return REGIONS.reduce((s, r) => s + facilitiesForTarget(state, r, facility, target), 0);
   const c = FACILITY_CONTENT[facility];
   const gap = target - coverage(state, region, c.area);
   return gap <= 0 ? 0 : Math.ceil((gap * regionPopulation(state.nation.population, region)) / c.capacity);

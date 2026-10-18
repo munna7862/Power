@@ -5,7 +5,9 @@
     "east": "East",
     "west": "West",
     "central": "Central",
-    "northEast": "North-East"
+    "northEast": "North-East",
+    "india": "India",
+    "inSentence": "the {{region}}"
   },
   "departments": {
     "subtitle": "Invest in each department's services to run the country better. Stars are bought once, but every department needs its budget to keep them.",

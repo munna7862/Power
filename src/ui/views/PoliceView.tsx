@@ -12,6 +12,13 @@ import {
   MAX_UNIT_ORDER,
   MINISTRIES,
   MINISTRY_CONTENT,
+  nationalCrime,
+  nationalHeadcountRatio,
+  nationalOfficers,
+  nationalOfficersForRatio,
+  nationalPoliceRatio,
+  nationalStations,
+  nationalStationsNeeded,
   nextEquipment,
   officersForRatio,
   officersPer100k,
@@ -42,11 +49,12 @@ import { Button, Panel, Tooltip } from '../design/primitives';
 import { formatCrore, formatCroreFine, pct } from '../format';
 import gameStyles from '../screens/game.module.css';
 import { Bar } from './military/parts';
+import { placeName, placePhrase, useRegional } from './place';
 import { AuditsPanel, OperationsPanel } from './police/OperationsPanels';
 import styles from './views.module.css';
 
 const clampQuantity = (value: string, max: number) => Math.max(1, Math.min(max, Math.floor(Number(value) || 1)));
-const average = (values: number[]) => values.reduce((a, b) => a + b, 0) / values.length;
+const START_NATIONAL_CRIME = nationalCrime({ security: { crime: START_CRIME } as GameState['security'] });
 
 function Tiles({ game }: { game: GameState }) {
   const { t } = useTranslation();
@@ -66,9 +74,9 @@ function Tiles({ game }: { game: GameState }) {
       </div>
       <div className={styles.tile}>
         <span className={styles.tileLabel}>{t('police.tiles.crime')}</span>
-        <span className={styles.tileValue}>{average(REGIONS.map((r) => game.security.crime[r])).toFixed(0)}</span>
+        <span className={styles.tileValue}>{nationalCrime(game).toFixed(0)}</span>
         <span className={styles.tileNote}>
-          {t('police.tiles.crimeNote', { value: average(REGIONS.map((r) => START_CRIME[r])).toFixed(0) })}
+          {t('police.tiles.crimeNote', { value: START_NATIONAL_CRIME.toFixed(0) })}
         </span>
       </div>
       <div className={styles.tile}>
@@ -89,23 +97,50 @@ function Tiles({ game }: { game: GameState }) {
   );
 }
 
-function RegionCard({ game, region }: { game: GameState; region: RegionId }) {
+/** What one card shows: a region's force, or all of India's (null) in national play. */
+function forceOf(game: GameState, region: RegionId | null) {
+  if (region === null) {
+    return {
+      ratio: nationalPoliceRatio(game),
+      toFull: nationalOfficersForRatio(game),
+      stations: nationalStationsNeeded(game),
+      officers: nationalOfficers(game),
+      per100k: (nationalOfficers(game) / game.nation.population) * 1e5,
+      stationCount: nationalStations(game),
+      capacity: REGIONS.reduce((s, r) => s + stationCapacity(game.police, r), 0),
+      crime: nationalCrime(game),
+    };
+  }
+  return {
+    ratio: policeRatio(game, region),
+    toFull: officersForRatio(game, region),
+    stations: stationsNeeded(game.police, region),
+    officers: game.police.officers[region],
+    per100k: officersPer100k(game, region),
+    stationCount: game.police.stations[region],
+    capacity: stationCapacity(game.police, region),
+    crime: game.security.crime[region],
+  };
+}
+
+function RegionCard({ game, region }: { game: GameState; region: RegionId | null }) {
   const { t } = useTranslation();
   const { dispatch } = gameStore.getState();
   const [quantity, setQuantity] = useState(1);
-  const name = t(`regions.${region}`);
-  const ratio = policeRatio(game, region);
-  const toFull = officersForRatio(game, region);
-  const stations = stationsNeeded(game.police, region);
+  const name = placePhrase(region);
+  const force = forceOf(game, region);
+  const { ratio, toFull, stations } = force;
   const cost = formatCroreFine(recruitCost(quantity));
+  const where = region === null ? {} : { region };
+  const id = region ?? 'india';
   const recruitProblem = validateRecruit(game, region, quantity);
   const dismissProblem = validateRecruit(game, region, -quantity);
   const stationProblem = stations > 0 ? validateStations(game, region, stations) : null;
   return (
-    <div className={styles.facilityCard} data-testid={`police-${region}`}>
+    <div className={styles.facilityCard} data-testid={`police-${id}`}>
       <div>
         <div className={styles.personName}>
-          {name}{' '}
+          {placeName(region)}{' '}
           <span
             className={styles.coverageCell}
             data-tone={ratio >= 0.98 ? 'good' : ratio >= 0.9 ? 'warning' : 'danger'}
@@ -115,19 +150,16 @@ function RegionCard({ game, region }: { game: GameState; region: RegionId }) {
         </div>
         <Bar value={Math.min(ratio, 1.5)} max={1.5} label={t('police.strength', { value: pct(ratio, 0) })} />
         <div className={styles.facilityStats}>
-          <span data-testid={`officers-${region}`}>
-            {t('police.officersLine', {
-              count: groupIndian(game.police.officers[region]),
-              per100k: Math.round(officersPer100k(game, region)),
-            })}
+          <span data-testid={`officers-${id}`}>
+            {t('police.officersLine', { count: groupIndian(force.officers), per100k: Math.round(force.per100k) })}
           </span>
           <span>
             {t('police.stationsLine', {
-              count: groupIndian(game.police.stations[region]),
-              capacity: groupIndian(stationCapacity(game.police, region)),
+              count: groupIndian(force.stationCount),
+              capacity: groupIndian(force.capacity),
             })}
           </span>
-          <span>{t('police.crimeLine', { value: game.security.crime[region].toFixed(0) })}</span>
+          <span>{t('police.crimeLine', { value: force.crime.toFixed(0) })}</span>
         </div>
       </div>
       <div className={styles.actions}>
@@ -155,7 +187,7 @@ function RegionCard({ game, region }: { game: GameState; region: RegionId }) {
           disabled={recruitProblem !== null}
           title={recruitProblem ?? undefined}
           aria-label={t('police.recruitLabel', { count: quantity, region: name, cost })}
-          onClick={() => dispatch({ type: 'RECRUIT_POLICE', region, officers: quantity })}
+          onClick={() => dispatch({ type: 'RECRUIT_POLICE', ...where, officers: quantity })}
         >
           {t('police.recruit', { cost })}
         </Button>
@@ -163,7 +195,7 @@ function RegionCard({ game, region }: { game: GameState; region: RegionId }) {
           disabled={dismissProblem !== null}
           title={dismissProblem ?? undefined}
           aria-label={t('police.dismissLabel', { count: quantity, region: name })}
-          onClick={() => dispatch({ type: 'RECRUIT_POLICE', region, officers: -quantity })}
+          onClick={() => dispatch({ type: 'RECRUIT_POLICE', ...where, officers: -quantity })}
         >
           {t('police.dismiss')}
         </Button>
@@ -176,7 +208,7 @@ function RegionCard({ game, region }: { game: GameState; region: RegionId }) {
               region: name,
               cost: formatCrore(stationCost(stations)),
             })}
-            onClick={() => dispatch({ type: 'BUILD_STATION', region, quantity: stations })}
+            onClick={() => dispatch({ type: 'BUILD_STATION', ...where, quantity: stations })}
           >
             {t('police.houseThem', { count: stations, cost: formatCrore(stationCost(stations)) })}
           </Button>
@@ -319,6 +351,10 @@ function AgencyRow({ game, agency }: { game: GameState; agency: AgencyId }) {
 
 function LibertiesPanel({ game }: { game: GameState }) {
   const { t } = useTranslation();
+  const regional = useRegional();
+  const lines = regional
+    ? REGIONS.map((r) => ({ id: r, region: placeName(r), value: headcountRatio(game, r) }))
+    : [{ id: 'india', region: placeName(null), value: nationalHeadcountRatio(game) }];
   const cost = civilLibertiesCost(game);
   return (
     <Panel title={t('police.liberties')}>
@@ -327,9 +363,9 @@ function LibertiesPanel({ game }: { game: GameState }) {
         <strong>{cost > 0 ? t('police.tiles.libertiesCost', { value: cost.toFixed(1) }) : '0'}</strong>{' '}
         <Tooltip label={t('common.why')}>
           <span className={gameStyles.breakdown}>
-            {REGIONS.map((r) => (
-              <span key={r} style={{ gridColumn: '1 / -1' }}>
-                {t('police.libertiesRegion', { region: t(`regions.${r}`), value: pct(headcountRatio(game, r), 0) })}
+            {lines.map((l) => (
+              <span key={l.id} style={{ gridColumn: '1 / -1' }}>
+                {t('police.libertiesRegion', { region: l.region, value: pct(l.value, 0) })}
               </span>
             ))}
             <span style={{ gridColumn: '1 / -1' }}>
@@ -371,6 +407,7 @@ function RunningCosts({ game }: { game: GameState }) {
 export function PoliceView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
+  const regional = useRegional();
   if (!game) return null;
 
   return (
@@ -385,12 +422,14 @@ export function PoliceView() {
       <Tiles game={game} />
 
       <div className={gameStyles.grid}>
-        <Panel title={t('police.regions')} className={gameStyles.span12}>
-          <p className={styles.note}>{t('police.regionsNote')}</p>
+        <Panel title={regional ? t('police.regions') : t('police.national')} className={gameStyles.span12}>
+          <p className={styles.note}>{regional ? t('police.regionsNote') : t('police.nationalNote')}</p>
           <div className={styles.facilityList}>
-            {REGIONS.map((r) => (
-              <RegionCard key={r} game={game} region={r} />
-            ))}
+            {regional ? (
+              REGIONS.map((r) => <RegionCard key={r} game={game} region={r} />)
+            ) : (
+              <RegionCard game={game} region={null} />
+            )}
           </div>
         </Panel>
 

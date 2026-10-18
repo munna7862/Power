@@ -38,7 +38,7 @@ const full = difficulty === 'normal';
 const byDifficulty = Object.fromEntries(
   DIFFICULTIES.map((d) => [d, d === difficulty ? results : full ? play(d) : []]),
 ) as Record<Difficulty, RunResult[]>;
-const optionProbe = full ? probeOptions(Math.min(seeds, 20), years) : null;
+const optionProbe = full ? probeOptions(Math.min(seeds, 20), years, seeds) : null;
 const seconds = ((performance.now() - started) / 1000).toFixed(1);
 const games = Object.values(byDifficulty).flat().length + (optionProbe?.runs ?? 0);
 
@@ -75,7 +75,7 @@ const kpis = [
   ...evaluateWars(warProbes),
   ...evaluateDiplomacy(results),
   ...evaluateGovernance(results, opening),
-  ...(optionProbe ? evaluateRelease(byDifficulty, optionProbe) : []),
+  ...(optionProbe ? evaluateRelease(byDifficulty, optionProbe, opening) : []),
 ];
 const worst = worstRepeat(results);
 const finalRows = BOTS.map((bot) => {

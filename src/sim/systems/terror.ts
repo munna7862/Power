@@ -1,5 +1,6 @@
 import { EVENT_CONTENT, THREAT_GROUPS } from '../content/events';
-import { REGION_LABELS, REGIONS } from '../content/ids';
+import { REGIONS } from '../content/ids';
+import { placeName } from '../national/split';
 import { allEfficiencies } from '../economy/model';
 import type { System } from '../engine/system';
 import { scaleFactor } from '../events/effects';
@@ -78,7 +79,7 @@ export const terrorSystem: System = {
         severity: 'good',
         category: 'terror',
         title: `Intelligence foils a plot by ${group}`,
-        body: `Agents uncovered ${group} preparing an attack in the ${REGION_LABELS[region]}. The cell was rolled up before it could act.`,
+        body: `Agents uncovered ${group} preparing an attack in ${placeName(state, region)}. The cell was rolled up before it could act.`,
       });
     }
 
@@ -120,7 +121,7 @@ export const plotSystem: System = {
         security: { ...next.security, plots: next.security.plots.filter((p) => p.id !== plot.id) },
         events: { ...next.events, pending: next.events.pending.filter((p) => p.ref !== plot.id) },
       };
-      const place = REGION_LABELS[plot.region];
+      const place = placeName(state, plot.region);
 
       if (!success) {
         next = appendLog(
@@ -129,7 +130,7 @@ export const plotSystem: System = {
             severity: 'good',
             category: 'terror',
             title: `Attack by ${plot.group} stopped`,
-            body: `Security forces in the ${place} intercepted ${plot.group} at the last moment. No attack took place.`,
+            body: `Security forces in ${place} intercepted ${plot.group} at the last moment. No attack took place.`,
           },
         );
         continue;
@@ -141,7 +142,7 @@ export const plotSystem: System = {
         next,
         {
           source: 'terror',
-          label: `Attack in the ${place}`,
+          label: `Attack in ${place}`,
           target: 'politics.approvalTarget',
           kind: 'add',
           value: -4 * severity * mitigation,
@@ -152,7 +153,7 @@ export const plotSystem: System = {
         next,
         {
           source: 'terror',
-          label: `Disruption after attack in the ${place}`,
+          label: `Disruption after attack in ${place}`,
           target: 'economy.growth',
           kind: 'add',
           value: -0.002,
@@ -181,8 +182,8 @@ export const plotSystem: System = {
       next = appendLog(next, {
         severity: 'critical',
         category: 'terror',
-        title: `Attack in the ${place}`,
-        body: `${plot.group} carried out an attack in the ${place}. Emergency services responded; the nation mourns and demands answers.`,
+        title: `Attack in ${place}`,
+        body: `${plot.group} carried out an attack in ${place}. Emergency services responded; the nation mourns and demands answers.`,
       });
     }
     return next;

@@ -185,3 +185,37 @@ test.describe('economy and governance (Phase 2)', () => {
     await expect(page.getByRole('heading', { name: 'Apex Sovereign' })).toBeVisible();
   });
 });
+
+test.describe('national play (Sprint 8.10)', () => {
+  test.beforeEach(async ({ page }) => {
+    await openFresh(page);
+    await startGame(page, 'Asha Rao', 'Normal', { regions: false });
+  });
+
+  test('clinics are ordered for all of India and open where they are needed', async ({ page }) => {
+    await openView(page, 'Construction');
+    await expect(page.getByRole('heading', { name: 'Build in India' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Show East' })).toHaveCount(0);
+
+    const row = page.getByTestId('area-clinics').getByTestId('facility-clinic');
+    const count = Number(((await row.getByTestId('count-clinic').textContent()) ?? '').replace(/,/g, ''));
+    await row.getByRole('spinbutton').fill('500');
+    await row.getByRole('button', { name: /^Build 500 × Health clinic in India/ }).click();
+    await expect(page.getByTestId('build-order')).toContainText('India');
+
+    await advanceDays(page, 31);
+    await expect(page.getByTestId('build-order')).toHaveCount(0);
+    await expect(row.getByTestId('count-clinic')).toHaveText((count + 500).toLocaleString('en-IN'));
+  });
+
+  test('the police and security screens show India, not regions', async ({ page }) => {
+    await openView(page, 'Police');
+    await expect(page.getByRole('heading', { name: 'Police across India' })).toBeVisible();
+    await expect(page.getByTestId('police-india')).toBeVisible();
+    await expect(page.getByTestId('police-east')).toHaveCount(0);
+
+    await openView(page, 'Security');
+    await expect(page.getByTestId('national-unrest')).toBeVisible();
+    await expect(page.getByRole('img', { name: /map/i })).toHaveCount(0);
+  });
+});

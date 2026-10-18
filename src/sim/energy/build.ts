@@ -1,6 +1,7 @@
 import { PLANT_CONTENT } from '../content/power';
-import { PLANTS, REGION_LABELS, REGIONS, type PlantId, type RegionId } from '../content/ids';
+import { PLANTS, REGIONS, type PlantId, type RegionId } from '../content/ids';
 import { groupIndian } from '../engine/numberFormat';
+import { placeName, splitDecommission } from '../national/split';
 import { appendLog } from '../state/log';
 import type { GameState } from '../state/types';
 import { MAX_PLANT_ORDER, MAX_PLANT_QUEUE, PLANT_CANCEL_REFUND } from './constants';
@@ -12,9 +13,9 @@ export const plantCost = (plant: PlantId, quantity: number): number => PLANT_CON
 const describe = (plant: PlantId, quantity: number): string =>
   `${quantity} × ${PLANT_CONTENT[plant].name.toLowerCase()}`;
 
-function validateTarget(plant: PlantId, region: RegionId, quantity: number): string | null {
+function validateTarget(plant: PlantId, region: RegionId | null, quantity: number): string | null {
   if (!PLANTS.includes(plant)) return `Unknown power plant ${plant}.`;
-  if (!REGIONS.includes(region)) return `Unknown region ${region}.`;
+  if (region !== null && !REGIONS.includes(region)) return `Unknown region ${region}.`;
   if (!Number.isInteger(quantity) || quantity < 1) return 'Choose a whole number of plants, at least one.';
   if (quantity > MAX_PLANT_ORDER) return `At most ${MAX_PLANT_ORDER} plants in one order.`;
   return null;
@@ -56,7 +57,7 @@ export function startPlant(state: GameState, plant: PlantId, region: RegionId, q
     },
     {
       severity: 'info',
-      title: `Power project begins in the ${REGION_LABELS[region]}`,
+      title: `Power project begins in ${placeName(state, region)}`,
       body: `Work starts on ${describe(plant, quantity)} for ₹${groupIndian(cost)} crore, adding ${(quantity * plantOutput(plant)).toFixed(1)} GW on average. ${days <= 30 ? 'It connects to the grid in a few weeks.' : `It connects in about ${Math.round(days / 30)} months.`}`,
     },
   );
@@ -80,37 +81,42 @@ export function cancelPlant(state: GameState, orderId: string): GameState {
     {
       severity: 'warning',
       title: 'Power project cancelled',
-      body: `Work on ${describe(order.plant, order.quantity)} in the ${REGION_LABELS[order.region]} stops. ₹${groupIndian(refund)} crore of the ₹${groupIndian(order.cost)} crore comes back.`,
+      body: `Work on ${describe(order.plant, order.quantity)} in ${placeName(state, order.region)} stops. ₹${groupIndian(refund)} crore of the ₹${groupIndian(order.cost)} crore comes back.`,
     },
   );
 }
 
+/** Which regions lose the plants: the chosen one, or for all of India where there are most (null if too few). */
+const closeShares = (state: GameState, plant: PlantId, region: RegionId | null, quantity: number) =>
+  region === null
+    ? splitDecommission(state, plant, quantity)
+    : state.energy.plants[region][plant] < quantity
+      ? null
+      : [{ region, quantity }];
+
 export function validateDecommission(
   state: GameState,
   plant: PlantId,
-  region: RegionId,
+  region: RegionId | null,
   quantity: number,
 ): string | null {
   const problem = validateTarget(plant, region, quantity);
   if (problem) return problem;
-  if (state.energy.plants[region][plant] < quantity) return 'There are not that many plants to close.';
+  if (!closeShares(state, plant, region, quantity)) return 'There are not that many plants to close.';
   return null;
 }
 
 /** Closes plants to save their running and fuel costs (and, for coal and gas, their emissions). */
-export function decommission(state: GameState, plant: PlantId, region: RegionId, quantity: number): GameState {
-  const plants = state.energy.plants;
+export function decommission(state: GameState, plant: PlantId, region: RegionId | null, quantity: number): GameState {
+  const plants = (closeShares(state, plant, region, quantity) ?? []).reduce(
+    (p, s) => ({ ...p, [s.region]: { ...p[s.region], [plant]: p[s.region][plant] - s.quantity } }),
+    state.energy.plants,
+  );
   return appendLog(
-    {
-      ...state,
-      energy: {
-        ...state.energy,
-        plants: { ...plants, [region]: { ...plants[region], [plant]: plants[region][plant] - quantity } },
-      },
-    },
+    { ...state, energy: { ...state.energy, plants } },
     {
       severity: 'warning',
-      title: `Power plants closed in the ${REGION_LABELS[region]}`,
+      title: `Power plants closed in ${placeName(state, region)}`,
       body: `${describe(plant, quantity)} shut down. Their running costs stop, and so does ${(quantity * plantOutput(plant)).toFixed(1)} GW of supply.`,
     },
   );
@@ -131,7 +137,7 @@ export function completePlants(state: GameState): GameState {
   for (const o of done) {
     next = appendLog(next, {
       severity: 'good',
-      title: `Connected to the grid in the ${REGION_LABELS[o.region]}`,
+      title: `Connected to the grid in ${placeName(state, o.region)}`,
       body: `${describe(o.plant, o.quantity)} now generate ${(o.quantity * plantOutput(o.plant)).toFixed(1)} GW on average.`,
     });
   }

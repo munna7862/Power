@@ -1,6 +1,7 @@
 import { INDUSTRY_CONTENT } from '../content/goods';
-import { INDUSTRIES, REGION_LABELS, REGIONS, type IndustryId, type RegionId } from '../content/ids';
+import { INDUSTRIES, REGIONS, type IndustryId, type RegionId } from '../content/ids';
 import { groupIndian } from '../engine/numberFormat';
+import { placeName, splitCloseIndustry } from '../national/split';
 import { appendLog } from '../state/log';
 import type { GameState, PlantOwner } from '../state/types';
 import {
@@ -19,9 +20,9 @@ export const industryCost = (industry: IndustryId, quantity: number): number =>
 
 const plantName = (industry: IndustryId) => INDUSTRY_CONTENT[industry].name.toLowerCase();
 
-function validateTarget(industry: IndustryId, region: RegionId, quantity: number): string | null {
+function validateTarget(industry: IndustryId, region: RegionId | null, quantity: number): string | null {
   if (!INDUSTRIES.includes(industry)) return `Unknown industry ${industry}.`;
-  if (!REGIONS.includes(region)) return `Unknown region ${region}.`;
+  if (region !== null && !REGIONS.includes(region)) return `Unknown region ${region}.`;
   if (!Number.isInteger(quantity) || quantity < 1) return 'Choose a whole number of plants, at least one.';
   if (quantity > MAX_INDUSTRY_ORDER) return `At most ${MAX_INDUSTRY_ORDER} plants in one order.`;
   return null;
@@ -84,7 +85,7 @@ export function startIndustry(state: GameState, industry: IndustryId, region: Re
   const paid = { ...state, nation: { ...state.nation, treasury: state.nation.treasury - cost } };
   return appendLog(enqueue(paid, industry, region, 'state', quantity, cost, days), {
     severity: 'info',
-    title: `Industrial project begins in the ${REGION_LABELS[region]}`,
+    title: `Industrial project begins in ${placeName(state, region)}`,
     body: `Work starts on ${quantity} × ${plantName(industry)} for ₹${groupIndian(cost)} crore. ${days <= 60 ? 'Production starts in a few weeks.' : `Production starts in about ${Math.round(days / 30)} months.`}`,
   });
 }
@@ -111,7 +112,7 @@ export function licencePlant(state: GameState, industry: IndustryId, region: Reg
   const paid = { ...state, nation: { ...state.nation, treasury: state.nation.treasury + fee } };
   return appendLog(enqueue(paid, industry, region, 'private', 1, 0, LICENCE_DAYS), {
     severity: 'good',
-    title: `Licence granted in the ${REGION_LABELS[region]}`,
+    title: `Licence granted in ${placeName(state, region)}`,
     body: `An investor pays ₹${groupIndian(fee)} crore for a licence to build a ${plantName(industry)}. It should open in about ${Math.round(LICENCE_DAYS / 30)} months and pay corporate tax on its profits.`,
   });
 }
@@ -136,29 +137,44 @@ export function cancelIndustry(state: GameState, orderId: string): GameState {
     {
       severity: 'warning',
       title: 'Industrial project cancelled',
-      body: `Work on ${order.quantity} × ${plantName(order.industry)} in the ${REGION_LABELS[order.region]} stops. ₹${groupIndian(refund)} crore of the ₹${groupIndian(order.cost)} crore comes back.`,
+      body: `Work on ${order.quantity} × ${plantName(order.industry)} in ${placeName(state, order.region)} stops. ₹${groupIndian(refund)} crore of the ₹${groupIndian(order.cost)} crore comes back.`,
     },
   );
 }
 
 /** Why state plants cannot be closed, or null. Private plants close only on their owners' decision. */
+/** Which regions lose the plants: the chosen one, or for all of India where there are most (null if too few). */
+const closeShares = (state: GameState, industry: IndustryId, region: RegionId | null, quantity: number) =>
+  region === null
+    ? splitCloseIndustry(state, industry, quantity)
+    : state.industry.plants[region][industry].state < quantity
+      ? null
+      : [{ region, quantity }];
+
 export function validateCloseIndustry(
   state: GameState,
   industry: IndustryId,
-  region: RegionId,
+  region: RegionId | null,
   quantity: number,
 ): string | null {
   const problem = validateTarget(industry, region, quantity);
   if (problem) return problem;
-  return state.industry.plants[region][industry].state < quantity
-    ? 'There are not that many state plants to close.'
-    : null;
+  return closeShares(state, industry, region, quantity) ? null : 'There are not that many state plants to close.';
 }
 
-export function closeIndustry(state: GameState, industry: IndustryId, region: RegionId, quantity: number): GameState {
-  return appendLog(changePlants(state, industry, region, 'state', -quantity), {
+export function closeIndustry(
+  state: GameState,
+  industry: IndustryId,
+  region: RegionId | null,
+  quantity: number,
+): GameState {
+  const closed = (closeShares(state, industry, region, quantity) ?? []).reduce(
+    (next, s) => changePlants(next, industry, s.region, 'state', -s.quantity),
+    state,
+  );
+  return appendLog(closed, {
     severity: 'warning',
-    title: `State plants closed in the ${REGION_LABELS[region]}`,
+    title: `State plants closed in ${placeName(state, region)}`,
     body: `${quantity} × ${plantName(industry)} shut down. Their running costs stop, and so do their output and jobs.`,
   });
 }
@@ -193,7 +209,7 @@ export function completeIndustry(state: GameState): GameState {
   for (const o of done) {
     next = appendLog(changePlants(next, o.industry, o.region, o.owner, o.quantity), {
       severity: 'good',
-      title: `${o.owner === 'state' ? 'State' : 'Private'} plant opens in the ${REGION_LABELS[o.region]}`,
+      title: `${o.owner === 'state' ? 'State' : 'Private'} plant opens in ${placeName(next, o.region)}`,
       body: `${o.quantity} × ${plantName(o.industry)} start production.`,
     });
   }

@@ -19,12 +19,19 @@ describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
       // An embassy, a service upgrade, some schools, more police, a solar park, a licensed plant, a tariff, tanks and a loan so
-      // the fixture carries them all, an option switched on, then a year of play.
-      let state = newGame({ seed: 2026, presidentName: 'Golden Fixture', options: { noRiots: true } });
+      // the fixture carries them all, two options switched (no riots, and national play with region-free orders for clinics
+      // and police), then a year of play.
+      let state = newGame({
+        seed: 2026,
+        presidentName: 'Golden Fixture',
+        options: { noRiots: true, regions: false },
+      });
       for (const command of [
         { type: 'OPEN_EMBASSY', country: 'USA' },
         { type: 'UPGRADE_SERVICE', department: 'health', service: 'primaryCare' },
         { type: 'BUILD_FACILITY', facility: 'primarySchool', region: 'east', quantity: 500 },
+        { type: 'BUILD_FACILITY', facility: 'clinic', quantity: 200 },
+        { type: 'RECRUIT_POLICE', officers: 2000 },
         { type: 'RECRUIT_POLICE', region: 'north', officers: 5000 },
         { type: 'FUND_AGENCY', agency: 'intelligenceService', strength: 55 },
         { type: 'BUILD_PLANT', plant: 'solar', region: 'west', quantity: 4 },

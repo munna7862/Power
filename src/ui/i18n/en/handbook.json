@@ -34,7 +34,7 @@
       },
       "options": {
         "title": "Game options",
-        "body": "Chosen on the New Game screen. No wars: no country can attack India and India cannot declare war. No riots: unrest is held at {{riotCap}}, below every riot. Guided tutorial: a tour of the first month with a practice decision."
+        "body": "Chosen on the New Game screen. Regional play (on by default): you build, power and police the six regions one by one. Switch it off to run one India: the screens show national figures, and every order goes where it is needed most (facilities where coverage is thinnest, officers where the force per head is thinnest); the regions still exist underneath, so unrest can boil over in one part of the country. No wars: no country can attack India and India cannot declare war. No riots: unrest is held at {{riotCap}}, below every riot. Guided tutorial: a tour of the first month with a practice decision."
       },
       "approval": {
         "title": "Approval",

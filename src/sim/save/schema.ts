@@ -223,7 +223,7 @@ export const gameStateSchema = z.object({
   meta: z.object({
     seed: uint32,
     difficulty: z.enum(DIFFICULTIES),
-    options: z.object({ noWars: z.boolean(), noRiots: z.boolean(), tutorial: z.boolean() }),
+    options: z.object({ noWars: z.boolean(), noRiots: z.boolean(), tutorial: z.boolean(), regions: z.boolean() }),
     presidentName: z.string().min(1),
     startDate: date,
     endless: z.boolean(),
@@ -304,7 +304,7 @@ export const gameStateSchema = z.object({
       z.object({
         id: z.string(),
         facility: z.enum(FACILITIES),
-        region: z.enum(REGIONS),
+        region: z.enum(REGIONS).nullable(),
         quantity: z.number().int().positive(),
         cost: z.number().min(0),
         startedTick: tick,

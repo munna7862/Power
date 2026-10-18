@@ -1,5 +1,6 @@
 import { EVENT_CONTENT, isRiotEvent, MAX_REPEATS, NO_RIOTS_UNREST_CAP, type Difficulty } from '../../src/sim';
 import { balancedBot, passiveBot } from './bots';
+import { governanceStats, type GovernanceStats } from './governance';
 import { simulate, type Kpi, type RunResult } from './simulate';
 
 const share = (runs: RunResult[], test: (r: RunResult) => boolean) =>
@@ -53,16 +54,24 @@ export interface OptionProbe {
   /** Runs with "no riots": highest unrest seen on any day, and riot events fired. */
   peakUnrestWithNoRiots: number;
   riotEventsWithNoRiots: number;
+  /** Balanced games on Normal with Regional play off (Sprint 8.10). */
+  national: RunResult[];
   runs: number;
 }
 
-/** Plays hands-off and balanced games with each option switched on (hands-off games invite trouble). */
-export function probeOptions(seeds: number, years: number): OptionProbe {
+/**
+ * Plays hands-off and balanced games with each option switched on (hands-off games invite trouble), and balanced
+ * games on Normal in national play, over `nationalSeeds` seeds so they compare with the regional runs.
+ */
+export function probeOptions(seeds: number, years: number, nationalSeeds = seeds): OptionProbe {
   const noWars = [passiveBot, balancedBot].flatMap((bot) =>
     Array.from({ length: seeds }, (_, i) => simulate(bot, i + 1, years, 'hard', { noWars: true })),
   );
   const noRiots = [passiveBot, balancedBot].flatMap((bot) =>
     Array.from({ length: seeds }, (_, i) => simulate(bot, i + 1, years, 'hard', { noRiots: true })),
+  );
+  const national = Array.from({ length: nationalSeeds }, (_, i) =>
+    simulate(balancedBot, i + 1, years, 'normal', { regions: false }),
   );
   const riotEvents = (r: RunResult) =>
     Object.entries(r.fires)
@@ -73,7 +82,8 @@ export function probeOptions(seeds: number, years: number): OptionProbe {
       .length,
     peakUnrestWithNoRiots: Math.max(...noRiots.map((r) => r.peakUnrest)),
     riotEventsWithNoRiots: noRiots.reduce((s, r) => s + riotEvents(r), 0),
-    runs: noWars.length + noRiots.length,
+    national,
+    runs: noWars.length + noRiots.length + national.length,
   };
 }
 
@@ -81,13 +91,21 @@ export function probeOptions(seeds: number, years: number): OptionProbe {
  * Phase 6 KPI bands: a term is winnable but tense on Normal, the difficulties are clearly apart, random
  * events rarely repeat, and the "no wars" and "no riots" options do what they say.
  */
-export function evaluateRelease(byDifficulty: Record<Difficulty, RunResult[]>, options: OptionProbe): Kpi[] {
+export function evaluateRelease(
+  byDifficulty: Record<Difficulty, RunResult[]>,
+  options: OptionProbe,
+  opening: GovernanceStats,
+): Kpi[] {
   const balanced = (d: Difficulty) => byDifficulty[d].filter((r) => r.bot === 'balanced');
   const win = (d: Difficulty) => share(balanced(d), (r) => r.reelected);
   const all = Object.values(byDifficulty).flat();
   const worst = worstRepeat(all);
   const served = balanced('normal').filter((r) => r.endedInYear === null);
   const variety = served.reduce((s, r) => s + distinctEvents(r), 0) / Math.max(1, served.length);
+  const nationalWin = share(options.national, (r) => r.reelected);
+  const nationalTerms = options.national.filter((r) => r.endedInYear === null).map((r) => governanceStats(r.final));
+  const nationalPolice = nationalTerms.filter((s) => s.police >= 0.95).length / Math.max(1, nationalTerms.length);
+  const nationalCoverage = nationalTerms.reduce((s, x) => s + x.coverage, 0) / Math.max(1, nationalTerms.length);
   return [
     {
       id: 'normal-winnable-but-tense',
@@ -130,6 +148,19 @@ export function evaluateRelease(byDifficulty: Record<Difficulty, RunResult[]>, o
       description: `With "no riots" on, unrest never rises above ${NO_RIOTS_UNREST_CAP} and no riot event fires`,
       pass: options.peakUnrestWithNoRiots <= NO_RIOTS_UNREST_CAP && options.riotEventsWithNoRiots === 0,
       detail: `peak ${options.peakUnrestWithNoRiots.toFixed(1)}, ${options.riotEventsWithNoRiots} riot events`,
+    },
+    {
+      id: 'national-play-comparable',
+      description: 'With Regional play off, balanced re-election on Normal is within 10 points of regional play',
+      pass: Math.abs(nationalWin - win('normal')) <= 0.1,
+      detail: `${percent(nationalWin)} vs ${percent(win('normal'))}`,
+    },
+    {
+      id: 'national-play-governed',
+      description:
+        'With Regional play off, every region keeps ≥ 95% of the opening police per head in ≥ 90% of balanced terms, and mean coverage ends ≥ 1 point above the opening network',
+      pass: nationalPolice >= 0.9 && nationalCoverage >= opening.coverage + 0.01,
+      detail: `police ${percent(nationalPolice)} of terms; coverage ${(nationalCoverage * 100).toFixed(1)}% vs ${(opening.coverage * 100).toFixed(1)}%`,
     },
   ];
 }

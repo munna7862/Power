@@ -60,6 +60,7 @@ export {
   effectiveCoverage,
   explainCoverage,
   facilitiesForTarget,
+  facilityCount,
   facilitiesIn,
   facilityUpkeep,
   regionPopulation,
@@ -456,3 +457,29 @@ export {
 export { UNAVAILABLE, bestAction, scoreActions, type AiScoring } from './diplomacy/ai';
 export { reputationTarget } from './diplomacy/monthly';
 export { countriesInConflict, hasPact, pickCountry } from './diplomacy/world';
+export {
+  eventPlace,
+  fillLowest,
+  homeRegion,
+  placeName,
+  regionalPlay,
+  splitCloseIndustry,
+  splitDecommission,
+  splitDemolish,
+  splitFacilities,
+  splitOfficers,
+  splitStations,
+  type Share,
+} from './national/split';
+export {
+  hottestRegion,
+  nationalCrime,
+  nationalCrimeTarget,
+  nationalHeadcountRatio,
+  nationalOfficers,
+  nationalOfficersForRatio,
+  nationalStations,
+  nationalStationsNeeded,
+  nationalPoliceRatio,
+  nationalUnrest,
+} from './national/view';

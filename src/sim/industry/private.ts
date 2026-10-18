@@ -2,6 +2,7 @@ import { INDUSTRY_CONTENT } from '../content/goods';
 import { INDUSTRIES, REGION_LABELS, REGIONS, type IndustryId, type RegionId } from '../content/ids';
 import type { Rng } from '../engine/rng';
 import { appendLog } from '../state/log';
+import { regionalPlay } from '../national/split';
 import type { GameState } from '../state/types';
 import { CLIMATE_DEAD_BAND, PRIVATE_RESPONSE } from './constants';
 import { changePlants } from './build';
@@ -32,7 +33,7 @@ export function privateInvestment(state: GameState, rng: Rng): GameState {
     if (change === 0) continue;
     next = changePlants(next, i, region, 'private', change);
     (change > 0 ? opened : closed).push(
-      `${Math.abs(change)} × ${INDUSTRY_CONTENT[i].name.toLowerCase()} (${REGION_LABELS[region]})`,
+      `${Math.abs(change)} × ${INDUSTRY_CONTENT[i].name.toLowerCase()}${regionalPlay(state) ? ` (${REGION_LABELS[region]})` : ''}`,
     );
   }
   if (opened.length > 0) {

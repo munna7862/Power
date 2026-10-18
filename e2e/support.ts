@@ -32,12 +32,13 @@ export async function startGame(
   page: Page,
   name = 'Asha Rao',
   difficulty = 'Normal',
-  options: { tutorial?: boolean; noWars?: boolean; noRiots?: boolean } = {},
+  options: { tutorial?: boolean; noWars?: boolean; noRiots?: boolean; regions?: boolean } = {},
 ): Promise<void> {
   await page.getByRole('button', { name: 'New Game' }).click();
   await page.getByLabel("President's name").fill(name);
   await page.getByRole('radio', { name: new RegExp(difficulty) }).check();
   await page.getByRole('checkbox', { name: /Guided tutorial/ }).setChecked(options.tutorial ?? false);
+  await page.getByRole('checkbox', { name: /Regional play/ }).setChecked(options.regions ?? true);
   await page.getByRole('checkbox', { name: /No wars/ }).setChecked(options.noWars ?? false);
   await page.getByRole('checkbox', { name: /No riots/ }).setChecked(options.noRiots ?? false);
   await page.getByRole('button', { name: 'Begin term' }).click();

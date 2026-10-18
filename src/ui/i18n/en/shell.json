@@ -55,6 +55,10 @@
         "title": "Guided tutorial",
         "text": "A short tour of your first month: the budget, your departments, a practice decision and the map."
       },
+      "regions": {
+        "title": "Regional play",
+        "text": "Build schools, power and police region by region. Switch off to run one India: orders go wherever they are needed most."
+      },
       "noWars": {
         "title": "No wars",
         "text": "No country goes to war with India, and India cannot declare war."

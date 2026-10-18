@@ -24,6 +24,7 @@ import { Button, Modal, Panel } from '../../design/primitives';
 import { formatCrore } from '../../format';
 import { t as translate } from '../../i18n';
 import gameStyles from '../../screens/game.module.css';
+import { placePhrase } from '../place';
 import styles from '../views.module.css';
 import { Bar, BarRow, CentreBar } from './parts';
 import { daysLeft } from './progress';
@@ -144,7 +145,7 @@ function WarCard({ game, war }: { game: GameState; war: War }) {
             {t('war.annexNote', {
               gdp: (content.gdpShare * 100).toFixed(1),
               population: (content.populationShare * 100).toFixed(1),
-              region: t(`regions.${content.region}`),
+              region: placePhrase(game.meta.options.regions ? content.region : null),
             })}
           </p>
         </div>

@@ -15,6 +15,7 @@ import {
 import { gameStore } from '../../../store';
 import { Button, Panel } from '../../design/primitives';
 import { formatCrore } from '../../format';
+import { placeName } from '../place';
 import styles from '../views.module.css';
 
 const daysUntil = (game: GameState, tick: number) => Math.max(0, tick - game.clock.tick);
@@ -31,7 +32,7 @@ export function OperationsPanel({ game, className }: { game: GameState; classNam
           {security.plots.map((p) => (
             <li key={p.id} className={styles.riskRow} data-danger="true">
               <span className={styles.personName}>{p.group}</span>
-              <span>{t(`regions.${p.region}`)}</span>
+              <span>{placeName(game.meta.options.regions ? p.region : null)}</span>
               <span className={styles.muted}>{t('security.strikesIn', { count: daysUntil(game, p.strikeTick) })}</span>
             </li>
           ))}

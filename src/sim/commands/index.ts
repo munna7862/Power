@@ -141,6 +141,7 @@ import {
   validateStations,
   validateUnit,
 } from '../police/actions';
+import { homeRegion } from '../national/split';
 
 /** Player actions. Every change a player makes to GameState goes through dispatch(). */
 export type Command =
@@ -149,16 +150,16 @@ export type Command =
   | { type: 'MARK_ALL_LOG_READ' }
   | { type: 'ENACT_BUDGET'; proposal: BudgetProposal }
   | { type: 'UPGRADE_SERVICE'; department: MinistryId; service: ServiceId }
-  | { type: 'BUILD_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
+  | { type: 'BUILD_FACILITY'; facility: FacilityId; region?: RegionId; quantity: number }
   | { type: 'CANCEL_BUILD'; orderId: string }
-  | { type: 'DEMOLISH_FACILITY'; facility: FacilityId; region: RegionId; quantity: number }
-  | { type: 'BUILD_PLANT'; plant: PlantId; region: RegionId; quantity: number }
+  | { type: 'DEMOLISH_FACILITY'; facility: FacilityId; region?: RegionId; quantity: number }
+  | { type: 'BUILD_PLANT'; plant: PlantId; region?: RegionId; quantity: number }
   | { type: 'CANCEL_PLANT'; orderId: string }
-  | { type: 'DECOMMISSION_PLANT'; plant: PlantId; region: RegionId; quantity: number }
-  | { type: 'BUILD_INDUSTRY'; industry: IndustryId; region: RegionId; quantity: number }
-  | { type: 'LICENSE_PLANT'; industry: IndustryId; region: RegionId }
+  | { type: 'DECOMMISSION_PLANT'; plant: PlantId; region?: RegionId; quantity: number }
+  | { type: 'BUILD_INDUSTRY'; industry: IndustryId; region?: RegionId; quantity: number }
+  | { type: 'LICENSE_PLANT'; industry: IndustryId; region?: RegionId }
   | { type: 'CANCEL_INDUSTRY'; orderId: string }
-  | { type: 'CLOSE_INDUSTRY'; industry: IndustryId; region: RegionId; quantity: number }
+  | { type: 'CLOSE_INDUSTRY'; industry: IndustryId; region?: RegionId; quantity: number }
   | { type: 'SELL_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'BUY_GOODS'; good: GoodId; partner: CountryId; quantity: number }
   | { type: 'SELL_ALL_SURPLUS' }
@@ -168,8 +169,8 @@ export type Command =
   | { type: 'SET_TRADE_CONTROL'; good: GoodId; control: TradeControl }
   | { type: 'SIGN_SUPPLY_CONTRACT'; good: GoodId; partner: CountryId; side: TradeSide; quantity: number; years: number }
   /** Positive recruits, negative dismisses. */
-  | { type: 'RECRUIT_POLICE'; region: RegionId; officers: number }
-  | { type: 'BUILD_STATION'; region: RegionId; quantity: number }
+  | { type: 'RECRUIT_POLICE'; region?: RegionId; officers: number }
+  | { type: 'BUILD_STATION'; region?: RegionId; quantity: number }
   | { type: 'UPGRADE_POLICE_EQUIPMENT' }
   /** Positive raises, negative disbands. */
   | { type: 'RAISE_UNIT'; unit: PoliceUnitId; quantity: number }
@@ -315,8 +316,10 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'BUILD_FACILITY': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateBuild(state, command.facility, command.region, command.quantity);
-      return problem ? fail(state, problem) : ok(startBuild(state, command.facility, command.region, command.quantity));
+      const problem = validateBuild(state, command.facility, command.region ?? null, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(startBuild(state, command.facility, command.region ?? null, command.quantity));
     }
     case 'CANCEL_BUILD': {
       if (gameOver) return fail(state, 'The game is over.');
@@ -325,13 +328,17 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'DEMOLISH_FACILITY': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateDemolish(state, command.facility, command.region, command.quantity);
-      return problem ? fail(state, problem) : ok(demolish(state, command.facility, command.region, command.quantity));
+      const problem = validateDemolish(state, command.facility, command.region ?? null, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(demolish(state, command.facility, command.region ?? null, command.quantity));
     }
     case 'BUILD_PLANT': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validatePlant(state, command.plant, command.region, command.quantity);
-      return problem ? fail(state, problem) : ok(startPlant(state, command.plant, command.region, command.quantity));
+      const problem = validatePlant(state, command.plant, command.region ?? homeRegion(), command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(startPlant(state, command.plant, command.region ?? homeRegion(), command.quantity));
     }
     case 'CANCEL_PLANT': {
       if (gameOver) return fail(state, 'The game is over.');
@@ -340,20 +347,22 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'DECOMMISSION_PLANT': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateDecommission(state, command.plant, command.region, command.quantity);
-      return problem ? fail(state, problem) : ok(decommission(state, command.plant, command.region, command.quantity));
+      const problem = validateDecommission(state, command.plant, command.region ?? null, command.quantity);
+      return problem
+        ? fail(state, problem)
+        : ok(decommission(state, command.plant, command.region ?? null, command.quantity));
     }
     case 'BUILD_INDUSTRY': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateIndustry(state, command.industry, command.region, command.quantity);
+      const problem = validateIndustry(state, command.industry, command.region ?? homeRegion(), command.quantity);
       return problem
         ? fail(state, problem)
-        : ok(startIndustry(state, command.industry, command.region, command.quantity));
+        : ok(startIndustry(state, command.industry, command.region ?? homeRegion(), command.quantity));
     }
     case 'LICENSE_PLANT': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateLicence(state, command.industry, command.region);
-      return problem ? fail(state, problem) : ok(licencePlant(state, command.industry, command.region));
+      const problem = validateLicence(state, command.industry, command.region ?? homeRegion());
+      return problem ? fail(state, problem) : ok(licencePlant(state, command.industry, command.region ?? homeRegion()));
     }
     case 'CANCEL_INDUSTRY': {
       if (gameOver) return fail(state, 'The game is over.');
@@ -362,10 +371,10 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'CLOSE_INDUSTRY': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateCloseIndustry(state, command.industry, command.region, command.quantity);
+      const problem = validateCloseIndustry(state, command.industry, command.region ?? null, command.quantity);
       return problem
         ? fail(state, problem)
-        : ok(closeIndustry(state, command.industry, command.region, command.quantity));
+        : ok(closeIndustry(state, command.industry, command.region ?? null, command.quantity));
     }
     case 'SELL_GOODS': {
       if (gameOver) return fail(state, 'The game is over.');
@@ -410,13 +419,13 @@ export function dispatch(state: GameState, command: Command): CommandResult {
     }
     case 'RECRUIT_POLICE': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateRecruit(state, command.region, command.officers);
-      return problem ? fail(state, problem) : ok(recruit(state, command.region, command.officers));
+      const problem = validateRecruit(state, command.region ?? null, command.officers);
+      return problem ? fail(state, problem) : ok(recruit(state, command.region ?? null, command.officers));
     }
     case 'BUILD_STATION': {
       if (gameOver) return fail(state, 'The game is over.');
-      const problem = validateStations(state, command.region, command.quantity);
-      return problem ? fail(state, problem) : ok(buildStations(state, command.region, command.quantity));
+      const problem = validateStations(state, command.region ?? null, command.quantity);
+      return problem ? fail(state, problem) : ok(buildStations(state, command.region ?? null, command.quantity));
     }
     case 'UPGRADE_POLICE_EQUIPMENT': {
       if (gameOver) return fail(state, 'The game is over.');

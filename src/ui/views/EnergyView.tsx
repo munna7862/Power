@@ -22,6 +22,7 @@ import {
   plantUpkeep,
   production,
   productionBy,
+  homeRegion,
   REGIONS,
   shortfall,
   shortfallGrowth,
@@ -38,6 +39,7 @@ import { formatCrore, pct, pts, signed } from '../format';
 import gameStyles from '../screens/game.module.css';
 import { Bar } from './military/parts';
 import { daysLeft, shareDone } from './military/progress';
+import { placeName, placePhrase, useRegional } from './place';
 import styles from './views.module.css';
 
 const SOURCES: readonly DemandSource[] = ['homes', 'industry', 'services', 'public'];
@@ -168,6 +170,7 @@ function SupplyPanel({ game }: { game: GameState }) {
 
 function Projects({ game }: { game: GameState }) {
   const { t } = useTranslation();
+  const regional = useRegional();
   const { dispatch } = gameStore.getState();
   const { queue } = game.energy;
   const upkeep = plantUpkeep(game).industry;
@@ -187,7 +190,8 @@ function Projects({ game }: { game: GameState }) {
           <ul className={styles.riskList} aria-label={t('energy.projects')}>
             {queue.map((order) => {
               const name = PLANT_CONTENT[order.plant].name;
-              const region = t(`regions.${order.region}`);
+              const region = placeName(regional ? order.region : null);
+              const phrase = placePhrase(regional ? order.region : null);
               const refund = formatCrore(Math.round(order.cost * PLANT_CANCEL_REFUND));
               return (
                 <li key={order.id} className={styles.reportCard} data-testid="plant-order">
@@ -208,7 +212,7 @@ function Projects({ game }: { game: GameState }) {
                     </span>
                     <Button
                       variant="ghost"
-                      aria-label={t('energy.cancelLabel', { name, region, refund })}
+                      aria-label={t('energy.cancelLabel', { name, region: phrase, refund })}
                       onClick={() => dispatch({ type: 'CANCEL_PLANT', orderId: order.id })}
                     >
                       {t('energy.cancel', { refund })}
@@ -228,14 +232,16 @@ function Projects({ game }: { game: GameState }) {
   );
 }
 
-function PlantCard({ game, region, plant }: { game: GameState; region: RegionId; plant: PlantId }) {
+/** One plant type, built in a region or (null, national play) for all of India. */
+function PlantCard({ game, region, plant }: { game: GameState; region: RegionId | null; plant: PlantId }) {
   const { t } = useTranslation();
   const { dispatch } = gameStore.getState();
   const [quantity, setQuantity] = useState(1);
   const c = PLANT_CONTENT[plant];
-  const regionName = t(`regions.${region}`);
+  const regionName = placePhrase(region);
   const cost = formatCrore(plantCost(plant, quantity));
-  const buildProblem = validatePlant(game, plant, region, quantity);
+  const where = region === null ? {} : { region };
+  const buildProblem = validatePlant(game, plant, region ?? homeRegion(), quantity);
   const closeProblem = validateDecommission(game, plant, region, quantity);
   const gap = plantsForMargin(game, plant);
   return (
@@ -245,11 +251,16 @@ function PlantCard({ game, region, plant }: { game: GameState; region: RegionId;
         <div className={styles.muted}>{c.summary}</div>
         <div className={styles.facilityStats}>
           <span data-testid={`plants-${plant}`}>
-            {t('energy.plantLine', {
-              inRegion: groupIndian(game.energy.plants[region][plant]),
-              total: groupIndian(plantsOf(game, plant)),
-              output: plantOutput(plant).toFixed(2),
-            })}
+            {region === null
+              ? t('energy.plantLineNational', {
+                  total: groupIndian(plantsOf(game, plant)),
+                  output: plantOutput(plant).toFixed(2),
+                })
+              : t('energy.plantLine', {
+                  inRegion: groupIndian(game.energy.plants[region][plant]),
+                  total: groupIndian(plantsOf(game, plant)),
+                  output: plantOutput(plant).toFixed(2),
+                })}
           </span>
           <span>
             {t('energy.plantCosts', {
@@ -295,7 +306,7 @@ function PlantCard({ game, region, plant }: { game: GameState; region: RegionId;
           disabled={buildProblem !== null}
           title={buildProblem ?? undefined}
           aria-label={t('energy.buildLabel', { count: quantity, name: c.name, region: regionName, cost })}
-          onClick={() => dispatch({ type: 'BUILD_PLANT', plant, region, quantity })}
+          onClick={() => dispatch({ type: 'BUILD_PLANT', plant, ...where, quantity })}
         >
           {t('energy.build', { cost })}
         </Button>
@@ -303,7 +314,7 @@ function PlantCard({ game, region, plant }: { game: GameState; region: RegionId;
           disabled={closeProblem !== null}
           title={closeProblem ?? undefined}
           aria-label={t('energy.decommissionLabel', { count: quantity, name: c.name, region: regionName })}
-          onClick={() => dispatch({ type: 'DECOMMISSION_PLANT', plant, region, quantity })}
+          onClick={() => dispatch({ type: 'DECOMMISSION_PLANT', plant, ...where, quantity })}
         >
           {t('energy.decommission')}
         </Button>
@@ -315,8 +326,10 @@ function PlantCard({ game, region, plant }: { game: GameState; region: RegionId;
 export function EnergyView() {
   const { t } = useTranslation();
   const game = useGame((s) => s.game);
-  const [region, setRegion] = useState<RegionId>('north');
+  const regional = useRegional();
+  const [chosen, setRegion] = useState<RegionId>('north');
   if (!game) return null;
+  const region = regional ? chosen : null;
 
   return (
     <>
@@ -334,19 +347,25 @@ export function EnergyView() {
         <Projects game={game} />
 
         <Panel
-          title={t('energy.buildIn', { region: t(`regions.${region}`) })}
+          title={t('energy.buildIn', { region: placePhrase(region) })}
           className={gameStyles.span12}
           actions={
-            <div className={`${styles.segmented} ${styles.segmentedWrap}`} role="group" aria-label={t('energy.region')}>
-              {REGIONS.map((r) => (
-                <button key={r} type="button" aria-pressed={region === r} onClick={() => setRegion(r)}>
-                  {t(`regions.${r}`)}
-                </button>
-              ))}
-            </div>
+            regional && (
+              <div
+                className={`${styles.segmented} ${styles.segmentedWrap}`}
+                role="group"
+                aria-label={t('energy.region')}
+              >
+                {REGIONS.map((r) => (
+                  <button key={r} type="button" aria-pressed={region === r} onClick={() => setRegion(r)}>
+                    {t(`regions.${r}`)}
+                  </button>
+                ))}
+              </div>
+            )
           }
         >
-          <div className={styles.facilityList} key={region}>
+          <div className={styles.facilityList} key={region ?? 'india'}>
             {PLANTS.map((p) => (
               <PlantCard key={p} game={game} region={region} plant={p} />
             ))}

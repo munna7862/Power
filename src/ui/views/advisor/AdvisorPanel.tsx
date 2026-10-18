@@ -20,7 +20,7 @@ export function AdvisorPanel({ game }: { game: GameState }) {
       ) : (
         <ul className={styles.riskList} aria-label={t('advisor.title')}>
           {advice.map((a, i) => {
-            const text = adviceText(a);
+            const text = adviceText(a, game.meta.options.regions);
             const view = adviceView(a);
             const screen = t(`nav.views.${view}`);
             return (

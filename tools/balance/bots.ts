@@ -47,6 +47,9 @@ import {
   facilitiesForTarget,
   facilitiesIn,
   REGION_POPULATION_SHARE,
+  homeRegion,
+  nationalOfficersForRatio,
+  nationalStationsNeeded,
   REGIONS,
   validateBuild,
   type CoverageArea,
@@ -149,12 +152,31 @@ const PROJECT_BUDGET = 6_000;
 /**
  * Builds toward the coverage goal where it buys the most per rupee: the area that counts most, in the region with
  * the most people, at the lowest price per person served. Two projects a month at most, while debt is manageable.
+ * In national play it orders for all of India and lets the order open where coverage is thinnest.
  */
 function buildPublicWorks(state: GameState): GameState {
   let next = state;
   for (let i = 0; i < 2; i++) {
     if (debtToGdp(next.economy) > 0.7 || next.nation.treasury < 50_000) break;
     const busy = new Set(next.infrastructure.queue.map((o) => `${o.region}/${FACILITY_CONTENT[o.facility].area}`));
+    if (!next.meta.options.regions) {
+      const area = [...COVERAGE_AREAS]
+        .filter((a) => !busy.has(`null/${a}`) && facilitiesForTarget(next, null, BEST_BUY[a], COVERAGE_GOAL) > 0)
+        .sort((a, b) => {
+          const value = (x: CoverageArea) =>
+            (AREA_VALUE[x] * FACILITY_CONTENT[BEST_BUY[x]].capacity) / FACILITY_CONTENT[BEST_BUY[x]].cost;
+          return value(b) - value(a);
+        })[0];
+      if (!area) break;
+      const facility = BEST_BUY[area];
+      const quantity = Math.min(
+        facilitiesForTarget(next, null, facility, COVERAGE_GOAL),
+        Math.floor(PROJECT_BUDGET / FACILITY_CONTENT[facility].cost),
+      );
+      if (quantity < 1 || validateBuild(next, facility, null, quantity)) break;
+      next = apply(next, { type: 'BUILD_FACILITY', facility, quantity });
+      continue;
+    }
     const options = REGIONS.flatMap((region) =>
       COVERAGE_AREAS.filter((a) => !busy.has(`${region}/${a}`) && coverage(next, region, a) < COVERAGE_GOAL).map(
         (area) => {
@@ -188,7 +210,18 @@ function buildPublicWorks(state: GameState): GameState {
 function managePolice(state: GameState): GameState {
   let next = state;
   if (debtToGdp(next.economy) > 0.75) return next;
-  for (const region of REGIONS) {
+  if (!next.meta.options.regions) {
+    // National play: one order for all of India; the officers go where the force per head is thinnest.
+    const officers = nationalOfficersForRatio(next, 0.99);
+    if (officers > 0 && !validateRecruit(next, null, officers)) {
+      next = apply(next, { type: 'RECRUIT_POLICE', officers });
+    }
+    const stations = nationalStationsNeeded(next);
+    if (stations > 0 && !validateStations(next, null, stations)) {
+      next = apply(next, { type: 'BUILD_STATION', quantity: stations });
+    }
+  }
+  for (const region of next.meta.options.regions ? REGIONS : []) {
     if (policeRatio(next, region) >= 0.99) continue;
     const officers = officersForRatio(next, region);
     if (officers > 0 && !validateRecruit(next, region, officers)) {
@@ -222,8 +255,15 @@ function manageEnergy(state: GameState): GameState {
     MAX_PLANT_ORDER,
     Math.floor(POWER_BUDGET / PLANT_CONTENT.solar.cost),
   );
-  if (quantity < 1 || validatePlant(state, 'solar', 'west', quantity)) return state;
-  return apply(state, { type: 'BUILD_PLANT', plant: 'solar', region: 'west', quantity });
+  // In national play the plant goes wherever national orders go; the grid is national either way.
+  const region = state.meta.options.regions ? 'west' : homeRegion();
+  if (quantity < 1 || validatePlant(state, 'solar', region, quantity)) return state;
+  return apply(
+    state,
+    state.meta.options.regions
+      ? { type: 'BUILD_PLANT', plant: 'solar', region, quantity }
+      : { type: 'BUILD_PLANT', plant: 'solar', quantity },
+  );
 }
 
 /**
@@ -234,11 +274,13 @@ function manageEnergy(state: GameState): GameState {
 function manageIndustry(state: GameState): GameState {
   let next = state;
   if (debtToGdp(next.economy) > 0.75) return next;
-  const region = REGIONS[next.clock.tick % REGIONS.length] ?? 'north';
+  const regional = next.meta.options.regions;
+  const region = regional ? (REGIONS[next.clock.tick % REGIONS.length] ?? 'north') : homeRegion();
+  const where = regional ? { region } : {};
   const licence = [...INDUSTRIES]
     .filter((i) => !validateLicence(next, i, region))
     .sort((a, b) => plantProfit(next, b) - plantProfit(next, a))[0];
-  if (licence) next = apply(next, { type: 'LICENSE_PLANT', industry: licence, region });
+  if (licence) next = apply(next, { type: 'LICENSE_PLANT', industry: licence, ...where });
 
   // Then one state plant a month: for a good in short supply first, else for the biggest import bill.
   if (next.nation.treasury < 100_000) return next;
@@ -250,7 +292,7 @@ function manageIndustry(state: GameState): GameState {
       (a, b) => plantProfit(next, b) / INDUSTRY_CONTENT[b].cost - plantProfit(next, a) / INDUSTRY_CONTENT[a].cost,
     )[0];
     if (maker && !validateIndustry(next, maker, region, 1)) {
-      return apply(next, { type: 'BUILD_INDUSTRY', industry: maker, region, quantity: 1 });
+      return apply(next, { type: 'BUILD_INDUSTRY', industry: maker, ...where, quantity: 1 });
     }
   }
   return next;

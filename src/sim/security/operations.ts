@@ -1,5 +1,6 @@
 import { allEfficiencies } from '../economy/model';
-import { REGION_LABELS, REGIONS, type OperationKind } from '../content/ids';
+import { REGIONS, type OperationKind } from '../content/ids';
+import { placeName } from '../national/split';
 import type { Rng } from '../engine/rng';
 import { addTimedModifier } from '../politics/policy';
 import { appendLog } from '../state/log';
@@ -91,7 +92,7 @@ export function launchOperation(state: GameState, kind: OperationKind, rng: Rng,
         severity: 'warning',
         category: 'terror',
         title: 'Raid goes wrong',
-        body: `A raid found the wrong house and the wrong people. Protests broke out in the ${REGION_LABELS[region]}, and the threat level has crept up.`,
+        body: `A raid found the wrong house and the wrong people. Protests broke out in ${placeName(state, region)}, and the threat level has crept up.`,
       },
     );
   }
@@ -123,7 +124,7 @@ export function launchOperation(state: GameState, kind: OperationKind, rng: Rng,
         severity: 'good',
         category: 'terror',
         title: 'Plot stopped by the raid',
-        body: `Documents seized in the raid exposed ${target.group}'s plan for the ${REGION_LABELS[target.region]}. The attack will not happen.`,
+        body: `Documents seized in the raid exposed ${target.group}'s plan for ${placeName(state, target.region)}. The attack will not happen.`,
       });
     } else {
       next = {

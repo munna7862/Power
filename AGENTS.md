@@ -79,7 +79,14 @@ Rules for every human and AI contributor. The full design lives in the [master p
 ## Difficulty, options and the term
 
 - Everything that differs between Easy, Normal and Hard is in one table, `src/sim/state/difficulty.ts` (`rulesFor(state)`). Read rules from there, never by comparing `meta.difficulty` in a system.
-- New Game options live in `state.meta.options` (`noWars`, `noRiots`, `tutorial`). A new option needs the schema, a migration default, a probe in `tools/balance/release.ts` and a band.
+- New Game options live in `state.meta.options` (`noWars`, `noRiots`, `tutorial`, `regions`). A new option needs the schema, a migration default, a probe in `tools/balance/release.ts` and a band.
+
+## National play
+
+- With `meta.options.regions` off, the President runs one India, but the six regions stay in the simulation: there is one set of formulas for both modes. Never add a national-only formula.
+- Every regional command (`BUILD_FACILITY`, `DEMOLISH_FACILITY`, `BUILD_PLANT`, `DECOMMISSION_PLANT`, `BUILD_INDUSTRY`, `LICENSE_PLANT`, `CLOSE_INDUSTRY`, `RECRUIT_POLICE`, `BUILD_STATION`) must accept a missing `region`, and in both modes it is placed by `src/sim/national/split.ts`, worst region first: facilities open (queued with `region: null`) where coverage of their area is thinnest, officers go where the force per head is thinnest, stations where the most officers have none, and closures come from where there is most. Plants and factories go to `homeRegion()`, since the grid and the goods market are national. A new regional command needs the same treatment.
+- National figures come from `src/sim/national/view.ts`: unrest is the hottest region's (that is where riots fire), and the rest are population-weighted. Coverage helpers take `null` for India.
+- The inbox names places through `placeName()`, and event text through `fillText()` (`the {region}` / `The {region}` become "the affected area"), so a national game never names a region. The UI does the same with `placeName` / `placePhrase` in `src/ui/views/place.ts`.
 - The election and voter fatigue are `src/sim/systems/term.ts`. Victory causes are `VICTORY_CAUSES`; "served the term" is `TERM_COMPLETE_CAUSES`. Endless mode (`meta.endless`) only follows a win.
 
 ## Desktop and release

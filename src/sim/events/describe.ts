@@ -1,6 +1,7 @@
 import { EVENT_CONTENT, type EventChoice, type EventContent, type EventEffect } from '../content/events';
 import { COUNTRY_CONTENT } from '../content/world';
-import { REGION_LABELS, type RegionId } from '../content/ids';
+import type { RegionId } from '../content/ids';
+import { eventPlace } from '../national/split';
 import type { ModifierTarget } from '../engine/modifiers';
 import { groupIndian } from '../engine/numberFormat';
 import { OPERATIONS } from '../security/constants';
@@ -75,7 +76,7 @@ export function describeEffect(
     }
     case 'unrest': {
       const delta = effect.delta * severity * scaleFactor(state, effect.scale);
-      const where = effect.where === 'all' ? 'nationwide' : `in the ${region ? REGION_LABELS[region] : 'region'}`;
+      const where = effect.where === 'all' ? 'nationwide' : `in ${region ? eventPlace(state, region) : 'the region'}`;
       return { text: `Unrest ${signed(delta, 0)} ${where}`, tone: delta > 0 ? 'bad' : 'good' };
     }
     case 'terror': {

@@ -22,7 +22,7 @@ import { formatCrore } from '../format';
 import { useTutorial } from '../tutorial/tutorialStore';
 import styles from './screens.module.css';
 
-const OPTION_IDS = ['tutorial', 'noWars', 'noRiots'] as const satisfies readonly (keyof GameOptions)[];
+const OPTION_IDS = ['tutorial', 'regions', 'noWars', 'noRiots'] as const satisfies readonly (keyof GameOptions)[];
 
 export function NewGame() {
   const { t } = useTranslation();
@@ -31,7 +31,12 @@ export function NewGame() {
   const [difficulty, setDifficulty] = useState<Difficulty>('normal');
   const [ideology, setIdeology] = useState<IdeologyId>(DEFAULT_IDEOLOGY);
   const [strategy, setStrategy] = useState<StrategyId>(DEFAULT_STRATEGY);
-  const [options, setOptions] = useState<GameOptions>({ tutorial: !tutorialSeen, noWars: false, noRiots: false });
+  const [options, setOptions] = useState<GameOptions>({
+    tutorial: !tutorialSeen,
+    regions: true,
+    noWars: false,
+    noRiots: false,
+  });
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
@@ -119,6 +124,7 @@ export function NewGame() {
             <label key={id} className={styles.option}>
               <input
                 type="checkbox"
+                data-testid={`option-${id}`}
                 checked={options[id]}
                 onChange={(e) => setOptions({ ...options, [id]: e.target.checked })}
               />
