@@ -118,7 +118,7 @@
       },
       "industry": {
         "title": "Industry and goods",
-        "body": "Mines, farms, mills and factories turn goods into other goods: crude into fuel, ore and coal into steel. The Industry screen builds state plants (paid up front, profits to the treasury) and licenses private ones when an investor would make money (a fee now, corporate tax later). A plant short of its inputs or of power slows down. Shortages raise prices; plants add jobs and output to their sector."
+        "body": "Mines, farms, mills and factories turn goods into other goods: crude into fuel, ore and coal into steel. The Industry screen builds state plants (paid up front, profits to the treasury) and licenses private ones when an investor would make money (a fee now, corporate tax later). It can also sell state plants to investors for about four years of their after-tax profit: cash now, in place of their profits later. A plant short of its inputs or of power slows down. Shortages raise prices; plants add jobs and output to their sector."
       },
       "tradeMarket": {
         "title": "The trade market",
@@ -126,7 +126,7 @@
       },
       "finance": {
         "title": "Money by the day",
-        "body": "The top bar shows the treasury and how much it changes each day this month. The Finance screen breaks it down: each department's cost per day (its allocation plus the upkeep of what it runs), salaries and pensions, interest, and every source of revenue. The figures are this month's settlement divided by its days, so they always agree. One-off receipts (licence fees, Trade Market sales, refunds on cancelled projects, windfalls and war reparations) go straight into the treasury and are listed separately, for this month so far and for last month."
+        "body": "The top bar shows the treasury and how much it changes each day this month. The Finance screen breaks it down: each department's cost per day (its allocation plus the upkeep of what it runs), salaries and pensions, interest, and every source of revenue. The figures are this month's settlement divided by its days, so they always agree. One-off receipts (licence fees, Trade Market sales, state plants sold, refunds on cancelled projects, windfalls and war reparations) go straight into the treasury and are listed separately, for this month so far and for last month."
       },
       "loans": {
         "title": "Loans",

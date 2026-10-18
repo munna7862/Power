@@ -52,6 +52,7 @@
       "sources": {
         "licenceFees": "Licence fees from investors",
         "tradeSales": "Trade Market sales",
+        "plantSales": "State plants sold to investors",
         "refunds": "Refunds on cancelled projects",
         "events": "Windfalls from events",
         "reparations": "War reparations"

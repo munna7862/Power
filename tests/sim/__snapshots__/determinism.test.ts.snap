@@ -38,7 +38,7 @@ exports[`determinism > matches the golden hash of a full balanced-bot term (revi
     "police": "d8d715c4",
     "politics": "golden-part",
     "rng": "a00c2c0f",
-    "schemaVersion": "17eb23f8",
+    "schemaVersion": "18eb258b",
     "security": "golden-part",
     "status": "7e24ca1b",
   },

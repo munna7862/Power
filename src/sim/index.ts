@@ -93,10 +93,12 @@ export {
 } from './industry/flows';
 export {
   industryCost,
+  salePrice,
   validateCancelIndustry,
   validateCloseIndustry,
   validateIndustry,
   validateLicence,
+  validateSellPlant,
 } from './industry/build';
 export { MAX_CONTRACT_YEARS, MAX_SUPPLY_CONTRACTS, WORLD_MARKET_DISCOUNT } from './market/constants';
 export {
