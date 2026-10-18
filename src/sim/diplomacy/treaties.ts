@@ -1,5 +1,6 @@
 import { SECTORS, type CountryId, type SectorId, type TreatyType } from '../content/ids';
 import { COUNTRY_CONTENT } from '../content/world';
+import { DEFAULT_TAX_RATES, TAX_BASE_SHARE } from '../economy/constants';
 import { nominalGdp } from '../economy/model';
 import { groupIndian } from '../engine/numberFormat';
 import type { Rng } from '../engine/rng';
@@ -82,10 +83,12 @@ export interface TradeEffect {
 export function tradeEffect(state: GameState, id: CountryId, sector: SectorId, value: number): TradeEffect {
   const share = value / nominalGdp(state.economy);
   const complement = COUNTRY_CONTENT[id]?.strengths.includes(sector) ? COMPLEMENT_BONUS : 1;
-  const customsBase = nominalGdp(state.economy) * 0.0727 * state.budget.taxRates.customs;
+  // Measured against customs at the default rate, never today's: the multiplier outlives any rate change,
+  // so a contract signed at a low rate must not turn into a huge bonus when the rate goes back up.
+  const customsBase = nominalGdp(state.economy) * TAX_BASE_SHARE.customs * DEFAULT_TAX_RATES.customs;
   return {
     growth: share * TRADE_GROWTH_PER_GDP * complement,
-    customs: (value * TRADE_CUSTOMS_YIELD) / Math.max(1, customsBase),
+    customs: (value * TRADE_CUSTOMS_YIELD) / customsBase,
   };
 }
 

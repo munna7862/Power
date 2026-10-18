@@ -124,6 +124,24 @@ describe('trade contracts', () => {
     expect(signed.log.at(-1)?.category).toBe('diplomacy');
   });
 
+  it('gives the same customs bonus whatever the customs rate was on the day of signing (DEF-01)', () => {
+    const atRate = (s: GameState, customs: number): GameState => ({
+      ...s,
+      budget: { ...s.budget, taxRates: { ...s.budget.taxRates, customs } },
+    });
+    const bonus = (s: GameState) => s.modifiers.find((m) => m.target === 'economy.customs')!.value;
+    const normal = signTrade(newGame(), 'USA', 'tech');
+    const signedAtZero = signTrade(atRate(newGame(), 0), 'USA', 'tech');
+    expect(bonus(signedAtZero)).toBeCloseTo(bonus(normal), 9);
+    expect(bonus(signedAtZero)).toBeLessThan(0.2);
+    // Raising customs afterwards brings in no more than a contract signed at that rate would.
+    const raised = atRate(signedAtZero, 0.1);
+    expect(projectMonth(raised, raised.budget).revenue.customs).toBeCloseTo(
+      projectMonth(normal, normal.budget).revenue.customs,
+      0,
+    );
+  });
+
   it('shows the odds the AI will use, and refuses blocked proposals', () => {
     const s = newGame();
     const low = tradeAcceptance(s, 'USA', 'tech', 50_000).chance;
