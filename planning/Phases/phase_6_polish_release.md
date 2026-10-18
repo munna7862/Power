@@ -117,7 +117,7 @@
 
 ### Deviations from the plan
 
-- **The re-election bar is 55% on every difficulty**, not "≥ 50% difficulty-scaled" as the master plan sketched. Balance showed a strong player settles near 72% approval, so a threshold alone could not make Normal tense; voter fatigue does the work and keeps the rule simple to explain. Hard's flat approval penalty was eased from −5 to −3 so that fatigue, not a fixed handicap, makes Hard hard.
+- **The re-election bar is 55% on every difficulty**, not "≥ 50% difficulty-scaled" as the master plan sketched. Balance showed a strong player settles near 72% approval, so a threshold alone could not make Normal tense; voter fatigue does the work and keeps the rule simple to explain. Hard's flat approval penalty was eased from −5 to −3 so that fatigue, not a fixed handicap, makes Hard hard. After the v1.0.0 QA fixes (DEF-05 to DEF-07 removed treaty loopholes the bot benefited from), it was eased again to −2.5, which puts the balanced bot back at about 30% re-election on Hard (26% on the 50 balance seeds, 35% on seeds 51–200).
 - **Audio is synthesised, not licensed.** The plan asked for royalty-free or CC0 files; generating the sound in code avoids third-party licences entirely.
 - **F1–F10, not F1–F7**: there are ten screens.
 - **Simulation text stays English.** Event stories, inbox reports and the sim's "Why?" labels come from `/content` and `src/sim`, not from the UI catalogue; translating them is part of the Hindi work in Phase 7. Where the UI showed a sim label for something it owns (growth drivers, sectors, relation levels, operations, drills), the UI now translates it from an id (`relationLevel()` was added for this).

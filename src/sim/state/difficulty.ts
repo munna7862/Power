@@ -79,7 +79,7 @@ export const DIFFICULTY_RULES: Record<Difficulty, DifficultyRules> = {
         label: 'Difficulty: Hard',
         target: 'politics.approvalTarget',
         kind: 'add',
-        value: -3,
+        value: -2.5,
         expiresAtTick: null,
       },
     ],
