@@ -22,7 +22,13 @@ import { formatCrore } from '../format';
 import { useTutorial } from '../tutorial/tutorialStore';
 import styles from './screens.module.css';
 
-const OPTION_IDS = ['tutorial', 'regions', 'noWars', 'noRiots'] as const satisfies readonly (keyof GameOptions)[];
+const OPTION_IDS = [
+  'tutorial',
+  'regions',
+  'noWars',
+  'noRiots',
+  'calmMonths',
+] as const satisfies readonly (keyof GameOptions)[];
 
 export function NewGame() {
   const { t } = useTranslation();
@@ -36,6 +42,7 @@ export function NewGame() {
     regions: true,
     noWars: false,
     noRiots: false,
+    calmMonths: false,
   });
 
   const submit = (e: FormEvent) => {

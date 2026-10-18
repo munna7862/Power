@@ -2,6 +2,7 @@ import {
   advanceDays,
   createInitialState,
   debtToGdp,
+  EVENT_CONTENT,
   TERM_COMPLETE_CAUSES,
   type Difficulty,
   type GameOptions,
@@ -41,15 +42,23 @@ export interface RunResult {
   fires: Record<string, number>;
   /** Highest regional unrest seen on any day. */
   peakUnrest: number;
+  /** Most random events (weight above 0) that fired in any one calendar month, counted from outside the sim. */
+  busiestMonth: number;
   final: GameState;
 }
 
 /** Every fire stamps the event's cooldown with a later tick, so a changed stamp is one fire. */
-const countFires = (before: GameState, after: GameState, fires: Record<string, number>) => {
+/** Counts the events that fired between two states and returns their ids. */
+const countFires = (before: GameState, after: GameState, fires: Record<string, number>): string[] => {
   const prev = before.events.cooldowns;
+  const fired: string[] = [];
   for (const [id, until] of Object.entries(after.events.cooldowns)) {
-    if (prev[id] !== until) fires[id] = (fires[id] ?? 0) + 1;
+    if (prev[id] !== until) {
+      fires[id] = (fires[id] ?? 0) + 1;
+      fired.push(id);
+    }
   }
+  return fired;
 };
 
 const finite = (v: unknown): boolean =>
@@ -67,6 +76,7 @@ export function simulate(
   const records: YearRecord[] = [];
   const fires: Record<string, number> = {};
   let peakUnrest = 0;
+  const randomByMonth: Record<string, number> = {};
   let endedInYear: number | null = null;
 
   for (let year = 1; year <= years; year++) {
@@ -77,7 +87,10 @@ export function simulate(
       do {
         const before = state;
         state = advanceDays(state, 1);
-        countFires(before, state, fires);
+        const random = countFires(before, state, fires).filter((id) => (EVENT_CONTENT[id]?.weight ?? 0) > 0);
+        // Events fire on the day just entered, so they count toward its month.
+        const month = `${state.clock.date.year}-${state.clock.date.month}`;
+        randomByMonth[month] = (randomByMonth[month] ?? 0) + random.length;
         peakUnrest = Math.max(peakUnrest, ...Object.values(state.security.unrest));
         if (bot.react && state.status.kind === 'playing') state = bot.react(state);
       } while (state.status.kind === 'playing' && state.clock.date.month === target.month);
@@ -112,6 +125,7 @@ export function simulate(
     reelected: cause === 'reelected',
     fires,
     peakUnrest,
+    busiestMonth: Math.max(0, ...Object.values(randomByMonth)),
     final: state,
   };
 }

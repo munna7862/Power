@@ -19,12 +19,12 @@ describe('golden save fixtures', () => {
   if (process.env.UPDATE_GOLDEN) {
     it(`writes the v${SCHEMA_VERSION} fixture`, () => {
       // An embassy, a service upgrade, some schools, more police, a solar park, a licensed plant, a state plant sold, a
-      // tariff, tanks and a loan so the fixture carries them all, two options switched (no riots, and national play with
-      // region-free orders for clinics and police), then a year of play.
+      // tariff, tanks and a loan so the fixture carries them all, three options switched (no riots, calm months, and
+      // national play with region-free orders for clinics and police), then a year of play.
       let state = newGame({
         seed: 2026,
         presidentName: 'Golden Fixture',
-        options: { noRiots: true, regions: false },
+        options: { noRiots: true, regions: false, calmMonths: true },
       });
       for (const command of [
         { type: 'OPEN_EMBASSY', country: 'USA' },

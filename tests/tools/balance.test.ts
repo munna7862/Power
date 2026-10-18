@@ -47,5 +47,6 @@ describe('release balance (Phase 6)', () => {
     expect(options.warsWithNoWars).toBe(0);
     expect(options.peakUnrestWithNoRiots).toBeLessThanOrEqual(NO_RIOTS_UNREST_CAP);
     expect(options.riotEventsWithNoRiots).toBe(0);
+    expect(options.busiestCalmMonth).toBeLessThanOrEqual(1);
   });
 });
