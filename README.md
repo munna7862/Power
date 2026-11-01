@@ -37,36 +37,36 @@ Desktop saves go to your user folder (`%APPDATA%\India Apex Sovereign\saves` on 
 
 ## Commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Game in the browser with hot reload |
-| `npm run electron:dev` | Desktop app against the dev server |
-| `npm run electron:start` | Build and run the desktop app as players get it |
-| `npm run build` | Production web build into `dist/` |
-| `npm test` | Unit tests (Vitest) |
-| `npm run test:coverage` | Unit tests with coverage (85% or more required on `src/sim`) |
-| `npm run test:e2e` | End-to-end tests in Google Chrome (Playwright) |
-| `npm run test:electron` | Desktop smoke tests in the real Electron app |
-| `npm run verify` | What CI runs: format, lint, typecheck, coverage, build, e2e |
-| `npm run balance` | Balance harness: 50 seeds x 5 years x 3 bots x 3 difficulties against KPI bands |
-| `npm run dist` | Desktop installers for this OS into `release/` (`npm run dist:win` for Windows) |
-| `npm run screenshots` | Release screenshots and the trailer GIF |
-| `npm run icon` | App icon from `public/favicon.svg` |
+| Command                  | What it does                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `npm run dev`            | Game in the browser with hot reload                                             |
+| `npm run electron:dev`   | Desktop app against the dev server                                              |
+| `npm run electron:start` | Build and run the desktop app as players get it                                 |
+| `npm run build`          | Production web build into `dist/`                                               |
+| `npm test`               | Unit tests (Vitest)                                                             |
+| `npm run test:coverage`  | Unit tests with coverage (85% or more required on `src/sim`)                    |
+| `npm run test:e2e`       | End-to-end tests in Google Chrome (Playwright)                                  |
+| `npm run test:electron`  | Desktop smoke tests in the real Electron app                                    |
+| `npm run verify`         | What CI runs: format, lint, typecheck, coverage, build, e2e                     |
+| `npm run balance`        | Balance harness: 50 seeds x 5 years x 3 bots x 3 difficulties against KPI bands |
+| `npm run dist`           | Desktop installers for this OS into `release/` (`npm run dist:win` for Windows) |
+| `npm run screenshots`    | Release screenshots and the trailer GIF                                         |
+| `npm run icon`           | App icon from `public/favicon.svg`                                              |
 
 ## Project structure
 
-| Path | Contents |
-| --- | --- |
-| `src/sim/` | Pure, deterministic simulation core: no UI, no clock, seeded randomness |
-| `content/` | Game data as JSON: departments, facilities, police, power, industries, goods, weapons, 205 countries, 144 events, the world map |
-| `src/store/` | Zustand bridge between the simulation and the UI |
-| `src/platform/` | Storage and shell adapters for the browser and Electron |
-| `src/ui/` | React screens, design tokens, tutorial, handbook, audio; all UI text in `src/ui/i18n/` |
-| `electron/` | Desktop main process, preload bridge, crash-safe save files |
-| `tests/` | Unit, architecture, save-compatibility, content-review and desktop tests |
-| `e2e/`, `e2e-desktop/` | Playwright tests in Chrome, and Electron smoke tests |
-| `tools/` | Balance harness, world-data builders, release tools |
-| `planning/` | Master plan, phases and sprints |
+| Path                   | Contents                                                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `src/sim/`             | Pure, deterministic simulation core: no UI, no clock, seeded randomness                                                         |
+| `content/`             | Game data as JSON: departments, facilities, police, power, industries, goods, weapons, 205 countries, 144 events, the world map |
+| `src/store/`           | Zustand bridge between the simulation and the UI                                                                                |
+| `src/platform/`        | Storage and shell adapters for the browser and Electron                                                                         |
+| `src/ui/`              | React screens, design tokens, tutorial, handbook, audio; all UI text in `src/ui/i18n/`                                          |
+| `electron/`            | Desktop main process, preload bridge, crash-safe save files                                                                     |
+| `tests/`               | Unit, architecture, save-compatibility, content-review and desktop tests                                                        |
+| `e2e/`, `e2e-desktop/` | Playwright tests in Chrome, and Electron smoke tests                                                                            |
+| `tools/`               | Balance harness, world-data builders, release tools                                                                             |
+| `planning/`            | Master plan, phases and sprints                                                                                                 |
 
 ## CI and releases
 
