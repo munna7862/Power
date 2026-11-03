@@ -1,10 +1,42 @@
 # Changelog
 
-All notable changes. Versions follow [semantic versioning](https://semver.org/); save files stay loadable across every version (golden fixtures in `tests/fixtures/saves`).
+All notable changes. Versions follow [semantic versioning](https://semver.org/); save files stay loadable from schema v7 on (golden fixtures in `tests/fixtures/saves`); 2.0.0 is the one deliberate break.
+
+## 2.0.0 — Phase 8: Hands-on Governance
+
+The President now runs the country directly: no ministers, and every school, power plant, factory, police officer and tank is yours to buy. This is the first release with downloadable builds; the 1.0.0 builds were never published (see 1.0.0 below).
+
+### Added
+
+- **Departments replace the cabinet.** Eleven departments, each with services rated 1–5 stars. Stars are bought from the treasury and lost after six months of bad underfunding. Anti-corruption inquiries become department audits.
+- **Construction.** Schools, universities, clinics, hospitals, water, housing and transport, built by region in weeks or months. Coverage drives HDI, public services, unrest, growth and jobs, and wears down as the population grows.
+- **Police & Internal Affairs.** Officers, stations, equipment, special units and agencies, with a regional crime stat and a civil-liberties cost for over-policing. Counter-terror operations and audits moved here.
+- **Energy.** A national grid of six plant types; shortfalls cause power cuts, surplus is exported, and dirty plants cost approval through air pollution.
+- **Industry.** 18 plant types turning 15 goods into goods, state-run or licensed to private investors who follow the business climate. State plants can be sold to private investors.
+- **Trade Market.** Buy and sell goods with partners at prices set by relations and distance; sell all surplus, sell on the world market, standing supply contracts, and tariffs, quotas and bans per good.
+- **The Armoury.** One screen to buy the military from the treasury, with delivery in days to weeks.
+- **Daily money, loans and the advisor.** The treasury shows its daily change and general expenses; take and repay loans from friendly countries or an international lender; repay public debt early; an advisor names the most urgent problem and opens the screen that fixes it.
+- **Revenue follows the economy.** Income tax follows jobs, customs follows tariffs, and power sales, tolls and fares earn revenue, each with a "Why?" breakdown. One-off receipts show in the monthly figures.
+- **New Game options:** **Regional play** (turn it off to run one India without region pickers) and **Calm months** (at most one random event a month).
+
+### Changed
+
+- Re-election needs 58% approval on Normal and Hard (55% on Easy).
+- The Budget screen no longer sets customs; tariffs per good on the Trade Market do.
+- Sale contracts only promise spare surplus, and deliveries are shown.
+
+### Fixed
+
+- The ten defects from the v1.0.0 QA review ([docs/qa/top-10-defects.md](docs/qa/top-10-defects.md)), including the 0% customs exploit, critical alerts that stopped pausing the game once the inbox was full, and the clock running while a decision dialog was open.
+- The determinism test holds a golden hash per platform, so the release workflow passes on Linux CI.
+
+### Saves
+
+- Save schema v17. **Saves from 1.0 (v1–v6) cannot be continued**: they ran the country through a cabinet of ministers, so loading one shows an explanation and asks you to start a new game. Saves from v7 on keep loading.
 
 ## 1.0.0 — 2026-10-11
 
-The first public release: feature parity with the country-simulator genre (Stage A), on Windows, macOS and Linux.
+Feature parity with the country-simulator genre (Stage A). Tagged, but the builds were never published: the release workflow stopped on a determinism test whose golden hash had only been recorded on Windows.
 
 ### Added
 
