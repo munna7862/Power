@@ -65,7 +65,7 @@
 
 ## Phase 6 exit checklist
 
-- [ ] v1.0.0 tagged and released: everything is ready; after this phase merges, push the tag (`git tag v1.0.0 && git push origin v1.0.0`) and the release workflow publishes the installers
+- [x] v1.0.0 tagged (2026-10-11). Its release run stopped on the determinism test (golden hash recorded on Windows only), so no installers were published; the first published release is v2.0.0 (Phase 8)
 - [ ] Feedback channel set up (itch.io comments or a Discord server): needs the itch.io page ([copy and checklist](../../docs/release/itch-page.md)), which needs the owner's account
 - [ ] Phase 7 backlog re-prioritised using player feedback: after launch, once there is feedback
 - [x] **Parity checklist complete:** F20 (term victory) done, so F1–F20 are all ticked in the [master plan](../Master/master_plan.md)

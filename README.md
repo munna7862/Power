@@ -10,10 +10,9 @@ Code name **Power**. Desktop app built with TypeScript, React, Vite and Electron
 
 ## Status
 
-- **v1.0.0** (tagged 2026-10-11): feature parity with the country-simulator genre, Phases 1-6. See [CHANGELOG.md](CHANGELOG.md).
-- **Phase 8, Hands-on Governance**, is complete on `main` (Sprints 8.1-8.10, not yet released). It replaces the cabinet with departments that have star-rated services, and adds construction, an energy grid, industry, a trade market, an armoury, police and internal affairs, loans, a daily treasury and an advisor. Save schema is at v17.
+- **v2.0.0, Hands-on Governance** (Phase 8, Sprints 8.1-8.10): the first release with downloadable builds. It replaces the cabinet with departments that have star-rated services, and adds construction, an energy grid, industry, a trade market, an armoury, police and internal affairs, loans, a daily treasury and an advisor. Save schema is at v17; saves from 1.0 cannot be continued. See [CHANGELOG.md](CHANGELOG.md).
 - **Phase 7** (mobile with Capacitor, Parliament, states, Hindi, Steam) is a backlog to re-rank after launch.
-- **No downloadable builds yet.** The v1.0.0 release workflow run failed on a determinism snapshot test, so the Releases page is empty. Build installers locally with `npm run dist` (see below).
+- **v1.0.0** (tagged 2026-10-11, Phases 1-6) was never published as builds: its release run stopped on a determinism test recorded on Windows only. Installers come from the [Releases page](https://github.com/munna7862/Power/releases) from v2.0.0 on, or build them locally with `npm run dist` (see below).
 
 ## Tech stack
 
