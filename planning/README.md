@@ -32,6 +32,7 @@ Planning hub for the `Power` project.
 - [x] Phase 5: Diplomacy & World (Sprints 5.1–5.3), **M5: World Stage** reached (2026-10-11); parity features F1–F19 done, F20 completes in Phase 6
 - [x] Phase 6: Polish & PC Release (Sprints 6.1–6.3), **M6: v1.0 PC Release** built (2026-10-11): all parity features F1–F20 done, Windows installer smoke-tested; v1.0.0 was tagged, but its release run stopped on the determinism test, so no builds were published
 - [x] Phase 8: Hands-on Governance (Sprints 8.1–8.10), **M8: Hands-on President** reached; ships as **v2.0.0**, the first release with downloadable builds
-- [ ] Launch: push the `v2.0.0` tag, then publish the itch.io page ([checklist](../docs/release/itch-page.md))
-- [x] Phase 9: Soundtrack (Sprints 9.1–9.4), **M9: Soundtrack**: an adaptive, synthesised score (unreleased)
+- [x] v2.0.0 tagged and published on GitHub Releases with Windows, macOS and Linux builds (2026-11-03)
+- [ ] Launch on itch.io: set the `BUTLER_API_KEY` secret and `ITCH_TARGET` variable, refresh the store media, publish the page ([checklist](../docs/release/itch-page.md))
+- [x] Phase 9: Soundtrack (Sprints 9.1–9.4), **M9: Soundtrack**: an adaptive, synthesised score; ships in v2.1.0 after a listening pass
 - [ ] Phase 7: re-rank the backlog with player feedback after launch
