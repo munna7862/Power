@@ -2,6 +2,18 @@
 
 All notable changes. Versions follow [semantic versioning](https://semver.org/); save files stay loadable from schema v7 on (golden fixtures in `tests/fixtures/saves`); 2.0.0 is the one deliberate break.
 
+## Unreleased — Phase 9: Soundtrack
+
+### Added
+
+- **An adaptive soundtrack.** The music follows the country: a calm theme in peacetime, a tense one when a region nears riots or approval nears impeachment, a heavy war theme while a war is on, and a build-up over the last six months before election day. Moods change on a bar line with a crossfade. Every note is synthesised in code, so the game still ships no audio files.
+- **Musical cues** for war declared, peace, victory and defeat.
+- **Music style** in Settings: _Follows the country_, _Calm only_ or _Off_.
+
+### Changed
+
+- Sound pauses while the game window is hidden.
+
 ## 2.0.0 — Phase 8: Hands-on Governance
 
 The President now runs the country directly: no ministers, and every school, power plant, factory, police officer and tank is yours to buy. This is the first release with downloadable builds; the 1.0.0 builds were never published (see 1.0.0 below).

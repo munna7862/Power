@@ -87,6 +87,8 @@
     "motions": { "system": "Follow system", "reduced": "Reduced", "full": "Full" },
     "audio": "Audio",
     "music": "Music",
+    "musicStyle": "Music style",
+    "musicStyles": { "adaptive": "Follows the country", "calm": "Calm only", "off": "Off" },
     "effects": "Sound effects",
     "sound": "Sound",
     "soundStates": { "on": "On", "off": "Muted" },

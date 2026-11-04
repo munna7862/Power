@@ -15,6 +15,7 @@ const pick = (s: SettingsState): Settings => ({
   musicVolume: s.musicVolume,
   sfxVolume: s.sfxVolume,
   muted: s.muted,
+  musicStyle: s.musicStyle,
   tutorialSeen: s.tutorialSeen,
 });
 

@@ -18,6 +18,7 @@ Planning hub for the `Power` project.
 | [6. Polish & PC Release](Phases/phase_6_polish_release.md)            | 6.1 Balance & Review · 6.2 Onboarding & Accessibility · 6.3 Electron Release                                                                                                                     | 24  | M6: v1.0 PC               |
 | [7. Apex & Mobile](Phases/phase_7_apex_mobile.md)                     | Backlog: mobile, Parliament, states, RBI, news, Hindi, Steam                                                                                                                                     | —   | Post-v1.0                 |
 | [8. Hands-on Governance](Phases/phase_8_hands_on_governance.md)       | 8.1 Departments · 8.2 Construction · 8.3 Police · 8.4 Energy · 8.5 Industry · 8.6 Trade market · 8.7 Armoury · 8.8 Daily money, loans & advisor · 8.9 Fresh start & balance · 8.10 National play | 66  | M8: Hands-on President ✅ |
+| [9. Soundtrack](Phases/phase_9_soundtrack.md)                         | 9.1 Instruments & player · 9.2 Composer · 9.3 Moods · 9.4 Stingers & settings                                                                                                                    | 16  | M9: Soundtrack            |
 
 **Stage A total:** 19 sprints · 152 SP · about 10 months at hobby pace.
 
@@ -32,4 +33,5 @@ Planning hub for the `Power` project.
 - [x] Phase 6: Polish & PC Release (Sprints 6.1–6.3), **M6: v1.0 PC Release** built (2026-10-11): all parity features F1–F20 done, Windows installer smoke-tested; v1.0.0 was tagged, but its release run stopped on the determinism test, so no builds were published
 - [x] Phase 8: Hands-on Governance (Sprints 8.1–8.10), **M8: Hands-on President** reached; ships as **v2.0.0**, the first release with downloadable builds
 - [ ] Launch: push the `v2.0.0` tag, then publish the itch.io page ([checklist](../docs/release/itch-page.md))
+- [x] Phase 9: Soundtrack (Sprints 9.1–9.4), **M9: Soundtrack**: an adaptive, synthesised score (unreleased)
 - [ ] Phase 7: re-rank the backlog with player feedback after launch

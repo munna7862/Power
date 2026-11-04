@@ -4,7 +4,7 @@ _India: Apex Sovereign_ is an original work. Its name, art, text, user interface
 
 ## Audio
 
-All music and sound effects are **synthesised at runtime** in code (`src/ui/audio/engine.ts`) with the Web Audio API: oscillators, filters and envelopes playing original patterns on a pentatonic scale. The game ships **no audio files**, so there are no third-party audio licences.
+All music and sound effects are **synthesised at runtime** in code with the Web Audio API. The sound effects (`src/ui/audio/engine.ts`) are short oscillator tones. The soundtrack (`src/ui/audio/music/`) is composed as it plays by original rules: a drone, a pad, a Karplus–Strong plucked string, a breathy flute and hand drums, playing scales rather than any existing melody or raga phrase. No AI service or sample library was used. The game ships **no audio files**, so there are no third-party audio licences.
 
 ## Art
 
