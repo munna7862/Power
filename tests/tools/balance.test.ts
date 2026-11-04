@@ -3,6 +3,9 @@ import { DEFAULT_TAX_RATES, TAXES } from '../../src/sim';
 import { balancedBot, BOTS, greedyBot, passiveBot } from '../../tools/balance/bots';
 import { evaluate, simulate } from '../../tools/balance/simulate';
 
+/** The probes play whole games: about 2 s alone, but well past Vitest's 5 s default under a parallel coverage run. */
+const PROBE_TIMEOUT = 30_000;
+
 describe('balance harness', () => {
   it('plays whole years month by month and records one row per year', () => {
     const run = simulate(passiveBot, 3, 2);
@@ -21,7 +24,7 @@ describe('balance harness', () => {
     expect(run.final.departments.stars.defence.armyCommand).toBeGreaterThan(2);
   });
 
-  it('meets the Normal-difficulty KPI bands on a small sample', () => {
+  it('meets the Normal-difficulty KPI bands on a small sample', { timeout: PROBE_TIMEOUT }, () => {
     const results = BOTS.flatMap((bot) => [1, 2, 3, 4, 5].map((seed) => simulate(bot, seed, 3)));
     const failing = evaluate(results, 3).filter((k) => !k.pass);
     expect(failing).toEqual([]);
@@ -29,7 +32,7 @@ describe('balance harness', () => {
 });
 
 describe('war balance', () => {
-  it('meets the war KPI bands on a small sample', async () => {
+  it('meets the war KPI bands on a small sample', { timeout: PROBE_TIMEOUT }, async () => {
     const { evaluateWars, probeWars } = await import('../../tools/balance/wars');
     const failing = evaluateWars(probeWars(8, 240)).filter((k) => !k.pass);
     expect(failing).toEqual([]);
@@ -37,16 +40,20 @@ describe('war balance', () => {
 });
 
 describe('release balance (Phase 6)', () => {
-  it('never lets a random event repeat more than the rule allows, and the options hold', async () => {
-    const { probeOptions, worstRepeat } = await import('../../tools/balance/release');
-    const { MAX_REPEATS, NO_RIOTS_UNREST_CAP } = await import('../../src/sim');
-    const runs = [1, 2, 3].map((seed) => simulate(balancedBot, seed, 5));
-    expect(worstRepeat(runs).fires).toBeLessThanOrEqual(MAX_REPEATS);
-    expect(runs.every((r) => r.endedInYear !== null || r.cause === 'reelected' || r.cause === 'votedOut')).toBe(true);
-    const options = probeOptions(2, 2);
-    expect(options.warsWithNoWars).toBe(0);
-    expect(options.peakUnrestWithNoRiots).toBeLessThanOrEqual(NO_RIOTS_UNREST_CAP);
-    expect(options.riotEventsWithNoRiots).toBe(0);
-    expect(options.busiestCalmMonth).toBeLessThanOrEqual(1);
-  });
+  it(
+    'never lets a random event repeat more than the rule allows, and the options hold',
+    { timeout: PROBE_TIMEOUT },
+    async () => {
+      const { probeOptions, worstRepeat } = await import('../../tools/balance/release');
+      const { MAX_REPEATS, NO_RIOTS_UNREST_CAP } = await import('../../src/sim');
+      const runs = [1, 2, 3].map((seed) => simulate(balancedBot, seed, 5));
+      expect(worstRepeat(runs).fires).toBeLessThanOrEqual(MAX_REPEATS);
+      expect(runs.every((r) => r.endedInYear !== null || r.cause === 'reelected' || r.cause === 'votedOut')).toBe(true);
+      const options = probeOptions(2, 2);
+      expect(options.warsWithNoWars).toBe(0);
+      expect(options.peakUnrestWithNoRiots).toBeLessThanOrEqual(NO_RIOTS_UNREST_CAP);
+      expect(options.riotEventsWithNoRiots).toBe(0);
+      expect(options.busiestCalmMonth).toBeLessThanOrEqual(1);
+    },
+  );
 });

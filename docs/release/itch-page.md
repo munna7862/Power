@@ -1,4 +1,4 @@
-# itch.io store page (copy for the hobby launch)
+# itch.io store page (copy for the v2 launch)
 
 Paste these fields into the itch.io project editor. Pricing: **free or pay what you want** (Sprint 6.3 plan). The release workflow pushes builds automatically once `BUTLER_API_KEY` (secret) and `ITCH_TARGET` (repository variable, e.g. `yourname/india-apex-sovereign`) are set; until then, upload the files from the GitHub release by hand.
 
@@ -16,27 +16,29 @@ Paste these fields into the itch.io project editor. Pricing: **free or pay what 
 | Genre             | Strategy                                                                                 |
 | Tags              | strategy, simulation, politics, management, singleplayer, economy, grand-strategy, india |
 | Platforms         | Windows, macOS, Linux                                                                    |
-| Community         | Comments (the feedback channel for v1.0)                                                 |
+| Community         | Comments (the feedback channel)                                                          |
 | Cover image       | `docs/screenshots/phase-6/dashboard-election.png` cropped to 630 × 500                   |
 | Screenshots       | the nine images in `docs/screenshots/phase-6/`, plus `docs/release/trailer.gif`          |
 
 ## Description
 
-> **You are the President of India. Every rupee, minister, crisis, treaty and soldier is your call, and in five years the voters decide.**
+> **You are the President of India. Every rupee, school, power plant, crisis, treaty and soldier is your call, and in five years the voters decide.**
 >
-> _India: Apex Sovereign_ is a realistic national strategy game. Balance the budget, appoint a cabinet, steer the economy, keep the peace at home, command the armed forces and lead on the world stage, then win the election with 55% approval while voter fatigue builds year after year.
+> _India: Apex Sovereign_ is a realistic national strategy game. Balance the budget, build the country region by region, keep the lights on, steer industry and trade, keep the peace at home, command the armed forces and lead on the world stage, then win the election (58% approval on Normal) while voter fatigue builds year after year.
 >
-> **Run the country.** Five economic sectors, four taxes, eleven ministries and a cabinet of fictional ministers with competence, loyalty and corruption of their own.
+> **Run the country hands-on.** Eleven departments with star-rated services; schools, hospitals, housing and transport built region by region; a national power grid of six plant types; 18 kinds of factories, mines and farms turning 15 goods into growth and jobs; and a trade market where you buy and sell with real partners at the best price you can get.
 >
-> **Survive the job.** More than 140 events: floods and cyclones, scandals, protests, terror plots, coups. Every decision lists exactly what it will do.
+> **Mind the money.** Daily income and expenses, loans from friendly countries or an international lender, and an advisor who names your most urgent problem and opens the screen that fixes it.
 >
-> **Command the forces.** Twelve unit types, research, drills, espionage, wars and a nuclear programme.
+> **Survive the job.** More than 140 events: floods and cyclones, scandals, protests, terror plots, coups. Every decision lists exactly what it will do. Staff the police, build stations and run audits to keep crime and corruption down.
+>
+> **Command the forces.** Buy twelve unit types from one Armoury, with research, drills, espionage, wars and a nuclear programme.
 >
 > **Lead on the world stage.** 205 countries on an interactive map, trade contracts, pacts, embassies, aid and sanctions, and twenty AI nations that make their own moves.
 >
 > **See why.** Every number has a "Why?" tooltip built from the same formula the game uses, and the in-game "Constitution" handbook explains them all.
 >
-> **Play your way.** Easy, Normal or Hard; optional no-wars and no-riots modes; a guided tutorial; full keyboard play; interface sizes up to 150%; a colour-blind-safe palette; reduced motion.
+> **Play your way.** Easy, Normal or Hard; regional or national play; optional no-wars, no-riots and calm-months modes; a guided tutorial; full keyboard play; interface sizes up to 150%; a colour-blind-safe palette; reduced motion.
 >
 > **Fair play.** No ads, no in-app purchases, no paid shortcuts. Everyone, every party and every group in the game is fictional; countries are real and treated with the same neutral rules. India's boundaries are shown as per the Survey of India.
 
@@ -52,7 +54,8 @@ Paste these fields into the itch.io project editor. Pricing: **free or pay what 
 
 ## Before going live (checklist)
 
-- [ ] Create the project as a draft and upload the builds (or set the secrets and push the `v1.0.0` tag)
+- [ ] Create the project as a draft and upload the builds from the latest GitHub release (or set the secrets and push the next version tag)
+- [ ] Refresh the store media: the screenshots in `docs/screenshots/phase-6/` and `trailer.gif` show the v1 cabinet-era screens; `npm run screenshots` (`tools/release/screenshots.ts`) needs a Phase 8 tour first
 - [ ] Add the cover, screenshots and trailer GIF
 - [ ] Turn on comments as the feedback channel
 - [ ] Preview the page on a phone and a desktop, then set it to Public
