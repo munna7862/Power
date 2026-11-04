@@ -2,7 +2,8 @@
   height: 100%;
   display: grid;
   grid-template-columns: var(--nav-width) minmax(0, 1fr);
-  grid-template-rows: var(--topbar-height) minmax(0, 1fr);
+  grid-template-rows: calc(var(--topbar-height) + var(--safe-top)) minmax(0, 1fr);
+  padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
   grid-template-areas:
     'top top'
     'nav main';
@@ -14,7 +15,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  padding: 0 var(--space-4);
+  padding: var(--safe-top) var(--space-4) 0;
   background: var(--bg-raised);
   border-bottom: 1px solid var(--border);
   min-width: 0;
@@ -321,12 +322,14 @@
       'top'
       'main'
       'nav';
+    /* The tab bar sits on the gesture bar's inset itself, so its background reaches the bottom edge. */
+    padding-bottom: 0;
   }
 
   .topbar {
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-3);
-    padding: var(--space-2) var(--space-4);
+    padding: calc(var(--space-2) + var(--safe-top)) var(--space-4) var(--space-2);
   }
 
   .topStats {
@@ -336,7 +339,7 @@
   .nav {
     flex-direction: row;
     justify-content: space-between;
-    padding: var(--space-1) var(--space-2);
+    padding: var(--space-1) var(--space-2) calc(var(--space-1) + var(--safe-bottom));
     border-right: 0;
     border-top: 1px solid var(--border);
     overflow-x: auto;

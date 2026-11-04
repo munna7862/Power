@@ -8,7 +8,7 @@ All music and sound effects are **synthesised at runtime** in code with the Web 
 
 ## Art
 
-- The app icon and favicon (`public/favicon.svg`, rendered to `build/icon.png` by `tools/release/icon.ts`) are original.
+- The app icon and favicon (`public/favicon.svg`, rendered to `build/icon.png` by `tools/release/icon.ts`, and to the Android icons and splash screens by `tools/release/androidIcons.ts`) are original.
 - Minister portraits are drawn procedurally in code (`src/ui/Avatar.tsx`).
 - UI icons are original inline SVG (`src/ui/icons.tsx`).
 
@@ -28,7 +28,7 @@ India's boundaries are drawn as per the Survey of India; `tests/world/boundary.t
 
 ## Software
 
-The game is built with open-source software, all under permissive licences (MIT unless noted): React, React DOM, Zustand, Zod, i18next and react-i18next (runtime, bundled into the game); Electron (desktop shell); Vite, TypeScript (Apache-2.0), Vitest, Playwright (Apache-2.0), ESLint, Prettier, electron-builder, tsx, gifenc and pngjs (build and test tools only). Full licence texts are in each package under `node_modules/`; the desktop build includes Electron's own `LICENSE` and `LICENSES.chromium.html`.
+The game is built with open-source software, all under permissive licences (MIT unless noted): React, React DOM, Zustand, Zod, i18next and react-i18next (runtime, bundled into the game); Electron (desktop shell); Capacitor and its App and Filesystem plugins (Android app); Vite, TypeScript (Apache-2.0), Vitest, Playwright (Apache-2.0), ESLint, Prettier, electron-builder, tsx, gifenc and pngjs (build and test tools only). Full licence texts are in each package under `node_modules/`; the desktop build includes Electron's own `LICENSE` and `LICENSES.chromium.html`.
 
 ## People
 

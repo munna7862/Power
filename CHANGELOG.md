@@ -2,13 +2,15 @@
 
 All notable changes. Versions follow [semantic versioning](https://semver.org/); save files stay loadable from schema v7 on (golden fixtures in `tests/fixtures/saves`); 2.0.0 is the one deliberate break.
 
-## Unreleased — Phase 9: Soundtrack
+## Unreleased — Phase 9: Soundtrack, and the Android app (Sprint 7.1)
 
 ### Added
 
 - **An adaptive soundtrack.** The music follows the country: a calm theme in peacetime, a tense one when a region nears riots or approval nears impeachment, a heavy war theme while a war is on, and a build-up over the last six months before election day. Moods change on a bar line with a crossfade. Every note is synthesised in code, so the game still ships no audio files.
 - **Musical cues** for war declared, peace, victory and defeat.
 - **Music style** in Settings: _Follows the country_, _Calm only_ or _Off_.
+- **Android app** (Phase 7, Sprint 7.1, test builds): the game inside Capacitor, with saves in the app's own storage, the back button, pause-and-autosave when the app goes to the background, the game's icon and splash screen, and a debug APK from CI.
+- **Touch-friendly layout**: on touch screens every control is at least 44 px tall, the UI keeps clear of the notch and the gesture bar, and "Why?" breakdowns open as a sheet that stays on screen.
 
 ### Changed
 

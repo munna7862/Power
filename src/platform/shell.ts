@@ -1,6 +1,7 @@
 import { desktopBridge } from './desktop';
+import { exitApp, isNativeApp } from './mobile';
 
-/** Host-environment capabilities. The browser build has no quit; the desktop (Electron) build does. */
+/** Host-environment capabilities. The browser build has no quit; the desktop (Electron) and Android builds do. */
 export interface Shell {
   canQuit: boolean;
   quit(): void;
@@ -21,10 +22,10 @@ export const browserShell: Shell = {
   currentYear: () => new Date().getFullYear(),
 };
 
-/** The shell for wherever the game is running: Electron when its preload bridge is present, else the browser. */
+/** The shell for wherever the game is running: Electron when its preload bridge is present, the phone app, else the browser. */
 export function detectShell(): Shell {
   const bridge = desktopBridge();
-  if (!bridge) return browserShell;
+  if (!bridge) return isNativeApp() ? { ...browserShell, canQuit: true, quit: exitApp } : browserShell;
   return {
     ...browserShell,
     canQuit: true,

@@ -3,7 +3,8 @@
   min-height: 100%;
   display: grid;
   place-items: center;
-  padding: var(--space-6) var(--space-4);
+  padding: calc(var(--space-6) + var(--safe-top)) calc(var(--space-4) + var(--safe-right))
+    calc(var(--space-6) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
   background:
     radial-gradient(1200px 600px at 15% -10%, var(--saffron-soft), transparent 60%),
     radial-gradient(900px 500px at 110% 110%, var(--green-soft), transparent 60%), var(--bg);
@@ -177,7 +178,7 @@
   position: fixed;
   z-index: 60;
   left: 50%;
-  bottom: 88px;
+  bottom: calc(88px + var(--safe-bottom));
   transform: translateX(-50%);
   display: flex;
   align-items: center;

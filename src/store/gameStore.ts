@@ -93,6 +93,8 @@ export interface GameStoreState {
   loadFrom(slot: SlotId): Promise<boolean>;
   continueLatest(): Promise<boolean>;
   quitToMenu(): void;
+  /** Pauses the clock and autosaves a game in progress, for when the app goes to the background. */
+  suspend(): Promise<void>;
   dismissNotice(): void;
 }
 
@@ -228,6 +230,14 @@ export function createGameStore(storage: SaveStorage, shell: Shell = browserShel
       quitToMenu: () => {
         set({ screen: 'menu', speed: 0 });
         void get().refreshSlots();
+      },
+
+      suspend: async () => {
+        const { game, screen } = get();
+        if (!game || screen !== 'game' || game.status.kind === 'over') return;
+        set({ speed: 0 });
+        // A phone may close a backgrounded app without warning; the autosave keeps what was played since the month began.
+        await writeSlot(AUTOSAVE_SLOT, game).catch(() => undefined);
       },
 
       dismissNotice: () => set({ notice: null }),

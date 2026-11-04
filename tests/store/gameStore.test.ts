@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { serializeSave } from '../../src/sim';
+import { parseSave, serializeSave } from '../../src/sim';
 import type { Shell } from '../../src/platform/shell';
 import { MemorySaveStorage } from '../../src/platform/storage';
 import { createGameStore, type GameStore } from '../../src/store/gameStore';
@@ -141,5 +141,23 @@ describe('game store', () => {
     store.getState().setSpeed(2);
     store.getState().quitToMenu();
     expect(store.getState()).toMatchObject({ screen: 'menu', speed: 0 });
+  });
+
+  it('pauses and autosaves a game in progress when the app is suspended, and leaves menus alone', async () => {
+    await store.getState().suspend();
+    expect(await storage.read('autosave')).toBeNull();
+
+    store.getState().startNewGame({ presidentName: 'A', difficulty: 'normal', seed: 1 });
+    store.getState().setSpeed(4);
+    store.getState().advanceDays(10);
+    await store.getState().suspend();
+    expect(store.getState().speed).toBe(0);
+    const saved = parseSave((await storage.read('autosave')) ?? '');
+    expect(saved.ok && saved.save.state.clock.tick).toBe(store.getState().game?.clock.tick);
+
+    store.getState().quitToMenu();
+    await storage.remove('autosave');
+    await store.getState().suspend();
+    expect(await storage.read('autosave')).toBeNull();
   });
 });

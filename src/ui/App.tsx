@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { gameStore, useGame } from '../store';
 import { useSettings } from '../store/settingsStore';
 import { useAudio } from './audio/useAudio';
+import { useMobileApp } from './mobile/useMobileApp';
 import { Button } from './design/primitives';
 import { GameScreen } from './screens/GameScreen';
 import { MainMenu } from './screens/MainMenu';
@@ -54,6 +55,7 @@ export function App() {
   const screen = useGame((s) => s.screen);
   useDisplaySettings();
   useAudio();
+  useMobileApp();
 
   return (
     <>

@@ -46,6 +46,6 @@
 @media (max-width: 768px) {
   .coach {
     right: var(--space-4);
-    bottom: calc(64px + var(--space-3));
+    bottom: calc(64px + var(--space-3) + var(--safe-bottom));
   }
 }
