@@ -30,22 +30,45 @@ const tempOf = (slot: SlotId) => `${fileOf(slot)}.tmp`;
  * if the app died between the two steps, the temporary file is read instead.
  */
 export class MobileSaveStorage implements SaveStorage {
+  /** The last write queued for each slot. Writes to one slot run one at a time (see `write`). */
+  private readonly pending = new Map<SlotId, Promise<void>>();
+
   constructor(private readonly files: AppFiles) {}
 
   async read(slot: SlotId): Promise<string | null> {
     return (await this.files.read(fileOf(slot))) ?? (await this.files.read(tempOf(slot)));
   }
 
-  async write(slot: SlotId, data: string): Promise<void> {
+  /**
+   * Queued behind any write to the same slot still in progress: two overlapping writes share the temporary file,
+   * so one could rename it away and the other then delete the finished save (an autosave on pause racing the
+   * monthly autosave, say). A failed write does not block the next one.
+   */
+  write(slot: SlotId, data: string): Promise<void> {
+    const next = (this.pending.get(slot) ?? Promise.resolve())
+      .catch(() => undefined)
+      .then(() => this.writeNow(slot, data));
+    this.pending.set(slot, next);
+    return next;
+  }
+
+  private async writeNow(slot: SlotId, data: string): Promise<void> {
     await this.files.write(tempOf(slot), data);
     // Not every platform's rename replaces an existing file, so clear the way first; read() covers the gap.
     await this.files.remove(fileOf(slot));
     await this.files.rename(tempOf(slot), fileOf(slot));
   }
 
-  async remove(slot: SlotId): Promise<void> {
-    await this.files.remove(fileOf(slot));
-    await this.files.remove(tempOf(slot));
+  /** Also queued, so a write still in progress cannot bring a removed slot back. */
+  remove(slot: SlotId): Promise<void> {
+    const next = (this.pending.get(slot) ?? Promise.resolve())
+      .catch(() => undefined)
+      .then(async () => {
+        await this.files.remove(fileOf(slot));
+        await this.files.remove(tempOf(slot));
+      });
+    this.pending.set(slot, next);
+    return next;
   }
 }
 

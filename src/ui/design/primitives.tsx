@@ -142,7 +142,11 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
     const previous = document.activeElement as HTMLElement | null;
     ref.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeRef.current();
+      if (e.key !== 'Escape') return;
+      // Only the topmost dialog closes, so one Escape (or the phone's back button) peels off one layer when a
+      // decision opens over another dialog.
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      if (dialogs[dialogs.length - 1] === ref.current) closeRef.current();
     };
     window.addEventListener('keydown', onKey);
     return () => {

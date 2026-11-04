@@ -23,7 +23,7 @@ export function useMobileApp(): void {
       const dialogOpen = document.querySelector('[role="dialog"]') !== null;
       switch (backAction({ dialogOpen, screen: store.screen, view: store.view })) {
         case 'close-dialog':
-          // Every dialog is a Modal, which closes on Escape.
+          // Every dialog is a Modal; the topmost one closes on Escape.
           window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
           break;
         case 'menu':
@@ -33,7 +33,7 @@ export function useMobileApp(): void {
           store.setView('dashboard');
           break;
         case 'background':
-          void store.suspend();
+          // Android then fires 'pause', whose handler below pauses the clock and autosaves.
           minimizeApp();
           break;
         case 'exit':
