@@ -122,3 +122,41 @@ jobs:
           name: desktop-test-results
           path: reports/test-results-desktop
           retention-days: 7
+
+  android:
+    # The Android app (Phase 7): the same web build inside Capacitor, compiled to a debug APK for testing on a phone.
+    # Release builds are signed in their own workflow once the upload keystore exists (Sprint 7.2).
+    name: Android build (debug APK)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # Capacitor 8's Android build needs JDK 21; the runner already has the Android SDK.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the game and copy it into the Android project
+        run: npm run android:sync
+
+      - name: Build the debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload the debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-apex-sovereign-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14

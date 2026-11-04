@@ -195,6 +195,35 @@
   opacity: 1;
 }
 
+/* On a phone a bubble anchored to its chip can run off the screen: show it as a sheet above the tab bar. */
+@media (max-width: 768px) {
+  .tooltip {
+    position: fixed;
+    top: auto;
+    right: calc(var(--space-4) + var(--safe-right));
+    bottom: calc(76px + var(--safe-bottom));
+    left: calc(var(--space-4) + var(--safe-left));
+    width: auto;
+    max-width: none;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+}
+
+/* The "Why?" chip keeps its small look on touch screens, with a fingertip-sized hit area around it. */
+@media (pointer: coarse) {
+  .tooltipTrigger {
+    position: relative;
+    min-height: 0 !important;
+  }
+
+  .tooltipTrigger::after {
+    content: '';
+    position: absolute;
+    inset: -12px -6px;
+  }
+}
+
 /* Modal */
 .backdrop {
   position: fixed;
@@ -202,13 +231,14 @@
   z-index: 50;
   display: grid;
   place-items: center;
-  padding: var(--space-4);
+  padding: calc(var(--space-4) + var(--safe-top)) calc(var(--space-4) + var(--safe-right))
+    calc(var(--space-4) + var(--safe-bottom)) calc(var(--space-4) + var(--safe-left));
   background: rgba(4, 8, 18, 0.65);
 }
 
 .modal {
   width: min(560px, 100%);
-  max-height: calc(100vh - 32px);
+  max-height: calc(100vh - 32px - var(--safe-top) - var(--safe-bottom));
   overflow: auto;
   display: flex;
   flex-direction: column;

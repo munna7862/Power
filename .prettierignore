@@ -7,3 +7,4 @@ tests/fixtures/saves/*.json
 content/world/map.json
 /dist-electron
 /release
+/android

@@ -97,6 +97,14 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Releases: bump `package.json`, add `docs/release/v<version>.md` and a CHANGELOG entry, merge, then push the tag `v<version>`. The release workflow refuses a tag that does not match `package.json`.
 - Audio is synthesised in code (`src/ui/audio`); do not add audio files without a licence entry in `CREDITS.md`. The soundtrack (`src/ui/audio/music/`) picks its mood with `moodFor()`, which only reads the game; the music uses its own seeded generator, never the game's `Rng`. Melodies come from scales and rules: no existing tune or raga's signature phrases. Every third-party asset or dataset goes in `CREDITS.md`.
 
+## Mobile (Android)
+
+- The Android app is the same web build inside Capacitor 8 (`capacitor.config.ts`, `android/`). The page reaches the phone only through `src/platform/mobile.ts`, as the desktop goes through `desktop.ts`; nothing else imports `@capacitor/*`.
+- Phone saves are files in the app's data folder (`MobileSaveStorage`): temporary file, then rename, and a leftover temporary file is read if the app died in between. Settings stay in the WebView's `localStorage` (best-effort, read synchronously at start-up).
+- The back button follows `backAction()` (`src/ui/mobile/back.ts`): close the dialog, leave New Game, return to the dashboard, then send the app to the background; only the main menu exits. Going to the background calls the store's `suspend()` (pause and autosave).
+- Touch screens get 44 px controls from one `@media (pointer: coarse)` rule in `global.css`, and the safe-area tokens (`--safe-top` and friends) keep the UI clear of the notch and gesture bar. Mouse layouts stay unchanged. The `@phone` e2e project (412 × 915, touch) checks every screen for sideways overflow and small controls.
+- Icons and splash screens are rendered from `public/favicon.svg` by `npm run android:icons`; do not hand-edit them. CI builds the debug APK; signed release builds come with the Play Store work (Sprint 7.2), and the keystore never enters the repository.
+
 ## Balance
 
 - `npm run balance` plays 50 seeds × 5 years × 3 bots on every difficulty (`tools/balance`), plus a war probe and the option probes, and checks the KPI bands in `planning/Phases/phase_6_polish_release.md` (which add to the Phase 3–5 bands) and the hands-on governance bands in `planning/Phases/phase_8_hands_on_governance.md` (`tools/balance/governance.ts`). It is a **blocking** CI check. Run it after any formula change and update the bands deliberately, never to make a failure pass.

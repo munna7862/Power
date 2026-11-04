@@ -14,8 +14,14 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   projects: [
-    { name: 'chrome-desktop', use: { viewport: { width: 1920, height: 1080 } }, grepInvert: /@responsive/ },
+    { name: 'chrome-desktop', use: { viewport: { width: 1920, height: 1080 } }, grepInvert: /@responsive|@phone/ },
     { name: 'chrome-narrow', use: { viewport: { width: 768, height: 1024 } }, grep: /@responsive/ },
+    // A typical Android phone with touch, as the Phase 7 app runs (412 × 915 CSS pixels).
+    {
+      name: 'chrome-phone',
+      use: { viewport: { width: 412, height: 915 }, deviceScaleFactor: 2.625, isMobile: true, hasTouch: true },
+      grep: /@phone/,
+    },
   ],
   webServer: {
     command: 'npm run dev',

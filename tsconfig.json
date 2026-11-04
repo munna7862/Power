@@ -28,6 +28,7 @@
     "vite.config.ts",
     "vitest.config.ts",
     "playwright.config.ts",
-    "playwright.electron.config.ts"
+    "playwright.electron.config.ts",
+    "capacitor.config.ts"
   ]
 }

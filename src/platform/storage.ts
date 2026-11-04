@@ -1,8 +1,10 @@
 import { desktopBridge, DesktopSaveStorage } from './desktop';
+import { capacitorFiles, isNativeApp, MobileSaveStorage } from './mobile';
 
 /**
  * Save-slot persistence. The game only talks to the SaveStorage interface: localStorage in the browser,
- * files in the OS user-data folder on the desktop (platform/desktop.ts), Capacitor in Phase 7.
+ * files in the OS user-data folder on the desktop (platform/desktop.ts), files in the app's data folder on a phone
+ * (platform/mobile.ts).
  */
 export const MANUAL_SLOTS = ['slot-1', 'slot-2', 'slot-3', 'slot-4', 'slot-5'] as const;
 export const AUTOSAVE_SLOT = 'autosave';
@@ -48,10 +50,11 @@ export class MemorySaveStorage implements SaveStorage {
   }
 }
 
-/** Files on the desktop; otherwise localStorage when it works (it can throw in private windows), else memory. */
+/** Files on the desktop or a phone; otherwise localStorage when it works (it can throw in private windows), else memory. */
 export function createDefaultStorage(): SaveStorage {
   const bridge = desktopBridge();
   if (bridge) return new DesktopSaveStorage(bridge);
+  if (isNativeApp()) return new MobileSaveStorage(capacitorFiles);
   try {
     const probe = `${KEY_PREFIX}probe`;
     localStorage.setItem(probe, '1');

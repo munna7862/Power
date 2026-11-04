@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 import apex from './eslint-rules/index.js';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dist-electron', 'release', 'reports', 'coverage', 'node_modules'] },
+  { ignores: ['dist', 'dist-electron', 'release', 'reports', 'coverage', 'node_modules', 'android'] },
   {
     files: ['**/*.{ts,tsx,cts}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
