@@ -1,7 +1,14 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { desktopBridge } from '../../platform/desktop';
-import { UI_SCALES, type Motion, type Palette, type Theme } from '../../platform/settings';
+import {
+  MUSIC_STYLES,
+  UI_SCALES,
+  type Motion,
+  type MusicStyle,
+  type Palette,
+  type Theme,
+} from '../../platform/settings';
 import { useSettings } from '../../store/settingsStore';
 import { Button, Modal } from '../design/primitives';
 import styles from '../screens/screens.module.css';
@@ -120,6 +127,13 @@ export function SettingsModal({ onClose }: { onClose: () => void }) {
           label={t('settings.music')}
           value={s.musicVolume}
           onChange={(musicVolume) => s.update({ musicVolume })}
+        />
+        <Choice<MusicStyle>
+          label={t('settings.musicStyle')}
+          value={s.musicStyle}
+          options={MUSIC_STYLES}
+          text={(o) => t(`settings.musicStyles.${o}`)}
+          onChange={(musicStyle) => s.update({ musicStyle })}
         />
         <Volume label={t('settings.effects')} value={s.sfxVolume} onChange={(sfxVolume) => s.update({ sfxVolume })} />
         <Choice

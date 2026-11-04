@@ -1,21 +1,14 @@
 /**
  * Procedural audio. Every sound is synthesised at runtime with the Web Audio API: there are no audio files,
  * so nothing is licensed from anyone (see CREDITS.md). Browsers only allow sound after a user gesture, so
- * the context is created on the first click or key press.
+ * the context is created on the first click or key press. The soundtrack lives in `music/`.
  */
 
-export type Sfx = 'click' | 'decision' | 'alert' | 'success' | 'save' | 'failure';
+import type { Stinger } from './music/composer';
+import type { MoodState } from './music/moods';
+import { MusicPlayer } from './music/player';
 
-/** D major pentatonic over two octaves: calm, consonant and free of any one tradition's signature phrases. */
-const SCALE = [146.83, 164.81, 185.0, 220.0, 246.94, 293.66, 329.63, 369.99, 440.0, 493.88];
-/** Pad chords as scale indices: I, vi, IV-ish, V-ish, each held for one phrase. */
-const PROGRESSION = [
-  [0, 2, 4],
-  [3, 5, 7],
-  [1, 3, 5],
-  [4, 6, 8],
-];
-const PHRASE_SECONDS = 9;
+export type Sfx = 'click' | 'decision' | 'alert' | 'success' | 'save' | 'failure';
 
 type AudioContextCtor = typeof AudioContext;
 
@@ -24,9 +17,9 @@ export class AudioEngine {
   private master: GainNode | null = null;
   private musicBus: GainNode | null = null;
   private sfxBus: GainNode | null = null;
-  private musicTimer: ReturnType<typeof setTimeout> | null = null;
-  private phrase = 0;
+  private music: MusicPlayer | null = null;
   private wantMusic = false;
+  private mood: MoodState = { mood: 'menu', intensity: 0 };
   private volumes = { music: 0.4, sfx: 0.7, muted: false };
 
   /** Creates the audio graph. Call from a user gesture; safe to call repeatedly. */
@@ -49,8 +42,10 @@ export class AudioEngine {
     this.musicBus.connect(this.master);
     this.sfxBus = this.ctx.createGain();
     this.sfxBus.connect(this.master);
+    this.music = new MusicPlayer(this.ctx, this.musicBus);
+    this.music.setMood(this.mood);
     this.applyVolumes();
-    if (this.wantMusic) this.scheduleMusic();
+    if (this.wantMusic) this.music.start();
   }
 
   get unlocked(): boolean {
@@ -67,17 +62,33 @@ export class AudioEngine {
     const now = this.ctx.currentTime;
     this.master.gain.setTargetAtTime(this.volumes.muted ? 0 : 1, now, 0.05);
     // Music sits well under the effects; squared for a natural-feeling slider.
-    this.musicBus.gain.setTargetAtTime(0.22 * this.volumes.music ** 2, now, 0.2);
+    this.musicBus.gain.setTargetAtTime(0.8 * this.volumes.music ** 2, now, 0.2);
     this.sfxBus.gain.setTargetAtTime(0.5 * this.volumes.sfx ** 2, now, 0.02);
   }
 
   setMusic(on: boolean): void {
     this.wantMusic = on;
-    if (!on && this.musicTimer) {
-      clearTimeout(this.musicTimer);
-      this.musicTimer = null;
-    }
-    if (on && this.ctx && !this.musicTimer) this.scheduleMusic();
+    if (!this.music) return;
+    if (on) this.music.start();
+    else this.music.stop();
+  }
+
+  /** Steers the soundtrack; it follows on a bar line once the mood has held for a few seconds. */
+  setMood(mood: MoodState): void {
+    this.mood = mood;
+    this.music?.setMood(mood);
+  }
+
+  /** A short musical cue over the soundtrack, on the music volume. */
+  stinger(kind: Stinger): void {
+    if (!this.ctx || this.ctx.state !== 'running' || !this.music) return;
+    this.music.stinger(kind);
+  }
+
+  /** Stops all sound while the page is hidden, and picks up again when it returns. */
+  setHidden(hidden: boolean): void {
+    if (!this.ctx) return;
+    void (hidden ? this.ctx.suspend() : this.ctx.resume());
   }
 
   /** A soft tone with an attack-decay envelope. */
@@ -102,35 +113,6 @@ export class AudioEngine {
     gain.connect(bus);
     osc.start(start);
     osc.stop(start + duration + 0.05);
-  }
-
-  /** One phrase of ambient music: a slow pad chord, a low drone and a few sparse plucks. */
-  private playPhrase(): void {
-    if (!this.ctx || !this.musicBus) return;
-    const now = this.ctx.currentTime + 0.05;
-    const chord = PROGRESSION[this.phrase % PROGRESSION.length] ?? [0, 2, 4];
-    this.phrase++;
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 900;
-    filter.connect(this.musicBus);
-    for (const index of chord) {
-      const freq = SCALE[index] ?? 220;
-      this.tone(filter, freq, now, PHRASE_SECONDS + 1.5, 0.12, 'triangle', 2.5);
-      this.tone(filter, freq * 1.003, now, PHRASE_SECONDS + 1.5, 0.06, 'sine', 3);
-    }
-    this.tone(filter, (SCALE[chord[0] ?? 0] ?? 146.83) / 2, now, PHRASE_SECONDS + 2, 0.1, 'sine', 3);
-    // Sparse plucks: chance is fine here, music is cosmetic and never touches the simulation.
-    const plucks = 2 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < plucks; i++) {
-      const note = SCALE[5 + Math.floor(Math.random() * 5)] ?? 440;
-      this.tone(this.musicBus, note, now + 1 + Math.random() * (PHRASE_SECONDS - 2), 2.2, 0.05, 'sine', 0.01);
-    }
-  }
-
-  private scheduleMusic(): void {
-    this.playPhrase();
-    this.musicTimer = setTimeout(() => this.scheduleMusic(), PHRASE_SECONDS * 1000);
   }
 
   play(sfx: Sfx): void {

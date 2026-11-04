@@ -17,6 +17,7 @@ describe('player settings', () => {
       musicVolume: 3,
       sfxVolume: -1,
       muted: 'yes',
+      musicStyle: 'loud',
       tutorialSeen: true,
     });
     expect(settings).toEqual({
@@ -29,5 +30,6 @@ describe('player settings', () => {
       tutorialSeen: true,
     });
     expect(sanitizeSettings({ uiScale: 133 }).uiScale).toBe(100);
+    expect(sanitizeSettings({ musicStyle: 'calm' }).musicStyle).toBe('calm');
   });
 });

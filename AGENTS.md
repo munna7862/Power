@@ -95,7 +95,7 @@ Rules for every human and AI contributor. The full design lives in the [master p
 - Desktop saves go through `electron/saves.ts`: temporary file, flush, rename; three autosave generations; slot names are whitelisted.
 - `npm run test:electron` runs the desktop smoke tests (the M6 demo) in the real Electron app; CI runs them too. Set `APEX_EXECUTABLE` to test a packaged build.
 - Releases: bump `package.json`, add `docs/release/v<version>.md` and a CHANGELOG entry, merge, then push the tag `v<version>`. The release workflow refuses a tag that does not match `package.json`.
-- Audio is synthesised in code (`src/ui/audio`); do not add audio files without a licence entry in `CREDITS.md`. Every third-party asset or dataset goes in `CREDITS.md`.
+- Audio is synthesised in code (`src/ui/audio`); do not add audio files without a licence entry in `CREDITS.md`. The soundtrack (`src/ui/audio/music/`) picks its mood with `moodFor()`, which only reads the game; the music uses its own seeded generator, never the game's `Rng`. Melodies come from scales and rules: no existing tune or raga's signature phrases. Every third-party asset or dataset goes in `CREDITS.md`.
 
 ## Balance
 

@@ -1,6 +1,6 @@
 # Phase 8: Hands-on Governance (redesign, about 66 SP)
 
-> [Planning index](../README.md) · [Master plan](../Master/master_plan.md) · [← Phase 7 backlog](phase_7_apex_mobile.md)
+> [Planning index](../README.md) · [Master plan](../Master/master_plan.md) · [← Phase 7 backlog](phase_7_apex_mobile.md) · [Phase 9 →](phase_9_soundtrack.md)
 
 **Phase goal:** the President runs the country directly, the way the mobile "country simulator" genre plays, instead of through a cabinet of ministers. You build schools and hospitals in each region, keep the power grid ahead of demand, open factories and mines, staff the police, buy weapons from one armoury page, borrow when you must, and trade goods with other countries at the best price you can get.
 **Milestone:** **M8: Hands-on President** · **Scheduled:** next, ahead of the Phase 7 backlog

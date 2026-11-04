@@ -4,6 +4,9 @@ export type Theme = 'dark' | 'light';
 export type Palette = 'standard' | 'colourBlind';
 /** "system" follows the operating system's reduced-motion setting. */
 export type Motion = 'system' | 'reduced' | 'full';
+/** "adaptive" follows the state of the country; "calm" keeps to the peaceful moods; "off" plays no music. */
+export const MUSIC_STYLES = ['adaptive', 'calm', 'off'] as const;
+export type MusicStyle = (typeof MUSIC_STYLES)[number];
 
 export const UI_SCALES = [90, 100, 110, 125, 150] as const;
 export type UiScale = (typeof UI_SCALES)[number];
@@ -18,6 +21,7 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   muted: boolean;
+  musicStyle: MusicStyle;
   /** The player has finished or skipped the tutorial once, so New Game stops ticking it by default. */
   tutorialSeen: boolean;
 }
@@ -30,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 0.4,
   sfxVolume: 0.7,
   muted: false,
+  musicStyle: 'adaptive',
   tutorialSeen: false,
 };
 
@@ -52,6 +57,7 @@ export function sanitizeSettings(raw: unknown): Settings {
     musicVolume: volume(p.musicVolume, d.musicVolume),
     sfxVolume: volume(p.sfxVolume, d.sfxVolume),
     muted: typeof p.muted === 'boolean' ? p.muted : d.muted,
+    musicStyle: oneOf(p.musicStyle, MUSIC_STYLES, d.musicStyle),
     tutorialSeen: typeof p.tutorialSeen === 'boolean' ? p.tutorialSeen : d.tutorialSeen,
   };
 }
